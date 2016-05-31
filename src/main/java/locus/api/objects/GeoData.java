@@ -255,7 +255,7 @@ public abstract class GeoData extends Storable {
     /**
      * Return parameter stored in extraData container.
      * @param paramId ID of parameter
-     * @return loaded value (length() > 0) or 'null' in case, parameter do not exists
+     * @return loaded value (length() bigger then 0) or 'null' in case, parameter do not exists
      */
 	public String getParameter(int paramId) {
 		if (extraData == null) {

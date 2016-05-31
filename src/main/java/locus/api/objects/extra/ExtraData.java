@@ -22,6 +22,7 @@ package locus.api.objects.extra;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import locus.api.objects.Storable;
@@ -258,13 +259,13 @@ public class ExtraData extends Storable {
 	
 	/**
 	 * Index to point list 
-	 * <br />
+	 * <br>
 	 * Locus internal variable, <b>DO NOT SET</b>
 	 */
 	public static final int PAR_RTE_INDEX = 100;
 	/**
 	 * Distance (in metres) from current navPoint to next 
-	 * <br />
+	 * <br>
 	 * Locus internal variable, <b>DO NOT SET</b> (float)
 	 */
 	public static final int PAR_RTE_DISTANCE_F = 101;
@@ -442,7 +443,13 @@ public class ExtraData extends Storable {
     /**************************************************/
     // HANDLERS PART
     /**************************************************/
-	
+
+	/**
+	 * Add a single parameter to container, defined by ID and it's text representation.
+	 * @param key key value
+	 * @param value value itself
+	 * @return {@code true} if parameter was correctly added
+	 */
 	public boolean addParameter(int key, String value) {
 		// check on 'null' value
 		if (value == null) {
@@ -460,7 +467,8 @@ public class ExtraData extends Storable {
 		
 		// check keys
 		if (key > 1000 && key < 2000) {
-			Logger.logW(TAG, "addParam(" + key + ", " + value + "), values 1000 - 1999 reserved!");
+			Logger.logW(TAG, "addParam(" + key + ", " + value + "), " +
+					"values 1000 - 1999 reserved!");
 			return false;
 		}
 		
@@ -468,11 +476,23 @@ public class ExtraData extends Storable {
 		parameters.put(key, Utils.doStringToBytes(value));
 		return true;
 	}
-	
+
+	/**
+	 * Add a single parameter to container, defined by ID and it's byte value.
+	 * @param key key value
+	 * @param value value itself
+	 * @return {@code true} if parameter was correctly added
+	 */
 	public boolean addParameter(int key, byte value) {
 		return addParameter(key, new byte[] {value});
 	}
-		
+
+	/**
+	 * Add a single parameter to container, defined by ID and it's byte array representation.
+	 * @param key key value
+	 * @param value value itself
+	 * @return {@code true} if parameter was correctly added
+	 */
 	public boolean addParameter(int key, byte[] value) {
 		// remove previous parameter
 		removeParameter(key);
@@ -484,7 +504,8 @@ public class ExtraData extends Storable {
 		
 		// check keys
 		if (key > 1000 && key < 2000) {
-			Logger.logW(TAG, "addParam(" + key + ", " + value + "), values 1000 - 1999 reserved!");
+			Logger.logW(TAG, "addParam(" + key + ", " + Arrays.toString(value) + "), " +
+					"values 1000 - 1999 reserved!");
 			return false;
 		}
 		

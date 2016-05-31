@@ -125,25 +125,18 @@ public class LocationCompute {
 	 * Computes the approximate distance in meters between two locations, and
 	 * optionally the initial and final bearings of the shortest path between
 	 * them. Distance and bearing are defined using the WGS84 ellipsoid.
-	 * 
 	 * <p>
 	 * The computed distance is stored in results[0]. If results has length 2 or
 	 * greater, the initial bearing is stored in results[1]. If results has
 	 * length 3 or greater, the final bearing is stored in results[2].
 	 * 
-	 * @param startLatitude
-	 *            the starting latitude
-	 * @param startLongitude
-	 *            the starting longitude
-	 * @param endLatitude
-	 *            the ending latitude
-	 * @param endLongitude
-	 *            the ending longitude
-	 * @param results
-	 *            an array of floats to hold the results
-	 * 
+	 * @param startLatitude the starting latitude
+	 * @param startLongitude the starting longitude
+	 * @param endLatitude the ending latitude
+	 * @param endLongitude the ending longitude
+	 * @param results an array of floats to hold the results
 	 * @throws IllegalArgumentException
-	 *             if results is null or has length < 1
+	 *             if results is null or has length less then 1
 	 */
 	public static void distanceBetween(double startLatitude,
 			double startLongitude, double endLatitude, double endLongitude,
@@ -160,8 +153,7 @@ public class LocationCompute {
 	 * Returns the approximate distance in meters between this location and the
 	 * given location. Distance is defined using the WGS84 ellipsoid.
 	 * 
-	 * @param dest
-	 *            the destination location
+	 * @param dest the destination location
 	 * @return the approximate distance in meters
 	 */
 	public float distanceTo(Location dest) {
@@ -186,8 +178,7 @@ public class LocationCompute {
 	 * given location. The shortest path is defined using the WGS84 ellipsoid.
 	 * Locations that are (nearly) antipodal may produce meaningless results.
 	 * 
-	 * @param dest
-	 *            the destination location
+	 * @param dest the destination location
 	 * @return the initial bearing in degrees
 	 */
 	public float bearingTo(Location dest) {
@@ -220,6 +211,7 @@ public class LocationCompute {
 
     /**
      * Compute distance on Earth approximated as sphere.
+	 *
      * @param loc1 first location
      * @param loc2 second location
      * @return computed distance in metres
@@ -233,6 +225,7 @@ public class LocationCompute {
 
     /**
      * Compute distance on Earth approximated as sphere.
+	 *
      * @param lat1 latitude of first point
      * @param lon1 longitude of first point
      * @param lat2 latitude of second point
@@ -248,8 +241,9 @@ public class LocationCompute {
 
 	/**
 	 * Compute distance and bearing on Earth approximated as sphere.
-	 * <br /><br />Compute is based on Haversine formula http://en.wikipedia.org/wiki/Haversine_formula
-	 * <br /><br />Precision is around 99.9%, speed around 5x faster then above method.
+	 * <br><br>Compute is based on Haversine formula http://en.wikipedia.org/wiki/Haversine_formula
+	 * <br><br>Precision is around 99.9%, speed around 5x faster then above method.
+	 *
      * @param lat1 latitude of first point
      * @param lon1 longitude of first point
      * @param lat2 latitude of second point

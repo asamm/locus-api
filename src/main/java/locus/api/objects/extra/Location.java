@@ -28,33 +28,40 @@ import locus.api.utils.DataWriterBigEndian;
 import locus.api.utils.Logger;
 import locus.api.utils.Utils;
 
+@SuppressWarnings ("unused")
 public class Location extends Storable {
 
-    private static final String TAG = Location.class.getSimpleName();
+	// tag for logger
+    private static final String TAG = "Location";
 
 	// location unique ID
-	private long id;
+	private long mId;
 	// provider for location source
 	private String provider;
 	// location time
     private long time;
-	
-	// latitude of location in WGS coordinates
+
+	// latitude of location in WGS coordinates. Field is public because of heavy usage that
+	// require fast, even little bit dangerous, access. Be careful.
 	public double latitude;
-	// longitude of location in WGS coordinates
+	// longitude of location in WGS coordinates. Field is public because of heavy usage that
+	// require fast, even little bit dangerous, access. Be careful.
 	public double longitude;
 
 	// flag if altitude is set
-    private boolean hasAltitude;
+    private boolean mHasAltitude;
 	// altitude value
-    private double altitude;
+    private double mAltitude;
 
 	// container for basic values
-    private ExtraBasic extraBasic;
+    private ExtraBasic mExtraBasic;
     // container for ANT sensor values
-    private ExtraSensor extraSensor;
-    
-    private static class ExtraBasic implements Cloneable {
+    private ExtraSensor mExtraSensor;
+
+	/**
+	 * Container for extended data for location class.
+	 */
+	private static class ExtraBasic implements Cloneable {
 
     	boolean hasSpeed;
     	float speed;
@@ -95,8 +102,11 @@ public class Location extends Storable {
         	return Utils.toString(ExtraBasic.this, "    ");
         }
     }
-    
-    private static class ExtraSensor extends Storable implements Cloneable {
+
+	/**
+	 * Container for data usually received from sensors.
+	 */
+	private static class ExtraSensor extends Storable implements Cloneable {
 
     	boolean hasHr;
     	int hr;
@@ -240,7 +250,7 @@ public class Location extends Storable {
 
 	/**
 	 * Empty constructor used for {@link Storable}
-	 * <br />
+	 * <br>
 	 * Do not use directly!
 	 */
     public Location() {
@@ -261,34 +271,35 @@ public class Location extends Storable {
 
     /**
      * Sets the contents of the location to the values from the given location.
+	 * @param loc source location object
      */
-    public void set(Location l) {
-    	id = l.id;
-        provider = new String(l.provider);
-        time = l.time;
-        latitude = l.latitude;
-        longitude = l.longitude;
-        hasAltitude = l.hasAltitude();
-        altitude = l.getAltitude();
+    public void set(Location loc) {
+    	mId = loc.mId;
+        provider = loc.provider;
+        time = loc.time;
+        latitude = loc.latitude;
+        longitude = loc.longitude;
+        mHasAltitude = loc.hasAltitude();
+		mAltitude = loc.getAltitude();
 
         // set extra basic data
-        if (l.extraBasic != null && l.extraBasic.hasData()) {
-        	extraBasic = l.extraBasic.clone();
-            if (!extraBasic.hasData()) {
-            	extraBasic = null;
+        if (loc.mExtraBasic != null && loc.mExtraBasic.hasData()) {
+        	mExtraBasic = loc.mExtraBasic.clone();
+            if (!mExtraBasic.hasData()) {
+            	mExtraBasic = null;
             }
         } else {
-        	extraBasic = null;
+        	mExtraBasic = null;
         }
         
         // set extra ant data
-        if (l.extraSensor != null && l.extraSensor.hasData()) {
-        	extraSensor = l.extraSensor.clone();
-            if (!extraSensor.hasData()) {
-            	extraSensor = null;
+        if (loc.mExtraSensor != null && loc.mExtraSensor.hasData()) {
+        	mExtraSensor = loc.mExtraSensor.clone();
+            if (!mExtraSensor.hasData()) {
+            	mExtraSensor = null;
             }
         } else {
-        	extraSensor = null;
+        	mExtraSensor = null;
         }
     }
 
@@ -303,25 +314,25 @@ public class Location extends Storable {
 
 	@Override
 	protected void readObject(int version, DataReaderBigEndian dr) throws IOException {
-		id = dr.readLong();
+		mId = dr.readLong();
 		provider = dr.readString();
 		time = dr.readLong();
 		latitude = dr.readDouble();
 		longitude = dr.readDouble();
-		hasAltitude = dr.readBoolean();
-		altitude = dr.readDouble();
+		mHasAltitude = dr.readBoolean();
+		mAltitude = dr.readDouble();
 
 		// red basic data
 		if (dr.readBoolean()) {
-			extraBasic = new ExtraBasic();
-			extraBasic.hasAccuracy = dr.readBoolean();
-			extraBasic.accuracy = dr.readFloat();
-			extraBasic.hasBearing = dr.readBoolean();
-			extraBasic.bearing = dr.readFloat();
-			extraBasic.hasSpeed = dr.readBoolean();
-			extraBasic.speed = dr.readFloat();
-	    	if (!extraBasic.hasData()) {
-	    		extraBasic = null;
+			mExtraBasic = new ExtraBasic();
+			mExtraBasic.hasAccuracy = dr.readBoolean();
+			mExtraBasic.accuracy = dr.readFloat();
+			mExtraBasic.hasBearing = dr.readBoolean();
+			mExtraBasic.bearing = dr.readFloat();
+			mExtraBasic.hasSpeed = dr.readBoolean();
+			mExtraBasic.speed = dr.readFloat();
+	    	if (!mExtraBasic.hasData()) {
+	    		mExtraBasic = null;
 	    	}
 		}
 		
@@ -335,92 +346,106 @@ public class Location extends Storable {
 			if (version == 1) {
 				readSensorVersion1(dr);
 			} else {
-				extraSensor = new ExtraSensor(dr);
+				mExtraSensor = new ExtraSensor(dr);
 			}
 		}
 	}
 	
 	private void readSensorVersion1(DataReaderBigEndian dr) throws IOException {
-		extraSensor = new ExtraSensor();
-		extraSensor.hasHr = dr.readBoolean();
-		extraSensor.hr = dr.readInt();
-		extraSensor.hasCadence = dr.readBoolean();
-		extraSensor.cadence = dr.readInt();
-		extraSensor.hasSpeed = dr.readBoolean();
-		extraSensor.speed = dr.readFloat();
-		extraSensor.hasPower = dr.readBoolean();
-		extraSensor.power = dr.readFloat();
+		mExtraSensor = new ExtraSensor();
+		mExtraSensor.hasHr = dr.readBoolean();
+		mExtraSensor.hr = dr.readInt();
+		mExtraSensor.hasCadence = dr.readBoolean();
+		mExtraSensor.cadence = dr.readInt();
+		mExtraSensor.hasSpeed = dr.readBoolean();
+		mExtraSensor.speed = dr.readFloat();
+		mExtraSensor.hasPower = dr.readBoolean();
+		mExtraSensor.power = dr.readFloat();
             
-		if (!extraSensor.hasData()) {
-			extraSensor = null;
+		if (!mExtraSensor.hasData()) {
+			mExtraSensor = null;
 		}
 	}
 	
 	@Override
 	protected void writeObject(DataWriterBigEndian dw) throws IOException {
-		dw.writeLong(id);
+		dw.writeLong(mId);
 		dw.writeString(provider);
 		dw.writeLong(time);
 		dw.writeDouble(latitude);
 		dw.writeDouble(longitude);
-		dw.writeBoolean(hasAltitude);
-		dw.writeDouble(altitude);
+		dw.writeBoolean(mHasAltitude);
+		dw.writeDouble(mAltitude);
 
 		// write basic data
-		if (extraBasic == null || !extraBasic.hasData()) {
+		if (mExtraBasic == null || !mExtraBasic.hasData()) {
 			dw.writeBoolean(false);
 		} else {
 			dw.writeBoolean(true);
-			dw.writeBoolean(extraBasic.hasAccuracy);
-			dw.writeFloat(extraBasic.accuracy);
-			dw.writeBoolean(extraBasic.hasBearing);
-			dw.writeFloat(extraBasic.bearing);
-			dw.writeBoolean(extraBasic.hasSpeed);
-			dw.writeFloat(extraBasic.speed);
+			dw.writeBoolean(mExtraBasic.hasAccuracy);
+			dw.writeFloat(mExtraBasic.accuracy);
+			dw.writeBoolean(mExtraBasic.hasBearing);
+			dw.writeFloat(mExtraBasic.bearing);
+			dw.writeBoolean(mExtraBasic.hasSpeed);
+			dw.writeFloat(mExtraBasic.speed);
 		}
 		
 		// write ant data (version 1+)
-		if (extraSensor == null || !extraSensor.hasData()) {
+		if (mExtraSensor == null || !mExtraSensor.hasData()) {
 			dw.writeBoolean(false);
 		} else {
 			dw.writeBoolean(true);
-			extraSensor.write(dw);
+			mExtraSensor.write(dw);
 		}
 	}
 	
     @Override
     public void reset() {
-    	id = -1L;
+    	mId = -1L;
         provider = null;
         time = 0L;
         latitude = 0.0;
         longitude = 0.0;
-        extraBasic = null;
-        extraSensor = null;
+        mExtraBasic = null;
+        mExtraSensor = null;
     }
     
     /**************************************************/
-    /*                 GETTER & SETTERS               */
+    // GETTER & SETTERS
     /**************************************************/
-    
+
+	// ID
+
+	/**
+	 * Get defined ID of current location.
+	 * @return unique ID
+	 */
 	public long getId() {
-		return id;
+		return mId;
 	}
 
+	/**
+	 * Set new ID parameter to current location.
+	 * @param mId new ID value
+	 */
 	public void setId(long mId) {
-		this.id = mId;
+		this.mId = mId;
 	}
-	
+
+	// PROVIDER
+
     /**
-     * Returns the name of the provider that generated this fix,
-     * or null if it is not associated with a provider.
+     * Returns the name of the provider that generated this location.
+	 * @return name of provider
      */
     public String getProvider() {
         return provider;
     }
 
     /**
-     * Sets the name of the provider that generated this fix.
+     * Sets the name of the provider that generated this location.
+	 * @param provider name of provider
+	 * @return current object
      */
     public Location setProvider(String provider) {
     	if (provider == null) {
@@ -431,17 +456,19 @@ public class Location extends Storable {
         return this;
     }
 
+	// TIME
+
     /**
-     * Returns the UTC time of this fix, in milliseconds since January 1,
-     * 1970.
+     * Returns the UTC time of this fix, in milliseconds since January 1, 1970.
+	 * @return timestamp value
      */
     public long getTime() {
         return time;
     }
 
     /**
-     * Sets the UTC time of this fix, in milliseconds since January 1,
-     * 1970.
+     * Sets the UTC time of this fix, in milliseconds since January 1, 1970.
+	 * @param time timestamp value
      */
     public void setTime(long time) {
     	this.time = time;
@@ -451,6 +478,7 @@ public class Location extends Storable {
 
     /**
      * Returns the latitude of this fix.
+	 * @return latitude value (in degrees)
      */
     public double getLatitude() {
         return latitude;
@@ -458,8 +486,11 @@ public class Location extends Storable {
 
     /**
      * Sets the latitude of this fix.
+	 * @param lat latitude value (in degrees)
+	 * @return current object
      */
     public Location setLatitude(double lat) {
+		// perform checks on range
         if (lat < -90.0 ) {
             Logger.logE(TAG, "setLatitude(" + lat + "), " +
                     "invalid latitude", new Exception(""));
@@ -469,6 +500,8 @@ public class Location extends Storable {
                     "invalid latitude", new Exception(""));
             lat = 90.0;
         }
+
+		// set value
         this.latitude = lat;
     	return this;
     }
@@ -477,6 +510,7 @@ public class Location extends Storable {
 
     /**
      * Returns the longitude of this fix.
+	 * @return longitude value (in degrees)
      */
     public double getLongitude() {
         return longitude;
@@ -484,13 +518,18 @@ public class Location extends Storable {
 
     /**
      * Sets the longitude of this fix.
+	 * @param lon longitude value (in degrees)
+	 * @return current object
      */
     public Location setLongitude(double lon) {
+		// perform checks on range
         if (lon < -180.0) {
             lon += 360.0;
         } else if (lon > 180.0) {
             lon -= 360.0;
         }
+
+		// set value
         this.longitude = lon;
     	return this;
     }
@@ -498,37 +537,39 @@ public class Location extends Storable {
     // ALTITUDE
 
     /**
-     * Returns true if this fix contains altitude information, false
-     * otherwise.
+     * Returns true if this fix contains altitude information, false otherwise.
+	 * @return {@code true} if location has altitude
      */
     public boolean hasAltitude() {
-        return hasAltitude;
+        return mHasAltitude;
     }
 
     /**
-     * Returns the altitude of this fix.  If {@link #hasAltitude} is false,
-     * 0.0f is returned.
+     * Returns the altitude of this fix. If {@link #hasAltitude} is false, 0.0f is returned.
+	 * @return altitude value (in metres) or 0.0 if altitude is not defined
      */
     public double getAltitude() {
-        return altitude;
+		if (hasAltitude()) {
+			return mAltitude;
+		}
+        return 0.0;
     }
 
     /**
-     * Sets the altitude of this fix.  Following this call,
-     * hasAltitude() will return true.
+     * Sets the altitude of this fix. Following this call, hasAltitude() will return true.
+	 * @param altitude altitude value (in metres)
      */
     public void setAltitude(double altitude) {
-    	this.altitude = altitude;
-    	this.hasAltitude = true;
+    	this.mAltitude = altitude;
+    	this.mHasAltitude = true;
     }
 
     /**
-     * Clears the altitude of this fix.  Following this call,
-     * hasAltitude() will return false.
+     * Clears the altitude of this fix. Following this call, hasAltitude() will return false.
      */
     public void removeAltitude() {
-    	this.altitude = 0.0f;
-    	this.hasAltitude = false;
+    	this.mAltitude = 0.0f;
+    	this.mHasAltitude = false;
     }
 
     /**************************************************/
@@ -538,37 +579,39 @@ public class Location extends Storable {
     // SPEED
     
     /**
-     * Returns true if this fix contains speed information, false
-     * otherwise.  The default implementation returns false.
+     * Returns true if this fix contains speed information, false otherwise.
+	 * The default implementation returns false.
+	 * @return {@code true} if location has defined speed value
      */
     public boolean hasSpeed() {
-    	if (extraBasic == null) {
-    		return false;
-    	}
-        return extraBasic.hasSpeed;
-    }
+		return mExtraBasic != null &&
+				mExtraBasic.hasSpeed;
+	}
 
     /**
-     * Returns the speed of the device over ground in meters/second.
-     * If hasSpeed() is false, 0.0f is returned.
+     * Returns the speed of the device over ground in meters/second. If hasSpeed() is false, 0.0f is returned.
+	 * @return speed value (in metres/sec)
      */
     public float getSpeed() {
     	if (hasSpeed()) {
-    		return extraBasic.speed;
+    		return mExtraBasic.speed;
     	}
     	return 0.0f;
     }
 
     /**
-     * Sets the speed of this fix, in meters/second.  Following this
-     * call, hasSpeed() will return true.
+     * Sets the speed of this fix, in meters/second.  Following this call, hasSpeed() will return true.
+	 * @param speed speed value (in metres/sec)
      */
     public void setSpeed(float speed) {
-    	if (extraBasic == null) {
-    		extraBasic = new ExtraBasic();
+		// check container
+    	if (mExtraBasic == null) {
+    		mExtraBasic = new ExtraBasic();
     	}
-    	extraBasic.speed = speed;
-    	extraBasic.hasSpeed = true;
+
+		// set value
+    	mExtraBasic.speed = speed;
+    	mExtraBasic.hasSpeed = true;
     }
 
     /**
@@ -576,41 +619,42 @@ public class Location extends Storable {
      * will return false.
      */
     public void removeSpeed() {
-    	if (extraBasic == null) {
+		// check container
+    	if (mExtraBasic == null) {
     		return;
     	}
-    	extraBasic.speed = 0.0f;
-    	extraBasic.hasSpeed = false;
+
+		// remove parameter
+    	mExtraBasic.speed = 0.0f;
+    	mExtraBasic.hasSpeed = false;
     	checkExtraBasic();
     }
 
     // BEARING
     
     /**
-     * Returns true if the provider is able to report bearing information,
-     * false otherwise.  The default implementation returns false.
+     * Returns true if the location is able to report bearing information, false otherwise.
+	 * @return {@code true} if location has bearing value
      */
     public boolean hasBearing() {
-    	if (extraBasic == null) {
-    		return false;
-    	}
-        return extraBasic.hasBearing;
-    }
+		return mExtraBasic != null &&
+				mExtraBasic.hasBearing;
+	}
 
     /**
-     * Returns the direction of travel in degrees East of true
-     * North. If hasBearing() is false, 0.0 is returned.
+     * Returns the direction of travel in degrees East of true North. If hasBearing() is false, 0.0 is returned.
+	 * @return bearing value (in degrees)
      */
     public float getBearing() {
     	if (hasBearing()) {
-    		return extraBasic.bearing;
+    		return mExtraBasic.bearing;
     	}
     	return 0.0f;
     }
 
     /**
-     * Sets the bearing of this fix.  Following this call, hasBearing()
-     * will return true.
+     * Sets the bearing of this fix.  Following this call, hasBearing() will return true.
+	 * @param bearing bearing value (in degrees)
      */
     public void setBearing(float bearing) {
         while (bearing < 0.0f) {
@@ -620,11 +664,11 @@ public class Location extends Storable {
             bearing -= 360.0f;
         }
         
-        if (extraBasic == null) {
-    		extraBasic = new ExtraBasic();
+        if (mExtraBasic == null) {
+    		mExtraBasic = new ExtraBasic();
         }
-    	extraBasic.bearing = bearing;
-        extraBasic.hasBearing = true;
+    	mExtraBasic.bearing = bearing;
+        mExtraBasic.hasBearing = true;
     }
 
     /**
@@ -632,11 +676,14 @@ public class Location extends Storable {
      * will return false.
      */
     public void removeBearing() {
-    	if (extraBasic == null) {
+		// check data
+    	if (mExtraBasic == null) {
     		return;
     	}
-    	extraBasic.bearing = 0.0f;
-    	extraBasic.hasBearing = false;
+
+		// remove parameter
+    	mExtraBasic.bearing = 0.0f;
+    	mExtraBasic.hasBearing = false;
     	checkExtraBasic();
     }
 
@@ -645,53 +692,59 @@ public class Location extends Storable {
     /**
      * Returns true if the provider is able to report accuracy information,
      * false otherwise.  The default implementation returns false.
+	 * @return {@code true} is location has defined accuracy
      */
     public boolean hasAccuracy() {
-    	if (extraBasic == null) {
-    		return false;
-    	}
-        return extraBasic.hasAccuracy;
-    }
+		return mExtraBasic != null &&
+				mExtraBasic.hasAccuracy;
+	}
 
     /**
-     * Returns the accuracy of the fix in meters. If hasAccuracy() is false,
-     * 0.0 is returned.
+     * Returns the accuracy of the fix. If hasAccuracy() is false, 0.0 is returned.
+	 * @return accuracy value (in metres)
      */
     public float getAccuracy() {
     	if (hasAccuracy()) {
-    		return extraBasic.accuracy;
+    		return mExtraBasic.accuracy;
     	}
     	return 0.0f;
     }
 
     /**
-     * Sets the accuracy of this fix.  Following this call, hasAccuracy()
-     * will return true.
+     * Sets the accuracy of this fix.  Following this call, hasAccuracy() will return true.
+	 * @param accuracy accuracy value (in metres)
      */
     public void setAccuracy(float accuracy) {
-    	if (extraBasic == null) {
-    		extraBasic = new ExtraBasic();
+    	if (mExtraBasic == null) {
+    		mExtraBasic = new ExtraBasic();
     	}
-    	extraBasic.accuracy = accuracy;
-    	extraBasic.hasAccuracy = true;
+    	mExtraBasic.accuracy = accuracy;
+    	mExtraBasic.hasAccuracy = true;
     }
 
     /**
-     * Clears the accuracy of this fix.  Following this call, hasAccuracy()
-     * will return false.
+     * Clears the accuracy of this fix.  Following this call, hasAccuracy() will return false.
      */
     public void removeAccuracy() {
-    	if (extraBasic == null) {
+		// check container
+    	if (mExtraBasic == null) {
     		return;
     	}
-    	extraBasic.accuracy = 0.0f;
-    	extraBasic.hasAccuracy = false;
+
+		// remove data
+    	mExtraBasic.accuracy = 0.0f;
+    	mExtraBasic.hasAccuracy = false;
     	checkExtraBasic();
     }
-    
-    private void checkExtraBasic() {
-    	if (!extraBasic.hasData()) {
-    		extraBasic = null;
+
+	// TOOLS
+
+	/**
+	 * Check extra data container and remove it if no data exists.
+	 */
+	private void checkExtraBasic() {
+    	if (!mExtraBasic.hasData()) {
+    		mExtraBasic = null;
     	}
     }
     
@@ -702,37 +755,36 @@ public class Location extends Storable {
     // HEART RATE
     
     /**
-     * Returns true if the provider is able to report Heart rate information,
-     * false otherwise.  The default implementation returns false.
+     * Returns true if the provider is able to report Heart rate information, false otherwise.
+	 * The default implementation returns false.
+	 * @return {@code true} if location has HRM sensor data
      */
     public boolean hasSensorHeartRate() {
-    	if (extraSensor == null) {
-    		return false;
-    	}
-        return extraSensor.hasHr;
-    }
+		return mExtraSensor != null &&
+				mExtraSensor.hasHr;
+	}
 
     /**
-     * Returns the Heart rate value in BMP. If hasSensorHeartRate() is false,
-     * 0.0 is returned.
+     * Returns the Heart rate value in BMP. If hasSensorHeartRate() is false, 0.0 is returned.
+	 * @return heart rate sensor value (in BPM)
      */
     public int getSensorHeartRate() {
     	if (hasSensorHeartRate()) {
-    		return extraSensor.hr;
+    		return mExtraSensor.hr;
     	}
     	return 0;
     }
 
     /**
-     * Sets the Heart rate of this fix. Following this call, hasSensorHeartRate()
-     * will return true.
+     * Sets the Heart rate of this fix. Following this call, hasSensorHeartRate() will return true.
+	 * @param heartRate heart rate value (in BPM)
      */
     public void setSensorHeartRate(int heartRate) {
-    	if (extraSensor == null) {
-    		extraSensor = new ExtraSensor();
+    	if (mExtraSensor == null) {
+    		mExtraSensor = new ExtraSensor();
     	}
-    	extraSensor.hr = heartRate;
-    	extraSensor.hasHr = true;
+    	mExtraSensor.hr = heartRate;
+    	mExtraSensor.hasHr = true;
     }
 
     /**
@@ -740,145 +792,153 @@ public class Location extends Storable {
      * will return false.
      */
     public void removeSensorHeartRate() {
-    	if (extraSensor == null) {
+		// check container
+    	if (mExtraSensor == null) {
     		return;
     	}
-    	extraSensor.hr = 0;
-    	extraSensor.hasHr = false;
+
+		// remove parameter
+    	mExtraSensor.hr = 0;
+    	mExtraSensor.hasHr = false;
     	checkExtraSensor();
     }
     
     // CADENCE
     
     /**
-     * Returns true if the provider is able to report cadence information,
-     * false otherwise.  The default implementation returns false.
+     * Returns true if the provider is able to report cadence information, false otherwise.
+	 * The default implementation returns false.
+	 * @return {@code true} if location has defined cadence value
      */
     public boolean hasSensorCadence() {
-    	if (extraSensor == null) {
-    		return false;
-    	}
-        return extraSensor.hasCadence;
-    }
+		return mExtraSensor != null &&
+				mExtraSensor.hasCadence;
+	}
 
     /**
      * Returns the cadence value. If hasCadence() is false, 0 is returned.
+	 * @return cadence value
      */
     public int getSensorCadence() {
     	if (hasSensorCadence()) {
-    		return extraSensor.cadence;
+    		return mExtraSensor.cadence;
     	}
     	return 0;
     }
 
     /**
-     * Sets the cadence of this fix.  Following this call, hasCadence()
-     * will return true.
+     * Sets the cadence of this fix.  Following this call, hasCadence() will return true.
+	 * @param cadence cadence value
      */
     public void setSensorCadence(int cadence) {
-    	if (extraSensor == null) {
-    		extraSensor = new ExtraSensor();
+		// check container
+    	if (mExtraSensor == null) {
+    		mExtraSensor = new ExtraSensor();
     	}
-    	extraSensor.cadence = cadence;
-    	extraSensor.hasCadence = true;
+
+		// set parameter
+    	mExtraSensor.cadence = cadence;
+    	mExtraSensor.hasCadence = true;
     }
 
     /**
-     * Clears the cadence of this fix.  Following this call, hasCadence()
-     * will return false.
+     * Clears the cadence of this fix.  Following this call, hasCadence() will return false.
      */
     public void removeSensorCadence() {
-    	if (extraSensor == null) {
+		// check container
+    	if (mExtraSensor == null) {
     		return;
     	}
-    	extraSensor.cadence = 0;
-    	extraSensor.hasCadence = false;
+
+		// reove parameter
+    	mExtraSensor.cadence = 0;
+    	mExtraSensor.hasCadence = false;
     	checkExtraSensor();
     }
     
     // SPEED
     
     /**
-     * Returns true if the provider is able to report speed value,
-     * false otherwise.  The default implementation returns false.
+     * Returns true if the provider is able to report speed value, false otherwise.
+	 * The default implementation returns false.
+	 * @return {@code true} if location has defined sensor speed
      */
     public boolean hasSensorSpeed() {
-    	if (extraSensor == null) {
-    		return false;
-    	}
-        return extraSensor.hasSpeed;
-    }
+		return mExtraSensor != null &&
+				mExtraSensor.hasSpeed;
+	}
 
     /**
-     * Returns the speed of the fix in meters per sec. If hasSensorSpeed() is false,
-     * 0.0 is returned.
+     * Returns the speed of the fix in meters per sec. If hasSensorSpeed() is false, 0.0 is returned.
+	 * @return sensor speed value (in metres/sec)
      */
     public float getSensorSpeed() {
     	if (hasSensorSpeed()) {
-    		return extraSensor.speed;
+    		return mExtraSensor.speed;
     	}
     	return 0.0f;
     }
 
     /**
-     * Sets the speed of this fix.  Following this call, hasSensorSpeed()
-     * will return true.
+     * Sets the speed of this fix.  Following this call, hasSensorSpeed() will return true.
+	 * @param speed sensor speed (in metres/sec)
      */
     public void setSensorSpeed(float speed) {
-    	if (extraSensor == null) {
-    		extraSensor = new ExtraSensor();
+    	if (mExtraSensor == null) {
+    		mExtraSensor = new ExtraSensor();
     	}
-    	extraSensor.speed = speed;
-    	extraSensor.hasSpeed = true;
+    	mExtraSensor.speed = speed;
+    	mExtraSensor.hasSpeed = true;
     }
 
     /**
-     * Clears the speed of this fix.  Following this call, hasSensorSpeed()
-     * will return false.
+     * Clears the speed of this fix.  Following this call, hasSensorSpeed() will return false.
      */
     public void removeSensorSpeed() {
-    	if (extraSensor == null) {
+		// check container
+    	if (mExtraSensor == null) {
     		return;
     	}
-    	extraSensor.speed = 0.0f;
-    	extraSensor.hasSpeed = false;
+
+		// remove parameter
+    	mExtraSensor.speed = 0.0f;
+    	mExtraSensor.hasSpeed = false;
     	checkExtraSensor();
     }
     
     // POWER
     
     /**
-     * Returns true if the provider is able to report power value,
-     * false otherwise.  The default implementation returns false.
+     * Returns true if the provider is able to report power value, false otherwise.
+	 * The default implementation returns false.
+	 * @return {@code true} is location has defined power value
      */
     public boolean hasSensorPower() {
-    	if (extraSensor == null) {
-    		return false;
-    	}
-        return extraSensor.hasPower;
-    }
+		return mExtraSensor != null &&
+				mExtraSensor.hasPower;
+	}
 
     /**
-     * Returns the power of the fix in W. If hasSensorPower() is false,
-     * 0.0 is returned.
+     * Returns the power of the fix in W. If hasSensorPower() is false, 0.0 is returned.
+	 * @return power value (in Watts)
      */
     public float getSensorPower() {
     	if (hasSensorPower()) {
-    		return extraSensor.power;
+    		return mExtraSensor.power;
     	}
     	return 0.0f;
     }
 
     /**
-     * Sets the power of this fix.  Following this call, hasSensorPower()
-     * will return true.
+     * Sets the power of this fix.  Following this call, hasSensorPower() will return true.
+	 * @param power power value (in Watts)
      */
     public void setSensorPower(float power) {
-    	if (extraSensor == null) {
-    		extraSensor = new ExtraSensor();
+    	if (mExtraSensor == null) {
+    		mExtraSensor = new ExtraSensor();
     	}
-    	extraSensor.power = power;
-    	extraSensor.hasPower = true;
+    	mExtraSensor.power = power;
+    	mExtraSensor.hasPower = true;
     }
 
     /**
@@ -886,97 +946,103 @@ public class Location extends Storable {
      * will return false.
      */
     public void removeSensorPower() {
-    	if (extraSensor == null) {
+		// check container
+    	if (mExtraSensor == null) {
     		return;
     	}
-    	extraSensor.power = 0.0f;
-    	extraSensor.hasPower = false;
+
+		// remove parameter
+    	mExtraSensor.power = 0.0f;
+    	mExtraSensor.hasPower = false;
     	checkExtraSensor();
     }
     
     // STRIDES
     
     /**
-     * Returns true if the provider is able to report strides value,
-     * false otherwise.  The default implementation returns false.
+     * Returns true if the provider is able to report strides value, false otherwise.
+	 * The default implementation returns false.
+	 * @return {@code true} if location has stride parameter
      */
     public boolean hasSensorStrides() {
-    	if (extraSensor == null) {
-    		return false;
-    	}
-        return extraSensor.hasStrides;
-    }
+		return mExtraSensor != null &&
+				mExtraSensor.hasStrides;
+	}
 
     /**
-     * Returns the num of strides. If hasSensorStrides() is false,
-     * 0 is returned.
+     * Returns the num of strides. If hasSensorStrides() is false, 0 is returned.
+	 * @return number of strides
      */
     public int getSensorStrides() {
     	if (hasSensorStrides()) {
-    		return extraSensor.strides;
+    		return mExtraSensor.strides;
     	}
     	return 0;
     }
 
     /**
-     * Sets the num of strides. Following this call, hasSensorStrides()
-     * will return true.
+     * Sets the num of strides. Following this call, hasSensorStrides() will return true.
+	 * @param strides number of strides
      */
     public void setSensorStrides(int strides) {
-    	if (extraSensor == null) {
-    		extraSensor = new ExtraSensor();
+    	if (mExtraSensor == null) {
+    		mExtraSensor = new ExtraSensor();
     	}
-    	extraSensor.strides = strides;
-    	extraSensor.hasStrides = true;
+    	mExtraSensor.strides = strides;
+    	mExtraSensor.hasStrides = true;
     }
 
     /**
-     * Clears the num of strides. Following this call, hasSensorStrides()
-     * will return false.
+     * Clears the num of strides. Following this call, hasSensorStrides() will return false.
      */
     public void removeSensorStrides() {
-    	if (extraSensor == null) {
+		// check container
+    	if (mExtraSensor == null) {
     		return;
     	}
-    	extraSensor.strides = 0;
-    	extraSensor.hasStrides = false;
+
+		// remove parameter
+    	mExtraSensor.strides = 0;
+    	mExtraSensor.hasStrides = false;
     	checkExtraSensor();
     }
     
     // TEMPERATURE
     
     /**
-     * Returns true if the provider is able to report temperature value,
-     * false otherwise.  The default implementation returns false.
+     * Returns true if the provider is able to report temperature value, false otherwise.
+	 * The default implementation returns false.
+	 * @return {@code true} is sensor has temperature
      */
     public boolean hasSensorTemperature() {
-    	if (extraSensor == null) {
-    		return false;
-    	}
-        return extraSensor.hasTemperature;
-    }
+		return mExtraSensor != null &&
+				mExtraSensor.hasTemperature;
+	}
 
     /**
-     * Returns the temperature value. If hasSensorTemperature() is false,
-     * 0.0f is returned.
+     * Returns the temperature value. If hasSensorTemperature() is false, 0.0f is returned.
+	 * @return temperature value (in °C)
      */
     public float getSensorTemperature() {
     	if (hasSensorTemperature()) {
-    		return extraSensor.temperature;
+    		return mExtraSensor.temperature;
     	}
     	return 0.0f;
     }
 
     /**
-     * Sets the temperature value. Following this call, hasSensorTemperature()
-     * will return true.
+     * Sets the temperature value. Following this call, hasSensorTemperature() will return true.
+	 * @param temperature temperature value (in °C)
      */
     public void setSensorTemperature(float temperature) {
-    	if (extraSensor == null) {
-    		extraSensor = new ExtraSensor();
+		// check container
+    	if (mExtraSensor == null) {
+    		mExtraSensor = new ExtraSensor();
     	}
-    	extraSensor.temperature = temperature;
-    	extraSensor.hasTemperature = true;
+
+		// set parameter
+    	mExtraSensor.temperature = temperature;
+    	mExtraSensor.hasTemperature = true;
     }
 
     /**
@@ -984,27 +1050,39 @@ public class Location extends Storable {
      * will return false.
      */
     public void removeSensorTemperature() {
-    	if (extraSensor == null) {
+		// check container
+    	if (mExtraSensor == null) {
     		return;
     	}
-    	extraSensor.temperature = 0.0f;
-    	extraSensor.hasTemperature = false;
+
+		// remove parameter
+    	mExtraSensor.temperature = 0.0f;
+    	mExtraSensor.hasTemperature = false;
     	checkExtraSensor();
     }
     
     // PRIVATE
     
     private void checkExtraSensor() {
-    	if (!extraSensor.hasData()) {
-    		extraSensor = null;
+    	if (!mExtraSensor.hasData()) {
+    		mExtraSensor = null;
     	}
     }
     
     /**************************************************/
     // UTILS PART
     /**************************************************/
-    
-    /**
+
+	@Override
+	public String toString() {
+		return "Location [" +
+				"tag:" + provider + ", " +
+				"lon:" + longitude + ", " +
+				"lat:" + latitude + ", " +
+				"alt:" + mAltitude + "]";
+	}
+
+	/**
      * Returns the approximate distance in meters between this
      * location and the given location.  Distance is defined using
      * the WGS84 ellipsoid.
@@ -1045,7 +1123,7 @@ public class Location extends Storable {
 
     /**
      * Check if at least some speed is stored.
-     * @return <code>true</code> if speed is stored in this object
+     * @return {@code true} if speed is stored in this object
      */
     public boolean hasSpeedToDisplay() {
         return hasSpeed() || hasSensorSpeed();
@@ -1062,25 +1140,11 @@ public class Location extends Storable {
         }
         return getSpeed();
     }
-    
-    /**************************************************/
-    /*                      UTILS                     */
-    /**************************************************/
-    
-    @Override
-    public String toString() {
-        return "Location [" +
-                "tag:" + provider + ", " +
-                "lon:" + longitude + ", " +
-                "lat:" + latitude + ", " +
-                "alt:" + altitude + "]";
-//    	return Utils.toString(this, "");
-    }
 
     /**
      * Clear all attached sensors values.
      */
 	public void removeSensorAll() {
-		extraSensor = null;
+		mExtraSensor = null;
 	}
 }

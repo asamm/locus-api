@@ -28,11 +28,11 @@ import locus.api.utils.DataWriterBigEndian;
 
 /**
  * Class for holding geocaching attributes
- * <br /><br />
+ * <br><br>
  * Every instance holds just one attribute, defined by it's unique ID number. If
  * you want to set correct value, use constructor that allow set directly by number
  * or by attribute URL
- * <br /><br />
+ * <br><br>
  * @author menion
  */
 public class GeocachingAttribute extends Storable {

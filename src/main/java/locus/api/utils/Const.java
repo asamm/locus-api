@@ -6,7 +6,7 @@ public class Const {
 	
 	/**
 	 * Encoding used in Storable objects. Unfortunately due to missing 
-	 * constructor with Charset object, we need to use this. <br /><br />
+	 * constructor with Charset object, we need to use this. <br><br>
 	 * TODO: Change to Charset, right after support for A2.2 will be removed.
 	 */
 	public static String UTF_8 = "UTF-8";

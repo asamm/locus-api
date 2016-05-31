@@ -16,8 +16,8 @@
 package locus.api.utils;
 
 /**
- * A copy of the current platform (currently {@link android.os.Build.VERSION_CODES#KITKAT}
- * version of {@link android.util.SparseArray}; provides a removeAt() method and other things.
+ * A copy of the current platform (VERSION_CODES#KITKAT) version of android.util.SparseArray.
+ * It provides a removeAt() method and other things.
  */
 public class SparseArrayCompat<E> implements Cloneable {
     private static final Object DELETED = new Object();
@@ -110,6 +110,7 @@ public class SparseArrayCompat<E> implements Cloneable {
 
     /**
      * Removes the mapping at the specified index.
+	 * @param index index at which remove item
      */
     public void removeAt(int index) {
         if (mValues[index] != DELETED) {

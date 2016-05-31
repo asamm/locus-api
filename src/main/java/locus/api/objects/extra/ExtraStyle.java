@@ -461,7 +461,7 @@ public class ExtraStyle extends Storable {
 
 		/**
 		 * Get scale defined for a label.
-		 * @return scale of label, where 1.0 > 100%
+		 * @return scale of label, where 1.0 equals 100%
 		 */
 		public float getScale() {
 			return mScale;

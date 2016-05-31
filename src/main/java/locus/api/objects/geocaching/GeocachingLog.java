@@ -30,8 +30,8 @@ import locus.api.utils.DataWriterBigEndian;
 
 /**
  * This Object is container for cache Logs.
- * <br /><br />
- * Useful pages with list:<br />
+ * <br><br>
+ * Useful pages with list:<br>
  * <ul>
  * <li><a href="http://www.gc-reviewer.de/hilfe-tipps-und-tricks/logtypen/">German list</a></li>
  * </ul>
@@ -62,6 +62,7 @@ public class GeocachingLog extends Storable {
 	public static final int CACHE_LOG_TYPE_RETRACT_LISTING                      = 15;
 	public static final int CACHE_LOG_TYPE_ARCHIVE                              = 16;
 	public static final int CACHE_LOG_TYPE_UNARCHIVE                            = 17;
+	public static final int CACHE_LOG_TYPE_PERMANENTLY_ARCHIVED					= 18;
 
     public static final long FINDERS_ID_UNDEFINED                               = 0;
 

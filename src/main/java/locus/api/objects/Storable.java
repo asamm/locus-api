@@ -30,9 +30,11 @@ import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
 import locus.api.utils.Logger;
 
+@SuppressWarnings ("TryWithIdenticalCatches")
 public abstract class Storable {
 
-	private static final String TAG = Storable.class.getSimpleName();
+	// tag for logger
+	private static final String TAG = "Storable";
 	
 	/*
 	 * Container for inner data
@@ -57,7 +59,7 @@ public abstract class Storable {
     /**
      * Constructor based on known/loaded source data.
      * @param data loaded data
-     * @throws IOException
+     * @throws IOException thrown in case of invalid data format
      */
 	public Storable(byte[] data) throws IOException {
 		this(new DataReaderBigEndian(data));
@@ -66,7 +68,7 @@ public abstract class Storable {
     /**
      * Constructor that creates item directly from input stream.
      * @param dr data reader
-     * @throws IOException
+     * @throws IOException thrown in case of invalid data format
      */
 	public Storable(DataReaderBigEndian dr) throws IOException {
 		this();
@@ -87,34 +89,25 @@ public abstract class Storable {
 	/**************************************************/
 	// READ PART
 	/**************************************************/
-	
-	// DataReaderBigEndian section
-	
-	public static Storable read(Class<? extends Storable> claz, DataReaderBigEndian dr) 
-			throws IOException, InstantiationException, IllegalAccessException {
-    	// read header
-		BodyContainer bc = readHeader(dr);
 
-    	// now initialize object. Data are already loaded, so error will not break data flow
-		Storable storable = claz.newInstance();
-    	storable.readObject(bc.version, new DataReaderBigEndian(bc.data));
-		return storable;
-	}
+	// RAW DATA
 
     /**
      * Read content of certain item from byte array.
      * @param data array with data
-     * @throws IOException
+     * @throws IOException thrown in case of invalid data format
      */
     public void read(byte[] data) throws IOException {
         DataReaderBigEndian dr = new DataReaderBigEndian(data);
         read(dr);
     }
 
+	// DATA READER
+
     /**
      * Read content of certain item from existing stream.
      * @param dr stream to read for
-     * @throws IOException
+     * @throws IOException thrown in case of invalid data format
      */
 	public void read(DataReaderBigEndian dr) throws IOException {
     	// read header
@@ -123,7 +116,13 @@ public abstract class Storable {
 		// read body
 		readObject(bc.version, new DataReaderBigEndian(bc.data));
 	}
-	
+
+	/**
+	 * Read header of object from stream.
+	 * @param dr input stream
+	 * @return read data container
+	 * @throws IOException thrown in case of invalid data format
+	 */
 	private static BodyContainer readHeader(DataReaderBigEndian dr) throws IOException {
 		// initialize container
 		BodyContainer bc = new BodyContainer();
@@ -144,18 +143,13 @@ public abstract class Storable {
     	return bc;
 	}
 	
-	/**
-	 * Allows to read object, that is not known.
-	 * @param dr instance of data reader
-	 * @throws IOException
-	 */
-	public static void readUnknownObject(DataReaderBigEndian dr) throws IOException {
-    	// read header. This also allow to skip body of object
-		readHeader(dr);
-	}
-	
-	// DataInputStream section
+	// DATA INPUT STREAM
 
+	/**
+	 * Read content of object from stream.
+	 * @param input input stream
+	 * @throws IOException thrown in case of invalid data format
+	 */
 	public void read(DataInputStream input) throws IOException {
     	// read header
 		BodyContainer bc = readHeader(input);
@@ -163,7 +157,13 @@ public abstract class Storable {
 		// read body
 		readObject(bc.version, new DataReaderBigEndian(bc.data));
 	}
-	
+
+	/**
+	 * Read header of object from stream.
+	 * @param dis input stream
+	 * @return read data container
+	 * @throws IOException thrown in case of invalid data format
+	 */
 	private static BodyContainer readHeader(DataInputStream dis) throws IOException {
 		// initialize container
 		BodyContainer bc = new BodyContainer();
@@ -190,14 +190,19 @@ public abstract class Storable {
      * what exactly are you doing.
 	 * @param version version of loading content
 	 * @param dr data reader with content
-	 * @throws IOException
+	 * @throws IOException thrown in case of invalid data format
 	 */
 	protected abstract void readObject(int version, DataReaderBigEndian dr) throws IOException;
 	
 	/**************************************************/
 	// WRITE PART
 	/**************************************************/
-    
+
+	/**
+	 * Write current object into writer.
+	 * @param dw data writer
+	 * @throws IOException thrown in case of invalid data format
+	 */
 	public void write(DataWriterBigEndian dw) throws IOException {
 		// write version
 		dw.writeInt(getVersion());
@@ -223,7 +228,7 @@ public abstract class Storable {
 	 * This function is called from {@link #write} function. Do not call it directly until you know,
      * what exactly are you doing.
 	 * @param dw data writer class
-	 * @throws IOException
+	 * @throws IOException thrown in case of invalid data format
 	 */
 	protected abstract void writeObject(DataWriterBigEndian dw) throws IOException;
 	
@@ -233,9 +238,9 @@ public abstract class Storable {
 	 * as a new object.
 	 * 
 	 * @return exact clone of this object
-	 * @throws IOException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws IOException thrown in case of invalid data format
+	 * @throws InstantiationException throws if class cannot be initialized
+	 * @throws IllegalAccessException in case of access to class constructor is limited
 	 */
 	public Storable getCopy() throws IOException, InstantiationException, IllegalAccessException {
 		byte[] data = getAsBytes();
@@ -256,16 +261,64 @@ public abstract class Storable {
 			return null;
 		}
 	}
-	
-    /**************************************************/
-    // LIST READING/WRITING
+
 	/**************************************************/
-	
+	// STATIC TOOLS
+	/**************************************************/
+
+	// TOOLS
+
+	/**
+	 * Read certain class from input.
+	 * @param claz class to instantiate and read
+	 * @param dr reader with data
+	 * @return read class
+	 * @throws IOException thrown in case of invalid data format
+	 * @throws InstantiationException throws if class cannot be initialized
+	 * @throws IllegalAccessException in case of access to class constructor is limited
+	 */
+	public static Storable read(Class<? extends Storable> claz, DataReaderBigEndian dr)
+			throws IOException, InstantiationException, IllegalAccessException {
+		// read header
+		BodyContainer bc = readHeader(dr);
+
+		// now initialize object. Data are already loaded, so error will not break data flow
+		Storable storable = claz.newInstance();
+		storable.readObject(bc.version, new DataReaderBigEndian(bc.data));
+		return storable;
+	}
+
+	/**
+	 * Allows to read object, that is not known.
+	 * @param dr instance of data reader
+	 * @throws IOException thrown in case of invalid data format
+	 */
+	public static void readUnknownObject(DataReaderBigEndian dr) throws IOException {
+		// read header. This also allow to skip body of object
+		readHeader(dr);
+	}
+
+    // LIST READING/WRITING
+
+	/**
+	 * Read list of certain classes from input stream.
+	 * @param claz class to instantiate and read
+	 * @param data byte array with pack data
+	 * @return loaded list of items
+	 * @throws IOException thrown in case of invalid data format
+	 */
 	public static List<? extends Storable> readList(Class<? extends Storable> claz, 
 			byte[] data) throws IOException {
 		return new DataReaderBigEndian(data).readListStorable(claz);
 	}
-	
+
+	/**
+	 * Read list of certain classes from input stream.
+	 * @param claz class to instantiate and read
+	 * @param dis input stream with data
+	 * @return loaded list of items
+	 * @throws IOException thrown in case of invalid data format
+	 */
 	public static List<? extends Storable> readList(Class<? extends Storable> claz,
 			DataInputStream dis) throws IOException {
 		// prepare container
@@ -293,7 +346,12 @@ public abstract class Storable {
 	}
 	
 	// WRITE LIST PART
-	
+
+	/**
+	 * Get list of items as byte array.
+	 * @param data list of storable items
+	 * @return generated byte array with items
+	 */
 	public static byte[] getAsBytes(List<? extends Storable> data) {
 		try {
 			DataWriterBigEndian dw = new DataWriterBigEndian();
@@ -305,6 +363,12 @@ public abstract class Storable {
 		return null;
 	}
 
+	/**
+	 * Write certain list into output stream.
+	 * @param objs list of storable items
+	 * @param dos output stream where to write items
+	 * @throws IOException thrown in case of invalid data format
+	 */
 	public static void writeList(List<? extends Storable> objs, DataOutputStream dos)
 			throws IOException {
 		// get size of list

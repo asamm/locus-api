@@ -47,7 +47,7 @@ public class Waypoint extends GeoData {
 	
 	/**
 	 * Empty constructor used for {@link Storable}
-	 * <br />
+	 * <br>
 	 * Do not use directly!
 	 */
 	public Waypoint() {
@@ -183,7 +183,7 @@ public class Waypoint extends GeoData {
 	 * Simply allow set callback value on point. This appear when you click on point
 	 * and then under last button will be your button. Clicking on it, launch by you,
 	 * defined intent
-	 * <br /><br />
+	 * <br><br>
 	 * Do not forget to set this http://developer.android.com/guide/topics/manifest/activity-element.html#exported
 	 * to your activity, if you'll set callback to other then launcher activity
 	 * @param btnName Name displayed on button
@@ -218,7 +218,7 @@ public class Waypoint extends GeoData {
 	 * If you want to remove PAR_INTENT_EXTRA_CALLBACK parametr from Locus database,
 	 * you need to send "clear" value in updated waypoint back to Locus. After that,
 	 * Locus will remove this parameter from new stored point.
-	 * <br /><br />
+	 * <br><br>
 	 * Second alternative, how to remove this callback, is to send new waypoints
 	 * with forceOverwrite parameter set to <code>true</code>, that will overwrite
 	 * completely all data 
@@ -238,7 +238,7 @@ public class Waypoint extends GeoData {
 	 * Extra feature that allow to send to locus only partial point data. When you click on
 	 * point (in time when small point dialog should appear), locus send intent to your app,
 	 * you can then fill complete point and send it back to Locus. Clear and clever
-	 * <br /><br />
+	 * <br><br>
 	 * Do not forget to set this http://developer.android.com/guide/topics/manifest/activity-element.html#exported
 	 * to your activity, if you'll set callback to other then launcher activity
 	 * 
@@ -266,7 +266,7 @@ public class Waypoint extends GeoData {
 	 * If you want to remove PAR_INTENT_EXTRA_ON_DISPLAY parameter from Locus database,
 	 * you need to send "clear" value in updated waypoint back to Locus. After that,
 	 * Locus will remove this parameter from new stored point.
-	 * <br /><br />
+	 * <br><br>
 	 * Second alternative, how to remove this callback, is to send new waypoints
 	 * with forceOverwrite parameter set to <code>true</code>, that will overwrite
 	 * completely all data 
