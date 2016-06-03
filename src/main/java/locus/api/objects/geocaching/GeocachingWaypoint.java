@@ -24,10 +24,13 @@ import java.io.IOException;
 import locus.api.objects.Storable;
 import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
-import locus.api.utils.Utils;
+import locus.api.utils.Logger;
 
 public class GeocachingWaypoint extends Storable {
-	
+
+	// tag for logger
+	private static final String TAG = "GeocachingWaypoint";
+
 	/*
 	 * Changes:
 	 * May 2014 - due to changes on GroundSpeak side, two Wpts are now renamed.
@@ -90,7 +93,8 @@ public class GeocachingWaypoint extends Storable {
 	
 	public void setCode(String code) {
 		if (code == null) {
-			return;
+			Logger.logD(TAG, "setCode(), empty parameter");
+			code = "";
 		}
 		this.mCode = code;
 	}
@@ -103,7 +107,8 @@ public class GeocachingWaypoint extends Storable {
 
 	public void setName(String name) {
 		if (name == null) {
-			return;
+			Logger.logD(TAG, "setName(), empty parameter");
+			name = "";
 		}
 		this.mName = name;
 	}
@@ -124,6 +129,7 @@ public class GeocachingWaypoint extends Storable {
      */
 	public void setDesc(String desc) {
 		if (desc == null) {
+			Logger.logD(TAG, "setDesc(), empty parameter");
 			desc = "";
 		}
 		this.mDesc = desc;
@@ -155,7 +161,8 @@ public class GeocachingWaypoint extends Storable {
 
 	public void setTypeImagePath(String typeImagePath) {
 		if (typeImagePath == null) {
-			return;
+			Logger.logD(TAG, "setTypeImagePath(), empty parameter");
+			typeImagePath = "";
 		}
 		this.mTypeImagePath = typeImagePath;
 	}
@@ -188,7 +195,8 @@ public class GeocachingWaypoint extends Storable {
 	
 	public void setType(String type) {
 		if (type == null) {
-			return;
+			Logger.logD(TAG, "setType(), empty parameter");
+			type = "";
 		}
 		
 		// improve text
@@ -198,11 +206,6 @@ public class GeocachingWaypoint extends Storable {
 		this.mType = type;
 	}
 
-	@Override
-	public String toString() {
-		return Utils.toString(this);
-	}
-	
     /**************************************************/
     // STORABLE PART
 	/**************************************************/
@@ -223,7 +226,7 @@ public class GeocachingWaypoint extends Storable {
 		mLon = dr.readDouble();
 		mLat = dr.readDouble();
 
-        // VERSION 1
+        // V1
 
         if (version >= 1) {
             mDescModified = dr.readBoolean();
@@ -240,7 +243,7 @@ public class GeocachingWaypoint extends Storable {
 		dw.writeDouble(mLon);
 		dw.writeDouble(mLat);
 
-        // VERSION 1
+        // V1
 
         dw.writeBoolean(mDescModified);
 	}
@@ -255,7 +258,7 @@ public class GeocachingWaypoint extends Storable {
 		mLon = 0.0;
 		mLat = 0.0;
 
-        // VERSION 1
+        // V1
 
         mDescModified = false;
 	}

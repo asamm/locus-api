@@ -47,38 +47,53 @@ public class GeocachingData extends Storable {
 	// tag for logger
 	private static final String TAG = "GeocachingData";
 	
-	public static final int CACHE_TYPE_TRADITIONAL 			= 0;
-	public static final int CACHE_TYPE_MULTI 				= 1;
-	public static final int CACHE_TYPE_MYSTERY 				= 2;
-	public static final int CACHE_TYPE_VIRTUAL 				= 3;
-	public static final int CACHE_TYPE_EARTH 				= 4;
-	public static final int CACHE_TYPE_PROJECT_APE 			= 5;
-	public static final int CACHE_TYPE_LETTERBOX 			= 6;
-	public static final int CACHE_TYPE_WHERIGO 				= 7;
-	public static final int CACHE_TYPE_EVENT 				= 8;
-	public static final int CACHE_TYPE_MEGA_EVENT 			= 9;
-	public static final int CACHE_TYPE_CACHE_IN_TRASH_OUT 	= 10;
-	public static final int CACHE_TYPE_GPS_ADVENTURE 		= 11;
-	public static final int CACHE_TYPE_WEBCAM 				= 12;
-	public static final int CACHE_TYPE_LOCATIONLESS 		= 13;
-	public static final int CACHE_TYPE_BENCHMARK 			= 14;
-	public static final int CACHE_TYPE_MAZE_EXHIBIT 		= 15;
-	public static final int CACHE_TYPE_WAYMARK 				= 16;
-	public static final int CACHE_TYPE_GROUNDSPEAK 			= 17;
-	public static final int CACHE_TYPE_LF_EVENT 			= 18;
-	public static final int CACHE_TYPE_LF_CELEBRATION 		= 19;
-	public static final int CACHE_TYPE_GIGA_EVENT			= 20;
-    public static final int CACHE_TYPE_LAB_CACHE			= 21;
+	public static final int CACHE_TYPE_TRADITIONAL 								= 0;
+	public static final int CACHE_TYPE_MULTI 									= 1;
+	public static final int CACHE_TYPE_MYSTERY 									= 2;
+	public static final int CACHE_TYPE_VIRTUAL 									= 3;
+	public static final int CACHE_TYPE_EARTH 									= 4;
+	public static final int CACHE_TYPE_PROJECT_APE 								= 5;
+	public static final int CACHE_TYPE_LETTERBOX 								= 6;
+	public static final int CACHE_TYPE_WHERIGO 									= 7;
+	public static final int CACHE_TYPE_EVENT 									= 8;
+	public static final int CACHE_TYPE_MEGA_EVENT 								= 9;
+	public static final int CACHE_TYPE_CACHE_IN_TRASH_OUT 						= 10;
+	public static final int CACHE_TYPE_GPS_ADVENTURE 							= 11;
+	public static final int CACHE_TYPE_WEBCAM 									= 12;
+	public static final int CACHE_TYPE_LOCATIONLESS 							= 13;
+	public static final int CACHE_TYPE_BENCHMARK 								= 14;
+	public static final int CACHE_TYPE_MAZE_EXHIBIT 							= 15;
+	public static final int CACHE_TYPE_WAYMARK 									= 16;
+	public static final int CACHE_TYPE_GROUNDSPEAK 								= 17;
+	public static final int CACHE_TYPE_LF_EVENT 								= 18;
+	public static final int CACHE_TYPE_LF_CELEBRATION 							= 19;
+	public static final int CACHE_TYPE_GIGA_EVENT								= 20;
+    public static final int CACHE_TYPE_LAB_CACHE								= 21;
 
-    public static final int CACHE_TYPE_UNDEFINED 			= 100;
+    public static final int CACHE_TYPE_UNDEFINED 								= 100;
 
-	public static final int CACHE_SIZE_NOT_CHOSEN 			= 0;
-	public static final int CACHE_SIZE_MICRO 				= 1;
-	public static final int CACHE_SIZE_SMALL 				= 2;
-	public static final int CACHE_SIZE_REGULAR 				= 3;
-	public static final int CACHE_SIZE_LARGE 				= 4;
-	public static final int CACHE_SIZE_HUGE 				= 5;
-	public static final int CACHE_SIZE_OTHER 				= 6;
+	public static final int CACHE_SIZE_NOT_CHOSEN 								= 0;
+	public static final int CACHE_SIZE_MICRO 									= 1;
+	public static final int CACHE_SIZE_SMALL 									= 2;
+	public static final int CACHE_SIZE_REGULAR 									= 3;
+	public static final int CACHE_SIZE_LARGE 									= 4;
+	public static final int CACHE_SIZE_HUGE 									= 5;
+	public static final int CACHE_SIZE_OTHER 									= 6;
+
+	public static final int CACHE_SOURCE_UNDEFINED								= 0;
+	public static final int CACHE_SOURCE_GEOCACHING_COM							= 1;
+	public static final int CACHE_SOURCE_GEOCACHING_HU							= 2;
+	public static final int CACHE_SOURCE_OPENCACHING							= 100;
+	public static final int CACHE_SOURCE_OPENCACHING_DE							= 101;
+	public static final int CACHE_SOURCE_OPENCACHING_ES							= 102;
+	public static final int CACHE_SOURCE_OPENCACHING_FR							= 103;
+	public static final int CACHE_SOURCE_OPENCACHING_IT							= 104;
+	public static final int CACHE_SOURCE_OPENCACHING_NL							= 105;
+	public static final int CACHE_SOURCE_OPENCACHING_PL							= 106;
+	public static final int CACHE_SOURCE_OPENCACHING_RO							= 107;
+	public static final int CACHE_SOURCE_OPENCACHING_UK							= 108;
+	public static final int CACHE_SOURCE_OPENCACHING_US							= 109;
+	public static final int CACHE_SOURCE_OPENCACHING_CZ							= 110;
 	
 	/*
 	 * INFO
@@ -118,113 +133,69 @@ public class GeocachingData extends Storable {
 	// Time is defined in ms since 1. 1. 1970
 	private long mDateUpdated;
 
-	/*
-	 * Type of a cache, define by constants CACHE_TYPE_X
-	 */
+	// type of a cache, define by constants CACHE_TYPE_X
 	private int mType;
-	/* 
-	 * Size of cache container. Size is defined by parameters CACHE_SIZE_X,
-	 * or by text directly
-	 */
+	// size of cache container. Size is defined by parameters CACHE_SIZE_X, or by text directly
 	private int mContainer;
-	/*
-	 * Difficulty value - 1.0 - 5.0 (by 0.5) 
-	 */
+	// difficulty value - 1.0 - 5.0 (by 0.5)
 	private float mDifficulty;
-	/* 
-	 * Terrain value - 1.0 - 5.0 (by 0.5)
-	 */ 
+	// terrain value - 1.0 - 5.0 (by 0.5)
 	private float mTerrain;
-	/*
-	 * Name of country, where is cache places
-	 */
+	// name of country, where is cache places
 	private String mCountry;
-	/*
-	 * Name of state, where is cache places
-	 */
+	// name of state, where is cache places
 	private String mState;
-	/*
-	 * Descriptions are now stored in raw GZIPed bytes. This allows to keep smaller size
-	 * of loaded GeocacheData object and also in cases, we don't need short/long
-	 * description, it also save quite a lot of CPU (not need to use GZIP)
-	 */
+	// descriptions are now stored in raw GZIPed bytes. This allows to keep smaller size
+	// of loaded GeocacheData object and also in cases, we don't need short/long
+	// description, it also save quite a lot of CPU (not need to use GZIP)
 	private byte[] mDescBytes;
-	/*
-	 * Length of Short description in mDescBytes array. This parameter is needed
-	 * for correct storalization
-	 */
+	// length of Short description in mDescBytes array. This parameter is needed
+	// for correct storalization
 	private int mShortDescLength;
-	/*
-	 * Encoded hints
-	 */
+	// encoded hints
 	private String mEncodedHints;
-	/* 
-	 * List of attributes
-	 */
+	// list of attributes
 	public List<GeocachingAttribute> attributes;
-	/*
-	 * List of logs
-	 */
+	// list of logs
 	public List<GeocachingLog> logs;
-	/*
-	 * List of travel bugs
-	 */
+	// list of travel bugs
 	public List<GeocachingTrackable> trackables;
-	/* 
-	 * List of waypoints 
-	 */
+	// list of waypoints
 	public List<GeocachingWaypoint> waypoints;
-	/*
-	 * User notes 
-	 */
+	// user notes
 	private String mNotes;
-	/* 
-	 * Flag if cache is 'computed' - have corrected coordinates
-	 */
+	// flag if cache is 'computed' - have corrected coordinates
 	private boolean mComputed;
-	/*
-	 * Flag if cache is already found by user
-	 */
+	// flag if cache is already found by user
 	private boolean mFound;
-	/*
-	 * URL for cache itself
-	 */
+	// uRL for cache itself
 	private String mCacheUrl;
-	/* 
-	 * Number of favorite points
-	 */
+	// number of favorite points
 	private int mFavoritePoints;
 	
-	// object V1
+	// V1
 	
-	/*
-	 * GCVote - number of votes
-	 */
+	//gcVote - number of votes
 	private int mGcVoteNumOfVotes;
-	/* 
-	 * Average (not median) value
-	 */
+	// average (not median) value
 	private float mGcVoteAverage;
-	/* 
-	 * User value for GCVote
-	 */
+	// user value for GCVote
 	private float mGcVoteUserVote;
 	
-	// object V2
+	// V2
 	
-	/*
-	 * Original longitude defined by owner
-	 */
+	// original longitude defined by owner
 	private double mLonOriginal;
-	/*
-	 * Original latitude defined by owner
-	 */
+	// original latitude defined by owner
 	private double mLatOriginal;
-	/*
-	 * List of attached images
-	 */
+	// list of attached images
 	private List<GeocachingImage> mImages;
-	
+
+	// V3
+
+	// source of cache
+	private int mSource;
+
 	/**
 	 * Main empty constructor
 	 */
@@ -268,7 +239,7 @@ public class GeocachingData extends Storable {
 		this.mId = id;
 	}
 
-	// CACHE ID
+	// CACHE ID & SOURCE
 
     /**
      * Get cache ID (cache code) of current cache.
@@ -283,11 +254,71 @@ public class GeocachingData extends Storable {
      * @param cacheID new cache ID (code)
      */
 	public void setCacheID(String cacheID) {
-		if (cacheID != null && cacheID.length() > 0) {
-            this.mCacheID = cacheID;
-        }
+		// check cache ID
+		if (cacheID == null || cacheID.length() == 0) {
+			Logger.logW(TAG, "setCacheId(" + cacheID + "), " +
+					"invalid cache ID");
+			return;
+		}
+
+		// define source and set values
+		int source = CACHE_SOURCE_UNDEFINED;
+		String testCode = cacheID.trim().toUpperCase();
+		if (testCode.startsWith("GC")) {
+			source = CACHE_SOURCE_GEOCACHING_COM;
+		} else if (testCode.startsWith("OB")) {
+			source = CACHE_SOURCE_OPENCACHING_NL;
+		} else if (testCode.startsWith("OK")) {
+			source = CACHE_SOURCE_OPENCACHING_UK;
+		} else if (testCode.startsWith("OP")) {
+			source = CACHE_SOURCE_OPENCACHING_PL;
+		} else if (testCode.startsWith("OU")) {
+			source = CACHE_SOURCE_OPENCACHING_US;
+		} else if (testCode.startsWith("OZ")) {
+			source = CACHE_SOURCE_OPENCACHING_CZ;
+		} else if (testCode.startsWith("O")) {
+			source = CACHE_SOURCE_OPENCACHING;
+		}
+
+		// finally set cache ID
+		setCacheID(cacheID, source);
 	}
-	
+
+	/**
+	 * Set new cache code and it's source.
+	 * @param cacheID ID of cache
+	 * @param source source from where this cache comes from
+	 */
+	public void setCacheID(String cacheID, int source) {
+		// check cache ID
+		if (cacheID == null || cacheID.length() == 0) {
+			Logger.logW(TAG, "setCacheId(" + cacheID + ", " + source + "), " +
+					"invalid cache ID");
+			return;
+		}
+
+		// store values
+		this.mCacheID = cacheID;
+		setSource(source);
+	}
+
+	/**
+	 * Get source of current cache.
+	 * @return cache source
+	 */
+	public int getSource() {
+		return mSource;
+	}
+
+	/**
+	 * Define source of this cache as constant value. Be aware, that this value is automatically set when
+	 * setup a cacheID, so use this method after the {@link #setCacheID(String, int)} function is used.
+	 * @param source source of cache
+	 */
+	public void setSource(int source) {
+		this.mSource = source;
+	}
+
 	// AVAILABLE
 	
 	public boolean isAvailable() {
@@ -699,7 +730,7 @@ public class GeocachingData extends Storable {
      */
     public String getCacheUrlFull() {
         // if cache is from Groundspeak, return "coord.info" url
-        if (isGroundspeakGc()) {
+		if (getSource() == CACHE_SOURCE_GEOCACHING_COM) {
             return "http://coord.info/" + mCacheID;
         }
 
@@ -713,11 +744,19 @@ public class GeocachingData extends Storable {
     }
 	
 	// FAVORITE POINTS
-	
+
+	/**
+	 * Get number of favorite points attached to current cache.
+	 * @return number of favorite points
+	 */
 	public int getFavoritePoints() {
 		return mFavoritePoints;
 	}
 
+	/**
+	 * Set number of favorite points.
+	 * @param favoritePoints number of favorite points
+	 */
 	public void setFavoritePoints(int favoritePoints) {
 		this.mFavoritePoints = favoritePoints;
 	}
@@ -783,12 +822,12 @@ public class GeocachingData extends Storable {
 	}
 	
     /**************************************************/
-    /*                 STORABLE PART                  */
+    // STORABLE PART
 	/**************************************************/
 	
 	@Override
 	protected int getVersion() {
-		return 2;
+		return 3;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -796,7 +835,8 @@ public class GeocachingData extends Storable {
 	protected void readObject(int version, DataReaderBigEndian dr)
 			throws IOException {
 		mId = dr.readLong();
-		mCacheID = dr.readString();
+		// set cache ID over "set" method, to also correctly set source parameter
+		setCacheID(dr.readString());
 		mAvailable = dr.readBoolean();
 		mArchived = dr.readBoolean();
 		mPremiumOnly = dr.readBoolean();
@@ -839,6 +879,7 @@ public class GeocachingData extends Storable {
 		mFavoritePoints = dr.readInt();
 		
 		// V1
+
 		if (version >= 1) {
 			mGcVoteNumOfVotes = dr.readInt();
 			mGcVoteAverage = dr.readFloat();
@@ -846,11 +887,18 @@ public class GeocachingData extends Storable {
 		}
 		
 		// V2
+
 		if (version >= 2) {
 			mLonOriginal = dr.readDouble();
 			mLatOriginal = dr.readDouble();
 			mImages = (List<GeocachingImage>)
 					dr.readListStorable(GeocachingImage.class);
+		}
+
+		// V3
+
+		if (version >= 3) {
+			mSource = dr.readInt();
 		}
 	}
 
@@ -901,14 +949,20 @@ public class GeocachingData extends Storable {
 		dw.writeInt(mFavoritePoints);
 		
 		// V1
+
 		dw.writeInt(mGcVoteNumOfVotes);
 		dw.writeFloat(mGcVoteAverage);
 		dw.writeFloat(mGcVoteUserVote);
 		
 		// V2
+
 		dw.writeDouble(mLonOriginal);
 		dw.writeDouble(mLatOriginal);
 		dw.writeListStorable(mImages);
+
+		// V3
+
+		dw.writeInt(mSource);
 	}
 
 	@Override
@@ -930,8 +984,6 @@ public class GeocachingData extends Storable {
 		mTerrain = -1.0f;
 		mCountry = "";
 		mState = "";
-//		mShortDescription = "";
-//		mLongDescription = "";
 		mDescBytes = null;
 		mShortDescLength = 0;
 		mEncodedHints = "";
@@ -946,14 +998,20 @@ public class GeocachingData extends Storable {
 		mFavoritePoints = -1;
 		
 		// V1
+
 		mGcVoteNumOfVotes = -1;
 		mGcVoteAverage = 0.0f;
 		mGcVoteUserVote = 0.0f;
 		
 		// V2
+
 		mLonOriginal = 0.0;
 		mLatOriginal = 0.0;
 		mImages = new ArrayList<>();
+
+		// V3
+
+		mSource = CACHE_SOURCE_UNDEFINED;
 	}
 
 	/**************************************************/
@@ -989,10 +1047,6 @@ public class GeocachingData extends Storable {
 		});
 	}
 
-	private boolean isGroundspeakGc() {
-		return mCacheID.toLowerCase().startsWith("gc");
-	}
-	
 	public static String getTypeAsString(int type) {
 		switch (type) {
 		case CACHE_TYPE_TRADITIONAL:

@@ -8,7 +8,7 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 // current library version
-def libraryVersion = '0.2.2'
+def libraryVersion = '0.2.3'
 
 task createSourceJar(type: Jar, dependsOn: classes) {
     classifier "sources"
@@ -71,8 +71,8 @@ publishing {
 // upload library to BinTray
 // https://github.com/bintray/gradle-bintray-plugin
 bintray {
-    user = bintray_username
-    key = bintray_password
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
     publications = ['pubLibLocusApi']
 
     pkg {

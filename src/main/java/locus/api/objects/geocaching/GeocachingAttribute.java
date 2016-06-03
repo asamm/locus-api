@@ -28,11 +28,11 @@ import locus.api.utils.DataWriterBigEndian;
 
 /**
  * Class for holding geocaching attributes
- * <br><br>
+ * <br /><br />
  * Every instance holds just one attribute, defined by it's unique ID number. If
  * you want to set correct value, use constructor that allow set directly by number
  * or by attribute URL
- * <br><br>
+ * <br /><br />
  * @author menion
  */
 public class GeocachingAttribute extends Storable {
@@ -60,45 +60,24 @@ public class GeocachingAttribute extends Storable {
 			this.mId = (id + 100);
 		}
 	}
-	
+
+	/**
+	 * Create attribute container based on certain uri value.
+	 * @param url url value
+	 */
 	public GeocachingAttribute(String url) {
 		super();
 		if (url != null && url.length() > 0) {
 			String imgName = url.substring(url.lastIndexOf("/" + 1), url.lastIndexOf("-"));
-            mId = attrIds.get(imgName);
+            mId = mAttrIds.get(imgName);
 			if (url.contains("-yes.")) {
                 mId += 100;
 			}
 		}
 	}
 	
-	/*******************************************/
-    /*             STORABLE PART               */
-    /*******************************************/
-	
-	@Override
-	protected int getVersion() {
-		return 0;
-	}
-
-	@Override
-	protected void readObject(int version, DataReaderBigEndian dr)
-			throws IOException {
-        mId = dr.readInt();
-	}
-
-	@Override
-	protected void writeObject(DataWriterBigEndian dw) throws IOException {
-		dw.writeInt(mId);
-	}
-
-	@Override
-	public void reset() {
-		mId = -1;
-	}
-
 	/**************************************************/
-	// MAIN PART
+	// GET & SET
     /**************************************************/
 
     // ID
@@ -141,75 +120,102 @@ public class GeocachingAttribute extends Storable {
 		return mId > 100;
 	}
 
-    // STATIC CONTAINER
+	/**************************************************/
+	// STORABLE PART
+	/**************************************************/
 
-	private static Hashtable<String, Integer> attrIds = new Hashtable<String, Integer>();
+	@Override
+	protected int getVersion() {
+		return 0;
+	}
+
+	@Override
+	protected void readObject(int version, DataReaderBigEndian dr)
+			throws IOException {
+		mId = dr.readInt();
+	}
+
+	@Override
+	protected void writeObject(DataWriterBigEndian dw) throws IOException {
+		dw.writeInt(mId);
+	}
+
+	@Override
+	public void reset() {
+		mId = -1;
+	}
+
+	/**************************************************/
+	// STATIC TOOLS
+	/**************************************************/
+
+	private static final Hashtable<String, Integer> mAttrIds = new Hashtable<>();
 	static {
-		attrIds.put("dogs", 1);
-		attrIds.put("fee", 2);
-		attrIds.put("rappelling", 3);
-		attrIds.put("boat", 4);
-		attrIds.put("scuba", 5);
-		attrIds.put("kids", 6);
-		attrIds.put("onehour", 7);
-		attrIds.put("scenic", 8);
-		attrIds.put("hiking", 9);
-		attrIds.put("climbing", 10);
-		attrIds.put("wading", 11);
-		attrIds.put("swimming", 12);
-		attrIds.put("available", 13);
-		attrIds.put("night", 14);
-		attrIds.put("winter", 15);
-		attrIds.put("camping", 16);
-		attrIds.put("poisonoak", 17);
-		attrIds.put("snakes", 18);
-		attrIds.put("ticks", 19);
-		attrIds.put("mine", 20);
-		attrIds.put("cliff", 21);
-		attrIds.put("hunting", 22);
-		attrIds.put("danger", 23);
-		attrIds.put("wheelchair", 24);
-		attrIds.put("parking", 25);
-		attrIds.put("public", 26);
-		attrIds.put("water", 27);
-		attrIds.put("restrooms", 28);
-		attrIds.put("phone", 29);
-		attrIds.put("picnic", 30);
-		attrIds.put("camping", 31);
-		attrIds.put("bicycles", 32);
-		attrIds.put("motorcycles", 33);
-		attrIds.put("quads", 34);
-		attrIds.put("jeeps", 35);
-		attrIds.put("snowmobiles", 36);
-		attrIds.put("horses", 37);
-		attrIds.put("campfires", 38);
-		attrIds.put("thorn",39 );
-		attrIds.put("stealth", 40); 
-		attrIds.put("stroller", 41);
-		attrIds.put("firstaid", 42);
-		attrIds.put("cow", 43);
-		attrIds.put("flashlight", 44);
-		attrIds.put("landf", 45);
-		attrIds.put("rv", 46);
-		attrIds.put("field_puzzle", 47);
-		attrIds.put("UV", 48);
-		attrIds.put("snowshoes", 49);
-		attrIds.put("skiis", 50);
-		attrIds.put("s-tool", 51);
-		attrIds.put("nightcache", 52);
-		attrIds.put("parkngrab", 53);
-		attrIds.put("AbandonedBuilding", 54);
-		attrIds.put("hike_short", 55);
-		attrIds.put("hike_med", 56);
-		attrIds.put("hike_long", 57);
-		attrIds.put("fuel", 58);
-		attrIds.put("food", 59);
-		attrIds.put("wirelessbeacon", 60);
-		attrIds.put("partnership", 61);
-		attrIds.put("seasonal", 62);
-		attrIds.put("touristOK", 63);
-		attrIds.put("treeclimbing", 64);
-		attrIds.put("frontyard", 65);
-		attrIds.put("teamwork", 66);
+		mAttrIds.put("dogs", 1);
+		mAttrIds.put("fee", 2);
+		mAttrIds.put("rappelling", 3);
+		mAttrIds.put("boat", 4);
+		mAttrIds.put("scuba", 5);
+		mAttrIds.put("kids", 6);
+		mAttrIds.put("onehour", 7);
+		mAttrIds.put("scenic", 8);
+		mAttrIds.put("hiking", 9);
+		mAttrIds.put("climbing", 10);
+		mAttrIds.put("wading", 11);
+		mAttrIds.put("swimming", 12);
+		mAttrIds.put("available", 13);
+		mAttrIds.put("night", 14);
+		mAttrIds.put("winter", 15);
+		mAttrIds.put("camping", 16);
+		mAttrIds.put("poisonoak", 17);
+		mAttrIds.put("snakes", 18);
+		mAttrIds.put("ticks", 19);
+		mAttrIds.put("mine", 20);
+		mAttrIds.put("cliff", 21);
+		mAttrIds.put("hunting", 22);
+		mAttrIds.put("danger", 23);
+		mAttrIds.put("wheelchair", 24);
+		mAttrIds.put("parking", 25);
+		mAttrIds.put("public", 26);
+		mAttrIds.put("water", 27);
+		mAttrIds.put("restrooms", 28);
+		mAttrIds.put("phone", 29);
+		mAttrIds.put("picnic", 30);
+		mAttrIds.put("camping", 31);
+		mAttrIds.put("bicycles", 32);
+		mAttrIds.put("motorcycles", 33);
+		mAttrIds.put("quads", 34);
+		mAttrIds.put("jeeps", 35);
+		mAttrIds.put("snowmobiles", 36);
+		mAttrIds.put("horses", 37);
+		mAttrIds.put("campfires", 38);
+		mAttrIds.put("thorn",39 );
+		mAttrIds.put("stealth", 40);
+		mAttrIds.put("stroller", 41);
+		mAttrIds.put("firstaid", 42);
+		mAttrIds.put("cow", 43);
+		mAttrIds.put("flashlight", 44);
+		mAttrIds.put("landf", 45);
+		mAttrIds.put("rv", 46);
+		mAttrIds.put("field_puzzle", 47);
+		mAttrIds.put("UV", 48);
+		mAttrIds.put("snowshoes", 49);
+		mAttrIds.put("skiis", 50);
+		mAttrIds.put("s-tool", 51);
+		mAttrIds.put("nightcache", 52);
+		mAttrIds.put("parkngrab", 53);
+		mAttrIds.put("AbandonedBuilding", 54);
+		mAttrIds.put("hike_short", 55);
+		mAttrIds.put("hike_med", 56);
+		mAttrIds.put("hike_long", 57);
+		mAttrIds.put("fuel", 58);
+		mAttrIds.put("food", 59);
+		mAttrIds.put("wirelessbeacon", 60);
+		mAttrIds.put("partnership", 61);
+		mAttrIds.put("seasonal", 62);
+		mAttrIds.put("touristOK", 63);
+		mAttrIds.put("treeclimbing", 64);
+		mAttrIds.put("frontyard", 65);
+		mAttrIds.put("teamwork", 66);
 	}
 }

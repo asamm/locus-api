@@ -32,47 +32,26 @@ public class GeocachingTrackable extends Storable {
 	
 	// PARAMETERS
 	
-	/*
-	 * ID of trackable. Currently used for GeoKrety web server
-	 */
+	// ID of trackable. Currently used for GeoKrety web server
 	private long mId;
-	/*
-	 * name of travel bug
-	 */
+	// name of travel bug
 	private String mName;
-	/*
-	 * image url to this travel bug
-	 */
+	// image url to this travel bug
 	private String mImgUrl;
-	/*
-	 * URL to trackable object. This is very important value, because URL contain TBCode, like this
-	 * http://www.geocaching.com/track/details.aspx?tracker=TB4342X
-	 */
+	// URL to trackable object. This is very important value, because URL contain TBCode, like this
+	// http://www.geocaching.com/track/details.aspx?tracker=TB4342X
 	private String mSrcDetails;
-	
-	/* 
-	 * original owner of TB
-	 */
+	// original owner of TB
 	private String mOriginalOwner;
-	/* 
-	 * current owner of TB
-	 */
+	// current owner of TB
 	private String mCurrentOwner;
-	/*
-	 * time of release to public (long since 1.1.1970 in ms)
-	 */
+	// time of release to public (long since 1.1.1970 in ms)
 	private long mReleased;
-	/*
-	 * origin place
-	 */
+	// origin place
 	private String mOrigin;
-	/*
-	 * goal of this TB
-	 */
+	// goal of this TB
 	private String mGoal;
-	/*
-	 * details 
-	 */
+	// details
 	private String mDetails;
 	
 	public GeocachingTrackable() {
@@ -84,7 +63,7 @@ public class GeocachingTrackable extends Storable {
 	}
 
     /**************************************************/
-    /*                   PARAMETERS                   */
+    // GET & SET
 	/**************************************************/
 	
 	// ID
@@ -105,8 +84,8 @@ public class GeocachingTrackable extends Storable {
 
 	public void setName(String name) {
 		if (name == null) {
-			Logger.logW(TAG, "setName(" + name + "), invalid parameter");
-			return;
+			Logger.logD(TAG, "setName(), empty parameter");
+			name = "";
 		}
 		this.mName = name;
 	}
@@ -119,8 +98,8 @@ public class GeocachingTrackable extends Storable {
 
 	public void setImgUrl(String imgUrl) {
 		if (imgUrl == null) {
-			Logger.logW(TAG, "setImgUrl(" + imgUrl + "), invalid parameter");
-			return;
+			Logger.logD(TAG, "setImgUrl(), empty parameter");
+			imgUrl = "";
 		}
 		this.mImgUrl = imgUrl;
 	}
@@ -133,8 +112,8 @@ public class GeocachingTrackable extends Storable {
 
 	public void setSrcDetails(String srcDetails) {
 		if (srcDetails == null) {
-			Logger.logW(TAG, "setSrcDetails(" + srcDetails + "), invalid parameter");
-			return;
+			Logger.logD(TAG, "setSrcDetails(), empty parameter");
+			srcDetails = "";
 		}
 		this.mSrcDetails = srcDetails;
 	}
@@ -147,8 +126,8 @@ public class GeocachingTrackable extends Storable {
 
 	public void setOriginalOwner(String originalOwner) {
 		if (originalOwner == null) {
-			Logger.logW(TAG, "setOriginalOwner(" + originalOwner + "), invalid parameter");
-			return;
+			Logger.logD(TAG, "setOriginalOwner(), empty parameter");
+			originalOwner = "";
 		}
 		this.mOriginalOwner = originalOwner;
 	}
@@ -161,8 +140,8 @@ public class GeocachingTrackable extends Storable {
 
 	public void setCurrentOwner(String currentOwner) {
 		if (currentOwner == null) {
-			Logger.logW(TAG, "setCurrentOwner(" + currentOwner + "), invalid parameter");
-			return;
+			Logger.logD(TAG, "setCurrentOwner(), empty parameter");
+			currentOwner = "";
 		}
 		this.mCurrentOwner = currentOwner;
 	}
@@ -178,43 +157,67 @@ public class GeocachingTrackable extends Storable {
 	}
 
 	// ORIGIN LOCATION
-	
+
+	/**
+	 * Get defined origin location for trackable.
+	 * @return trackable origin
+	 */
 	public String getOrigin() {
 		return mOrigin;
 	}
 
+	/**
+	 * Set new origin value for trackable.
+	 * @param origin origin
+	 */
 	public void setOrigin(String origin) {
 		if (origin == null) {
-			Logger.logW(TAG, "setOrigin(" + origin + "), invalid parameter");
-			return;
+			Logger.logD(TAG, "setOrigin(), empty parameter");
+			origin = "";
 		}
 		this.mOrigin = origin;
 	}
 
+	// GOAL
+
+	/**
+	 * Get goal of current trackable.
+	 * @return trackable's goal
+	 */
 	public String getGoal() {
 		return mGoal;
 	}
 
-	// GOAL
-	
+	/**
+	 * Set goal to current trackable.
+	 * @param goal new goal
+	 */
 	public void setGoal(String goal) {
 		if (goal == null) {
-			Logger.logW(TAG, "setGoal(" + goal + "), invalid parameter");
-			return;
+			Logger.logD(TAG, "setGoal(), empty parameter");
+			goal = "";
 		}
 		this.mGoal = goal;
 	}
 
 	// DETAILS
-	
+
+	/**
+	 * Get details of current trackable.
+	 * @return details
+	 */
 	public String getDetails() {
 		return mDetails;
 	}
 
+	/**
+	 * Set details of current trackable.
+	 * @param details details
+	 */
 	public void setDetails(String details) {
 		if (details == null) {
-			Logger.logW(TAG, "setDetails(" + details + "), invalid parameter");
-			return;
+			Logger.logD(TAG, "setDetails(), empty parameter");
+			details = "";
 		}
 		this.mDetails = details;
 	}
@@ -237,7 +240,7 @@ public class GeocachingTrackable extends Storable {
 	}
 
 	/**************************************************/
-    /*                  STORABLE PART                 */
+    // STORABLE PART
 	/**************************************************/
 	
 	@Override
@@ -256,7 +259,10 @@ public class GeocachingTrackable extends Storable {
 		mOrigin = dr.readString();
 		mGoal = dr.readString();
 		mDetails = dr.readString();
-		if (version > 0) {
+
+		// V1
+
+		if (version >= 1) {
 			mId = dr.readLong();
 			mCurrentOwner = dr.readString();
 		}
@@ -272,22 +278,28 @@ public class GeocachingTrackable extends Storable {
 		dw.writeString(mOrigin);
 		dw.writeString(mGoal);
 		dw.writeString(mDetails);
+
+		// V1
+
 		dw.writeLong(mId);
 		dw.writeString(mCurrentOwner);
 	}
 
 	@Override
 	public void reset() {
-		mId = 0L;
 		mName = "";
 		mImgUrl = "";
 		mSrcDetails = "";
-		
+
 		mOriginalOwner = "";
-		mCurrentOwner = "";
 		mReleased = 0L;
 		mOrigin = "";
 		mGoal = "";
 		mDetails = "";
+
+		// V1
+
+		mId = 0L;
+		mCurrentOwner = "";
 	}
 }

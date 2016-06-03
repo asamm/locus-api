@@ -27,11 +27,12 @@ import java.util.List;
 import locus.api.objects.Storable;
 import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
+import locus.api.utils.Logger;
 
 /**
  * This Object is container for cache Logs.
- * <br><br>
- * Useful pages with list:<br>
+ * <br /><br />
+ * Useful pages with list:<br />
  * <ul>
  * <li><a href="http://www.gc-reviewer.de/hilfe-tipps-und-tricks/logtypen/">German list</a></li>
  * </ul>
@@ -40,7 +41,10 @@ import locus.api.utils.DataWriterBigEndian;
  * 
  */
 public class GeocachingLog extends Storable {
-	
+
+	// tag for logger
+	private static final String TAG = "GeocachingLog";
+
 	// LOG TYPES
 	
 	public static final int CACHE_LOG_TYPE_UNKNOWN                              = -1;
@@ -64,50 +68,31 @@ public class GeocachingLog extends Storable {
 	public static final int CACHE_LOG_TYPE_UNARCHIVE                            = 17;
 	public static final int CACHE_LOG_TYPE_PERMANENTLY_ARCHIVED					= 18;
 
+	// flag that ID of finder is not defined
     public static final long FINDERS_ID_UNDEFINED                               = 0;
 
 	// PARAMETERS
 	
-	/*
-	 * Unique ID of log
-	 */
+	// unique ID of log
 	private long mId;
-	/*
-	 * Type of log defined by CACHE_LOG_TYPE_X parameter
-	 */
+	// type of log defined by CACHE_LOG_TYPE_X parameter
 	private int mType;
-	/*
-	 * Time when log was created.
-	 * Time is defined in ms since 1. 1. 1970
-	 */
+	// time when log was created.
+	// ime is defined in ms since 1. 1. 1970
 	private long mDate;
-	/*
-	 * Name of 'finder'
-	 */
+	// name of 'finder'
 	private String mFinder;
-    /**
-     * ID of the 'finder'
-     */
+    // ID of the 'finder'
     private long mFindersId;
-	/*
-	 * Total number of found caches by founder
-	 */
+	// total number of found caches by founder
 	private int mFindersFound;
-	/*
-	 * Text of log itself
-	 */
+	// text of log itself
 	private String mLogText;
-	/*
-	 * List of attached images
-	 */
+	// list of attached images
 	private List<GeocachingImage> mImages;
-    /**
-     * Longitude defined by user.
-     */
+    // longitude defined by user.
     private double mCooLon;
-    /**
-     * Latitude defined by user.
-     */
+    // latitude defined by user.
     private double mCooLat;
 
     /**
@@ -116,37 +101,61 @@ public class GeocachingLog extends Storable {
 	public GeocachingLog() {
 		super();
 	}
-	
-    /**************************************************/
-    // PARAMETERS
+
+	/**************************************************/
+	// GET & SET
 	/**************************************************/
 	
 	// ID
-	
+
+	/**
+	 * Get unique ID of a log.
+	 * @return ID of a log
+	 */
 	public long getId() {
 		return mId;
 	}
 
+	/**
+	 * Get current unique ID of a log.
+	 * @param id ID of a log
+	 */
 	public void setId(long id) {
 		this.mId = id;
 	}
 
 	// TYPE
-	
+
+	/**
+	 * Get type of log, defined as constant from above list.
+	 * @return type of a log
+	 */
 	public int getType() {
 		return mType;
 	}
 
+	/**
+	 * Set type of current log, defined by constants above.
+	 * @param type type of a log
+	 */
 	public void setType(int type) {
 		this.mType = type;
 	}
 	
 	// DATE
 
+	/**
+	 * Get date when this log was logged.
+	 * @return time of log ( in millis )
+	 */
 	public long getDate() {
 		return mDate;
 	}
 
+	/**
+	 * Set date when this log was logged.
+	 * @param date new log time ( in millis )
+	 */
 	public void setDate(long date) {
 		this.mDate = date;
 	}
@@ -166,6 +175,10 @@ public class GeocachingLog extends Storable {
      * @param finder name of finder
      */
 	public void setFinder(String finder) {
+		if (finder == null) {
+			Logger.logD(TAG, "setFinder(), empty parameter");
+			finder = "";
+		}
 		this.mFinder = finder;
 	}
 
@@ -206,12 +219,24 @@ public class GeocachingLog extends Storable {
 	}
 
 	// LOG TEXT
-	
+
+	/**
+	 * Get text of this log visible to users.
+	 * @return text of log
+	 */
 	public String getLogText() {
 		return mLogText;
 	}
 
+	/**
+	 * Set new text to this log.
+	 * @param logText text of log
+	 */
 	public void setLogText(String logText) {
+		if (logText == null) {
+			Logger.logD(TAG, "setLogText(), empty parameter");
+			logText = "";
+		}
 		this.mLogText = logText;
 	}
 	
@@ -286,12 +311,14 @@ public class GeocachingLog extends Storable {
 		mLogText = dr.readString();
 		
 		// V1
+
 		if (version >= 1) {
 			mImages = (List<GeocachingImage>) 
 					dr.readListStorable(GeocachingImage.class);
 		}
 
         // V2
+
         if (version >= 2) {
             mFindersId = dr.readLong();
             mCooLon = dr.readDouble();
@@ -309,9 +336,11 @@ public class GeocachingLog extends Storable {
 		dw.writeString(mLogText);
 		
 		// V1
+
 		dw.writeListStorable(mImages);
 
         // V2
+
         dw.writeLong(mFindersId);
         dw.writeDouble(mCooLon);
         dw.writeDouble(mCooLat);
@@ -327,9 +356,11 @@ public class GeocachingLog extends Storable {
 		mLogText = "";
 		
 		// V1
+
 		mImages = new ArrayList<>();
 
         // V2
+
         mFindersId = FINDERS_ID_UNDEFINED;
         mCooLon = 0.0;
         mCooLat = 0.0;
