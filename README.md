@@ -1,6 +1,6 @@
 # Locus API
 
-[ ![Download](https://api.bintray.com/packages/asammsoft/maven/locus-api/images/download.svg) ](https://bintray.com/asammsoft/maven/locus-api-android/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/asammsoft/maven/locus-api/images/download.svg) ](https://bintray.com/asammsoft/maven/locus-api/_latestVersion)
 
 Core library for [Locus Map](http://www.locusmap.eu) application for Android devices.
 
