@@ -1020,7 +1020,7 @@ public class GeocachingData extends Storable {
 
 	private String fixToHtml(String text) {
 		try {
-			String result = text.replace("\n", "<br />");
+			String result = text.replace("\n", "<br>");
 			result = result.replace("  ", "&nbsp;&nbsp;");
 			return result;
 		} catch (Exception e) {

@@ -67,11 +67,19 @@ public class GeocachingTrackable extends Storable {
 	/**************************************************/
 	
 	// ID
-	
+
+	/**
+	 * Get current ID of trackable item.
+	 * @return item ID
+	 */
     public long getId() {
 		return mId;
 	}
 
+	/**
+	 * Set new ID to trackable item.
+	 * @param id new ID
+	 */
 	public void setId(long id) {
 		this.mId = id;
 	}

@@ -31,8 +31,8 @@ import locus.api.utils.Logger;
 
 /**
  * This Object is container for cache Logs.
- * <br /><br />
- * Useful pages with list:<br />
+ * <br><br>
+ * Useful pages with list:<br>
  * <ul>
  * <li><a href="http://www.gc-reviewer.de/hilfe-tipps-und-tricks/logtypen/">German list</a></li>
  * </ul>
