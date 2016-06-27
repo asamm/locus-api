@@ -34,6 +34,7 @@ import locus.api.utils.Utils;
 
 public class ExtraData extends Storable {
 
+	// tag for logger
 	private static final String TAG = "ExtraData";
 
 	// DATA SOURCE DEFINED IN PARAMETER 'PAR_SOURCE'

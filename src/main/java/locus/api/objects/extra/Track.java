@@ -22,6 +22,7 @@ package locus.api.objects.extra;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import locus.api.objects.GeoData;
@@ -31,6 +32,7 @@ import locus.api.utils.Logger;
 
 public class Track extends GeoData {
 
+	// tag for logger
 	private static final String TAG = "Track";
 	
 	/**
@@ -45,13 +47,11 @@ public class Track extends GeoData {
      * Extra points (also may include routing data)
      */
 	List<Waypoint> waypoints;
-	/**
-	 * Flag that indicate whether to use parent folder style if exists
-	 */
-	private boolean useFolderStyle;
-    /**
-     * Track statistics (generated statistics of track)
-     */
+	// flag that indicate whether to use parent folder style if exists
+	private boolean mUseFolderStyle;
+	// type of activity
+	private int mActivityType;
+    // track statistics (generated statistics of track)
     private TrackStats mStats;
 
     // CONSTRUCTOR
@@ -69,168 +69,7 @@ public class Track extends GeoData {
 	}
 	
     /**************************************************/
-    /*                   STORABLE PART                */
-    /**************************************************/
-    
-	@Override
-	public int getVersion() {
-		return 4;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void readObject(int version, DataReaderBigEndian dr) throws IOException {
-		id = dr.readLong();
-		name = dr.readString();
-
-		// load locations
-		points = (List<Location>) dr.readListStorable(Location.class);
-		
-		// read breaks
-		int breaksSize = dr.readInt();
-		if (breaksSize > 0) {
-			setBreaksData(dr.readBytes(breaksSize));
-		}
-
-		// read waypoints
-		waypoints = (List<Waypoint>) dr.readListStorable(Waypoint.class);
-		
-		// read extra part
-		readExtraData(dr);
-		readStyles(dr);
-		
-        // old deprecated statistics
-        // clear previous values
-        mStats.reset();
-
-        // read all old data
-        mStats.setNumOfPoints(dr.readInt());
-        mStats.setStartTime(dr.readLong());
-        mStats.setStopTime(dr.readLong());
-
-        mStats.setTotalLength(dr.readFloat());
-        mStats.setTotalLengthMove(dr.readFloat());
-        mStats.setTotalTime(dr.readLong());
-        mStats.setTotalTimeMove(dr.readLong());
-        mStats.setSpeedMax(dr.readFloat());
-
-        mStats.setAltitudeMax(dr.readFloat());
-        mStats.setAltitudeMin(dr.readFloat());
-
-        mStats.setEleNeutralDistance(dr.readFloat());
-        mStats.setEleNeutralHeight(dr.readFloat());
-        mStats.setElePositiveDistance(dr.readFloat());
-        mStats.setElePositiveHeight(dr.readFloat());
-        mStats.setEleNegativeDistance(dr.readFloat());
-        mStats.setEleNegativeHeight(dr.readFloat());
-        mStats.setEleTotalAbsDistance(dr.readFloat());
-        mStats.setEleTotalAbsHeight(dr.readFloat());
-
-	    // V1
-	    if (version >= 1) {
-	    	useFolderStyle = dr.readBoolean();
-	    }
-	    
-		// V2
-		if (version >= 2) {
-			timeCreated = dr.readLong();
-		}
-
-        // V3
-        if (version >= 3) {
-            mStats = new TrackStats(dr);
-        }
-
-		// V4
-		if (version >= 4) {
-			setReadWriteMode(ReadWriteMode.values()[dr.readInt()]);
-		}
-	}
-
-	@Override
-	public void writeObject(DataWriterBigEndian dw) throws IOException {
-		dw.writeLong(id);
-		dw.writeString(name);
-
-		// write locations
-		dw.writeListStorable(points);
-		
-		// write breaks
-		byte[] breaksData = getBreaksData();
-		dw.writeInt(breaksData.length);
-		if (breaksData.length > 0) {
-            dw.write(breaksData);
-        }
-		
-		// write waypoints
-		dw.writeListStorable(waypoints);
-		
-		// write extra data
-		writeExtraData(dw);
-		writeStyles(dw);
-		
-        // write old statistics for reader below version 3
-        dw.writeInt(0);
-        dw.writeLong(0L);
-        dw.writeLong(0L);
-
-		dw.writeFloat(0.0f);
-		dw.writeFloat(0.0f);
-		dw.writeLong(0L);
-		dw.writeLong(0L);
-		dw.writeFloat(0.0f);
-
-		dw.writeFloat(0.0f);
-		dw.writeFloat(0.0f);
-
-		dw.writeFloat(0.0f);
-		dw.writeFloat(0.0f);
-		dw.writeFloat(0.0f);
-		dw.writeFloat(0.0f);
-		dw.writeFloat(0.0f);
-		dw.writeFloat(0.0f);
-		dw.writeFloat(0.0f);
-        dw.writeFloat(0.0f);
-		
-	    // V1
-		dw.writeBoolean(useFolderStyle);
-		
-		// V2
-		dw.writeLong(timeCreated);
-
-        // V3
-        dw.writeStorable(mStats);
-
-		// V4
-		dw.writeInt(getReadWriteMode().ordinal());
-	}
-
-	@Override
-	public void reset() {
-		id = -1;
-		name = "";
-		points = new ArrayList<>();
-		breaks = new ArrayList<>();
-		waypoints = new ArrayList<>();
-		extraData = null;
-		styleNormal = null;
-		styleHighlight = null;
-		
-		// V1
-		useFolderStyle = true;
-		
-		// V2
-		timeCreated = System.currentTimeMillis();
-
-        // V3
-        mStats = new TrackStats();
-
-		// V4
-		setReadWriteMode(ReadWriteMode.READ_WRITE);
-	}
-
-    /**************************************************/
-	/*              MAIN GETTERS & SETTERS            */
+	// GET & SET
     /**************************************************/
 	
 	// POINTS
@@ -313,7 +152,43 @@ public class Track extends GeoData {
 		this.waypoints = wpts;
 		return true;
 	}
-	
+
+	// FOLDER STYLE
+
+	/**
+	 * Get information if current track use "folder" style.
+	 * @return {@code true} to use folder style
+	 */
+	public boolean isUseFolderStyle() {
+		return mUseFolderStyle;
+	}
+
+	/**
+	 * Set flag to current track, to use folder style.
+	 * @param useFolderStyle {@code true} to use folder style
+	 */
+	public void setUseFolderStyle(boolean useFolderStyle) {
+		this.mUseFolderStyle = useFolderStyle;
+	}
+
+	// ACTIVITY TYPE
+
+	/**
+	 * Get activity type for current track.
+	 * @return current activity type
+	 */
+	public int getActivityType() {
+		return mActivityType;
+	}
+
+	/**
+	 * Set activity type for current track.
+	 * @param activityType activity type
+	 */
+	public void setActivityType(int activityType) {
+		mActivityType = activityType;
+	}
+
 	// STATISTICS
 
     /**
@@ -328,7 +203,7 @@ public class Track extends GeoData {
      * Set custom track statistics to current track.
      * @param stats statistics
      */
-    public void setTrackStats(TrackStats stats) {
+    public void setStats(TrackStats stats) {
         // check parameter
         if (stats == null) {
             throw new NullPointerException("setTrackStats(), " +
@@ -339,13 +214,204 @@ public class Track extends GeoData {
         this.mStats = stats;
     }
 
-	// FOLDER STYLE
-	
-	public boolean isUseFolderStyle() {
-		return useFolderStyle;
+	/**
+	 * Set custom track statistics to current track.
+	 * @param data statistics data
+	 */
+	public void setStats(byte[] data) {
+		try {
+			TrackStats stats = new TrackStats(data);
+			setStats(stats);
+		} catch (Exception e) {
+			Logger.logE(TAG, "setStats(" + Arrays.toString(data) + ")", e);
+			this.mStats = new TrackStats();
+		}
 	}
 
-	public void setUseFolderStyle(boolean useFolderStyle) {
-		this.useFolderStyle = useFolderStyle;
+	/**************************************************/
+	// STORABLE PART
+	/**************************************************/
+
+	@Override
+	public int getVersion() {
+		return 5;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void readObject(int version, DataReaderBigEndian dr) throws IOException {
+		id = dr.readLong();
+		name = dr.readString();
+
+		// load locations
+		points = (List<Location>) dr.readListStorable(Location.class);
+
+		// read breaks
+		int breaksSize = dr.readInt();
+		if (breaksSize > 0) {
+			setBreaksData(dr.readBytes(breaksSize));
+		}
+
+		// read waypoints
+		waypoints = (List<Waypoint>) dr.readListStorable(Waypoint.class);
+
+		// read extra part
+		readExtraData(dr);
+		readStyles(dr);
+
+		// old deprecated statistics
+		// clear previous values
+		mStats.reset();
+
+		// read all old data
+		mStats.setNumOfPoints(dr.readInt());
+		mStats.setStartTime(dr.readLong());
+		mStats.setStopTime(dr.readLong());
+
+		mStats.setTotalLength(dr.readFloat());
+		mStats.setTotalLengthMove(dr.readFloat());
+		mStats.setTotalTime(dr.readLong());
+		mStats.setTotalTimeMove(dr.readLong());
+		mStats.setSpeedMax(dr.readFloat());
+
+		mStats.setAltitudeMax(dr.readFloat());
+		mStats.setAltitudeMin(dr.readFloat());
+
+		mStats.setEleNeutralDistance(dr.readFloat());
+		mStats.setEleNeutralHeight(dr.readFloat());
+		mStats.setElePositiveDistance(dr.readFloat());
+		mStats.setElePositiveHeight(dr.readFloat());
+		mStats.setEleNegativeDistance(dr.readFloat());
+		mStats.setEleNegativeHeight(dr.readFloat());
+		mStats.setEleTotalAbsDistance(dr.readFloat());
+		mStats.setEleTotalAbsHeight(dr.readFloat());
+
+		// V1
+
+		if (version >= 1) {
+			mUseFolderStyle = dr.readBoolean();
+		}
+
+		// V2
+
+		if (version >= 2) {
+			timeCreated = dr.readLong();
+		}
+
+		// V3
+
+		if (version >= 3) {
+			mStats = new TrackStats(dr);
+		}
+
+		// V4
+
+		if (version >= 4) {
+			setReadWriteMode(ReadWriteMode.values()[dr.readInt()]);
+		}
+
+		// V5
+
+		if (version >= 5) {
+			mActivityType = dr.readInt();
+		}
+	}
+
+	@Override
+	public void writeObject(DataWriterBigEndian dw) throws IOException {
+		dw.writeLong(id);
+		dw.writeString(name);
+
+		// write locations
+		dw.writeListStorable(points);
+
+		// write breaks
+		byte[] breaksData = getBreaksData();
+		dw.writeInt(breaksData.length);
+		if (breaksData.length > 0) {
+			dw.write(breaksData);
+		}
+
+		// write waypoints
+		dw.writeListStorable(waypoints);
+
+		// write extra data
+		writeExtraData(dw);
+		writeStyles(dw);
+
+		// write old statistics for reader below version 3
+		dw.writeInt(0);
+		dw.writeLong(0L);
+		dw.writeLong(0L);
+
+		dw.writeFloat(0.0f);
+		dw.writeFloat(0.0f);
+		dw.writeLong(0L);
+		dw.writeLong(0L);
+		dw.writeFloat(0.0f);
+
+		dw.writeFloat(0.0f);
+		dw.writeFloat(0.0f);
+
+		dw.writeFloat(0.0f);
+		dw.writeFloat(0.0f);
+		dw.writeFloat(0.0f);
+		dw.writeFloat(0.0f);
+		dw.writeFloat(0.0f);
+		dw.writeFloat(0.0f);
+		dw.writeFloat(0.0f);
+		dw.writeFloat(0.0f);
+
+		// V1
+
+		dw.writeBoolean(mUseFolderStyle);
+
+		// V2
+
+		dw.writeLong(timeCreated);
+
+		// V3
+
+		dw.writeStorable(mStats);
+
+		// V4
+
+		dw.writeInt(getReadWriteMode().ordinal());
+
+		// V5
+
+		dw.writeInt(mActivityType);
+	}
+
+	@Override
+	public void reset() {
+		id = -1;
+		name = "";
+		points = new ArrayList<>();
+		breaks = new ArrayList<>();
+		waypoints = new ArrayList<>();
+		extraData = null;
+		styleNormal = null;
+		styleHighlight = null;
+
+		// V1
+
+		mUseFolderStyle = true;
+
+		// V2
+
+		timeCreated = System.currentTimeMillis();
+
+		// V3
+
+		mStats = new TrackStats();
+
+		// V4
+
+		setReadWriteMode(ReadWriteMode.READ_WRITE);
+
+		// V5
+
+		mActivityType = 0;
 	}
 }

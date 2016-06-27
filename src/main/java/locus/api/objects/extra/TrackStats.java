@@ -13,52 +13,86 @@ import locus.api.utils.DataWriterBigEndian;
 public class TrackStats extends Storable {
 
     // number of points (useful when points itself are not loaded)
-    private int numOfPoints;
+    private int mNumOfPoints;
     // track start time (time of first point)
-    private long startTime;
+    private long mStartTime;
     // track stop time (time of last point)
-    private long stopTime;
+    private long mStopTime;
 
     // total length of done route
-    private float totalLength;
+    private float mTotalLength;
     // total track distance with speed
-    private float totalLengthMove;
+    private float mTotalLengthMove;
     // total time of route
-    private long totalTime;
+    private long mTotalTime;
     // total track time with speed
-    private long totalTimeMove;
+    private long mTotalTimeMove;
     // maximal speed of this route
-    private float speedMax;
+    private float mSpeedMax;
 
     // maximum altitude on track
-    private float altitudeMax;
+    private float mAltitudeMax;
     // minimum altitude on track
-    private float altitudeMin;
+    private float mAltitudeMin;
 
     // neutral grade (distance)
-    private float eleNeutralDistance;
+    private float mEleNeutralDistance;
     // neutral grade (elevation)
-    private float eleNeutralHeight;
+    private float mEleNeutralHeight;
     // positive grade (distance)
-    private float elePositiveDistance;
+    private float mElePositiveDistance;
     // positive grade (elevation)
-    private float elePositiveHeight;
+    private float mElePositiveHeight;
     // negative grade (distance)
-    private float eleNegativeDistance;
+    private float mEleNegativeDistance;
     // negative grade (elevation)
-    private float eleNegativeHeight;
+    private float mEleNegativeHeight;
     // total grade (distance)
-    private float eleTotalAbsDistance;
+    private float mEleTotalAbsDistance;
     // total grade (elevation)
-    private float eleTotalAbsHeight;
+    private float mEleTotalAbsHeight;
 
+	// number of measured beats
+	private double mHeartRateBeats;
+	// time during which were beats measured
+	private long mHeartRateTime;
+	// maximum HRM value
+	private int mHeartRateMax;
+
+	// number of measured cadence revolutions
+	private double mCadenceNumber;
+	// time during which were cadence measured
+	private long mCadenceTime;
+	// maximum cadence value
+	private int mCadenceMax;
+
+	// burned energy (in joule)
+	private int mEnergy;
+
+	/**
+	 * Default empty constructor.
+	 */
     public TrackStats() {
         super();
     }
 
+	/**
+	 * Constructor based on existing stored data.
+	 * @param dr existing data reader with stats
+	 * @throws IOException
+	 */
     public TrackStats(DataReaderBigEndian dr) throws IOException {
         super(dr);
     }
+
+	/**
+	 * Constructor based on existing stored data.
+	 * @param data existing data reader with stats
+	 * @throws IOException
+	 */
+	public TrackStats(byte[] data) throws IOException {
+		super(data);
+	}
 
     /**************************************************/
     // GETTERS & SETTERS
@@ -67,141 +101,151 @@ public class TrackStats extends Storable {
     // NUMBER OF POINTS
 
     public int getNumOfPoints() {
-        return numOfPoints;
+        return mNumOfPoints;
     }
 
     public void setNumOfPoints(int numOfPoints) {
-        this.numOfPoints = numOfPoints;
+        this.mNumOfPoints = numOfPoints;
     }
 
     // START TIME
 
     public long getStartTime() {
-        return startTime;
+        return mStartTime;
     }
 
     public void setStartTime(long startTime) {
-        this.startTime = startTime;
+        this.mStartTime = startTime;
     }
 
     // STOP TIME
 
+	/**
+	 * Get current defined stop time of track.
+	 * @return stop time
+	 */
     public long getStopTime() {
-        return stopTime;
+        return mStopTime;
     }
 
+	/**
+	 * Set new time when track record was stopped (time of last trackpoint).
+	 * @param stopTime stop time
+	 */
     public void setStopTime(long stopTime) {
-        this.stopTime = stopTime;
+		if (stopTime > this.mStopTime) {
+			this.mStopTime = stopTime;
+		}
     }
 
     // TOTAL LENGTH
 
     public float getTotalLength() {
-        return totalLength;
+        return mTotalLength;
     }
 
     public void setTotalLength(float totalLength) {
-        this.totalLength = totalLength;
+        this.mTotalLength = totalLength;
     }
 
     public void addTotalLength(float add) {
-        this.totalLength += add;
+        this.mTotalLength += add;
     }
 
     // TOTAL LENGTH (MOVE)
 
     public float getTotalLengthMove() {
-        return totalLengthMove;
+        return mTotalLengthMove;
     }
 
     public void setTotalLengthMove(float totalLengthMove) {
-        this.totalLengthMove = totalLengthMove;
+        this.mTotalLengthMove = totalLengthMove;
     }
 
     public void addTotalLengthMove(float add) {
-        this.totalLengthMove += add;
+        this.mTotalLengthMove += add;
     }
 
     // TOTAL TIME
 
     public long getTotalTime() {
-        return totalTime;
+        return mTotalTime;
     }
 
     public void setTotalTime(long totalTime) {
-        this.totalTime = Math.abs(totalTime);
+        this.mTotalTime = Math.abs(totalTime);
     }
 
     public void addTotalTime(long add) {
-        this.totalTime += Math.abs(add);
+        this.mTotalTime += Math.abs(add);
     }
 
     // TOTAL TIME (MOVE)
 
     public long getTotalTimeMove() {
-        return totalTimeMove;
+        return mTotalTimeMove;
     }
 
     public void setTotalTimeMove(long totalTimeMove) {
-        this.totalTimeMove = Math.abs(totalTimeMove);
+        this.mTotalTimeMove = Math.abs(totalTimeMove);
     }
 
     public void addTotalTimeMove(long add) {
-        this.totalTimeMove += Math.abs(add);
+        this.mTotalTimeMove += Math.abs(add);
     }
 
     // SPEED MAX
 
     public float getSpeedMax() {
-        return speedMax;
+        return mSpeedMax;
     }
 
     public void setSpeedMax(float speedMax) {
-        this.speedMax = speedMax;
+        this.mSpeedMax = speedMax;
     }
 
     // ALTITUDE MAX
 
     public float getAltitudeMax() {
-        return altitudeMax;
+        return mAltitudeMax;
     }
 
     public void setAltitudeMax(float altitudeMax) {
-        this.altitudeMax = altitudeMax;
+        this.mAltitudeMax = altitudeMax;
     }
 
     // ALTITUDE MIN
 
     public float getAltitudeMin() {
-        return altitudeMin;
+        return mAltitudeMin;
     }
 
     public void setAltitudeMin(float altitudeMin) {
-        this.altitudeMin = altitudeMin;
+        this.mAltitudeMin = altitudeMin;
     }
 
     // ELEVATION NEUTRAL - DISTANCE
 
     public float getEleNeutralDistance() {
-        return eleNeutralDistance;
+        return mEleNeutralDistance;
     }
 
     public void setEleNeutralDistance(float eleNeutralDistance) {
-        this.eleNeutralDistance = eleNeutralDistance;
+        this.mEleNeutralDistance = eleNeutralDistance;
     }
 
     public void addEleNeutralDistance(float add) {
-        this.eleNeutralDistance += add;
+        this.mEleNeutralDistance += add;
     }
 
     // ELEVATION NEUTRAL - HEIGHT
 
     public float getEleNeutralHeight() {
-        return eleNeutralHeight;
+        return mEleNeutralHeight;
     }
 
     public void setEleNeutralHeight(float eleNeutralHeight) {
-        this.eleNeutralHeight = eleNeutralHeight;
+        this.mEleNeutralHeight = eleNeutralHeight;
     }
 
     /**
@@ -209,31 +253,31 @@ public class TrackStats extends Storable {
      * @param add value increment
      */
     public void addEleNeutralHeight(float add) {
-        this.eleNeutralHeight += add;
+        this.mEleNeutralHeight += add;
     }
 
     // ELEVATION POSITIVE - DISTANCE
 
     public float getElePositiveDistance() {
-        return elePositiveDistance;
+        return mElePositiveDistance;
     }
 
     public void setElePositiveDistance(float elePositiveDistance) {
-        this.elePositiveDistance = elePositiveDistance;
+        this.mElePositiveDistance = elePositiveDistance;
     }
 
     public void addElePositiveDistance(float add) {
-        this.elePositiveDistance += add;
+        this.mElePositiveDistance += add;
     }
 
     // ELEVATION POSITIVE - HEIGHT
 
     public float getElePositiveHeight() {
-        return elePositiveHeight;
+        return mElePositiveHeight;
     }
 
     public void setElePositiveHeight(float elePositiveHeight) {
-        this.elePositiveHeight = elePositiveHeight;
+        this.mElePositiveHeight = elePositiveHeight;
     }
 
     /**
@@ -241,31 +285,31 @@ public class TrackStats extends Storable {
      * @param add value increment
      */
     public void addElePositiveHeight(float add) {
-        this.elePositiveHeight += add;
+        this.mElePositiveHeight += add;
     }
 
     // ELEVATION NEGATIVE - DISTANCE
 
     public float getEleNegativeDistance() {
-        return eleNegativeDistance;
+        return mEleNegativeDistance;
     }
 
     public void setEleNegativeDistance(float eleNegativeDistance) {
-        this.eleNegativeDistance = eleNegativeDistance;
+        this.mEleNegativeDistance = eleNegativeDistance;
     }
 
     public void addEleNegativeDistance(float add) {
-        this.eleNegativeDistance += add;
+        this.mEleNegativeDistance += add;
     }
 
     // ELEVATION NEGATIVE - HEIGHT
 
     public float getEleNegativeHeight() {
-        return eleNegativeHeight;
+        return mEleNegativeHeight;
     }
 
     public void setEleNegativeHeight(float eleNegativeHeight) {
-        this.eleNegativeHeight = eleNegativeHeight;
+        this.mEleNegativeHeight = eleNegativeHeight;
     }
 
     /**
@@ -273,36 +317,134 @@ public class TrackStats extends Storable {
      * @param add value increment
      */
     public void addEleNegativeHeight(float add) {
-        this.eleNegativeHeight += add;
+        this.mEleNegativeHeight += add;
     }
 
     // ELEVATION TOTAL - DISTANCE
 
     public float getEleTotalAbsDistance() {
-        return eleTotalAbsDistance;
+        return mEleTotalAbsDistance;
     }
 
     public void setEleTotalAbsDistance(float eleTotalAbsDistance) {
-        this.eleTotalAbsDistance = eleTotalAbsDistance;
+        this.mEleTotalAbsDistance = eleTotalAbsDistance;
     }
 
     public void addEleTotalAbsDistance(float add) {
-        this.eleTotalAbsDistance += add;
+        this.mEleTotalAbsDistance += add;
     }
 
     // ELEVATION TOTAL - HEIGHT
 
     public float getEleTotalAbsHeight() {
-        return eleTotalAbsHeight;
+        return mEleTotalAbsHeight;
     }
 
     public void setEleTotalAbsHeight(float eleTotalAbsHeight) {
-        this.eleTotalAbsHeight = eleTotalAbsHeight;
+        this.mEleTotalAbsHeight = eleTotalAbsHeight;
     }
 
     public void addEleTotalAbsHeight(float add) {
-        this.eleTotalAbsHeight += add;
+        this.mEleTotalAbsHeight += add;
     }
+
+	// HEART RATE VALUES
+
+	/**
+	 * Get average value of heart rate.
+	 * @return average value (in BPM)
+	 */
+	public int getHrmAverage() {
+		if (mHeartRateBeats > 0 && mHeartRateTime > 0L) {
+			double minutes = mHeartRateTime / (60.0 * 1000.0);
+			return (int) (mHeartRateBeats / minutes);
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * Get maximal value of heart rate.
+	 * @return maximal heart rate value (in BPM)
+	 */
+	public int getHrmMax() {
+		return mHeartRateMax;
+	}
+
+	/**
+	 * Add measured heart rate values.
+	 * @param hrmMeasured measured heart rate value (in bpm)
+	 * @param hrmAvgSegment average heart rate value in segment (in bpm)
+	 * @param measureTime time of segment (in millis)
+	 */
+	public void addHeartRateMeasure(int hrmMeasured, int hrmAvgSegment, long measureTime) {
+		// store values
+		double inMinutes = measureTime * 1.0 / (60 * 1000);
+		double numOfBeats = hrmAvgSegment * inMinutes;
+		mHeartRateBeats += numOfBeats;
+		mHeartRateTime += measureTime;
+
+		// compute max. heart rate
+		mHeartRateMax = Math.max(mHeartRateMax, hrmMeasured);
+	}
+
+	// CADENCE VALUES
+
+	/**
+	 * Get average value of cadence.
+	 * @return average cadence value (
+	 */
+	public int getCadenceAverage() {
+		if (mCadenceNumber > 0 && mCadenceTime > 0L) {
+			double minutes = mCadenceTime / (60.0 * 1000.0);
+			return (int) (mCadenceNumber / minutes);
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * Get maximal value of heart rate.
+	 * @return maximal heart rate value (in BPM)
+	 */
+	public int getCadenceMax() {
+		return mCadenceMax;
+	}
+
+	/**
+	 * Add measured cadence values.
+	 * @param revMeasured measured cadence value (in rpm)
+	 * @param revAvgSegment average revolutions value in segment (in rpm)
+	 * @param measureTime time of segment (in millis)
+	 */
+	public void addCadenceMeasure(int revMeasured, int revAvgSegment, long measureTime) {
+		// store values
+		double inMinutes = measureTime * 1.0 / (60 * 1000);
+		double numOfRevolutions = revAvgSegment * inMinutes;
+		mCadenceNumber += numOfRevolutions;
+		mCadenceTime += measureTime;
+
+		// compute max. heart rate
+		mCadenceMax = Math.max(mCadenceMax, revMeasured);
+	}
+
+	// CALORIES BURNED
+
+	/**
+	 * Get burned energy.
+	 * @return burned energy (in joule)
+	 */
+	public int getEnergy() {
+		return mEnergy;
+	}
+
+	/**
+	 * Add burned energy.
+	 * @param energy burned energy (in joule)
+	 */
+	public void addEnergy(int energy) {
+		mEnergy += energy;
+	}
 
     /**************************************************/
     // OTHER TOOLS
@@ -310,17 +452,17 @@ public class TrackStats extends Storable {
 
     public double getTrackLength(boolean onlyWithMove) {
         if (onlyWithMove) {
-            return totalLengthMove;
+            return mTotalLengthMove;
         } else {
-            return totalLength;
+            return mTotalLength;
         }
     }
 
     public long getTrackTime(boolean onlyWithMove) {
         if (onlyWithMove) {
-            return totalTimeMove;
+            return mTotalTimeMove;
         } else {
-            return totalTime;
+            return mTotalTime;
         }
     }
 
@@ -338,29 +480,44 @@ public class TrackStats extends Storable {
         }
     }
 
+	/**
+	 * Reset all parameters of track statistics.
+	 */
     public void resetStatistics() {
         // basic statistics variables
-        totalLength = 0.0f;
-        totalLengthMove = 0.0f;
-        totalTime = 0L;
-        totalTimeMove = 0L;
-        speedMax = 0.0f;
+        mTotalLength = 0.0f;
+        mTotalLengthMove = 0.0f;
+        mTotalTime = 0L;
+        mTotalTimeMove = 0L;
+        mSpeedMax = 0.0f;
+		mHeartRateBeats = 0.0;
+		mHeartRateTime = 0L;
+		mHeartRateMax = 0;
+		mCadenceNumber = 0.0;
+		mCadenceTime = 0L;
+		mCadenceMax = 0;
+		mEnergy = 0;
+
+		// reset also elevation values
         resetStatisticsAltitude();
     }
 
+	/**
+	 * Reset only statistics related to elevation values.
+	 */
     public void resetStatisticsAltitude() {
-        altitudeMax = Float.NEGATIVE_INFINITY;
-        altitudeMin = Float.POSITIVE_INFINITY;
+        mAltitudeMax = Float.NEGATIVE_INFINITY;
+        mAltitudeMin = Float.POSITIVE_INFINITY;
 
         // graph variables
-        eleNeutralDistance = 0.0f;
-        eleNeutralHeight = 0.0f;
-        elePositiveDistance = 0.0f;
-        elePositiveHeight = 0.0f;
-        eleNegativeDistance = 0.0f;
-        eleNegativeHeight = 0.0f;
-        eleTotalAbsDistance = 0.0f;
-        eleTotalAbsHeight = 0.0f;
+        mEleNeutralDistance = 0.0f;
+        mEleNeutralHeight = 0.0f;
+        mElePositiveDistance = 0.0f;
+        mElePositiveHeight = 0.0f;
+        mEleNegativeDistance = 0.0f;
+        mEleNegativeHeight = 0.0f;
+        mEleTotalAbsDistance = 0.0f;
+        mEleTotalAbsHeight = 0.0f;
     }
 
 	/**
@@ -368,25 +525,35 @@ public class TrackStats extends Storable {
 	 * @param stats second statistics that will be merged into this.
 	 */
 	public void appendStatistics(TrackStats stats) {
-		this.numOfPoints += stats.numOfPoints;
-		this.startTime = Math.min(startTime, stats.startTime);
-		this.stopTime = Math.max(stopTime, stats.stopTime);
-		this.totalLength += stats.totalLength;
-		this.totalLengthMove += stats.totalLengthMove;
-		this.totalTime += stats.totalTime;
-		this.totalTimeMove += stats.totalTimeMove;
-		this.speedMax = Math.max(speedMax, stats.speedMax);
-		this.altitudeMax = Math.max(altitudeMax, stats.altitudeMax);
-		this.altitudeMin = Math.min(altitudeMin, stats.altitudeMin);
+		this.mNumOfPoints += stats.mNumOfPoints;
+		this.mStartTime = Math.min(mStartTime, stats.mStartTime);
+		this.mStopTime = Math.max(mStopTime, stats.mStopTime);
+		this.mTotalLength += stats.mTotalLength;
+		this.mTotalLengthMove += stats.mTotalLengthMove;
+		this.mTotalTime += stats.mTotalTime;
+		this.mTotalTimeMove += stats.mTotalTimeMove;
+		this.mSpeedMax = Math.max(mSpeedMax, stats.mSpeedMax);
+		this.mAltitudeMax = Math.max(mAltitudeMax, stats.mAltitudeMax);
+		this.mAltitudeMin = Math.min(mAltitudeMin, stats.mAltitudeMin);
 
-		this.eleNeutralDistance += stats.eleNeutralDistance;
-		this.eleNeutralHeight += stats.eleNeutralHeight;
-		this.elePositiveDistance += stats.elePositiveDistance;
-		this.elePositiveHeight += stats.elePositiveHeight;
-		this.eleNegativeDistance += stats.eleNegativeDistance;
-		this.eleNegativeHeight += stats.eleNegativeHeight;
-		this.eleTotalAbsDistance += stats.eleTotalAbsDistance;
-		this.eleTotalAbsHeight += stats.eleTotalAbsHeight;
+		this.mEleNeutralDistance += stats.mEleNeutralDistance;
+		this.mEleNeutralHeight += stats.mEleNeutralHeight;
+		this.mElePositiveDistance += stats.mElePositiveDistance;
+		this.mElePositiveHeight += stats.mElePositiveHeight;
+		this.mEleNegativeDistance += stats.mEleNegativeDistance;
+		this.mEleNegativeHeight += stats.mEleNegativeHeight;
+		this.mEleTotalAbsDistance += stats.mEleTotalAbsDistance;
+		this.mEleTotalAbsHeight += stats.mEleTotalAbsHeight;
+
+		this.mHeartRateBeats += stats.mHeartRateBeats;
+		this.mHeartRateTime += stats.mHeartRateTime;
+		this.mHeartRateMax = Math.max(this.mHeartRateMax, stats.mHeartRateMax);
+
+		this.mCadenceNumber += stats.mCadenceNumber;
+		this.mCadenceTime += stats.mCadenceTime;
+		this.mCadenceMax = Math.max(this.mCadenceMax, stats.mCadenceMax);
+
+		this.mEnergy += stats.mEnergy;
 	}
 
     /**************************************************/
@@ -395,14 +562,14 @@ public class TrackStats extends Storable {
 
     @Override
     protected int getVersion() {
-        return 0;
+        return 2;
     }
 
     @Override
     public void reset() {
-        numOfPoints = 0;
-        startTime = -1L;
-        stopTime = -1L;
+        mNumOfPoints = 0;
+        mStartTime = -1L;
+        mStopTime = -1L;
 
         // other variables
         resetStatistics();
@@ -410,57 +577,89 @@ public class TrackStats extends Storable {
 
     @Override
     protected void readObject(int version, DataReaderBigEndian dr) throws IOException {
-        numOfPoints = dr.readInt();
-        startTime = dr.readLong();
-        stopTime = dr.readLong();
+        mNumOfPoints = dr.readInt();
+        mStartTime = dr.readLong();
+        mStopTime = dr.readLong();
 
         // basic variables
-        totalLength = dr.readFloat();
-        totalLengthMove = dr.readFloat();
-        totalTime = dr.readLong();
-        totalTimeMove = dr.readLong();
-        speedMax = dr.readFloat();
+        mTotalLength = dr.readFloat();
+        mTotalLengthMove = dr.readFloat();
+        mTotalTime = dr.readLong();
+        mTotalTimeMove = dr.readLong();
+        mSpeedMax = dr.readFloat();
 
         // altitude values
-        altitudeMax = dr.readFloat();
-        altitudeMin = dr.readFloat();
+        mAltitudeMax = dr.readFloat();
+        mAltitudeMin = dr.readFloat();
 
         // elevation variables
-        eleNeutralDistance = dr.readFloat();
-        eleNeutralHeight = dr.readFloat();
-        elePositiveDistance = dr.readFloat();
-        elePositiveHeight = dr.readFloat();
-        eleNegativeDistance = dr.readFloat();
-        eleNegativeHeight = dr.readFloat();
-        eleTotalAbsDistance = dr.readFloat();
-        eleTotalAbsHeight = dr.readFloat();
+        mEleNeutralDistance = dr.readFloat();
+        mEleNeutralHeight = dr.readFloat();
+        mElePositiveDistance = dr.readFloat();
+        mElePositiveHeight = dr.readFloat();
+        mEleNegativeDistance = dr.readFloat();
+        mEleNegativeHeight = dr.readFloat();
+        mEleTotalAbsDistance = dr.readFloat();
+        mEleTotalAbsHeight = dr.readFloat();
+
+		// V1
+
+		if (version >= 1) {
+			mHeartRateBeats = dr.readInt();
+			mHeartRateTime = dr.readLong();
+			mHeartRateMax = dr.readInt();
+			mEnergy = dr.readInt();
+		}
+
+		// V2
+
+		if (version >= 2) {
+			mHeartRateBeats = dr.readDouble();
+			mCadenceNumber = dr.readDouble();
+			mCadenceTime = dr.readLong();
+			mCadenceMax = dr.readInt();
+		}
     }
 
     @Override
     protected void writeObject(DataWriterBigEndian dw) throws IOException {
-        dw.writeInt(numOfPoints);
-        dw.writeLong(startTime);
-        dw.writeLong(stopTime);
+        dw.writeInt(mNumOfPoints);
+        dw.writeLong(mStartTime);
+        dw.writeLong(mStopTime);
 
         // basic variables
-        dw.writeFloat(totalLength);
-        dw.writeFloat(totalLengthMove);
-        dw.writeLong(totalTime);
-        dw.writeLong(totalTimeMove);
-        dw.writeFloat(speedMax);
+        dw.writeFloat(mTotalLength);
+        dw.writeFloat(mTotalLengthMove);
+        dw.writeLong(mTotalTime);
+        dw.writeLong(mTotalTimeMove);
+        dw.writeFloat(mSpeedMax);
 
         // altitude values
-        dw.writeFloat(altitudeMax);
-        dw.writeFloat(altitudeMin);
+        dw.writeFloat(mAltitudeMax);
+        dw.writeFloat(mAltitudeMin);
 
         // elevation variables
-        dw.writeFloat(eleNeutralDistance);
-        dw.writeFloat(eleNeutralHeight);
-        dw.writeFloat(elePositiveDistance);
-        dw.writeFloat(elePositiveHeight);
-        dw.writeFloat(eleNegativeDistance);
-        dw.writeFloat(eleNegativeHeight);
-        dw.writeFloat(eleTotalAbsDistance);
-        dw.writeFloat(eleTotalAbsHeight);
+        dw.writeFloat(mEleNeutralDistance);
+        dw.writeFloat(mEleNeutralHeight);
+        dw.writeFloat(mElePositiveDistance);
+        dw.writeFloat(mElePositiveHeight);
+        dw.writeFloat(mEleNegativeDistance);
+        dw.writeFloat(mEleNegativeHeight);
+        dw.writeFloat(mEleTotalAbsDistance);
+        dw.writeFloat(mEleTotalAbsHeight);
+
+		// V1
+
+		dw.writeInt((int) mHeartRateBeats);
+		dw.writeLong(mHeartRateTime);
+		dw.writeInt(mHeartRateMax);
+		dw.writeInt(mEnergy);
+
+		// V2
+
+		dw.writeDouble(mHeartRateBeats);
+		dw.writeDouble(mCadenceNumber);
+		dw.writeLong(mCadenceTime);
+		dw.writeInt(mCadenceMax);
     }
 }
