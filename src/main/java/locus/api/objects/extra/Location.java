@@ -971,7 +971,7 @@ public class Location extends Storable {
 
     /**
      * Returns the num of strides. If hasSensorStrides() is false, 0 is returned.
-	 * @return number of strides
+	 * @return number of strides since begin of track recording
      */
     public int getSensorStrides() {
     	if (hasSensorStrides()) {

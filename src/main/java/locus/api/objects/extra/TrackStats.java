@@ -69,6 +69,9 @@ public class TrackStats extends Storable {
 	// burned energy (in joule)
 	private int mEnergy;
 
+	// number of steps
+	private int mNumOfStrides;
+
 	/**
 	 * Default empty constructor.
 	 */
@@ -196,10 +199,18 @@ public class TrackStats extends Storable {
 
     // SPEED MAX
 
+	/**
+	 * Get maximal speed value received from GPS.
+	 * @return maximal speed value (in m/s)
+	 */
     public float getSpeedMax() {
         return mSpeedMax;
     }
 
+	/**
+	 * Set maximal speed value.
+	 * @param speedMax max. speed value (in m/s)
+	 */
     public void setSpeedMax(float speedMax) {
         this.mSpeedMax = speedMax;
     }
@@ -428,7 +439,7 @@ public class TrackStats extends Storable {
 		mCadenceMax = Math.max(mCadenceMax, revMeasured);
 	}
 
-	// CALORIES BURNED
+	// ENERGY BURNED
 
 	/**
 	 * Get burned energy.
@@ -446,7 +457,25 @@ public class TrackStats extends Storable {
 		mEnergy += energy;
 	}
 
-    /**************************************************/
+	// STRIDES
+
+	/**
+	 * Get total number of strides.
+	 * @return number of strides
+	 */
+	public int getNumOfStrides() {
+		return mNumOfStrides;
+	}
+
+	/**
+	 * Set total number of strides.
+	 * @param numOfStrides number of strides
+	 */
+	public void setNumOfStrides(int numOfStrides) {
+		mNumOfStrides = numOfStrides;
+	}
+
+	/**************************************************/
     // OTHER TOOLS
     /**************************************************/
 
@@ -497,6 +526,7 @@ public class TrackStats extends Storable {
 		mCadenceTime = 0L;
 		mCadenceMax = 0;
 		mEnergy = 0;
+		mNumOfStrides = 0;
 
 		// reset also elevation values
         resetStatisticsAltitude();
@@ -554,6 +584,7 @@ public class TrackStats extends Storable {
 		this.mCadenceMax = Math.max(this.mCadenceMax, stats.mCadenceMax);
 
 		this.mEnergy += stats.mEnergy;
+		this.mNumOfStrides += stats.mNumOfStrides;
 	}
 
     /**************************************************/
@@ -562,7 +593,7 @@ public class TrackStats extends Storable {
 
     @Override
     protected int getVersion() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -619,6 +650,12 @@ public class TrackStats extends Storable {
 			mCadenceTime = dr.readLong();
 			mCadenceMax = dr.readInt();
 		}
+
+		// V3
+
+		if (version >= 3) {
+			mNumOfStrides = dr.readInt();
+		}
     }
 
     @Override
@@ -661,5 +698,9 @@ public class TrackStats extends Storable {
 		dw.writeDouble(mCadenceNumber);
 		dw.writeLong(mCadenceTime);
 		dw.writeInt(mCadenceMax);
+
+		// V3
+
+		dw.writeInt(mNumOfStrides);
     }
 }

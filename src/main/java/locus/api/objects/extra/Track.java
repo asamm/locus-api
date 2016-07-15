@@ -224,7 +224,7 @@ public class Track extends GeoData {
 			setStats(stats);
 		} catch (Exception e) {
 			Logger.logE(TAG, "setStats(" + Arrays.toString(data) + ")", e);
-			this.mStats = new TrackStats();
+			setStats(new TrackStats());
 		}
 	}
 

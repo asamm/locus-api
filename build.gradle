@@ -8,7 +8,7 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 // current library version
-def libraryVersion = '0.2.4'
+def libraryVersion = '0.2.5'
 
 task createSourceJar(type: Jar, dependsOn: classes) {
     classifier "sources"
@@ -74,12 +74,18 @@ bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
     publications = ['pubLibLocusApi']
+    publish = true
 
     pkg {
         repo = 'maven'
         name = 'locus-api'
         licenses = ['LGPL-3.0']
         vcsUrl = 'https://github.com/asamm/locus-api.git'
+
+        // optional Github repository
+        githubRepo = 'asamm/locus-api'
+        // optional Github readme file
+        githubReleaseNotesFile = 'README.md'
 
         //noinspection GroovyAssignabilityCheck
         version {
