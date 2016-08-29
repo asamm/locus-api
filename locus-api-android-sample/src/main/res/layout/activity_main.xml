@@ -1,0 +1,36 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        style="@style/Toolbar.ActivityTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- As the main content view, the view below consumes the entire
+         space available using match_parent in both dimensions. -->
+        <FrameLayout
+            android:id="@+id/frame_layout_main_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+
+        <!-- The drawer is given a fixed width in dp and extends the full height of the container. -->
+        <FrameLayout
+            android:id="@+id/frame_layout_drawer"
+            android:layout_width="280dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@android:color/white"/>
+
+    </android.support.v4.widget.DrawerLayout>
+
+</LinearLayout>

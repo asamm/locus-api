@@ -1,0 +1,148 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+// library parameters
+def libraryCode = 8
+def libraryVersion = '0.2.6'
+
+// Android basics
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    // define default parameters
+    defaultConfig {
+        versionCode libraryCode
+        versionName libraryVersion
+    }
+}
+
+dependencies {
+    // use current project in "debug" mode
+    debugCompile project(':core:locus-api')
+    // use published maven repository
+    releaseCompile ('com.asamm:locus-api:0.2.6')
+
+//    compile project(':locus-api')
+//    compile 'com.asamm:locus-api:0.2.5'
+}
+
+task createSourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task createJavadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    failOnError false
+}
+
+task createJavadocJar(type: Jar, dependsOn: createJavadoc) {
+    classifier = 'javadoc'
+    from createJavadoc.destinationDir
+}
+
+// generate publication in Maven format
+// https://docs.gradle.org/current/dsl/org.gradle.api.publish.maven.MavenPublication.html
+publishing {
+    publications {
+        pubLibLocusApiAndroid(MavenPublication) {
+
+            groupId 'com.asamm'
+            artifactId 'locus-api-android'
+            //noinspection GroovyAssignabilityCheck
+            version libraryVersion
+
+            // define source
+            artifact "${project.buildDir}/outputs/aar/${project.name}-release.aar"
+            artifact createSourceJar
+            artifact createJavadocJar
+
+            // improve generated POM file
+            pom.withXml {
+                asNode().appendNode(
+                        'name', 'Locus API - Android')
+                asNode().appendNode(
+                        'description', 'Library for Android "Locus Map" application')
+                asNode().appendNode(
+                        'url', 'https://github.com/asamm/locus-api-android')
+                asNode().appendNode(
+                        'inceptionYear', '2016')
+
+                // add license
+                def nodeLicenses = asNode().appendNode('licenses')
+                def nodeLicense = nodeLicenses.appendNode('license')
+                nodeLicense.appendNode('name', 'GNU Lesser General Public License v3.0')
+                nodeLicense.appendNode('url', 'https://api.github.com/licenses/lgpl-3.0')
+                nodeLicense.appendNode('distribution', 'repo')
+
+                // add "scm"
+                def nodeScm = asNode().appendNode('scm')
+                nodeScm.appendNode('connection', 'git://github.com/asamm/locus-api-android.git')
+                nodeScm.appendNode('url', 'git://github.com/asamm/locus-api-android.git')
+
+                // add "developer info"
+                def nodeDevelopers = asNode().appendNode('developers')
+                def nodeDeveloper = nodeDevelopers.appendNode('developer')
+                nodeDeveloper.appendNode('name', 'Asamm software, s. r. o.')
+
+                // add all dependencies
+                def dependencies = asNode().appendNode('dependencies')
+                configurations.getByName("_releaseCompile").getResolvedConfiguration().getFirstLevelModuleDependencies().each {
+                    def dependency = dependencies.appendNode('dependency')
+                    dependency.appendNode('groupId', it.moduleGroup)
+                    dependency.appendNode('artifactId', it.moduleName)
+                    dependency.appendNode('version', it.moduleVersion)
+                }
+            }
+        }
+    }
+}
+
+// upload library to BinTray
+// https://github.com/bintray/gradle-bintray-plugin
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['pubLibLocusApiAndroid']
+    publish = true
+
+    pkg {
+        repo = 'maven'
+        name = 'locus-api-android'
+        licenses = ['LGPL-3.0']
+        vcsUrl = 'https://github.com/asamm/locus-api-android.git'
+
+        // optional Github repository
+        githubRepo = 'asamm/locus-api-android'
+        // optional Github readme file
+        githubReleaseNotesFile = 'README.md'
+
+        //noinspection GroovyAssignabilityCheck
+        version {
+            name = libraryVersion
+            desc = 'Locus API - Android, version ' + libraryVersion
+            released  = new Date()
+            vcsTag = libraryVersion
+        }
+    }
+}

@@ -1,0 +1,47 @@
+<resources>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#1976d2</item>
+        <item name="colorPrimaryDark">#0d47a1</item>
+        <item name="colorAccent">#0d47a1</item>
+        <item name="colorControlNormal">#2196f3</item>
+        <item name="colorControlActivated">#1976d2</item>
+        <item name="colorControlHighlight">#1565c0</item>
+        <item name="colorButtonNormal">#2196f3</item>
+        <item name="colorSwitchThumbNormal">#616161</item>
+
+        <!-- style for ActionBar and PopupMenu -->
+        <!-- https://developer.android.com/reference/android/support/v7/appcompat/R.attr.html -->
+        <item name="actionBarStyle">@style/Toolbar.ActivityTop</item>
+        <item name="popupMenuStyle">@style/PopupMenu.Base</item>
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+
+        <!-- fix problems with ActionBar -->
+        <!-- http://stackoverflow.com/a/29788578/836138 -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+    </style>
+
+    <style name="Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+    </style>
+
+    <style name="Toolbar.ActivityTop">
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:id">@id/toolbar_top</item>
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
+
+    <!-- OTHERS -->
+
+    <style name="PopupMenu.Base" parent="@style/Widget.AppCompat.PopupMenu">
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ID for top toolbar -->
+    <item type="id" name="toolbar_top" />
+
+</resources>
