@@ -58,11 +58,14 @@ dependencies {
     // debugCompile project(':core:locus-api-android')
     // use published Locus API, maven repository
     // releaseCompile('com.asamm:locus-api-android:0.2.6')
-    compile project(':core:locus-api-android')
+
+    // get locus API
+    compile 'com.asamm:locus-api-android:0.2.6'
+//    compile project(':core:locus-api-android')
 
     // Android support libraries
     // lib with some design utils
     // lib for a card view
     // lib for a recycler view
-    compile 'com.android.support:appcompat-v7:24.2.0'
+    compile 'com.android.support:appcompat-v7:24.2.1'
 }

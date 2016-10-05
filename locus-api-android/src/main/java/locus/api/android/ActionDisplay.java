@@ -11,7 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 
 public class ActionDisplay {
-	
+
+	// tag for logger
 	private static final String TAG = "ActionDisplay";
 	
 	public enum ExtraAction {
@@ -19,7 +20,7 @@ public class ActionDisplay {
 	}
 	
 	/**************************************************/
-	/*                 PRIVATE CALLS                  */
+	// PRIVATE CALLS
 	/**************************************************/
 	
 	protected static boolean sendData(String action, Context context, Intent intent,
@@ -59,20 +60,26 @@ public class ActionDisplay {
 		
 		return true;
 	}
-	
+
+	/**
+	 * Test if intent is valid and contains any data to display.
+	 * @param intent intent to test
+	 * @return {@code true} if intent is valid and contains data
+	 */
 	public static boolean hasData(Intent intent) {
+		// check intent object
 		if (intent == null) {
 			return false;
 		}
-		
+
+		// test on possible parameters
 		return !(
-				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINTS_DATA) == null && 
+				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINTS_DATA) == null &&
 				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINTS_DATA_ARRAY) == null &&
 				intent.getStringExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH) == null &&
 				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_TRACKS_SINGLE) == null &&
 				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_TRACKS_MULTI) == null &&
-				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_CIRCLES_MULTI) == null
-				);
+				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_CIRCLES_MULTI) == null);
 	}
 	
 	/**

@@ -109,12 +109,6 @@ public abstract class GeoData extends Storable {
 
 	// STATE
 
-//	public byte getState() {
-//		return state;
-//	}
-//
-//	public byt
-
 	/**
 	 * Check if item is currently enabled.
 	 * @return {@code true} if item is enabled

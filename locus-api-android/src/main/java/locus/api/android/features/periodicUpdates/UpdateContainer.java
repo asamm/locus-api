@@ -9,6 +9,7 @@ import locus.api.objects.extra.TrackStats;
 import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
 
+@SuppressWarnings ({"WeakerAccess", "unused"})
 public class UpdateContainer extends Storable {
 
     // CONSTANTS
@@ -356,15 +357,16 @@ public class UpdateContainer extends Storable {
     /**
      * Check if track recording is currently active. It do not info about it's state
      * (paused, running), just if it is enabled at all.
-     * @return <code>true</code> if track recording is active
+     * @return {@code true} if track recording is active
      */
     public boolean isTrackRecRecording() {
         return trackRecRecording;
     }
 
 	/**
-	 * Check if track recording is currently active or paused.
-	 * @return <code>true</code> if track recording is paused
+	 * Check if track recording is currently active or paused. Firstly check if recording is running
+	 * before testing if is paused.
+	 * @return {@code true} if track recording is paused
 	 */
 	public boolean isTrackRecPaused() {
 		return trackRecPaused;
@@ -379,7 +381,8 @@ public class UpdateContainer extends Storable {
 	}
 
 	/**
-	 * Get complete track statistics.
+	 * Get complete track statistics. This container is available only when {@link #isTrackRecRecording()}
+	 * returns {@code true}.
 	 * @return track statistics
 	 */
 	public TrackStats getTrackRecStats() {

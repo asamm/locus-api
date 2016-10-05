@@ -68,7 +68,7 @@ public class ActivityDashboard extends FragmentActivity {
 	public void onStart() {
 		super.onStart();
 		
-		// register receiver
+		// prepare receiver
 		receiver = new BroadcastReceiver() {
 
 			@Override
@@ -112,8 +112,24 @@ public class ActivityDashboard extends FragmentActivity {
 		// check if data exists
 		if (data == null) {
 			LocusVersion activeVersion = LocusUtils.getActiveVersion(this);
-			tvInfo.setText("UpdateContainer not valid, updates enabled: " +
-					SampleCalls.isPeriodicUpdateEnabled(this, activeVersion));
+
+			// prepare text info
+			StringBuilder sb = new StringBuilder();
+			sb.append("UpdateContainer not valid\n\n");
+			sb.append("- active version: ").
+					append(activeVersion.getVersionName()).
+					append(" | ").
+					append(activeVersion.getVersionCode()).
+					append("\n");
+			sb.append("- Locus Map is running: ").
+					append(SampleCalls.isRunning(this, activeVersion) ? "running" : "stopped").
+					append("\n");
+			sb.append("- periodic updates: ").
+					append(SampleCalls.isPeriodicUpdateEnabled(this, activeVersion) ? "enabled" : "disabled").
+					append("\n");
+
+			// set text to field
+			tvInfo.setText(sb);
 			return;
 		}
 		

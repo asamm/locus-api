@@ -24,18 +24,18 @@ public class PageTracksFragment extends ABasePageFragment {
 				"Display multiple tracks"));
 
 		items.add(new BasicAdapterItem(8,
-				"Start Navigation (by Waypoint)",
-				"Allows to start Navigation to certain point. This function is direct intent, so it starts Locus if not running. You may also use 'actionStartGuiding' to start Guiding instead of Navigation."));
+				"Start Navigation (to a point)",
+				"Allows to start Navigation to a certain point. This function is a direct intent so it starts Locus if it's not running. You may also use 'actionStartGuiding' to start Guiding instead of Navigation."));
 		items.add(new BasicAdapterItem(9,
-				"Start Navigation (by Address)",
-				"Allows to start Navigation to certain point defined by address."));
+				"Start Navigation (to an Address)",
+				"Allows to start Navigation to a certain point defined by an address."));
 
 		items.add(new BasicAdapterItem(20,
-				"Start Track record",
-				"Allows to start track recording. This call is send as Broadcast event, so it's required to know LocusVersion which should start track recording."));
+				"Start Track recording",
+				"Allows to start track recording. This call is sent as Broadcast event so it requires to know LocusVersion that should start track recording."));
 		items.add(new BasicAdapterItem(21,
-				"Stop Track record",
-				"Same as previous sample, just used for a stop of track recording."));
+				"Stop Track recording",
+				"The same as previous sample, just used to stop the track recording."));
 		return items;
 	}
 

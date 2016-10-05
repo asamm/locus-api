@@ -28,43 +28,43 @@ public class PageUtilsFragment extends ABasePageFragment {
 		List<BasicAdapterItem> items = new ArrayList<>();
 		items.add(new BasicAdapterItem(1,
 				"Send GPX file to system",
-				"Send existing GPX file to system. This should invoke chooser for app, that will handle this request."));
+				"Send existing GPX file to system. This should invoke selection of an app that will handle this request."));
 		items.add(new BasicAdapterItem(2,
 				"Send GPX file directly to Locus",
-				"You may also send intent (with link to file) directly to Locus app."));
+				"You may also send intent (with a link to a file) directly to Locus app."));
 		items.add(new BasicAdapterItem(3,
 				"Pick location from Locus",
-				"If you need a 'location' in your application, this call allows you to use Locus 'GetLocation' screen. Result is handled in MainActivity as 'LocusUtils.isIntentGetLocation()'"));
+				"If you need 'location' in your application, this call allows you to use Locus 'GetLocation' screen. Result is handled in MainActivity as 'LocusUtils.isIntentGetLocation()'"));
 		items.add(new BasicAdapterItem(4,
 				"Pick file",
-				"Allows to use Locus internal file picker and choose a file from file system. You may also specify a filter on requested file. Request is send as 'Activity.startActivityForResult()', so you have to handle result in own activity."));
+				"Allows to use Locus internal file picker and choose a file from the file system. You may also specify a filter on requested file. Request is sent as 'Activity.startActivityForResult()', so you have to handle the result in your own activity."));
 		items.add(new BasicAdapterItem(5,
 				"Pick directory",
-				"Same as previous sample, just for picking a directories instead of files."));
+				"Same as previous sample, just for picking directories instead of files."));
 		items.add(new BasicAdapterItem(6,
 				"Get ROOT directory",
 				"Allows to get current active ROOT directory of installed Locus."));
 		items.add(new BasicAdapterItem(7,
 				"Add WMS map",
-				"Allows to add WMS map directly to list of WMS services."));
+				"Allows to add WMS map directly to the list of WMS services."));
 		items.add(new BasicAdapterItem(11,
 				"Dashboard",
-				"Very nice example that shows, how you app may create own dashboard filled with data received by Locus 'Periodic updates'"));
+				"Very nice example that shows how your app may create its own dashboard filled with data received by Locus 'Periodic updates'"));
 		items.add(new BasicAdapterItem(12,
 				"Show circles",
 				"Small function that allows to draw circles on Locus map. This function is called as broadcast so check result in running Locus!"));
 		items.add(new BasicAdapterItem(13,
 				"Is Periodic update enabled",
-				"Because periodic updates is useful in many cases, not just for dashboard, this function allows to check if 'Periodic updates' are enabled in Locus."));
+				"Because periodic updates are useful in many cases, not just for the dashboard, this function allows to check if 'Periodic updates' are enabled in Locus."));
 		items.add(new BasicAdapterItem(14,
 				"Request available Geocaching field notes",
-				"Sample method that get number of existing field notes in Locus Map application"));
+				"Simple method of getting number of existing field notes in Locus Map application"));
 		items.add(new BasicAdapterItem(15,
 				"Check item purchase state",
-				"This function allows to check state of purchase of certain item (with known ID) in Locus Store"));
+				"This function allows to check state of purchase of a certain item (with known ID) in Locus Store"));
 		items.add(new BasicAdapterItem(16,
 				"Display detail of Store item",
-				"Display detail of certain Locus Store item (with known ID)"));
+				"Display detail of a certain Locus Store item (with known ID)"));
 		return items;
 	}
 

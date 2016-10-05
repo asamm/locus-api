@@ -411,7 +411,28 @@ public class SampleCalls {
 		Logger.logD(TAG, "showCircles(), " +
 				"send:" + send);
 	}
-	
+
+	/**
+	 * Check if found version is running.
+	 * @param ctx current context
+	 * @param lv received Locus version
+	 * @return {@code true} if app is running
+	 */
+	public static boolean isRunning(Context ctx, LocusVersion lv) {
+		try {
+			return ActionTools.getLocusInfo(ctx, lv).isRunning();
+		} catch (RequiredVersionMissingException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Check if periodic updates are enabled.
+	 * @param ctx current context
+	 * @param lv received Locus version
+	 * @return {@code true} if updates are enabled
+	 */
 	public static boolean isPeriodicUpdateEnabled(Context ctx, LocusVersion lv) {
 		try {
 			return ActionTools.getLocusInfo(ctx, lv).isPeriodicUpdatesEnabled();

@@ -37,10 +37,12 @@ android {
 
 dependencies {
     // use current project in "debug" mode
-    debugCompile project(':core:locus-api')
+    //debugCompile project(':core:locus-api')
     // use published maven repository
-    releaseCompile ('com.asamm:locus-api:0.2.6')
+    //releaseCompile ('com.asamm:locus-api:0.2.6')
 
+    // use in case of direct handling over Locus Core project
+    compile project(':core:locus-api')
 //    compile project(':locus-api')
 //    compile 'com.asamm:locus-api:0.2.5'
 }

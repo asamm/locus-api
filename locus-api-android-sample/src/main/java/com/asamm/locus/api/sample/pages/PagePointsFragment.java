@@ -27,31 +27,31 @@ public class PagePointsFragment extends ABasePageFragment {
 				"Send one simple point to Locus and execute 'import' request. If Locus does not run, this intent starts it."));
 		items.add(new BasicAdapterItem(2,
 				"Import more points at once",
-				"One of possibilities, how to send data to Locus and execute 'import'. Number of points is limited by capacity of Intent. On 2.X devices - 1 MB, one 4.X+ devices - 2 MB."));
+				"One of possibilities how to send data to Locus and execute 'import'. Number of points is limited by capacity of Intent. On 2.X devices - 1 MB, on 4.X+ devices - 2 MB."));
 		items.add(new BasicAdapterItem(3,
 				"Display one point with icon",
 				"Send one simple point to Locus together with icon defined as bitmap."));
 		items.add(new BasicAdapterItem(4,
-				"Display more points with icon",
-				"Send more waypoints, with different attached icons (all as bitmaps)."));
+				"Display more points with icons",
+				"Send more points with various attached icons (all as bitmaps)."));
 		items.add(new BasicAdapterItem(5,
 				"Display Geocaching point",
-				"Geocache points behave a little bit different in Locus. This sample show how to create it and how to display it on a map."));
+				"Geocache points behave a little bit different in Locus. This sample shows how to create it and how to display it on a map."));
 		items.add(new BasicAdapterItem(6,
 				"Display more Geocaches over intent",
-				"Improved version, where we send more geocache points at once."));
+				"Improved version where we send more geocache points at once."));
 		items.add(new BasicAdapterItem(7,
 				"Display more Geocaches over local File",
-				"Second way how to send data (not just geocaches) to Locus is over file. Here is only limit memory on device for every app because Locus loads all data at once. Method is slower then \"intent\" only method, but limits on number of points are not so strict."));
+				"Second way how to send data (not just geocaches) to Locus is over a file. It is limited only by the device memory space for every app because Locus loads all data at once. Method is slower than \"intent\" only method but limits on number of points are not so strict."));
 		items.add(new BasicAdapterItem(8,
 				"Display point with OnDisplay callback",
-				"Perfect example, how to handle own points in Locus. This method allows to be notified, that user tapped on your point. You may then supply additional information and send them back to Locus, before 'Point screen' appear."));
+				"Perfect example how to handle your own points in Locus. This method enables you to be notified that user tapped on your point. You may then supply additional information and send it back to Locus before 'Point screen' appears."));
 		items.add(new BasicAdapterItem(9,
-				"Request ID of waypoint by it's name",
-				"Allows to search in Locus internal point database for point by it's name. Result is list of waypoints (it's IDs), that match requested name."));
+				"Request ID of a point by its name",
+				"Allows to search in Locus internal point database for point by its name. Results in a list of points (its IDs) that match requested name."));
 		items.add(new BasicAdapterItem(10,
-				"Display 'Point screen' of certain point",
-				"Allows to display main 'Point screen' of certain point defined by it's ID."));
+				"Display 'Point screen' of a certain point",
+				"Allows to display main 'Point screen' of a certain point defined by its ID."));
 		return items;
 	}
 

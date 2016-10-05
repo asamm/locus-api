@@ -98,7 +98,9 @@ public class ExtraData extends Storable {
 	public static final int VALUE_RTE_TYPE_CYCLE_SHORT                          = 5;
     public static final int VALUE_RTE_TYPE_CYCLE_MTB                            = 8;
     public static final int VALUE_RTE_TYPE_CYCLE_RACING                         = 9;
-	public static final int VALUE_RTE_TYPE_FOOT                                 = 3;
+	public static final int VALUE_RTE_TYPE_FOOT_01                              = 3;
+	public static final int VALUE_RTE_TYPE_FOOT_02                            	= 10;
+	public static final int VALUE_RTE_TYPE_FOOT_03                           	= 11;
 
     /**
      * All possible RTE_TYPES also sorted in correct order.
@@ -113,7 +115,9 @@ public class ExtraData extends Storable {
             VALUE_RTE_TYPE_CYCLE_SHORT,
             VALUE_RTE_TYPE_CYCLE_MTB,
             VALUE_RTE_TYPE_CYCLE_RACING,
-            VALUE_RTE_TYPE_FOOT,
+            VALUE_RTE_TYPE_FOOT_01,
+            VALUE_RTE_TYPE_FOOT_02,
+            VALUE_RTE_TYPE_FOOT_03,
     };
 
 	// ROUTE ACTIONS DEFINED IN PARAMETER 'PAR_RTE_POINT_ACTION'

@@ -17,7 +17,8 @@ import android.widget.Toast;
 
 public class PeriodicUpdateReceiver extends BroadcastReceiver {
 
-	private static final String TAG = PeriodicUpdateReceiver.class.getSimpleName();
+	// tag for logger
+	private static final String TAG = "PeriodicUpdateReceiver";
 	
 	@Override
 	public void onReceive(final Context context, Intent intent) {

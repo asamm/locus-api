@@ -132,8 +132,8 @@ public abstract class Storable {
     	int size = dr.readInt();
     	
     	// check size to prevent OOE
-    	if (size < 0 || size > 10 * 1024 * 1024) {
-    		throw new IOException("item size too big, size:" + size + ", max: 10MB");
+    	if (size < 0 || size > 20 * 1024 * 1024) {
+    		throw new IOException("item size too big, size:" + size + ", max: 20MB");
     	}
 
     	// read object data
