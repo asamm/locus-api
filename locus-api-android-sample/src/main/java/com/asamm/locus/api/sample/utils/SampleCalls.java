@@ -181,7 +181,7 @@ public class SampleCalls {
 	 * @param ctx current context
 	 * @throws RequiredVersionMissingException
 	 */
-	public static void callSendMorePointsGeocacheIntentMehod(Context ctx) throws RequiredVersionMissingException {
+	public static void callSendMorePointsGeocacheIntentMethod(Context ctx) throws RequiredVersionMissingException {
 		// prepare geocaches
 		PackWaypoints pw = new PackWaypoints("test6");
 		for (int i = 0; i < 100; i++) {
@@ -190,7 +190,7 @@ public class SampleCalls {
 
 		// send data
 		boolean send = ActionDisplayPoints.sendPack(ctx, pw, ExtraAction.CENTER);
-		Logger.logD(TAG, "callSendMorePointsGeocacheIntentMehod(), " +
+		Logger.logD(TAG, "callSendMorePointsGeocacheIntentMethod(), " +
 				"send:" + send);
 	}
 
@@ -200,7 +200,7 @@ public class SampleCalls {
 	 * method over intent.
 	 * @param ctx current context
 	 */
-	public static void callSendMorePointsGeocacheFileMehod(Context ctx) throws RequiredVersionMissingException {
+	public static void callSendMorePointsGeocacheFileMethod(Context ctx) throws RequiredVersionMissingException {
 		// get filepath
 		File externalDir = ctx.getExternalCacheDir();
 		if (externalDir == null || !(externalDir.exists())) {
@@ -219,7 +219,7 @@ public class SampleCalls {
 		// send data
 		boolean send = ActionDisplayPoints.sendPacksFile(ctx, data,
 				new File(externalDir, "testFile.locus").getAbsolutePath(), ExtraAction.CENTER);
-		Logger.logD(TAG, "callSendMorePointsGeocacheFileMehod(), " +
+		Logger.logD(TAG, "callSendMorePointsGeocacheFileMethod(), " +
 				"send:" + send);
 	}
 

@@ -6,30 +6,33 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
+/**
+ * Class that serve formatting units to defined formats.
+ */
 public class UtilsFormat {
 
 	// ALTITUDE
 
-	public static final int VALUE_UNITS_ALTITUDE_METRES = 0;
-	public static final int VALUE_UNITS_ALTITUDE_FEET = 1;
+	public static final int VALUE_UNITS_ALTITUDE_METRES 						= 0;
+	public static final int VALUE_UNITS_ALTITUDE_FEET 							= 1;
 	
 	// ANGLE
 
-	public static final int VALUE_UNITS_ANGLE_DEGREE = 0;
-	public static final int VALUE_UNITS_ANGLE_ANGULAR_MIL = 1;
-	public static final int VALUE_UNITS_ANGLE_RUSSIAN_MIL = 2;
-	public static final int VALUE_UNITS_ANGLE_US_ARTILLERY_MIL = 3;
+	public static final int VALUE_UNITS_ANGLE_DEGREE 							= 0;
+	public static final int VALUE_UNITS_ANGLE_ANGULAR_MIL 						= 1;
+	public static final int VALUE_UNITS_ANGLE_RUSSIAN_MIL 						= 2;
+	public static final int VALUE_UNITS_ANGLE_US_ARTILLERY_MIL 					= 3;
 	
 	// AREA
 
-	public static final int VALUE_UNITS_AREA_M_SQ = 0;
-	public static final int VALUE_UNITS_AREA_HA = 1;
-	public static final int VALUE_UNITS_AREA_KM_SQ = 2;
-	public static final int VALUE_UNITS_AREA_FT_SQ = 3;
-	public static final int VALUE_UNITS_AREA_YA_SQ = 4;
-	public static final int VALUE_UNITS_AREA_ACRE = 5;
-	public static final int VALUE_UNITS_AREA_MI_SQ = 6;
-	public static final int VALUE_UNITS_AREA_NM_SQ = 7;
+	public static final int VALUE_UNITS_AREA_M_SQ 								= 0;
+	public static final int VALUE_UNITS_AREA_HA 								= 1;
+	public static final int VALUE_UNITS_AREA_KM_SQ 								= 2;
+	public static final int VALUE_UNITS_AREA_FT_SQ 								= 3;
+	public static final int VALUE_UNITS_AREA_YA_SQ 								= 4;
+	public static final int VALUE_UNITS_AREA_ACRE 								= 5;
+	public static final int VALUE_UNITS_AREA_MI_SQ 								= 6;
+	public static final int VALUE_UNITS_AREA_NM_SQ 								= 7;
 
 	// DISTANCE
 
@@ -80,11 +83,11 @@ public class UtilsFormat {
 	/**************************************************/
     
 	/**
-     * Format altitude in metres.
+     * Format altitude value.
      * @param format format of altitude
-     * @param altitude altitude in metres.
-     * @param addUnits <code>true</code> to add units
-     * @return Formatted altitude in appropriate units.
+     * @param altitude altitude [in metres]
+     * @param addUnits {@code true} to add units
+     * @return formatted value
      */
     public static String formatAltitude(int format, double altitude, boolean addUnits) {
     	double value = formatAltitudeValue(format, altitude);
@@ -95,7 +98,13 @@ public class UtilsFormat {
     		return res;
     	}
     }
-    
+
+	/**
+	 * Format (convert) altitude value to require format.
+	 * @param format format of altitude
+	 * @param altitude altitude value [in metres]
+	 * @return formatted value
+	 */
     public static double formatAltitudeValue(int format, double altitude) {
     	if (format == VALUE_UNITS_ALTITUDE_FEET) {
             return altitude * UNIT_METER_TO_FEET;
@@ -103,7 +112,12 @@ public class UtilsFormat {
             return altitude;
         }
     }
-    
+
+	/**
+	 * Get altitude units for certain format.
+	 * @param format required format
+	 * @return unit value
+	 */
     public static String formatAltitudeUnits(int format) {
     	if (format == VALUE_UNITS_ALTITUDE_FEET) {
             return "ft";
@@ -123,6 +137,14 @@ public class UtilsFormat {
     public static double angleInUsArttileryMil = 
     		(6400.0 / 360.0);
 
+	/**
+	 * Format angle value.
+	 * @param format format of altitude
+	 * @param angle angle [in degrees]
+	 * @param optimize {@code true} to optimize/round angle value with defined accuracy
+	 * @param minAccuracy minimal number of decimal places
+	 * @return formatted value
+	 */
     public static String formatAngle(int format, float angle, 
     		boolean optimize, int minAccuracy) {
     	// format texts
@@ -131,7 +153,15 @@ public class UtilsFormat {
     	String units = formatAngleUnits(format);
     	return formatDouble(resValue, minAccuracy) + units;
     }
-    
+
+	/**
+	 * Format (convert) angle value to require format.
+	 * @param format format of angle
+	 * @param angle angle value [in degrees]
+	 * @param optimize {@code true} to optimize/round angle value with defined accuracy
+	 * @param minAccuracy minimal number of decimal places
+	 * @return formatted value
+	 */
     public static double formatAngleValue(int format, double angle,
     		boolean optimize, int minAccuracy) {
 		// fix angle values (round them on correct values for display)
@@ -151,11 +181,31 @@ public class UtilsFormat {
     	// VALUE_UNITS_ANGLE_DEGREE
     	return angle;
     }
-    
+
+	/**
+	 * Get angle units for certain format.
+	 * @param format required format
+	 * @return unit value
+	 */
+	public static String formatAngleUnits(int format) {
+		if (format == VALUE_UNITS_ANGLE_DEGREE) {
+			return "°";
+		} else {
+			return "";
+		}
+	}
+
+	/**
+	 * Optimize/round angle value based on defined accuracy.
+	 * @param angle angle to optimize
+	 * @param minAccuracy minimal accuracy for output
+	 * @return optimized value
+	 */
     private static double optimizeAngleValue(double angle, int minAccuracy) {
 		int divider = (int) Math.pow(10, minAccuracy);
 		angle = Math.round(angle * divider);
-		
+
+		// round values
 		if (minAccuracy == 0) {
 			if (angle < -0.5) {
 				angle += 360.0;
@@ -171,36 +221,43 @@ public class UtilsFormat {
 				angle -= (360.0f * divider);
 			}
 		}
+
+		// return optimized value
 		return angle / divider;
     }
-    
-    public static String formatAngleUnits(int format) {
-    	if (format == VALUE_UNITS_ANGLE_DEGREE) {
-            return "°";
-        } else {
-            return "";
-        }
-    }
-    
+
     /**************************************************/
     // AREA
     /**************************************************/
-    
-    public static CharSequence formatArea(int unitType, double area, boolean withUnits) {
+
+	/**
+	 * Format area value.
+	 * @param format format of area
+	 * @param area area [in metres^2]
+	 * @param addUnits {@code true} to add units
+	 * @return formatted value
+	 */
+    public static CharSequence formatArea(int format, double area, boolean addUnits) {
     	StringBuilder sb = new StringBuilder();
-    	if (!withUnits) {
-    		sb.append(formatAreaValue(unitType, area));
+    	if (!addUnits) {
+    		sb.append(formatAreaValue(format, area));
     	} else {
-    		sb.append(formatAreaValue(unitType, area)).append(" ").
-    			append(formatAreaUnit(unitType, area));
+    		sb.append(formatAreaValue(format, area)).append(" ").
+    			append(formatAreaUnit(format, area));
     	}
     	
     	// return result
     	return Html.fromHtml(sb.toString());
     }
-    
-    public static String formatAreaValue(int unitType, double area) {
-        switch (unitType) {
+
+	/**
+	 * Format (convert) area value to require format.
+	 * @param format format of altitude
+	 * @param area area value [in metres^2]
+	 * @return formatted value
+	 */
+    public static String formatAreaValue(int format, double area) {
+        switch (format) {
             case VALUE_UNITS_AREA_M_SQ:
                 return formatDouble(area, 0);
             case VALUE_UNITS_AREA_HA:
@@ -469,80 +526,80 @@ public class UtilsFormat {
     }
     
     public static double formatDistanceValue(int unitType, double dist) {
-    	switch (unitType) {
-		case VALUE_UNITS_DISTANCE_ME_M:
-			return dist;
-		case VALUE_UNITS_DISTANCE_ME_MKM:
-			if (dist >= UNIT_KILOMETER_TO_METER) {
-                return dist / UNIT_KILOMETER_TO_METER;
-            } else {
-                return dist;
-            }
-		case VALUE_UNITS_DISTANCE_IM_F:
-			return dist * UNIT_METER_TO_FEET;
-		case VALUE_UNITS_DISTANCE_IM_FM:
-			double feet = dist * UNIT_METER_TO_FEET;
-    		if (feet >= 1000.0) {
-    			return dist / UNIT_MILE_TO_METER;
-    		} else {
-            	return feet;
-    		}
-		case VALUE_UNITS_DISTANCE_IM_Y:
-			return dist * 1.0936;
-		case VALUE_UNITS_DISTANCE_IM_YM:
-			double yards = dist * 1.0936;
-    		if (yards >= 1000.0) {
-    			return dist / UNIT_MILE_TO_METER;
-    		} else {
-            	return yards;
-    		}
-		case VALUE_UNITS_DISTANCE_NA_MNMI:
-			if (dist >= UNIT_NMILE_TO_METER) {
-                return dist / UNIT_NMILE_TO_METER;
-            } else {
-                return dist;
-            }
-		default:
-			return dist;
+		switch (unitType) {
+			case VALUE_UNITS_DISTANCE_ME_M:
+				return dist;
+			case VALUE_UNITS_DISTANCE_ME_MKM:
+				if (dist >= UNIT_KILOMETER_TO_METER) {
+					return dist / UNIT_KILOMETER_TO_METER;
+				} else {
+					return dist;
+				}
+			case VALUE_UNITS_DISTANCE_IM_F:
+				return dist * UNIT_METER_TO_FEET;
+			case VALUE_UNITS_DISTANCE_IM_FM:
+				double feet = dist * UNIT_METER_TO_FEET;
+				if (feet >= 1000.0) {
+					return dist / UNIT_MILE_TO_METER;
+				} else {
+					return feet;
+				}
+			case VALUE_UNITS_DISTANCE_IM_Y:
+				return dist * 1.0936;
+			case VALUE_UNITS_DISTANCE_IM_YM:
+				double yards = dist * 1.0936;
+				if (yards >= 1000.0) {
+					return dist / UNIT_MILE_TO_METER;
+				} else {
+					return yards;
+				}
+			case VALUE_UNITS_DISTANCE_NA_MNMI:
+				if (dist >= UNIT_NMILE_TO_METER) {
+					return dist / UNIT_NMILE_TO_METER;
+				} else {
+					return dist;
+				}
+			default:
+				return dist;
 		}
     }
     
     public static String formatDistanceUnits(int unitType, double dist) {
-    	switch (unitType) {
-		case VALUE_UNITS_DISTANCE_ME_M:
-			return "m";
-		case VALUE_UNITS_DISTANCE_ME_MKM:
-            if (dist >= UNIT_KILOMETER_TO_METER) {
-                return "km";
-            } else {
-                return "m";
-            }
-		case VALUE_UNITS_DISTANCE_IM_F:
-			return " ft";
-		case VALUE_UNITS_DISTANCE_IM_FM:
-    		double feet = dist * UNIT_METER_TO_FEET;
-    		if (feet >= 1000.0) {
-    			return "mi";
-            } else {
-                return "ft";
-            }
-		case VALUE_UNITS_DISTANCE_IM_Y:
-			return "yd";
-		case VALUE_UNITS_DISTANCE_IM_YM:
-			double yards = dist * 1.0936;
-    		if (yards >= 1000.0) {
-    			return "mi";
-            } else {
-                return "yd";
-            }
-		case VALUE_UNITS_DISTANCE_NA_MNMI:
-			if (dist >= UNIT_NMILE_TO_METER) {
-                return "nmi";
-            } else {
-                return "m";
-            }
-		default:
-			return "";
+		switch (unitType) {
+			case VALUE_UNITS_DISTANCE_ME_M:
+				return "m";
+			case VALUE_UNITS_DISTANCE_ME_MKM:
+				if (dist >= UNIT_KILOMETER_TO_METER) {
+					return "km";
+				} else {
+					return "m";
+				}
+			case VALUE_UNITS_DISTANCE_IM_F:
+				return " ft";
+			case VALUE_UNITS_DISTANCE_IM_FM:
+				double feet = dist * UNIT_METER_TO_FEET;
+				if (feet >= 1000.0) {
+					return "mi";
+				} else {
+					return "ft";
+				}
+			case VALUE_UNITS_DISTANCE_IM_Y:
+				return "yd";
+			case VALUE_UNITS_DISTANCE_IM_YM:
+				double yards = dist * 1.0936;
+				if (yards >= 1000.0) {
+					return "mi";
+				} else {
+					return "yd";
+				}
+			case VALUE_UNITS_DISTANCE_NA_MNMI:
+				if (dist >= UNIT_NMILE_TO_METER) {
+					return "nmi";
+				} else {
+					return "m";
+				}
+			default:
+				return "";
 		}
     }
 
@@ -584,9 +641,9 @@ public class UtilsFormat {
 	}
 
 	/**
-	 * Format units for energy.
-	 * @param format type of unit
-	 * @return formatted text
+	 * Get energy units for certain format.
+	 * @param format required format
+	 * @return unit value
 	 */
 	public static String formatEnergyUnit(int format) {
 		if (format == VALUE_UNITS_ENERGY_KJ) {
@@ -632,9 +689,9 @@ public class UtilsFormat {
 	}
 
 	/**
-	 * Format units for slope.
-	 * @param format type of unit
-	 * @return formatted text
+	 * Get slope units for certain format.
+	 * @param format required format
+	 * @return unit value
 	 */
 	public static String formatSlopeUnit(int format) {
 		if (format == VALUE_UNITS_SLOPE_PERCENT) {
@@ -682,8 +739,13 @@ public class UtilsFormat {
         }
         return speed;
     }
-    
-    public static String formatSpeedUnits(int format) {
+
+	/**
+	 * Get speed units for certain format.
+	 * @param format required format
+	 * @return unit value
+	 */
+	public static String formatSpeedUnits(int format) {
         if (format == VALUE_UNITS_SPEED_MILH) {
         	return "mi/h";
         } else if (format == VALUE_UNITS_SPEED_NMIH) {
@@ -715,7 +777,12 @@ public class UtilsFormat {
             return UtilsFormat.formatDouble((tempC * 9.0f) / 5.0f + 32, 1);
         }
     }
-    
+
+	/**
+	 * Get temperature units for certain format.
+	 * @param format required format
+	 * @return unit value
+	 */
     public static String formatTemperatureUnit(int format) {
     	if (format == VALUE_UNITS_TEMPERATURE_CELSIUS) {
             return "°C";
@@ -762,9 +829,9 @@ public class UtilsFormat {
 	}
 
 	/**
-	 * Format units for weight.
-	 * @param format type of unit
-	 * @return formatted text
+	 * Get weight units for certain format.
+	 * @param format required format
+	 * @return unit value
 	 */
 	public static String formatWeightUnit(int format) {
 		if (format == VALUE_UNITS_WEIGHT_KG) {

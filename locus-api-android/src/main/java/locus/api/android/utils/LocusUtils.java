@@ -24,12 +24,14 @@ import locus.api.utils.DataWriterBigEndian;
 import locus.api.utils.Logger;
 import locus.api.utils.Utils;
 
+@SuppressWarnings ("unused")
 public class LocusUtils {
-	
-	private static final String TAG = LocusUtils.class.getSimpleName();
+
+	// tag for logger
+	private static final String TAG = "LocusUtils";
 	
 	/**************************************************/
-	/*                 CHECKING PART                  */
+	// LOCUS VERSION
 	/**************************************************/
 	
 	/**
@@ -152,20 +154,14 @@ public class LocusUtils {
 	 */
 	public static class LocusVersion extends Storable {
 		
-		/**
-		 * Version package name defined in manifest of Locus app. Main parameter for
-		 * calls to Locus.
-		 */
+		// Version package name defined in manifest of Locus app. It is main
+		// parameter for calls to Locus.
 		private String mPackageName;
-		/**
-		 * Version name defined in manifest of Locus app. This is just textual information of
-		 * versionCode.
-		 */
+		// Version name defined in manifest of Locus app. This is just textual
+		// information of versionCode.
 		private String mVersionName;
-		/**
-		 * Version code defined in manifest of Locus app. Core information used for
-		 * checks, if Locus versions already has requested feature.
-		 */
+		// Version code defined in manifest of Locus app. Core information used
+		// for checks, if Locus versions already has requested feature.
 		private int mVersionCode;
 
         /**
@@ -198,7 +194,7 @@ public class LocusUtils {
 
         /**
          * Test if current app is "Free version".
-         * @return <code>true</code> if app is "Free version"
+         * @return {@code true} if app is "Free version"
          */
 		public boolean isVersionFree() {
 			return !isVersionPro() && !isVersionGis();
@@ -206,7 +202,7 @@ public class LocusUtils {
 
         /**
          * Test if current app is "Pro version".
-         * @return <code>true</code> if app is "Pro version"
+         * @return {@code true} if app is "Pro version"
          */
         public boolean isVersionPro() {
 			return mPackageName.contains(".pro");
@@ -214,20 +210,32 @@ public class LocusUtils {
 
         /**
          * Test if current app is "GIS version".
-         * @return <code>true</code> if app is "GIS version"
+         * @return {@code true} if app is "GIS version"
          */
         public boolean isVersionGis() {
 			return mPackageName.contains(".gis");
 		}
 
+		/**
+		 * Get name of package of current version.
+		 * @return package name
+		 */
         public String getPackageName() {
             return mPackageName;
         }
 
+		/**
+		 * Get readable name of current version.
+		 * @return version name
+		 */
         public String getVersionName() {
             return mVersionName;
         }
 
+		/**
+		 * Get version code of current version.
+		 * @return version code
+		 */
         public int getVersionCode() {
             return mVersionCode;
         }
@@ -374,7 +382,7 @@ public class LocusUtils {
 	 * CHeck if package name define any version of Locus (so it's possible to
 	 * create LocusVersion for this packageName).
 	 * @param packageName name to test
-	 * @return <code>true</code> if name define Locus app
+	 * @return {@code true} if name define Locus app
 	 */
 	private static boolean isPackageNameLocus(String packageName) {
 		// check package name
@@ -437,8 +445,8 @@ public class LocusUtils {
 	/**
 	 * Get LocusVersion based on received Intent object. Since Locus version 279,
 	 * all Intents contains valid <code>packageName</code>, so it's simple possible
-	 * to get valid LocusVersion object. If user has older version of Locus, it's
-	 * called function that just return first available version.
+	 * to get valid LocusVersion object. If user has older version of Locus, this call
+	 * just return first available version.
 	 * @param ctx current context
 	 * @param intent received intent from Locus
 	 * @return generated Locus version
@@ -465,6 +473,7 @@ public class LocusUtils {
 	 * @param ctx current context
 	 * @return generated Locus version
 	 */
+	@Deprecated
 	public static LocusVersion createLocusVersion(Context ctx) {
 		// check parameters
 		if (ctx == null) {
@@ -893,32 +902,48 @@ public class LocusUtils {
 	}
 	
 	/**************************************************/
-	/*              SOME HANDY FUNCTIONS              */
+	// SOME HANDY FUNCTIONS
 	/**************************************************/
 
     /**
      * Check if received intent contains required action.
      * @param intent received intent
      * @param action action that we expect
-     * @return <code>true</code> if intent is valid and contains required action
+     * @return {@code true} if intent is valid and contains required action
      */
 	private static boolean isRequiredAction(Intent intent, String action) {
 		return intent != null &&
                 intent.getAction() != null &&
 				intent.getAction().equals(action);
 	}
-	
+
+	/**
+	 * Prepare intent that may be used for sending waypoint back to Locus application.
+	 * @param wpt waypoint to send back
+	 * @param overridePoint {@code true} to overwrite original point in application
+	 * @return generated intent
+	 */
 	public static Intent prepareResultExtraOnDisplayIntent(Waypoint wpt, boolean overridePoint) {
 		Intent intent = new Intent();
 		addWaypointToIntent(intent, wpt);
 		intent.putExtra(LocusConst.INTENT_EXTRA_POINT_OVERWRITE, overridePoint);
 		return intent;
 	}
-	
+
+	/**
+	 * Attach point into intent, that may be send to Locus application.
+	 * @param intent created intent container
+	 * @param wpt waypoint to attach
+	 */
 	public static void addWaypointToIntent(Intent intent, Waypoint wpt) {
 		intent.putExtra(LocusConst.INTENT_EXTRA_POINT, wpt.getAsBytes());
 	}
-	
+
+	/**
+	 * Get point from received intent.
+	 * @param intent received intent
+	 * @return point from intent or 'null' if intent has no point attached
+	 */
 	public static Waypoint getWaypointFromIntent(Intent intent) {
 		try {
 			return new Waypoint(intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINT));
@@ -927,16 +952,22 @@ public class LocusUtils {
 			return null;
 		}
 	}
-	
-	public static Location getLocationFromIntent(Intent intent, String intentExtra) {
+
+	/**
+	 * Get location object from received intent.
+	 * @param intent received intent
+	 * @param extraName name of 'extra' under which should be location stored in intent
+	 * @return location from intent or 'null' if intent has no location attached
+	 */
+	public static Location getLocationFromIntent(Intent intent, String extraName) {
 		try {
 			// check if intent has required extra parameter
-			if (!intent.hasExtra(intentExtra)) {
+			if (!intent.hasExtra(extraName)) {
 				return null;
 			}
 			
 			// convert data to valid Location object
-			return new Location(intent.getByteArrayExtra(intentExtra));
+			return new Location(intent.getByteArrayExtra(extraName));
 		} catch (Exception e) {
 			Logger.logE(TAG, "getLocationFromIntent(" + intent + ")", e);
 			return null;

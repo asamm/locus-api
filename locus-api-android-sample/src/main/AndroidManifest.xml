@@ -105,9 +105,13 @@
         <activity android:name=".ActivityDashboard"/>
 
         <!-- receiver for handling of periodic updates -->
-        <receiver android:name=".receivers.PeriodicUpdateReceiver">
+        <receiver
+            android:name=".receivers.PeriodicUpdateReceiver">
+
             <intent-filter>
-                <action android:name="locus.api.android.ACTION_PERIODIC_UPDATE"/>
+                <action
+                    android:name="locus.api.android.ACTION_PERIODIC_UPDATE"/>
+
             </intent-filter>
         </receiver>
 

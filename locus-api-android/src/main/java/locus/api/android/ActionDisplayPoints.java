@@ -25,8 +25,8 @@ public class ActionDisplayPoints extends ActionDisplay {
 	// ONE PACK_WAYPOINT OVER INTENT
 	
 	/**
-	 * Simple way how to send data over intent to Locus. Count that intent in
-	 * Android have some size limits so for larger data, use another method
+	 * Simple way how to send data over intent to Locus. Be aware that intent in Android have some size limits,
+	 * so for larger data, use below method {@link #sendPacksFile(Context, ArrayList, String, ExtraAction)}
 	 * @param context actual {@link Context}
 	 * @param data {@link PackWaypoints} object that should be send to Locus
 	 * @param extraAction extra action that should happen after display in app
@@ -161,10 +161,21 @@ public class ActionDisplayPoints extends ActionDisplay {
 		return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA_SILENTLY, 
 				context, data, filepath, false, centerOnData);
 	}
-	
+
+	/**
+	 * Main function for sending pack of points over temporary stored file.
+	 * @param action action we wants to perform
+	 * @param context current context
+	 * @param data data to send
+	 * @param filepath path where file will be temporary stored
+	 * @param callImport {@code true} to call import after load in Locus
+	 * @param centerOnData {@code true} to center on data
+	 * @return {@code true} if request was correctly send
+	 * @throws RequiredVersionMissingException
+	 */
 	private static boolean sendPacksFile(String action, Context context, 
-			ArrayList<PackWaypoints> data, String filepath, boolean callImport, boolean centerOnData)
-					throws RequiredVersionMissingException {
+			List<PackWaypoints> data, String filepath, boolean callImport, boolean centerOnData)
+			throws RequiredVersionMissingException {
 		if (sendDataWriteOnCard(data, filepath)) {
 			Intent intent = new Intent();
 			intent.putExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH, filepath);
@@ -226,7 +237,7 @@ public class ActionDisplayPoints extends ActionDisplay {
 		} finally {
 			Utils.closeStream(dis);
 		}
-		return new ArrayList<PackWaypoints>();
+		return new ArrayList<>();
 	}
 	
 	/**

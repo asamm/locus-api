@@ -28,6 +28,7 @@ import locus.api.objects.extra.ExtraStyle;
 import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
 import locus.api.utils.Logger;
+import locus.api.utils.Utils;
 
 public abstract class GeoData extends Storable {
 
@@ -52,6 +53,7 @@ public abstract class GeoData extends Storable {
 	// PARAMETERS
 
 	// unique ID of this object
+	@Deprecated // use get/set instead
 	public long id;
 	// name of object, have to be unique
 	protected String name;
@@ -631,6 +633,19 @@ public abstract class GeoData extends Storable {
         // add parameter and return result
         return afterItemAdded(extraData.addOtherFile(uri), created);
     }
+
+	/**
+	 * Get parameter that define index of point in track (index of trackpoint).
+	 * @return index in track or '-1' if no index is defined
+	 */
+	public int getParamRteIndex() {
+		// get parameter from container
+		String parIndex = getParameter(ExtraData.PAR_RTE_INDEX);
+		if (parIndex != null) {
+			return Utils.parseInt(parIndex);
+		}
+		return -1;
+	}
 	
 	// STYLES
 	

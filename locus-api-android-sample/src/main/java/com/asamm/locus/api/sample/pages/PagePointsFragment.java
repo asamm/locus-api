@@ -74,10 +74,10 @@ public class PagePointsFragment extends ABasePageFragment {
 				SampleCalls.callSendOnePointGeocache(getActivity());
 				break;
 			case 6:
-				SampleCalls.callSendMorePointsGeocacheIntentMehod(getActivity());
+				SampleCalls.callSendMorePointsGeocacheIntentMethod(getActivity());
 				break;
 			case 7:
-				SampleCalls.callSendMorePointsGeocacheFileMehod(getActivity());
+				SampleCalls.callSendMorePointsGeocacheFileMethod(getActivity());
 				break;
 			case 8:
 				SampleCalls.callSendOnePointWithCallbackOnDisplay(getActivity());

@@ -10,6 +10,7 @@ import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
 import locus.api.utils.Utils;
 
+@SuppressWarnings ("unused")
 public class LocusInfo extends Storable {
 	
 	// current Locus package name
@@ -54,17 +55,23 @@ public class LocusInfo extends Storable {
 	private int mUnitsFormatAngle;
 	// currently selected units for 'Areas'
 	private int mUnitsFormatArea;
+	// currently selected units for 'Energy'
+	private int mUnitsFormatEnergy;
 	// currently selected units for 'Length'
 	private int mUnitsFormatLength;
+	// currently selected units for 'Slope'
+	private int mUnitsFormatSlope;
 	// currently selected units for 'Speed'
 	private int mUnitsFormatSpeed;
 	// currently selected units for 'Temperature'
 	private int mUnitsFormatTemperature;
+	// currently selected units for 'Weight'
+	private int mUnitsFormatWeight;
 
     /**
      * Basic empty constructor.
      */
-	public LocusInfo() {
+	protected LocusInfo() {
 		super();
 	}
 
@@ -93,7 +100,7 @@ public class LocusInfo extends Storable {
 
     /**
      * Flag if Locus is currently running.
-     * @return <code>true</code> if Locus is running
+     * @return {@code true} if Locus is running
      */
 	public boolean isRunning() {
 		return mIsRunning;
@@ -300,73 +307,203 @@ public class LocusInfo extends Storable {
 
     // PERIODIC UPDATES
 
+	/**
+	 * Get information if periodic updates feature is enabled.
+	 * @return {@code true} if feature is enabled
+	 */
     public boolean isPeriodicUpdatesEnabled() {
 		return mPeriodicUpdatesEnabled;
 	}
 
-	public void setPeriodicUpdatesEnabled(boolean periodicUpdatesEnabled) {
-		this.mPeriodicUpdatesEnabled = periodicUpdatesEnabled;
+	/**
+	 * Set if "Periodic updates" feature is enabled
+	 * @param enabled {@code true} if feature is enabled
+	 */
+	protected void setPeriodicUpdatesEnabled(boolean enabled) {
+		this.mPeriodicUpdatesEnabled = enabled;
 	}
 
     // GEOCACHING OWNER NAME
 
+	/**
+	 * Get defined geocaching owner name.
+	 * @return name of owner
+	 */
 	public String getGcOwnerName() {
 		return mGcOwnerName;
 	}
 
-	public void setGcOwnerName(String gcOwnerName) {
+	/**
+	 * Set name of geocaching owner.
+	 * @param gcOwnerName name of owner
+	 */
+	protected void setGcOwnerName(String gcOwnerName) {
 		if (gcOwnerName == null) {
 			gcOwnerName = "";
 		}
 		this.mGcOwnerName = gcOwnerName;
 	}
 
+	// UNITS - ALTITUDE
+
+	/**
+	 * Get defined format for "Altitude" values.
+	 * @return defined format from {@link UtilsFormat}
+	 */
 	public int getUnitsFormatAltitude() {
 		return mUnitsFormatAltitude;
 	}
 
-	public void setUnitsFormatAltitude(int unitsFormatAltitude) {
-		this.mUnitsFormatAltitude = unitsFormatAltitude;
+	/**
+	 * Set format parameter for "Altitude" values.
+	 * @param format defined format by user
+	 */
+	protected void setUnitsFormatAltitude(int format) {
+		this.mUnitsFormatAltitude = format;
 	}
 
+	// UNITS - ANGLE
+
+	/**
+	 * Get defined format for "Angle" values.
+	 * @return defined format from {@link UtilsFormat}
+	 */
 	public int getUnitsFormatAngle() {
 		return mUnitsFormatAngle;
 	}
 
-	public void setUnitsFormatAngle(int unitsFormatAngle) {
-		this.mUnitsFormatAngle = unitsFormatAngle;
+	/**
+	 * Set format parameter for "Angle" values.
+	 * @param format defined format by user
+	 */
+	protected void setUnitsFormatAngle(int format) {
+		this.mUnitsFormatAngle = format;
 	}
 
+	// UNITS - AREA
+
+	/**
+	 * Get defined format for "Area" values.
+	 * @return defined format from {@link UtilsFormat}
+	 */
 	public int getUnitsFormatArea() {
 		return mUnitsFormatArea;
 	}
 
-	public void setUnitsFormatArea(int unitsFormatArea) {
-		this.mUnitsFormatArea = unitsFormatArea;
+	/**
+	 * Set format parameter for "Area" values.
+	 * @param format defined format by user
+	 */
+	protected void setUnitsFormatArea(int format) {
+		this.mUnitsFormatArea = format;
 	}
 
+	// UNITS - ENERGY
+
+	/**
+	 * Get defined format for "Energy" values.
+	 * @return defined format from {@link UtilsFormat}
+	 */
+	public int getUnitsFormatEnergy() {
+		return mUnitsFormatEnergy;
+	}
+
+	/**
+	 * Set format parameter for "Energy" values.
+	 * @param format defined format by user
+	 */
+	protected void setUnitsFormatEnergy(int format) {
+		mUnitsFormatEnergy = format;
+	}
+
+	// UNITS - LENGTH
+
+	/**
+	 * Get defined format for "Length" values.
+	 * @return defined format from {@link UtilsFormat}
+	 */
 	public int getUnitsFormatLength() {
 		return mUnitsFormatLength;
 	}
 
-	public void setUnitsFormatLength(int unitsFormatLength) {
-		this.mUnitsFormatLength = unitsFormatLength;
+	/**
+	 * Set format parameter for "Length" values.
+	 * @param format defined format by user
+	 */
+	protected void setUnitsFormatLength(int format) {
+		this.mUnitsFormatLength = format;
 	}
 
+	// UNITS - SLOPE
+
+	/**
+	 * Get defined format for "Slope" values.
+	 * @return defined format from {@link UtilsFormat}
+	 */
+	public int getUnitsFormatSlope() {
+		return mUnitsFormatSlope;
+	}
+
+	/**
+	 * Set format parameter for "Slope" values.
+	 * @param format defined format by user
+	 */
+	protected void setUnitsFormatSlope(int format) {
+		mUnitsFormatSlope = format;
+	}
+
+	// UNITS - SPEED
+
+	/**
+	 * Get defined format for "Speed" values.
+	 * @return defined format from {@link UtilsFormat}
+	 */
 	public int getUnitsFormatSpeed() {
 		return mUnitsFormatSpeed;
 	}
 
-	public void setUnitsFormatSpeed(int unitsFormatSpeed) {
-		this.mUnitsFormatSpeed = unitsFormatSpeed;
+	/**
+	 * Set format parameter for "Speed" values.
+	 * @param format defined format by user
+	 */
+	protected void setUnitsFormatSpeed(int format) {
+		this.mUnitsFormatSpeed = format;
 	}
 
+	// UNITS - TEMPERATURE
+
+	/**
+	 * Get defined format for "Temperature" values.
+	 * @return defined format from {@link UtilsFormat}
+	 */
 	public int getUnitsFormatTemperature() {
 		return mUnitsFormatTemperature;
 	}
 
-	public void setUnitsFormatTemperature(int unitsFormatTemperature) {
-		this.mUnitsFormatTemperature = unitsFormatTemperature;
+	/**
+	 * Set format parameter for "Temperature" values.
+	 * @param format defined format by user
+	 */
+	protected void setUnitsFormatTemperature(int format) {
+		this.mUnitsFormatTemperature = format;
+	}
+
+	// UNITS - WEIGHT
+
+	/**
+	 * Get defined format for "Weight" values.
+	 * @return defined format from {@link UtilsFormat}
+	 */
+	public int getUnitsFormatWeight() {
+		return mUnitsFormatWeight;
+	}
+
+	/**
+	 * Set format parameter for "Weight" values.
+	 * @param format defined format by user
+	 */
+	protected void setUnitsFormatWeight(int format) {
+		mUnitsFormatWeight = format;
 	}
 
 	@Override
@@ -419,13 +556,24 @@ public class LocusInfo extends Storable {
 			"unitsFormatAngle";
 	private static final String VALUE_UNITS_FORMAT_AREA =
 			"unitsFormatArea";
-	private static final String VALUE_UNITS_FORMAT_LENGTH = 
+	private static final String VALUE_UNITS_FORMAT_ENERGY =
+			"unitsFormatEnergy";
+	private static final String VALUE_UNITS_FORMAT_LENGTH =
 			"unitsFormatLength";
+	private static final String VALUE_UNITS_FORMAT_SLOPE =
+			"unitsFormatSlope";
 	private static final String VALUE_UNITS_FORMAT_SPEED = 
 			"unitsFormatSpeed";
 	private static final String VALUE_UNITS_FORMAT_TEMPERATURE =
 			"unitsFormatTemperature";
-	
+	private static final String VALUE_UNITS_FORMAT_WEIGHT =
+			"unitsFormatWeight";
+
+	/**
+	 * Create LocusInfo from received cursor.
+	 * @param cursor received cursor
+	 * @return LocusInfo object
+	 */
 	public static LocusInfo create(Cursor cursor) {
 		// check cursor
 		if (cursor == null || cursor.getCount() == 0) {
@@ -486,16 +634,25 @@ public class LocusInfo extends Storable {
                 case VALUE_UNITS_FORMAT_AREA:
                     info.mUnitsFormatArea = cursor.getInt(1);
                     break;
+				case VALUE_UNITS_FORMAT_ENERGY:
+					info.mUnitsFormatEnergy = cursor.getInt(1);
+					break;
                 case VALUE_UNITS_FORMAT_LENGTH:
                     info.mUnitsFormatLength = cursor.getInt(1);
                     break;
+				case VALUE_UNITS_FORMAT_SLOPE:
+					info.mUnitsFormatSlope = cursor.getInt(1);
+					break;
                 case VALUE_UNITS_FORMAT_SPEED:
                     info.mUnitsFormatSpeed = cursor.getInt(1);
                     break;
                 case VALUE_UNITS_FORMAT_TEMPERATURE:
                     info.mUnitsFormatTemperature = cursor.getInt(1);
                     break;
-            }
+				case VALUE_UNITS_FORMAT_WEIGHT:
+					info.mUnitsFormatWeight = cursor.getInt(1);
+					break;
+			}
 		}
 		return info;
 	}
@@ -552,13 +709,19 @@ public class LocusInfo extends Storable {
 				mUnitsFormatAngle});
 		c.addRow(new Object[] {VALUE_UNITS_FORMAT_AREA, 
 				mUnitsFormatArea});
-		c.addRow(new Object[] {VALUE_UNITS_FORMAT_LENGTH, 
+		c.addRow(new Object[] {VALUE_UNITS_FORMAT_ENERGY,
+				mUnitsFormatEnergy});
+		c.addRow(new Object[] {VALUE_UNITS_FORMAT_LENGTH,
 				mUnitsFormatLength});
-		c.addRow(new Object[] {VALUE_UNITS_FORMAT_SPEED, 
+		c.addRow(new Object[] {VALUE_UNITS_FORMAT_SLOPE,
+				mUnitsFormatSlope});
+		c.addRow(new Object[] {VALUE_UNITS_FORMAT_SPEED,
 				mUnitsFormatSpeed});
-		c.addRow(new Object[] {VALUE_UNITS_FORMAT_TEMPERATURE, 
+		c.addRow(new Object[] {VALUE_UNITS_FORMAT_TEMPERATURE,
 				mUnitsFormatTemperature});
-		
+		c.addRow(new Object[] {VALUE_UNITS_FORMAT_WEIGHT,
+				mUnitsFormatWeight});
+
 		// return cursor
 		return c;
 	}
@@ -569,7 +732,7 @@ public class LocusInfo extends Storable {
 
     @Override
     protected int getVersion() {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -603,6 +766,12 @@ public class LocusInfo extends Storable {
         mUnitsFormatLength = -1;
         mUnitsFormatSpeed = -1;
         mUnitsFormatTemperature = -1;
+
+		// V1
+
+		mUnitsFormatEnergy = -1;
+		mUnitsFormatSlope = -1;
+		mUnitsFormatWeight = -1;
     }
 
     @Override
@@ -636,6 +805,14 @@ public class LocusInfo extends Storable {
         mUnitsFormatLength = dr.readInt();
         mUnitsFormatSpeed = dr.readInt();
         mUnitsFormatTemperature = dr.readInt();
+
+		// V1
+
+		if (version >= 1) {
+			mUnitsFormatEnergy = dr.readInt();
+			mUnitsFormatSlope = dr.readInt();
+			mUnitsFormatWeight = dr.readInt();
+		}
     }
 
     @Override
@@ -669,5 +846,11 @@ public class LocusInfo extends Storable {
         dw.writeInt(mUnitsFormatLength);
         dw.writeInt(mUnitsFormatSpeed);
         dw.writeInt(mUnitsFormatTemperature);
+
+		// V1
+
+		dw.writeInt(mUnitsFormatEnergy);
+		dw.writeInt(mUnitsFormatSlope);
+		dw.writeInt(mUnitsFormatWeight);
     }
 }
