@@ -23,6 +23,7 @@ package locus.api.objects;
 import java.io.IOException;
 import java.util.Hashtable;
 
+import locus.api.objects.enums.PointRteAction;
 import locus.api.objects.extra.ExtraData;
 import locus.api.objects.extra.ExtraStyle;
 import locus.api.utils.DataReaderBigEndian;
@@ -522,6 +523,37 @@ public abstract class GeoData extends Storable {
     public void setParameterDescription(String desc) {
         addParameter(ExtraData.PAR_DESCRIPTION, desc);
     }
+
+	// PARAMETER 'RTE ACTION'
+
+	/**
+	 * Get action defined for current point.
+	 * @return routing action
+	 */
+	public PointRteAction getParameterRteAction() {
+		String param = getParameter(ExtraData.PAR_RTE_POINT_ACTION);
+		if (param != null && param.length() > 0) {
+			return PointRteAction.getActionById(Utils.parseInt(param));
+		} else {
+			return PointRteAction.UNDEFINED;
+		}
+	}
+
+	/**
+	 * Set Rte action for current point.
+	 * @param action action
+	 */
+	public void setParameterRteAction(PointRteAction action) {
+		// check action
+		if (action == null) {
+			Logger.logW(TAG, "setParameterRteAction(), " +
+					"attempt to set invalid parameter");
+			return;
+		}
+
+		// store value
+		addParameter(ExtraData.PAR_RTE_POINT_ACTION, action.getId());
+	}
 
     // PARAMETER 'EMAIL'
 

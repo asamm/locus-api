@@ -8,7 +8,8 @@ import locus.api.objects.Storable;
 
 public class DataReaderBigEndian {
 
-	private static final String TAG = DataReaderBigEndian.class.getSimpleName();
+	// tag for logger
+	private static final String TAG = "DataReaderBigEndian";
 	
 	// current position in buffer
 	private int mPosition;

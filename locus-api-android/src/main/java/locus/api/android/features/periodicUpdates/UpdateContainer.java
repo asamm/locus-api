@@ -3,7 +3,7 @@ package locus.api.android.features.periodicUpdates;
 import java.io.IOException;
 
 import locus.api.objects.Storable;
-import locus.api.objects.extra.ExtraData;
+import locus.api.objects.enums.PointRteAction;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.TrackStats;
 import locus.api.utils.DataReaderBigEndian;
@@ -118,7 +118,7 @@ public class UpdateContainer extends Storable {
     // time to current navigation point
     protected long guideNavPoint1Time;
     // action that happen on current navigation point
-    protected int guideNavPoint1Action;
+	protected PointRteAction guideNavPoint1Action;
 
     // name of next navigation target point
     protected String guideNavPoint2Name;
@@ -129,7 +129,7 @@ public class UpdateContainer extends Storable {
     // time to next navigation point
     protected long guideNavPoint2Time;
     // action that happen on next navigation point
-    protected int guideNavPoint2Action;
+	protected PointRteAction guideNavPoint2Action;
 
 	// VARIOUS
 	
@@ -582,11 +582,13 @@ public class UpdateContainer extends Storable {
             return guideNavPoint1Time;
         }
 
+		// CURRENT NAVIGATION ACTION
+
         /**
          * Return navigation action for current navigation point.
          * @return navigation action defined in ExtraData.POINT_RTE_ACTION_
          */
-        public int getNavPoint1Action() {
+        public PointRteAction getNavPoint1Action() {
             return guideNavPoint1Action;
         }
 
@@ -630,15 +632,16 @@ public class UpdateContainer extends Storable {
             return guideNavPoint2Time;
         }
 
+		// NEXT NAVIGATION ACTION
+
         /**
          * Return navigation action for next navigation point.
          * @return navigation action defined in ExtraData.POINT_RTE_ACTION_
          */
-        public int getNavPoint2Action() {
+        public PointRteAction getNavPoint2Action() {
             return guideNavPoint2Action;
         }
-
-    }
+	}
 
     /**************************************************/
     // VARIOUS
@@ -727,12 +730,12 @@ public class UpdateContainer extends Storable {
         guideNavPoint1Loc = null;
         guideNavPoint1Dist = 0.0;
         guideNavPoint1Time = 0L;
-		guideNavPoint1Action = ExtraData.VALUE_RTE_ACTION_NO_MANEUVER;
+		guideNavPoint1Action = PointRteAction.UNDEFINED;
         guideNavPoint2Name = "";
         guideNavPoint2Loc = null;
         guideNavPoint2Dist = 0.0;
         guideNavPoint2Time = 0L;
-		guideNavPoint2Action = ExtraData.VALUE_RTE_ACTION_NO_MANEUVER;
+		guideNavPoint2Action = PointRteAction.UNDEFINED;
 
         // VARIOUS
 
@@ -801,12 +804,12 @@ public class UpdateContainer extends Storable {
         guideNavPoint1Loc = readLocation(dr);
         guideNavPoint1Dist = dr.readDouble();
         guideNavPoint1Time = dr.readLong();
-		guideNavPoint1Action = dr.readInt();
+		guideNavPoint1Action = PointRteAction.getActionById(dr.readInt());
         guideNavPoint2Name = dr.readString();
         guideNavPoint2Loc = readLocation(dr);
         guideNavPoint2Dist = dr.readDouble();
         guideNavPoint2Time = dr.readLong();
-		guideNavPoint2Action = dr.readInt();
+		guideNavPoint2Action = PointRteAction.getActionById(dr.readInt());
 
         // VARIOUS
 
@@ -877,12 +880,12 @@ public class UpdateContainer extends Storable {
         writeLocation(dw, guideNavPoint1Loc);
         dw.writeDouble(guideNavPoint1Dist);
         dw.writeLong(guideNavPoint1Time);
-		dw.writeInt(guideNavPoint1Action);
+		dw.writeInt(guideNavPoint1Action.getId());
         dw.writeString(guideNavPoint2Name);
 		writeLocation(dw, guideNavPoint2Loc);
         dw.writeDouble(guideNavPoint2Dist);
         dw.writeLong(guideNavPoint2Time);
-		dw.writeInt(guideNavPoint2Action);
+		dw.writeInt(guideNavPoint2Action.getId());
 
         // VARIOUS
 

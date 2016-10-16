@@ -1,6 +1,7 @@
 package locus.api.android.features.periodicUpdates;
 
 import locus.api.android.utils.LocusUtils;
+import locus.api.objects.enums.PointRteAction;
 import locus.api.objects.extra.TrackStats;
 
 import android.content.Intent;
@@ -176,14 +177,15 @@ public class PeriodicUpdatesFiller {
                     i, PeriodicUpdatesConst.VAR_LOC_GUIDE_NAV_POINT1_LOC);
             if (update.guideNavPoint1Loc != null) {
                 update.guideNavPoint1Name = i.getStringExtra(
-                        PeriodicUpdatesConst.VAR_S_GUIDE_NAV_POINT1_NAME);
+						PeriodicUpdatesConst.VAR_S_GUIDE_NAV_POINT1_NAME);
                 update.guideNavPoint1Dist = i.getDoubleExtra(
-                        PeriodicUpdatesConst.VAR_D_GUIDE_NAV_POINT1_DIST, 0.0);
+						PeriodicUpdatesConst.VAR_D_GUIDE_NAV_POINT1_DIST, 0.0);
                 update.guideNavPoint1Time = i.getLongExtra(
                         PeriodicUpdatesConst.VAR_L_GUIDE_NAV_POINT1_TIME, 0L);
-                update.guideNavPoint1Action = i.getIntExtra(
-                        PeriodicUpdatesConst.VAR_L_GUIDE_NAV_POINT1_ACTION,
-                        update.guideNavPoint1Action);
+				int action1 = i.getIntExtra(
+						PeriodicUpdatesConst.VAR_L_GUIDE_NAV_POINT1_ACTION,
+						PointRteAction.UNDEFINED.getId());
+                update.guideNavPoint1Action = PointRteAction.getActionById(action1);
             }
 
             // get second navigation point
@@ -191,14 +193,15 @@ public class PeriodicUpdatesFiller {
                     i, PeriodicUpdatesConst.VAR_LOC_GUIDE_NAV_POINT2_LOC);
             if (update.guideNavPoint2Loc != null) {
                 update.guideNavPoint2Name = i.getStringExtra(
-                        PeriodicUpdatesConst.VAR_S_GUIDE_NAV_POINT2_NAME);
+						PeriodicUpdatesConst.VAR_S_GUIDE_NAV_POINT2_NAME);
                 update.guideNavPoint2Dist = i.getDoubleExtra(
-                        PeriodicUpdatesConst.VAR_D_GUIDE_NAV_POINT2_DIST, 0.0);
+						PeriodicUpdatesConst.VAR_D_GUIDE_NAV_POINT2_DIST, 0.0);
                 update.guideNavPoint2Time = i.getLongExtra(
-                        PeriodicUpdatesConst.VAR_L_GUIDE_NAV_POINT2_TIME, 0L);
-                update.guideNavPoint2Action = i.getIntExtra(
-                        PeriodicUpdatesConst.VAR_L_GUIDE_NAV_POINT2_ACTION,
-                        update.guideNavPoint2Action);
+						PeriodicUpdatesConst.VAR_L_GUIDE_NAV_POINT2_TIME, 0L);
+				int action2 = i.getIntExtra(
+						PeriodicUpdatesConst.VAR_L_GUIDE_NAV_POINT2_ACTION,
+						PointRteAction.UNDEFINED.getId());
+                update.guideNavPoint2Action = PointRteAction.getActionById(action2);
             }
 		}
 
@@ -378,6 +381,7 @@ public class PeriodicUpdatesFiller {
                 cont.guideTimeToFinish);
 
         // first navigation waypoint
+		UpdateContainer.GuideTypeTrack guideTrack = cont.getGuideTypeTrack();
         if (cont.guideNavPoint1Loc != null) {
             i.putExtra(PeriodicUpdatesConst.VAR_LOC_GUIDE_NAV_POINT1_LOC,
                     cont.guideNavPoint1Loc.getAsBytes());
@@ -387,8 +391,10 @@ public class PeriodicUpdatesFiller {
                     cont.guideNavPoint1Dist);
             i.putExtra(PeriodicUpdatesConst.VAR_L_GUIDE_NAV_POINT1_TIME,
                     cont.guideNavPoint1Time);
-            i.putExtra(PeriodicUpdatesConst.VAR_L_GUIDE_NAV_POINT1_ACTION,
-                    cont.guideNavPoint1Action);
+			if (guideTrack != null) {
+				i.putExtra(PeriodicUpdatesConst.VAR_L_GUIDE_NAV_POINT1_ACTION,
+						guideTrack.getNavPoint1Action().getId());
+			}
         }
 
         // second navigation waypoint
@@ -401,8 +407,10 @@ public class PeriodicUpdatesFiller {
                     cont.guideNavPoint2Dist);
             i.putExtra(PeriodicUpdatesConst.VAR_L_GUIDE_NAV_POINT2_TIME,
                     cont.guideNavPoint2Time);
-            i.putExtra(PeriodicUpdatesConst.VAR_L_GUIDE_NAV_POINT2_ACTION,
-                    cont.guideNavPoint2Action);
+			if (guideTrack != null) {
+				i.putExtra(PeriodicUpdatesConst.VAR_L_GUIDE_NAV_POINT2_ACTION,
+						guideTrack.getNavPoint2Action().getId());
+			}
         }
 	}
 	
