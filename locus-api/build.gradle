@@ -3,10 +3,6 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
-// compile with compatibility to JAVA 7
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
 // current library version
 def libraryVersion = '0.2.7'
 

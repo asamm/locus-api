@@ -189,12 +189,12 @@ public class TrackStats extends Storable {
         return mTotalTime;
     }
 
-    public void setTotalTime(long totalTime) {
-        this.mTotalTime = Math.abs(totalTime);
-    }
+	public void addTotalTime(long add) {
+		this.mTotalTime += Math.abs(add);
+	}
 
-    public void addTotalTime(long add) {
-        this.mTotalTime += Math.abs(add);
+	public void setTotalTime(long totalTime) {
+        this.mTotalTime = Math.abs(totalTime);
     }
 
     // TOTAL TIME (MOVE)

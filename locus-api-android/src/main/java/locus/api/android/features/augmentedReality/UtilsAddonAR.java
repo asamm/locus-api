@@ -40,9 +40,9 @@ public class UtilsAddonAR {
 	private static final int REQUEST_ADDON_AR = 30001;
 	
 	// extra ident for intent - location
-	private static final String EXTRA_LOCATION = "EXTRA_LOCATION";
+	public static final String EXTRA_LOCATION = "EXTRA_LOCATION";
 	// ident of actual guiding item
-	private static final String EXTRA_GUIDING_ID = "EXTRA_GUIDING_ID";
+	public static final String EXTRA_GUIDING_ID = "EXTRA_GUIDING_ID";
 
 	// last used location
 	private static Location mLastLocation;

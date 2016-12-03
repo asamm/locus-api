@@ -1,14 +1,12 @@
 apply plugin: 'com.android.application'
 
-// Android basics
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.asamm.locus.api.sample"
-        versionCode 1
-        versionName '0.1'
+        versionCode 2
+        versionName '0.2'
 
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -51,6 +49,13 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
+    // product flavors
+    productFlavors {
+        locusApiSample {
+            applicationId "com.asamm.locus.api.sample"
+        }
+    }
 }
 
 dependencies {
@@ -67,5 +72,5 @@ dependencies {
     // lib with some design utils
     // lib for a card view
     // lib for a recycler view
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.0.0'
 }

@@ -576,9 +576,9 @@ public class UpdateContainer extends Storable {
 
         /**
          * Return time from current location to current navigation point.
-         * @return time in seconds
+         * @return time [in ms]
          */
-        public double getNavPoint1Time() {
+        public long getNavPoint1Time() {
             return guideNavPoint1Time;
         }
 
@@ -626,9 +626,9 @@ public class UpdateContainer extends Storable {
 
         /**
          * Return time from current location to next navigation point.
-         * @return time in seconds
+         * @return time [in ms]
          */
-        public double getNavPoint2Time() {
+        public long getNavPoint2Time() {
             return guideNavPoint2Time;
         }
 
@@ -717,7 +717,7 @@ public class UpdateContainer extends Storable {
         // GUIDING PART
 
         guideType = GUIDE_TYPE_DISABLED;
-        guideWptName = null;
+        guideWptName = "";
         guideWptLoc = null;
         guideWptDist = 0.0;
         guideWptAzim = 0.0f;

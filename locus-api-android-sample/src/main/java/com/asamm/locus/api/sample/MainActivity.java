@@ -181,6 +181,9 @@ public class MainActivity extends AppCompatActivity {
 		// true, then it has handled the app icon touch event
 		if (mToggle.onOptionsItemSelected(item)) {
 			return true;
+		} else if (item.getItemId() == R.id.menu_settings) {
+			Toast.makeText(this, "Not implemented", Toast.LENGTH_SHORT).show();
+			return true;
 		}
 
 		// Handle your other action bar items...

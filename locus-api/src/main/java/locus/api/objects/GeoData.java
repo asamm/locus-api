@@ -250,25 +250,42 @@ public abstract class GeoData extends Storable {
 	}
 
 	// NAME
-	
+
+	/**
+	 * Get name of item.
+	 * @return name of item
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * Set new name for current item.
+	 * @param name new name
+	 */
 	public void setName(String name) {
-		if (name != null && name.length() > 0) {
-			this.name = name;
+		if (name == null) {
+			name = "";
 		}
+		this.name = name;
 	}
 
 	// TIME CREATED
-	
+
+	/**
+	 * Get time when item was created.
+	 * @return time of creation [in ms]
+	 */
 	public long getTimeCreated() {
 		return timeCreated;
 	}
 
-	public void setTimeCreated(long timeCreated) {
-		this.timeCreated = timeCreated;
+	/**
+	 * Set new time when item was created.
+	 * @param time time of creation [in ms]
+	 */
+	public void setTimeCreated(long time) {
+		this.timeCreated = time;
 	}
 
 	// TAGS
@@ -323,14 +340,10 @@ public abstract class GeoData extends Storable {
 	// EXTRA DATA
 
 	/**
-	 * Check if container has any extra data parameters.
-	 * @return {@code true} if extraData object is available
+	 * Get extra data serialized into byte array.
+	 * @return serialized extra data or 'null' if data doesn't exists
 	 */
-	public boolean hasExtraData() {
-		return extraData != null;
-	}
-	
-	public byte[] getExtraData() {
+	public byte[] getExtraDataRaw() {
 		try {
 			DataWriterBigEndian dw = new DataWriterBigEndian();
 			writeExtraData(dw);
@@ -340,18 +353,30 @@ public abstract class GeoData extends Storable {
 			return null;
 		}
 	}
-	
-	public void setExtraData(byte[] data) {
+
+	/**
+	 * Set (load) extra data from byte array.
+	 * @param data data
+	 */
+	public void setExtraDataRaw(byte[] data) {
 		try {
 			readExtraData(new DataReaderBigEndian(data));
 		} catch (Exception e) {
-			Logger.logE(TAG, "setExtraData(" + data + ")", e);
+			Logger.logE(TAG, "setExtraDataRaw(" + data + ")", e);
 			extraData = null;
 		}
 	}
 	
 	// EXTRA DATA - PARAMETERS
-	
+
+	/**
+	 * Check if container has any extra data parameters.
+	 * @return {@code true} if extraData object is available
+	 */
+	public boolean hasExtraData() {
+		return extraData != null;
+	}
+
 	// these are helper functions for more quick access
 	// to parameter values without need to check state
 	// of ExtraData object

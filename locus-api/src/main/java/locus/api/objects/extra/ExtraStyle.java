@@ -129,12 +129,16 @@ public class ExtraStyle extends Storable {
 	public IconStyle getIconStyle() {
 		return iconStyle;
 	}
-	
+
+	/**
+	 * Get style Url for an icon.
+	 * @return style Url/href parameter
+	 */
 	public String getIconStyleIconUrl() {
 		if (iconStyle == null) {
 			return null;
 		}
-		return iconStyle.iconHref;
+		return iconStyle.getIconHref();
 	}
 
 	public void setIconStyle(String iconUrl, float scale) {
@@ -143,7 +147,7 @@ public class ExtraStyle extends Storable {
 	
     public void setIconStyle(String iconUrl, int color, float heading, float scale) {
     	iconStyle = new IconStyle();
-    	iconStyle.iconHref = iconUrl;
+    	iconStyle.setIconHref(iconUrl);
     	iconStyle.color = color;
     	iconStyle.heading = heading;
     	iconStyle.setScale(scale);
@@ -336,6 +340,7 @@ public class ExtraStyle extends Storable {
         // scale of icon, where 1.0f means base no-scale value
 		private float mScale;
 		public float heading;
+		@Deprecated // do not use directly
 		public String iconHref;
 		public KmlVec2 hotSpot;
 		
@@ -373,7 +378,26 @@ public class ExtraStyle extends Storable {
 				this.scaleCurrent = scale;
 			}
 		}
-		
+
+		/**
+		 * Get link/id to image.
+		 * @return href parameter
+		 */
+		private String getIconHref() {
+			return iconHref;
+		}
+
+		/**
+		 * Set link/id to image.
+		 * @param iconHref href to image
+		 */
+		public void setIconHref(String iconHref) {
+			if (iconHref == null) {
+				iconHref = "";
+			}
+			this.iconHref = iconHref;
+		}
+
 		// STORABLE PART
 		
 		@Override
