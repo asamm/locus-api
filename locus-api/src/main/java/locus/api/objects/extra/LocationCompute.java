@@ -217,7 +217,7 @@ public class LocationCompute {
      * @return computed distance in metres
      */
     public static synchronized double computeDistanceFast(Location loc1, Location loc2) {
-        LocationCompute.computeDistanceAndBearingFast(
+        computeDistanceAndBearingFast(
                 loc1.getLatitude(), loc1.getLongitude(),
                 loc2.getLatitude(), loc2.getLongitude(), mDistResult);
         return mDistResult[0];
@@ -234,7 +234,7 @@ public class LocationCompute {
      */
     public static synchronized double computeDistanceFast(double lat1, double lon1,
             double lat2, double lon2) {
-        LocationCompute.computeDistanceAndBearingFast(
+        computeDistanceAndBearingFast(
                 lat1, lon1, lat2, lon2, mDistResult);
         return mDistResult[0];
     }

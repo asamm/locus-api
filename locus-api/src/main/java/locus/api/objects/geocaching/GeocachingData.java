@@ -421,7 +421,7 @@ public class GeocachingData extends Storable {
 
     /**
      * Get date/time, when owner create/hide cache on a gc.com web page.
-     * @return time when cache was hidden
+     * @return time when cache was hidden [in ms]
      */
 	public long getDateHidden() {
 		return mDateHidden;
@@ -429,7 +429,7 @@ public class GeocachingData extends Storable {
 
     /**
      * Set new date/time as time when owner create/hide a cache on gc.com web page.
-     * @param dateHidden time when cache was hidden (in ms since 1.1.1970)
+     * @param dateHidden time when cache was hidden [is ms]
      */
 	public void setDateHidden(long dateHidden) {
 		this.mDateHidden = dateHidden;
@@ -670,11 +670,19 @@ public class GeocachingData extends Storable {
 	}
 
 	// NOTES
-	
+
+	/**
+	 * Get current users notes.
+	 * @return notes
+	 */
 	public String getNotes() {
 		return mNotes;
 	}
-	
+
+	/**
+	 * Set new notes to current container.
+	 * @param notes custom users notes
+	 */
 	public void setNotes(String notes) {
 		if (notes == null) {
 			return;

@@ -188,12 +188,21 @@ public class GeocachingWaypoint extends Storable {
 	}
 	
 	// TYPE
-	
+
+	/**
+	 * Get defined type of waypoint.
+	 * @return type
+	 */
 	public String getType() {
 		return mType;
 	}
-	
+
+	/**
+	 * Set type of geocache waypoint.
+	 * @param type type of point
+	 */
 	public void setType(String type) {
+		// check value
 		if (type == null) {
 			Logger.logD(TAG, "setType(), empty parameter");
 			type = "";

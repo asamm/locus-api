@@ -17,6 +17,7 @@ import locus.api.utils.Utils;
 import android.content.Context;
 import android.content.Intent;
 
+@SuppressWarnings ({"WeakerAccess", "unused"})
 public class ActionDisplayPoints extends ActionDisplay {
 
 	// tag for logger
@@ -26,7 +27,7 @@ public class ActionDisplayPoints extends ActionDisplay {
 	
 	/**
 	 * Simple way how to send data over intent to Locus. Be aware that intent in Android have some size limits,
-	 * so for larger data, use below method {@link #sendPacksFile(Context, ArrayList, String, ExtraAction)}
+	 * so for larger data, use below method {@link #sendPacksFile(Context, List, String, ExtraAction)}
 	 * @param context actual {@link Context}
 	 * @param data {@link PackWaypoints} object that should be send to Locus
 	 * @param extraAction extra action that should happen after display in app
@@ -137,18 +138,17 @@ public class ActionDisplayPoints extends ActionDisplay {
 	 * On second case, <s>need permission for disk access</s> (not needed in latest android) and should
 	 * be slower due to IO operations.<br></br />
 	 * Be careful about size of data. This method can cause OutOfMemory error on Locus side if data
-	 * are too big, because all needs to be loaded at once before process. Mainly worry on 2.X devices,
-	 * where memory limit is very strict.
+	 * are too big, because all needs to be loaded at once before process.
 	 *   
 	 * @param context existing {@link Context}
-	 * @param data
-	 * @param filepath
-	 * @param callImport
-	 * @return <code>true</code> if data were correctly send, otherwise <code>false</code>
+	 * @param data data to send
+	 * @param filepath path where data should be stored
+	 * @param extraAction extra action that should happen after Locus reads data
+	 * @return {@code true} if data were correctly send, otherwise {@code false}
 	 * @throws RequiredVersionMissingException 
 	 */
 	public static boolean sendPacksFile(Context context, 
-			ArrayList<PackWaypoints> data, String filepath, ExtraAction extraAction)
+			List<PackWaypoints> data, String filepath, ExtraAction extraAction)
 					throws RequiredVersionMissingException {
 		return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA,
 				context, data, filepath, extraAction == ExtraAction.IMPORT,
@@ -156,7 +156,7 @@ public class ActionDisplayPoints extends ActionDisplay {
 	}
 	
 	public static boolean sendPacksFileSilent(Context context, 
-			ArrayList<PackWaypoints> data, String filepath, boolean centerOnData) 
+			List<PackWaypoints> data, String filepath, boolean centerOnData)
 					throws RequiredVersionMissingException {
 		return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA_SILENTLY, 
 				context, data, filepath, false, centerOnData);
@@ -215,16 +215,17 @@ public class ActionDisplayPoints extends ActionDisplay {
 	}
 
 	/**
-	 * Invert method to {@link #sendDataFile}. This load serialized data from file object
-	 * @param filepath
-	 * @return
+	 * Invert method to {@link #sendPacksFile(Context, List, String, ExtraAction)} . This load serialized data
+	 * from file object.
+	 * @param filepath path to file
+	 * @return loaded pack of points
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<PackWaypoints> readDataWriteOnCard(String filepath) {
 		// check file
 		File file = new File(filepath);
 		if (!file.exists()) {
-			return new ArrayList<PackWaypoints>();
+			return new ArrayList<>();
 		}
 		
 		DataInputStream dis = null;
@@ -233,7 +234,7 @@ public class ActionDisplayPoints extends ActionDisplay {
 			dis = new DataInputStream(new FileInputStream(file));
 			return (List<PackWaypoints>) Storable.readList(PackWaypoints.class, dis);
 		} catch (Exception e) {
-			Logger.logE(TAG, "getDataFile(" + filepath + ")", e);
+			Logger.logE(TAG, "readDataWriteOnCard(" + filepath + ")", e);
 		} finally {
 			Utils.closeStream(dis);
 		}
@@ -243,8 +244,8 @@ public class ActionDisplayPoints extends ActionDisplay {
 	/**
 	 * Allows to remove already send Pack from the map. Keep in mind, that this method remove
 	 * only packs that are visible (temporary) on map.
-	 * @param ctx
-	 * @param packName
+	 * @param ctx current context
+	 * @param packName name of pack
 	 * @throws RequiredVersionMissingException
 	 */
 	public void removePackFromLocus(Context ctx, String packName) 

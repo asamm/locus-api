@@ -10,7 +10,7 @@ import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
 import locus.api.utils.Utils;
 
-@SuppressWarnings ("unused")
+@SuppressWarnings ({"unused", "WeakerAccess"})
 public class LocusInfo extends Storable {
 	
 	// current Locus package name
@@ -69,9 +69,9 @@ public class LocusInfo extends Storable {
 	private int mUnitsFormatWeight;
 
     /**
-     * Basic empty constructor.
+     * Basic empty constructor for Storable class.
      */
-	protected LocusInfo() {
+	public LocusInfo() {
 		super();
 	}
 
