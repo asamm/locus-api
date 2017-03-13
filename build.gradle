@@ -1,0 +1,160 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.4'
+    }
+}
+
+// define global parameters
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    // compile parameters
+    compileSdkVersion = 23
+    buildToolsVersion = '25.0.1'
+
+    // define default parameters
+    minSdkVersion = 15
+    targetSdkVersion = 23
+
+    // load properties file
+    props = new Properties()
+    props.load(new FileInputStream(file('keystore.properties')))
+}
+
+configure([
+        project(":locus-api-android-sample")]) {
+
+    apply plugin: 'com.android.application'
+
+    android {
+        // setup SDK
+        compileSdkVersion rootProject.ext.compileSdkVersion
+        buildToolsVersion rootProject.ext.buildToolsVersion
+
+        // since API23 is Http Apache library only on demand. It is anyway needed for MultiPartEntity,
+        // so here we follow this suggestion
+        // http://developer.android.com/about/versions/marshmallow/android-6.0-changes.html#behavior-apache-http-client
+        useLibrary 'org.apache.http.legacy'
+
+        defaultConfig {
+            minSdkVersion rootProject.ext.minSdkVersion
+            targetSdkVersion rootProject.ext.targetSdkVersion
+
+            // enable multidex support
+            multiDexEnabled true
+        }
+
+        dexOptions {
+            jumboMode true
+        }
+
+        packagingOptions {
+            exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/NOTICE.txt'
+        }
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_7
+            targetCompatibility JavaVersion.VERSION_1_7
+        }
+
+        // enable lint in project
+        lintOptions {
+            checkReleaseBuilds true
+            abortOnError true
+            absolutePaths false
+            lintConfig file("../lint-global.xml")
+        }
+
+        // signing of versions
+        signingConfigs {
+            debug {
+                storeFile = file(props['signDebugPath'])
+                storePassword = props['signDebugPassword']
+                keyAlias = props['signDebugKeyAlias']
+                keyPassword = props['signDebugKeyPassword']
+            }
+            release {
+                storeFile = file(props['signReleasePath'])
+                storePassword = props['signReleasePassword']
+                keyAlias = props['signReleaseKeyAlias']
+                keyPassword = props['signReleaseKeyPassword']
+            }
+        }
+
+        // building task
+        buildTypes {
+            debug {
+                signingConfig signingConfigs.debug
+            }
+            release {
+                signingConfig signingConfigs.release
+            }
+        }
+
+//        // define release extension to each product flavor upon creation
+//        productFlavors.whenObjectAdded { flavor ->
+//            flavor.extensions.create("release", ReleaseExtension, '')
+//        }
+    }
+
+    // iterate over all versions
+    android.applicationVariants.all { variant ->
+
+        // define base parameters
+        println "Config for: " + build
+
+        // rename result file
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                // generate base name
+                def newName = variant.name.capitalize()
+                // remove from 'LocusFreeSamsungDebug', last work 'Debug'
+                newName = newName.substring(0, newName.length() - variant.buildType.name.length())
+                // create full name like 'LocusFreeSamsung_342_3.5.2_debug.apk'
+                def baseFileName = "${newName}_${variant.versionCode}_${variant.versionName}_${variant.buildType.name}"
+
+                // set new output file name
+                output.outputFile = new File(outputFile.parent, "${baseFileName}.apk")
+                println "Output:" + output.outputFile
+
+            }
+        }
+
+        // create also release task for "release builds"
+        variant.productFlavors.each { flavor ->
+            // do not handle certain flavors at all
+            def flavorName = flavor.name.capitalize()
+            if (flavor.name == '') {
+                return;
+            }
+
+            // skip invalid build types (so generate only releases versions)
+            if (variant.buildType.name != 'release') {
+                return;
+            }
+
+            // create task for release
+            tasks.create(name: variant.buildType.name + flavorName,
+                    dependsOn: variant.assemble) {
+                group 'Publish'
+                description "Assembles and archives $flavorName and its proguard mapping for the $build build"
+            }
+        }
+    }
+}

@@ -47,7 +47,7 @@ publishing {
                 asNode().appendNode(
                         'url', 'https://github.com/asamm/locus-api')
                 asNode().appendNode(
-                        'inceptionYear', '2016')
+                        'inceptionYear', '2017')
 
                 // add license
                 def nodeLicenses = asNode().appendNode('licenses')

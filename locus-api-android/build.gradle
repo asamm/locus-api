@@ -43,12 +43,12 @@ android {
 
 dependencies {
     // use current project in "debug" mode
-    //debugCompile project(':core:locus-api')
+    //debugCompile project(':locus-api')
     // use published maven repository
     //releaseCompile ('com.asamm:locus-api:0.2.6')
 
     // use in case of direct handling over Locus Core project
-    compile project(':core:locus-api')
+    compile project(':locus-api')
     // use in case of publishing to Maven
 //    compile 'com.asamm:locus-api:0.2.7'
 }
@@ -94,7 +94,7 @@ publishing {
                 asNode().appendNode(
                         'url', 'https://github.com/asamm/locus-api-android')
                 asNode().appendNode(
-                        'inceptionYear', '2016')
+                        'inceptionYear', '2017')
 
                 // add license
                 def nodeLicenses = asNode().appendNode('licenses')

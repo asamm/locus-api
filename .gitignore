@@ -36,6 +36,12 @@ captures/
 
 # Intellij
 *.iml
+/.idea/workspace.xml
+/.idea/libraries
 
 # Keystore files
+/keystore.properties
 *.jks
+
+# Custom directories
+core_private/

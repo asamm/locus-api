@@ -1,53 +1,7 @@
-apply plugin: 'com.android.application'
-
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-
     defaultConfig {
         versionCode 2
         versionName '0.2'
-
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-
-    // set lint in project
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
-    }
-
-    // signing of versions
-    signingConfigs {
-        debug {
-            // "~/.android/debug.keystore"
-            storeFile file(rootProject.ext.signDebugPath)
-            storePassword = rootProject.ext.signDebugPassword
-            keyAlias = rootProject.ext.signDebugKeyAlias
-            keyPassword = rootProject.ext.signDebugKeyPassword
-        }
-        release {
-            storeFile file(rootProject.ext.signReleasePath)
-            storePassword = rootProject.ext.signReleasePassword
-            keyAlias = rootProject.ext.signReleaseKeyAlias
-            keyPassword = rootProject.ext.signReleaseKeyPassword
-        }
-    }
-
-    // building task
-    buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
-        }
-        release {
-            signingConfig signingConfigs.release
-        }
     }
 
     // product flavors
@@ -72,5 +26,5 @@ dependencies {
     // lib with some design utils
     // lib for a card view
     // lib for a recycler view
-    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:appcompat-v7:25.0.1'
 }
