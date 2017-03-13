@@ -33,6 +33,10 @@ ext {
     // load properties file
     props = new Properties()
     props.load(new FileInputStream(file('keystore.properties')))
+
+    // API parameters
+    apiVersion = '0.2.8'
+    apiCode = 10
 }
 
 configure([

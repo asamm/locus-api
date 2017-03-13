@@ -1,16 +1,23 @@
-// add plugins
-plugins {
-    id "com.jfrog.bintray" version "1.7.3"
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
+    }
 }
 
 // apply plugins
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
+apply plugin: "com.jfrog.bintray"
 
-// current library version
-def libraryVersion = '0.2.7'
+// set Java 7 compatibility
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 task createSourceJar(type: Jar, dependsOn: classes) {
     classifier "sources"
@@ -31,7 +38,7 @@ publishing {
             groupId 'com.asamm'
             artifactId 'locus-api'
             //noinspection GroovyAssignabilityCheck
-            version libraryVersion
+            version rootProject.ext.apiVersion
 
             // define source
             from components.java
@@ -91,10 +98,10 @@ bintray {
 
         //noinspection GroovyAssignabilityCheck
         version {
-            name = libraryVersion
-            desc = 'Locus API, version ' + libraryVersion
+            name = rootProject.ext.apiVersion
+            desc = 'Locus API, version ' + rootProject.ext.apiVersion
             released  = new Date()
-            vcsTag = libraryVersion
+            vcsTag = rootProject.ext.apiVersion
         }
     }
 }

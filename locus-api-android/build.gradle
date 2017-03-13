@@ -1,17 +1,19 @@
-// add plugins
-plugins {
-    id "com.jfrog.bintray" version "1.7.3"
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
+    }
 }
 
 // apply plugins
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
-
-// library parameters
-def libraryCode = 9
-def libraryVersion = '0.2.7'
+apply plugin: "com.jfrog.bintray"
 
 // Android basics
 android {
@@ -36,21 +38,21 @@ android {
 
     // define default parameters
     defaultConfig {
-        versionCode libraryCode
-        versionName libraryVersion
+        versionCode rootProject.ext.apiCode
+        versionName rootProject.ext.apiVersion
     }
 }
 
 dependencies {
     // use current project in "debug" mode
-    //debugCompile project(':locus-api')
+    debugCompile project(':locus-api')
     // use published maven repository
-    //releaseCompile ('com.asamm:locus-api:0.2.6')
+    releaseCompile ('com.asamm:locus-api:+')
 
     // use in case of direct handling over Locus Core project
-    compile project(':locus-api')
+    // compile project(':locus-api')
     // use in case of publishing to Maven
-//    compile 'com.asamm:locus-api:0.2.7'
+    //compile 'com.asamm:locus-api:0.2.7'
 }
 
 task createSourceJar(type: Jar) {
@@ -78,7 +80,7 @@ publishing {
             groupId 'com.asamm'
             artifactId 'locus-api-android'
             //noinspection GroovyAssignabilityCheck
-            version libraryVersion
+            version rootProject.ext.apiVersion
 
             // define source
             artifact "${project.buildDir}/outputs/aar/${project.name}-release.aar"
@@ -147,10 +149,10 @@ bintray {
 
         //noinspection GroovyAssignabilityCheck
         version {
-            name = libraryVersion
-            desc = 'Locus API - Android, version ' + libraryVersion
+            name = rootProject.ext.apiVersion
+            desc = 'Locus API - Android, version ' + rootProject.ext.apiVersion
             released  = new Date()
-            vcsTag = libraryVersion
+            vcsTag = rootProject.ext.apiVersion
         }
     }
 }

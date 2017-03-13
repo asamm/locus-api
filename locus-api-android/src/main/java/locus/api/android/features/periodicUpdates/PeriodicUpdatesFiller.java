@@ -8,6 +8,7 @@ import android.content.Intent;
 
 import java.io.IOException;
 
+@SuppressWarnings ("WeakerAccess")
 public class PeriodicUpdatesFiller {
 
 	/**
