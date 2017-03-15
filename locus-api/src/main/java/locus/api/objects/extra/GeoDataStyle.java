@@ -24,16 +24,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import locus.api.objects.Storable;
-import locus.api.objects.extra.ExtraStyle.LineStyle.ColorStyle;
-import locus.api.objects.extra.ExtraStyle.LineStyle.Units;
+import locus.api.objects.extra.GeoDataStyle.LineStyle.ColorStyle;
+import locus.api.objects.extra.GeoDataStyle.LineStyle.Units;
 import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
 import locus.api.utils.Logger;
 
-public class ExtraStyle extends Storable {
+public class GeoDataStyle extends Storable {
 
     // tag for logger
-	private static final String TAG = "ExtraStyle";
+	private static final String TAG = "GeoDataStyle";
 	
 	// style name - id in style tag
 	private String mId;
@@ -53,11 +53,11 @@ public class ExtraStyle extends Storable {
 	// POLY STYLE
 	PolyStyle polyStyle;
 	
-	public ExtraStyle() {
+	public GeoDataStyle() {
 		this("");
 	}
 	
-	public ExtraStyle(String name) {
+	public GeoDataStyle(String name) {
 		super();
 
 
@@ -66,11 +66,11 @@ public class ExtraStyle extends Storable {
 		}
 	}
 
-	public ExtraStyle(DataReaderBigEndian dr) throws IOException {
+	public GeoDataStyle(DataReaderBigEndian dr) throws IOException {
 		super(dr);
 	}
 	
-	public ExtraStyle(byte[] data) throws IOException {
+	public GeoDataStyle(byte[] data) throws IOException {
 		super(data);
 	}
 

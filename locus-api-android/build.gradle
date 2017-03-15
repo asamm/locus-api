@@ -15,6 +15,10 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.bintray"
 
+// library parameters
+def libraryCode = 10
+def libraryVersion = '0.2.8'
+
 // Android basics
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -38,19 +42,20 @@ android {
 
     // define default parameters
     defaultConfig {
-        versionCode rootProject.ext.apiCode
-        versionName rootProject.ext.apiVersion
+        versionCode libraryCode
+        versionName libraryVersion
     }
 }
 
 dependencies {
     // use current project in "debug" mode
-    debugCompile project(':locus-api')
+    //debugCompile project(':locus-api')
     // use published maven repository
-    releaseCompile ('com.asamm:locus-api:+')
+    // releaseCompile ('com.asamm:locus-api:+') > seems to cause troubles during build
+    //releaseCompile ('com.asamm:locus-api:0.2.8')
 
     // use in case of direct handling over Locus Core project
-    // compile project(':locus-api')
+    compile project(':locus-api')
     // use in case of publishing to Maven
     //compile 'com.asamm:locus-api:0.2.7'
 }
@@ -80,7 +85,7 @@ publishing {
             groupId 'com.asamm'
             artifactId 'locus-api-android'
             //noinspection GroovyAssignabilityCheck
-            version rootProject.ext.apiVersion
+            version libraryVersion
 
             // define source
             artifact "${project.buildDir}/outputs/aar/${project.name}-release.aar"
@@ -149,10 +154,10 @@ bintray {
 
         //noinspection GroovyAssignabilityCheck
         version {
-            name = rootProject.ext.apiVersion
-            desc = 'Locus API - Android, version ' + rootProject.ext.apiVersion
+            name = libraryVersion
+            desc = 'Locus API - Android, version ' + libraryVersion
             released  = new Date()
-            vcsTag = rootProject.ext.apiVersion
+            vcsTag = libraryVersion
         }
     }
 }

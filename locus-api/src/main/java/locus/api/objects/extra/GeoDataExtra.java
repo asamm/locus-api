@@ -32,10 +32,10 @@ import locus.api.utils.Logger;
 import locus.api.utils.SparseArrayCompat;
 import locus.api.utils.Utils;
 
-public class ExtraData extends Storable {
+public class GeoDataExtra extends Storable {
 
 	// tag for logger
-	private static final String TAG = "ExtraData";
+	private static final String TAG = "GeoDataExtra";
 
 	// DATA SOURCE DEFINED IN PARAMETER 'PAR_SOURCE'
 	
@@ -323,11 +323,11 @@ public class ExtraData extends Storable {
 		}
 	}
 
-	public ExtraData() {
+	public GeoDataExtra() {
 		super();
 	}
 	
-	public ExtraData(byte[] data) throws IOException {
+	public GeoDataExtra(byte[] data) throws IOException {
 		super(data);
 	}
 	

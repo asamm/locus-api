@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.util.Hashtable;
 
 import locus.api.objects.enums.PointRteAction;
-import locus.api.objects.extra.ExtraData;
-import locus.api.objects.extra.ExtraStyle;
+import locus.api.objects.extra.GeoDataExtra;
+import locus.api.objects.extra.GeoDataStyle;
 import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
 import locus.api.utils.Logger;
@@ -62,12 +62,12 @@ public abstract class GeoData extends Storable {
 	protected long timeCreated;
 	
 	// extra data with parameters
-	public ExtraData extraData;
+	public GeoDataExtra extraData;
 	
 	// style for normal state
-	public ExtraStyle styleNormal;
+	public GeoDataStyle styleNormal;
 	// style for highlight state
-	public ExtraStyle styleHighlight;
+	public GeoDataStyle styleHighlight;
 	// current item state
 	private byte mState;
 
@@ -188,7 +188,7 @@ public abstract class GeoData extends Storable {
 	
 	protected void readExtraData(DataReaderBigEndian dr) throws IOException {
 		if (dr.readBoolean()) {
-			extraData = new ExtraData();
+			extraData = new GeoDataExtra();
 			extraData.read(dr);
 		}
 	}
@@ -204,10 +204,10 @@ public abstract class GeoData extends Storable {
 	
 	protected void readStyles(DataReaderBigEndian dr) throws IOException {
 		if (dr.readBoolean()) {
-			styleNormal = new ExtraStyle(dr);
+			styleNormal = new GeoDataStyle(dr);
 		}
 		if (dr.readBoolean()) {
-			styleHighlight = new ExtraStyle(dr);
+			styleHighlight = new GeoDataStyle(dr);
 		}
 	}
 	
@@ -379,7 +379,7 @@ public abstract class GeoData extends Storable {
 
 	// these are helper functions for more quick access
 	// to parameter values without need to check state
-	// of ExtraData object
+	// of GeoDataExtra object
 	
 	public boolean addParameter(int paramId, String param) {
 		// check extra data
@@ -466,11 +466,11 @@ public abstract class GeoData extends Storable {
      */
     public byte getParameterSource() {
         if (extraData == null) {
-            return ExtraData.SOURCE_UNKNOWN;
+            return GeoDataExtra.SOURCE_UNKNOWN;
         }
-        byte[] res = extraData.getParameterRaw(ExtraData.PAR_SOURCE);
+        byte[] res = extraData.getParameterRaw(GeoDataExtra.PAR_SOURCE);
         if (res == null || res.length != 1) {
-            return ExtraData.SOURCE_UNKNOWN;
+            return GeoDataExtra.SOURCE_UNKNOWN;
         } else {
             return res[0];
         }
@@ -481,7 +481,7 @@ public abstract class GeoData extends Storable {
      * @param source source ID
      */
 	public void setParameterSource(byte source) {
-		addParameter(ExtraData.PAR_SOURCE, source);
+		addParameter(GeoDataExtra.PAR_SOURCE, source);
 	}
 
     /**
@@ -497,7 +497,7 @@ public abstract class GeoData extends Storable {
      * Remove existing source parameter.
      */
 	public void removeParameterSource() {
-		removeParameter(ExtraData.PAR_SOURCE);
+		removeParameter(GeoDataExtra.PAR_SOURCE);
 	}
 	
 	// PARAMETER 'STYLE'
@@ -506,18 +506,18 @@ public abstract class GeoData extends Storable {
 		if (extraData == null) {
 			return "";
 		}
-		return extraData.getParameter(ExtraData.PAR_STYLE_NAME);
+		return extraData.getParameter(GeoDataExtra.PAR_STYLE_NAME);
 	}
 
 	public void setParameterStyleName(String style) {
-		addParameter(ExtraData.PAR_STYLE_NAME, style);
+		addParameter(GeoDataExtra.PAR_STYLE_NAME, style);
 	}
 	
 	public void removeParameterStyleName() {
 		if (extraData == null) {
 			return;
 		}
-		extraData.removeParameter(ExtraData.PAR_STYLE_NAME);
+		extraData.removeParameter(GeoDataExtra.PAR_STYLE_NAME);
 	}
 
     // PARAMETER 'DESCRIPTION'
@@ -538,7 +538,7 @@ public abstract class GeoData extends Storable {
         if (extraData == null) {
             return "";
         }
-        return extraData.getParameterNotNull(ExtraData.PAR_DESCRIPTION);
+        return extraData.getParameterNotNull(GeoDataExtra.PAR_DESCRIPTION);
     }
 
     /**
@@ -546,7 +546,7 @@ public abstract class GeoData extends Storable {
      * @param desc new description value
      */
     public void setParameterDescription(String desc) {
-        addParameter(ExtraData.PAR_DESCRIPTION, desc);
+        addParameter(GeoDataExtra.PAR_DESCRIPTION, desc);
     }
 
 	// PARAMETER 'RTE ACTION'
@@ -556,7 +556,7 @@ public abstract class GeoData extends Storable {
 	 * @return routing action
 	 */
 	public PointRteAction getParameterRteAction() {
-		String param = getParameter(ExtraData.PAR_RTE_POINT_ACTION);
+		String param = getParameter(GeoDataExtra.PAR_RTE_POINT_ACTION);
 		if (param != null && param.length() > 0) {
 			return PointRteAction.getActionById(Utils.parseInt(param));
 		} else {
@@ -577,7 +577,7 @@ public abstract class GeoData extends Storable {
 		}
 
 		// store value
-		addParameter(ExtraData.PAR_RTE_POINT_ACTION, action.getId());
+		addParameter(GeoDataExtra.PAR_RTE_POINT_ACTION, action.getId());
 	}
 
     // PARAMETER 'EMAIL'
@@ -697,7 +697,7 @@ public abstract class GeoData extends Storable {
 	 */
 	public int getParamRteIndex() {
 		// get parameter from container
-		String parIndex = getParameter(ExtraData.PAR_RTE_INDEX);
+		String parIndex = getParameter(GeoDataExtra.PAR_RTE_INDEX);
 		if (parIndex != null) {
 			return Utils.parseInt(parIndex);
 		}
@@ -755,7 +755,7 @@ public abstract class GeoData extends Storable {
      */
     private boolean createExtraData() {
         if (extraData == null) {
-            extraData = new ExtraData();
+            extraData = new GeoDataExtra();
             return true;
         } else {
             return false;

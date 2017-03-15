@@ -3,7 +3,7 @@ package locus.api.android.features.computeTrack;
 import java.io.IOException;
 
 import locus.api.objects.Storable;
-import locus.api.objects.extra.ExtraData;
+import locus.api.objects.extra.GeoDataExtra;
 import locus.api.objects.extra.Location;
 import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
@@ -106,7 +106,7 @@ public class ComputeTrackParameters extends Storable {
 
     @Override
     public void reset() {
-        mType = ExtraData.VALUE_RTE_TYPE_CAR;
+        mType = GeoDataExtra.VALUE_RTE_TYPE_CAR;
         mComputeInstructions = true;
         mHasDirection = false;
         mDirection = 0;

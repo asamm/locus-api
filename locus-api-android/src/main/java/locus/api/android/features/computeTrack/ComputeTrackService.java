@@ -7,6 +7,7 @@ import android.os.RemoteException;
 
 import locus.api.android.objects.ParcelableContainer;
 import locus.api.android.utils.LocusUtils;
+import locus.api.objects.extra.GeoDataExtra;
 import locus.api.objects.extra.Track;
 import locus.api.utils.Logger;
 
@@ -84,7 +85,7 @@ public abstract class ComputeTrackService extends Service {
 
     /**
      * Get list of available routing methods. Definition of possibilities is in
-     * {@link locus.api.objects.extra.ExtraData} class.
+     * {@link GeoDataExtra} class.
      * @return array of supported routing methods
      */
     public abstract int[] getTrackTypes();

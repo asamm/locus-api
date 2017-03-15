@@ -28,7 +28,8 @@ import locus.api.android.utils.LocusUtils.VersionCode;
 import locus.api.android.utils.Utils;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.Storable;
-import locus.api.objects.extra.ExtraData;
+import locus.api.objects.extra.GeoDataExtra;
+import locus.api.objects.extra.GeoDataStyle;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Track;
 import locus.api.objects.extra.Waypoint;
@@ -215,8 +216,8 @@ public class ActionTools {
 	
 	/**
 	 * Get full waypoint from Locus database with all possible information, like 
-	 * {@link locus.api.objects.extra.ExtraData} object, {@link locus.api.objects.extra.Location}
-	 *  or {@link locus.api.objects.extra.ExtraStyle} and others
+	 * {@link GeoDataExtra} object, {@link locus.api.objects.extra.Location}
+	 *  or {@link GeoDataStyle} and others
 	 * @param ctx current context
 	 * @param wptId unique ID of waypoint in Locus database
 	 * @return {@link locus.api.objects.extra.Waypoint} or {@code null} in case of problem
@@ -390,7 +391,7 @@ public class ActionTools {
             String packageName, String className, String returnDataName, String returnDataValue)
             throws RequiredVersionMissingException {
         // prepare callback
-        String callback = ExtraData.generateCallbackString(
+        String callback = GeoDataExtra.generateCallbackString(
                 "", packageName, className, returnDataName, returnDataValue);
 
         // call intent
@@ -427,8 +428,8 @@ public class ActionTools {
 
     /**
      * Get full track from Locus database with all possible information, like
-     * {@link locus.api.objects.extra.ExtraData} object
-     *  or {@link locus.api.objects.extra.ExtraStyle} and others
+     * {@link GeoDataExtra} object
+     *  or {@link GeoDataStyle} and others
      * @param ctx current context
      * @param trackId unique ID of track in Locus database
      * @return {@link locus.api.objects.extra.Track} or <i>null</i> in case of problem

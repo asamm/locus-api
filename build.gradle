@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.0'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.4'
     }
 }
@@ -23,20 +23,16 @@ task clean(type: Delete) {
 
 ext {
     // compile parameters
-    compileSdkVersion = 23
-    buildToolsVersion = '25.0.1'
+    compileSdkVersion = 25
+    buildToolsVersion = '25.0.2'
 
     // define default parameters
     minSdkVersion = 15
-    targetSdkVersion = 23
+    targetSdkVersion = 25
 
     // load properties file
     props = new Properties()
     props.load(new FileInputStream(file('keystore.properties')))
-
-    // API parameters
-    apiVersion = '0.2.8'
-    apiCode = 10
 }
 
 configure([

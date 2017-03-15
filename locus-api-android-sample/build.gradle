@@ -26,5 +26,5 @@ dependencies {
     // lib with some design utils
     // lib for a card view
     // lib for a recycler view
-    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:appcompat-v7:25.3.0'
 }

@@ -586,7 +586,7 @@ public class UpdateContainer extends Storable {
 
         /**
          * Return navigation action for current navigation point.
-         * @return navigation action defined in ExtraData.POINT_RTE_ACTION_
+         * @return navigation action defined in GeoDataExtra.POINT_RTE_ACTION_
          */
         public PointRteAction getNavPoint1Action() {
             return guideNavPoint1Action;
@@ -636,7 +636,7 @@ public class UpdateContainer extends Storable {
 
         /**
          * Return navigation action for next navigation point.
-         * @return navigation action defined in ExtraData.POINT_RTE_ACTION_
+         * @return navigation action defined in GeoDataExtra.POINT_RTE_ACTION_
          */
         public PointRteAction getNavPoint2Action() {
             return guideNavPoint2Action;

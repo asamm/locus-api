@@ -174,7 +174,7 @@ public class Waypoint extends GeoData {
 	
 	public String getExtraCallback() {
 		if (extraData != null) {
-			return extraData.getParameter(ExtraData.PAR_INTENT_EXTRA_CALLBACK);
+			return extraData.getParameter(GeoDataExtra.PAR_INTENT_EXTRA_CALLBACK);
 		}
 		return null;
 	}
@@ -199,7 +199,7 @@ public class Waypoint extends GeoData {
 	public void setExtraCallback(String btnName, String packageName, String className,
 			String returnDataName, String returnDataValue) {
         // prepare callback
-        String callBack = ExtraData.generateCallbackString(btnName, packageName, className,
+        String callBack = GeoDataExtra.generateCallbackString(btnName, packageName, className,
                 returnDataName, returnDataValue);
         if (callBack.length() == 0) {
             return;
@@ -211,7 +211,7 @@ public class Waypoint extends GeoData {
 		b.append(callBack).append(";");
 
         // finally insert parameter
-		addParameter(ExtraData.PAR_INTENT_EXTRA_CALLBACK, b.toString());
+		addParameter(GeoDataExtra.PAR_INTENT_EXTRA_CALLBACK, b.toString());
 	}
 	
 	/**
@@ -224,12 +224,12 @@ public class Waypoint extends GeoData {
 	 * completely all data 
 	 */
 	public void removeExtraCallback() {
-		addParameter(ExtraData.PAR_INTENT_EXTRA_CALLBACK, "clear");
+		addParameter(GeoDataExtra.PAR_INTENT_EXTRA_CALLBACK, "clear");
 	}
 	
 	public String getExtraOnDisplay() {
 		if (extraData != null) {
-			return extraData.getParameter(ExtraData.PAR_INTENT_EXTRA_ON_DISPLAY);
+			return extraData.getParameter(GeoDataExtra.PAR_INTENT_EXTRA_ON_DISPLAY);
 		}
 		return null;
 	}
@@ -259,7 +259,7 @@ public class Waypoint extends GeoData {
 		sb.append(className).append(";");
 		sb.append(returnDataName).append(";");
 		sb.append(returnDataValue).append(";");
-		addParameter(ExtraData.PAR_INTENT_EXTRA_ON_DISPLAY, sb.toString());
+		addParameter(GeoDataExtra.PAR_INTENT_EXTRA_ON_DISPLAY, sb.toString());
 	}
 	
 	/**
@@ -272,7 +272,7 @@ public class Waypoint extends GeoData {
 	 * completely all data 
 	 */
 	public void removeExtraOnDisplay() {
-		addParameter(ExtraData.PAR_INTENT_EXTRA_ON_DISPLAY, "clear");
+		addParameter(GeoDataExtra.PAR_INTENT_EXTRA_ON_DISPLAY, "clear");
 	}
 
 	public byte[] getGeocachingData() {

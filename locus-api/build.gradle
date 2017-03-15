@@ -15,6 +15,9 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.bintray"
 
+// current library version
+def libraryVersion = '0.2.8'
+
 // set Java 7 compatibility
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -38,7 +41,7 @@ publishing {
             groupId 'com.asamm'
             artifactId 'locus-api'
             //noinspection GroovyAssignabilityCheck
-            version rootProject.ext.apiVersion
+            version libraryVersion
 
             // define source
             from components.java
@@ -98,10 +101,10 @@ bintray {
 
         //noinspection GroovyAssignabilityCheck
         version {
-            name = rootProject.ext.apiVersion
-            desc = 'Locus API, version ' + rootProject.ext.apiVersion
+            name = libraryVersion
+            desc = 'Locus API, version ' + libraryVersion
             released  = new Date()
-            vcsTag = rootProject.ext.apiVersion
+            vcsTag = libraryVersion
         }
     }
 }

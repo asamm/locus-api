@@ -25,10 +25,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import locus.api.android.utils.Utils;
 import locus.api.android.utils.UtilsBitmap;
 import locus.api.objects.Storable;
-import locus.api.objects.extra.ExtraStyle;
+import locus.api.objects.extra.GeoDataStyle;
 import locus.api.objects.extra.Waypoint;
 import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
@@ -44,7 +43,7 @@ public class PackWaypoints extends Storable {
 	private String mName;
 	
 	// icon applied to whole PackWaypoints
-	private ExtraStyle mStyle;
+	private GeoDataStyle mStyle;
 	// bitmap for this pack
 	private Bitmap mBitmap;
 	
@@ -81,11 +80,11 @@ public class PackWaypoints extends Storable {
 		this.mBitmap = bitmap;
 	}
 	
-	public ExtraStyle getExtraStyle() {
+	public GeoDataStyle getExtraStyle() {
 		return mStyle;
 	}
 
-	public void setExtraStyle(ExtraStyle extraStyle) {
+	public void setExtraStyle(GeoDataStyle extraStyle) {
 		mStyle = extraStyle;
 	}
 	
@@ -115,7 +114,7 @@ public class PackWaypoints extends Storable {
 		
 		// style
 		if (dr.readBoolean()) {
-			mStyle = new ExtraStyle(dr);
+			mStyle = new GeoDataStyle(dr);
 		}
 		
 		// icon
