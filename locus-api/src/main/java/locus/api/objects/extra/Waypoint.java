@@ -73,7 +73,7 @@ public class Waypoint extends GeoData {
 
 	@Override
 	protected void readObject(int version, DataReaderBigEndian dr) throws IOException {
-		id = dr.readLong();
+		setId(dr.readLong());
 		name = dr.readString();
 		loc = new Location(dr);
 		
@@ -97,7 +97,7 @@ public class Waypoint extends GeoData {
 
 	@Override
 	protected void writeObject(DataWriterBigEndian dw) throws IOException {
-		dw.writeLong(id);
+		dw.writeLong(getId());
 		dw.writeString(name);
 		loc.write(dw);
 
@@ -117,7 +117,7 @@ public class Waypoint extends GeoData {
 
 	@Override
 	public void reset() {
-		id = -1;
+		setId(-1);
 		name = "";
 		loc = null;
 		extraData = null;

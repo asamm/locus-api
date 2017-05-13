@@ -52,24 +52,39 @@ public class GeoDataStyle extends Storable {
 	ListStyle listStyle;
 	// POLY STYLE
 	PolyStyle polyStyle;
-	
+
+	/**
+	 * Create new instance of style container.
+	 */
 	public GeoDataStyle() {
 		this("");
 	}
-	
+
+	/**
+	 * Create new instance of style container with defined name.
+	 * @param name name of style container
+	 */
 	public GeoDataStyle(String name) {
 		super();
 
-
+		// set name
 		if (name != null) {
 			this.mName = name;
 		}
 	}
 
+	/**
+	 * Create new instance of style container based on ready to use reader.
+	 * @param dr data reader with data
+	 */
 	public GeoDataStyle(DataReaderBigEndian dr) throws IOException {
 		super(dr);
 	}
-	
+
+	/**
+	 * Create new instance of style container based on previously stored data.
+	 * @param data data of style itself
+	 */
 	public GeoDataStyle(byte[] data) throws IOException {
 		super(data);
 	}
@@ -228,7 +243,7 @@ public class GeoDataStyle extends Storable {
     	}
     	lineStyle.colorStyle = style;
     	lineStyle.color = color;
-    	lineStyle.width = width;
+    	lineStyle.setWidth(width);
     	lineStyle.units = units;
     }
     
@@ -528,9 +543,15 @@ public class GeoDataStyle extends Storable {
 			dw.writeFloat(mScale);
 		}
 	}
-	
+
+	/**
+	 * Style of lines.
+	 */
 	public static class LineStyle extends Storable {
-		
+
+		/**
+		 * Special color style for a lines.
+		 */
 		public enum ColorStyle {
 			SIMPLE,
 			BY_SPEED, 
@@ -541,11 +562,17 @@ public class GeoDataStyle extends Storable {
 			BY_HRM,
 			BY_CADENCE
 		}
-		
+
+		/**
+		 * Used units for line width.
+		 */
 		public enum Units {
 			PIXELS, METRES
 		}
-		
+
+		/**
+		 * Type how line is presented to user.
+		 */
 		public enum LineType {
 			NORMAL, DOTTED, DASHED_1, DASHED_2, DASHED_3,
 			SPECIAL_1, SPECIAL_2, SPECIAL_3,
@@ -555,11 +582,12 @@ public class GeoDataStyle extends Storable {
 		
 		// KML styles
 		public int color;
-		public float width;
+		// width of line [px | m]
+		private float mWidth;
 		public int gxOuterColor;
 		public float gxOuterWidth;
 		/**
-		 * Not used. Instead of using this parameter, use {@link #width} and define
+		 * Not used. Instead of using this parameter, use {@link #mWidth} and define
 		 * {@link #units} to Units.METRES
 		 */
 		@Deprecated
@@ -572,20 +600,83 @@ public class GeoDataStyle extends Storable {
 		public LineType lineType;
 		public boolean drawOutline;
 		public int colorOutline;
-		
+
+		// temporary helper to convert old widths. Because of this, we increased version of object to V2,
+		// so it's clear if value is in DPI or PX values.
+		private int mObjectVersion;
+
+		/**
+		 * Create new line style object.
+		 */
 		public LineStyle() {
 			super();
 		}
-		
+
+		/**
+		 * Get temporary version of line style object.
+		 * @return object version defined by storable container
+		 */
+		public int getObjectVersion() {
+			return mObjectVersion;
+		}
+
+		/**
+		 * Set special object version type.
+		 * @param objectVersion object version
+		 */
+		public void setObjectVersion(int objectVersion) {
+			mObjectVersion = objectVersion;
+		}
+
+		// WIDTH
+
+		/**
+		 * Get width of line in units defined by {@link #units} parameter.
+		 * @return line width
+		 */
+		public float getWidth() {
+			return mWidth;
+		}
+
+		/**
+		 * Set line width in units defined by {@link #units} parameter.
+		 * @param width line width
+		 */
+		public void setWidth(float width) {
+			this.mWidth = width;
+		}
+
+		// WIDTH UNITS
+
+		/**
+		 * Get line units.
+		 * @return line units
+		 */
+		public Units getUnits() {
+			return units;
+		}
+
+		/**
+		 * Define line units.
+		 * @param units line units
+		 */
+		public void setUnits(Units units) {
+			this.units = units;
+		}
+
+
+		// STORABLE
+
 		@Override
 		protected int getVersion() {
-			return 1;
+			return 2;
 		}
 
 		@Override
 		public void reset() {
+			mObjectVersion = getVersion();
 			color = COLOR_DEFAULT;
-			width = 1.0f;
+			mWidth = 1.0f;
 			gxOuterColor = COLOR_DEFAULT;
 			gxOuterWidth = 0.0f;
 			gxPhysicalWidth = 0.0f;
@@ -600,39 +691,41 @@ public class GeoDataStyle extends Storable {
 		}
 
 		@Override
-		protected void readObject(int version, DataReaderBigEndian dis)
+		protected void readObject(int version, DataReaderBigEndian dr)
 				throws IOException {
-			color = dis.readInt();
-			width = dis.readFloat();
-			gxOuterColor = dis.readInt();
-			gxOuterWidth = dis.readFloat();
-			gxPhysicalWidth = dis.readFloat();
-			gxLabelVisibility = dis.readBoolean();
+			mObjectVersion = version;
+			color = dr.readInt();
+			mWidth = dr.readFloat();
+			gxOuterColor = dr.readInt();
+			gxOuterWidth = dr.readFloat();
+			gxPhysicalWidth = dr.readFloat();
+			gxLabelVisibility = dr.readBoolean();
 			
-			int cs = dis.readInt();
+			int cs = dr.readInt();
 			if (cs < ColorStyle.values().length) {
 				colorStyle = ColorStyle.values()[cs];
 			}
-			int un = dis.readInt();
+			int un = dr.readInt();
 			if (un < Units.values().length) {
 				units = Units.values()[un];
 			}
-			int lt = dis.readInt();
+			int lt = dr.readInt();
 			if (lt < LineType.values().length) {
 				lineType = LineType.values()[lt];
 			}
 			
-			// extensions in version 1
+			// V1
+
 			if (version >= 1) {
-				drawOutline = dis.readBoolean();
-				colorOutline = dis.readInt();
+				drawOutline = dr.readBoolean();
+				colorOutline = dr.readInt();
 			}
 		}
 		
 		@Override
 		protected void writeObject(DataWriterBigEndian dw) throws IOException {
 			dw.writeInt(color);
-			dw.writeFloat(width);
+			dw.writeFloat(mWidth);
 			dw.writeInt(gxOuterColor);
 			dw.writeFloat(gxOuterWidth);
 			dw.writeFloat(gxPhysicalWidth);
@@ -640,6 +733,9 @@ public class GeoDataStyle extends Storable {
 			dw.writeInt(colorStyle.ordinal());
 			dw.writeInt(units.ordinal());
 			dw.writeInt(lineType.ordinal());
+
+			// V1
+
 			dw.writeBoolean(drawOutline);
 			dw.writeInt(colorOutline);
 		}
@@ -799,9 +895,11 @@ public class GeoDataStyle extends Storable {
             if (dr.readBoolean()) {
                 polyStyle = (PolyStyle) Storable.read(PolyStyle.class, dr);
             }
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException e) {
             e.printStackTrace();
-        }
+        } catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
     }
 
     private void readVersion0(DataReaderBigEndian dr) throws IOException {
@@ -839,7 +937,7 @@ public class GeoDataStyle extends Storable {
         if (dr.readBoolean()) {
             lineStyle = new LineStyle();
             lineStyle.color = dr.readInt();
-            lineStyle.width = dr.readFloat();
+            lineStyle.mWidth = dr.readFloat();
             lineStyle.gxOuterColor = dr.readInt();
             lineStyle.gxOuterWidth = dr.readFloat();
             lineStyle.gxPhysicalWidth = dr.readFloat();

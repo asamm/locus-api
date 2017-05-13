@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -32,7 +33,6 @@ import android.widget.Toast;
 import com.asamm.locus.api.sample.R;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,10 +47,8 @@ import locus.api.android.objects.PackWaypoints;
 import locus.api.android.utils.LocusUtils.LocusVersion;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Circle;
-import locus.api.objects.extra.ExtraData;
-import locus.api.objects.extra.ExtraStyle;
-import locus.api.objects.extra.ExtraStyle.LineStyle.ColorStyle;
-import locus.api.objects.extra.ExtraStyle.LineStyle.Units;
+import locus.api.objects.extra.GeoDataExtra;
+import locus.api.objects.extra.GeoDataStyle;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Track;
 import locus.api.objects.extra.Waypoint;
@@ -73,7 +71,7 @@ public class SampleCalls {
 	/**
 	 * Send single point into Locus application.
 	 * @param ctx current context
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	public static void callSendOnePoint(Context ctx) throws RequiredVersionMissingException {
 		// generate pack
@@ -90,7 +88,7 @@ public class SampleCalls {
 	 * Send more points - LIMIT DATA TO MAX 1000 (really max 1500), more cause troubles. It easy and fast method,
 	 * but depend on data size, so intent with lot of geocaches will be really limited.
 	 * @param ctx current context
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	public static void callSendMorePoints(Context ctx) throws RequiredVersionMissingException {
 		// generate pack with points
@@ -108,7 +106,7 @@ public class SampleCalls {
 	/**
 	 * Send single point that will be immediately visible on a map. Point will also contains an icon.
 	 * @param ctx current context
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	public static void callSendOnePointWithIcon(Context ctx) throws RequiredVersionMissingException {
 		// prepare pack with point (with icon)
@@ -135,7 +133,7 @@ public class SampleCalls {
 
 		// prepare first pack
 		PackWaypoints pd1 = new PackWaypoints("test01");
-		ExtraStyle es1 = new ExtraStyle();
+		GeoDataStyle es1 = new GeoDataStyle();
 		es1.setIconStyle("http://www.googlemapsmarkers.com/v1/009900/", 1.0f);
 		pd1.setExtraStyle(es1);
 		for (int i = 0; i < 100; i++) {
@@ -145,7 +143,7 @@ public class SampleCalls {
 
 		// prepare second pack with different icon
 		PackWaypoints pd2 = new PackWaypoints("test02");
-		ExtraStyle es2 = new ExtraStyle();
+		GeoDataStyle es2 = new GeoDataStyle();
 		es2.setIconStyle("http://www.googlemapsmarkers.com/v1/990000/", 1.0f);
 		pd2.setExtraStyle(es2);
 		for (int i = 0; i < 100; i++) {
@@ -162,7 +160,7 @@ public class SampleCalls {
 	/**
 	 * Display single geocache point on the map.
 	 * @param ctx current context
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	public static void callSendOnePointGeocache(Context ctx) throws RequiredVersionMissingException {
 		// prepare geocache
@@ -179,7 +177,7 @@ public class SampleCalls {
 	 * Send and display more geocaches on the screen at once. Limit here is much more tight! Intent have limit on
 	 * data size (around 2MB, so if you want to send more geocaches, don't rather use this method.
 	 * @param ctx current context
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	public static void callSendMorePointsGeocacheIntentMethod(Context ctx) throws RequiredVersionMissingException {
 		// prepare geocaches
@@ -227,7 +225,7 @@ public class SampleCalls {
 	 * Display single point with special "onClick" event. Such point when shown, will call back to this application.
 	 * You may use this for loading extra data. So you send simple point and when show, you display extra information.
 	 * @param ctx current context
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	public static void callSendOnePointWithCallbackOnDisplay(Context ctx) throws RequiredVersionMissingException {
 		// prepare data
@@ -306,7 +304,7 @@ public class SampleCalls {
 	/**
 	 * Send (display) single track on Locus map.
 	 * @param ctx current context
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	public static void callSendOneTrack(Context ctx) throws RequiredVersionMissingException {
 		// prepare data
@@ -356,7 +354,7 @@ public class SampleCalls {
 	 * Send request on a location. This open Locus "Location picker" and allow to choose
 	 * location from supported sources. Result will be delivered to activity as response
 	 * @param act current activity
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	public static void pickLocation(Activity act)
 			throws RequiredVersionMissingException {
@@ -376,29 +374,29 @@ public class SampleCalls {
 		ArrayList<Circle> circles = new ArrayList<Circle>();
 
 		Circle c0 = new Circle(new Location("c1", 50.15, 15), 10000000, true);
-		c0.styleNormal = new ExtraStyle();
+		c0.styleNormal = new GeoDataStyle();
 		c0.styleNormal.setPolyStyle(Color.argb(50, Color.red(Color.RED),
 				Color.green(Color.RED), Color.blue(Color.RED)), true, true);
 		circles.add(c0);
 
 		Circle c1 = new Circle(new Location("c1", 50, 15), 1000);
-		c1.styleNormal = new ExtraStyle();
+		c1.styleNormal = new GeoDataStyle();
 		c1.styleNormal.setLineStyle(Color.BLUE, 2);
 		circles.add(c1);
 
 		Circle c2 = new Circle(new Location("c2", 50.1, 15), 1500);
-		c2.styleNormal = new ExtraStyle();
+		c2.styleNormal = new GeoDataStyle();
 		c2.styleNormal.setLineStyle(Color.RED, 3);
 		circles.add(c2);
 
 		Circle c3 = new Circle(new Location("c1", 50.2, 15), 2000);
-		c3.styleNormal = new ExtraStyle();
+		c3.styleNormal = new GeoDataStyle();
 		c3.styleNormal.setLineStyle(Color.GREEN, 4);
 		c3.styleNormal.setPolyStyle(Color.LTGRAY, true, true);
 		circles.add(c3);
 
 		Circle c4 = new Circle(new Location("c1", 50.3, 15), 1500);
-		c4.styleNormal = new ExtraStyle();
+		c4.styleNormal = new GeoDataStyle();
 		c4.styleNormal.setLineStyle(Color.MAGENTA, 0);
 		c4.styleNormal.setPolyStyle(
 				Color.argb(100, Color.red(Color.MAGENTA),
@@ -513,17 +511,19 @@ public class SampleCalls {
     private static Track generateTrack(double startLat, double startLon) {
 		Track track = new Track();
 		track.setName("track from API (" + startLat + "|" + startLon + ")");
-		track.addParameter(ExtraData.PAR_DESCRIPTION, "simple track bla bla bla ...");
+		track.addParameter(GeoDataExtra.PAR_DESCRIPTION, "simple track bla bla bla ...");
 		
 		// set style
-		ExtraStyle style = new ExtraStyle();
-		style.setLineStyle(ColorStyle.SIMPLE, Color.CYAN, 7.0f, Units.PIXELS);
+		GeoDataStyle style = new GeoDataStyle();
+		style.setLineStyle(GeoDataStyle.LineStyle.ColorStyle.SIMPLE,
+				Color.CYAN, 7.0f,
+				GeoDataStyle.LineStyle.Units.PIXELS);
 		track.styleNormal = style;
 		
 		// generate points
 		double lat = startLat;
 		double lon = startLon;
-		ArrayList<Location> locs = new ArrayList<Location>();
+		ArrayList<Location> locs = new ArrayList<>();
 		for (int i = 0; i < 1000; i++) {
 			lat += ((Math.random() - 0.5) * 0.01);
 			lon += (Math.random() * 0.001);
@@ -535,11 +535,11 @@ public class SampleCalls {
 		track.setPoints(locs);
 		
 		// set some points as highlighted wpts
-		ArrayList<Waypoint> wpts = new ArrayList<Waypoint>();
-		wpts.add(new Waypoint("p1", locs.get(100)));
-		wpts.add(new Waypoint("p2", locs.get(300)));
-		wpts.add(new Waypoint("p3", locs.get(800)));
-		track.setWaypoints(wpts);
+		ArrayList<Waypoint> pts = new ArrayList<>();
+		pts.add(new Waypoint("p1", locs.get(100)));
+		pts.add(new Waypoint("p2", locs.get(300)));
+		pts.add(new Waypoint("p3", locs.get(800)));
+		track.setWaypoints(pts);
 		return track;
     }
 
@@ -548,6 +548,6 @@ public class SampleCalls {
 	 * @return GPX file
 	 */
 	private static File getTempGpxFile() {
-		return new File("/mnt/sdcard/Locus/_test/temporary_path.gpx");
+		return new File(Environment.getExternalStorageDirectory().getPath(), "temporary_path.gpx");
 	}
 }

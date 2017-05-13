@@ -225,7 +225,7 @@ public class FieldNotesHelper {
      * @return <code>true</code> if insert was successful, otherwise false
      */
     public static boolean insert(Context ctx, LocusUtils.LocusVersion lv,
-                                 FieldNote gcFn) throws RequiredVersionMissingException {
+			FieldNote gcFn) throws RequiredVersionMissingException {
         // get parameters for query
         Uri cpUri = getUriFieldNoteTable(lv);
 

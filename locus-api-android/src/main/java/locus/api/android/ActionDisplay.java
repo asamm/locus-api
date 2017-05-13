@@ -19,17 +19,15 @@ public class ActionDisplay {
 		NONE, CENTER, IMPORT
 	}
 	
-	/**************************************************/
 	// PRIVATE CALLS
-	/**************************************************/
-	
-	protected static boolean sendData(String action, Context context, Intent intent,
+
+	static boolean sendData(String action, Context context, Intent intent,
 			boolean callImport, boolean center) throws RequiredVersionMissingException {
 		return sendData(action, context, intent, 
 				callImport, center, VersionCode.UPDATE_01);
 	}
 	
-	protected static boolean sendData(String action, Context context, Intent intent,
+	static boolean sendData(String action, Context context, Intent intent,
 			boolean callImport, boolean center, VersionCode vc) throws RequiredVersionMissingException {
 		if (!LocusUtils.isLocusAvailable(context, vc.vcFree, vc.vcPro, 0)) {
 			throw new RequiredVersionMissingException(vc.vcFree);
@@ -92,9 +90,9 @@ public class ActionDisplay {
 	 * @param extraName name of items to remove
 	 * @param itemsId ID of item
 	 * @return <code>true</code> if item was correctly send
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
-	protected static boolean removeSpecialDataSilently(Context ctx, LocusVersion lv,
+	static boolean removeSpecialDataSilently(Context ctx, LocusVersion lv,
 			String extraName, long[] itemsId) throws RequiredVersionMissingException {
 		// check Locus version
 		if (!lv.isVersionValid(VersionCode.UPDATE_02)) {

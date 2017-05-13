@@ -3,7 +3,7 @@ package com.asamm.locus.api.sample;
 import locus.api.android.ActionTools;
 import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.LocusUtils.LocusVersion;
-import locus.api.objects.extra.ExtraData;
+import locus.api.objects.extra.GeoDataExtra;
 import locus.api.objects.extra.Waypoint;
 import locus.api.utils.Logger;
 import android.app.AlertDialog;
@@ -67,7 +67,7 @@ public class ActivityGeocacheTools extends FragmentActivity {
         							// because current test version is registered on geocache data,
         							// I'll send as result updated geocache
         							try {
-        								wpt.addParameter(ExtraData.PAR_DESCRIPTION, "UPDATED!");
+        								wpt.addParameter(GeoDataExtra.PAR_DESCRIPTION, "UPDATED!");
         								wpt.getLocation().setLatitude(wpt.getLocation().getLatitude() + 0.001);
         								wpt.getLocation().setLongitude(wpt.getLocation().getLongitude() + 0.001);
         								ActionTools.updateLocusWaypoint(ActivityGeocacheTools.this, lv, wpt, false);

@@ -32,7 +32,7 @@ public class ActionDisplayPoints extends ActionDisplay {
 	 * @param data {@link PackWaypoints} object that should be send to Locus
 	 * @param extraAction extra action that should happen after display in app
 	 * @return {@code true} if action was success
-	 * @throws RequiredVersionMissingException 
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	public static boolean sendPack(Context context, PackWaypoints data, ExtraAction extraAction)
 			throws RequiredVersionMissingException {
@@ -52,7 +52,7 @@ public class ActionDisplayPoints extends ActionDisplay {
 	 * if <code>callImport</code> is set to <code>true</code>. Suggested is value 
 	 * <code>false</code> because unexpected centering breaks usability.
 	 * @return <code>true</code> if action was success
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	public static boolean sendPackSilent(Context context, PackWaypoints data, boolean centerOnData)
 			throws RequiredVersionMissingException {
@@ -72,7 +72,7 @@ public class ActionDisplayPoints extends ActionDisplay {
 	 * if <code>callImport = true</code>. Suggested if <code>false</code> because
 	 * unexpected centering breaks usability.
 	 * @return {@code true} if data were correctly send
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	private static boolean sendPack(String action, Context context, 
 			PackWaypoints data, boolean callImport, boolean centerOnData)
@@ -97,7 +97,7 @@ public class ActionDisplayPoints extends ActionDisplay {
 	 * @param context actual {@link Context}
 	 * @param data {@link ArrayList} of data that should be send to Locus
 	 * @return true if success
-	 * @throws RequiredVersionMissingException 
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	public static boolean sendPacks(Context context, 
 			List<PackWaypoints> data, ExtraAction extraAction)
@@ -145,11 +145,11 @@ public class ActionDisplayPoints extends ActionDisplay {
 	 * @param filepath path where data should be stored
 	 * @param extraAction extra action that should happen after Locus reads data
 	 * @return {@code true} if data were correctly send, otherwise {@code false}
-	 * @throws RequiredVersionMissingException 
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	public static boolean sendPacksFile(Context context, 
 			List<PackWaypoints> data, String filepath, ExtraAction extraAction)
-					throws RequiredVersionMissingException {
+			throws RequiredVersionMissingException {
 		return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA,
 				context, data, filepath, extraAction == ExtraAction.IMPORT,
 				extraAction == ExtraAction.CENTER);
@@ -157,7 +157,7 @@ public class ActionDisplayPoints extends ActionDisplay {
 	
 	public static boolean sendPacksFileSilent(Context context, 
 			List<PackWaypoints> data, String filepath, boolean centerOnData)
-					throws RequiredVersionMissingException {
+			throws RequiredVersionMissingException {
 		return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA_SILENTLY, 
 				context, data, filepath, false, centerOnData);
 	}
@@ -171,7 +171,7 @@ public class ActionDisplayPoints extends ActionDisplay {
 	 * @param callImport {@code true} to call import after load in Locus
 	 * @param centerOnData {@code true} to center on data
 	 * @return {@code true} if request was correctly send
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	private static boolean sendPacksFile(String action, Context context, 
 			List<PackWaypoints> data, String filepath, boolean callImport, boolean centerOnData)
@@ -246,7 +246,7 @@ public class ActionDisplayPoints extends ActionDisplay {
 	 * only packs that are visible (temporary) on map.
 	 * @param ctx current context
 	 * @param packName name of pack
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException exception in case of missing required app version
 	 */
 	public void removePackFromLocus(Context ctx, String packName) 
 			throws RequiredVersionMissingException {

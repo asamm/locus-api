@@ -44,4 +44,5 @@ captures/
 *.jks
 
 # Custom directories
+_various/
 core_private/

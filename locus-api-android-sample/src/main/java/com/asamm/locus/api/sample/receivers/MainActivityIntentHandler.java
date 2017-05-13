@@ -12,7 +12,7 @@ import com.asamm.locus.api.sample.utils.SampleCalls;
 import locus.api.android.ActionTools;
 import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
-import locus.api.objects.extra.ExtraData;
+import locus.api.objects.extra.GeoDataExtra;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Track;
 import locus.api.objects.extra.Waypoint;
@@ -67,7 +67,7 @@ public class MainActivityIntentHandler {
 				// now create full point version and send it back for returned value
 				Waypoint wpt = SampleCalls.generateWaypoint(0);
 				wpt.setName("Improved version!");
-				wpt.addParameter(ExtraData.PAR_DESCRIPTION,
+				wpt.addParameter(GeoDataExtra.PAR_DESCRIPTION,
 						"Extra description to ultra improved point!, received value:" + value);
 
 				// return data
@@ -148,7 +148,7 @@ public class MainActivityIntentHandler {
 							// I'll send as result updated geocache
 							try {
 								// set new parameters
-								wpt.addParameter(ExtraData.PAR_DESCRIPTION, "UPDATED!");
+								wpt.addParameter(GeoDataExtra.PAR_DESCRIPTION, "UPDATED!");
 								wpt.getLocation().setLatitude(wpt.getLocation().getLatitude() + 0.001);
 								wpt.getLocation().setLongitude(wpt.getLocation().getLongitude() + 0.001);
 								ActionTools.updateLocusWaypoint(act, lv, wpt, false);
@@ -271,7 +271,7 @@ public class MainActivityIntentHandler {
 				if (wpt != null) {
 					Logger.logD(TAG, "loadPointsFromLocus(), wptId:" + wptId + ", vs:" + wpt.id);
 					// do some modifications
-					wpt.addParameter(ExtraData.PAR_DESCRIPTION, "UPDATED!");
+					wpt.addParameter(GeoDataExtra.PAR_DESCRIPTION, "UPDATED!");
 					wpt.getLocation().setLatitude(wpt.getLocation().getLatitude() + 0.001);
 					wpt.getLocation().setLongitude(wpt.getLocation().getLongitude() + 0.001);
 

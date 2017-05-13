@@ -760,35 +760,64 @@ public class UtilsFormat {
 	/**************************************************/
     // TEMPERATURE
 	/**************************************************/
-    
-    public static String formatTemperature(int unitType, float tempC, boolean addUnits) {
-    	String res =  formatTemperatureValue(unitType, tempC);
+
+	/**
+	 * Format temperature value.
+	 * @param unit temperature unit
+	 * @param tempC temperature itself [°C]
+	 * @param addUnits {@code true} to add units to result format
+	 * @return generated text
+	 */
+    public static String formatTemperature(int unit, double tempC, boolean addUnits) {
+		return formatTemperature(unit, tempC, UnitsPrecision.MEDIUM, addUnits);
+	}
+
+	/**
+	 * Format temperature value.
+	 * @param unit temperature unit
+	 * @param tempC temperature itself [°C]
+	 * @param precision precision of format
+	 * @param addUnits {@code true} to add units to result format
+	 * @return generated text
+	 */
+    public static String formatTemperature(int unit, double tempC, UnitsPrecision precision, boolean addUnits) {
+    	double res = formatTemperatureValue(unit, tempC);
+		int decDigits = precision == UnitsPrecision.LOW ? 0 : 1;
+
+		// return formatted result
+		String tempFormatted = UtilsFormat.formatDouble(res, decDigits);
     	if (addUnits) {
-    		return res + " " + formatTemperatureUnit(unitType);
+    		return tempFormatted + " " + formatTemperatureUnit(unit);
     	} else {
-    		return res;
+    		return tempFormatted;
     	}
-    }
-    
-    public static String formatTemperatureValue(int format, float tempC) {
-    	if (format == VALUE_UNITS_TEMPERATURE_CELSIUS) {
-            return UtilsFormat.formatDouble(tempC, 1);
-        } else {
-            return UtilsFormat.formatDouble((tempC * 9.0f) / 5.0f + 32, 1);
-        }
     }
 
 	/**
+	 * Format temperature value itself.
+	 * @param unit temperature unit
+	 * @param tempC temperature itself [°C]
+	 * @return formatted value
+	 */
+	public static double formatTemperatureValue(int unit, double tempC) {
+		if (unit == VALUE_UNITS_TEMPERATURE_FAHRENHEIT) {
+			return (tempC * 9.0) / 5.0 + 32.0;
+		} else { // VALUE_UNITS_TEMPERATURE_CELSIUS
+			return tempC;
+		}
+	}
+
+	/**
 	 * Get temperature units for certain format.
-	 * @param format required format
+	 * @param unit required format
 	 * @return unit value
 	 */
-    public static String formatTemperatureUnit(int format) {
-    	if (format == VALUE_UNITS_TEMPERATURE_CELSIUS) {
-            return "°C";
-        } else {
-            return "F";
-        }
+    public static String formatTemperatureUnit(int unit) {
+		if (unit == VALUE_UNITS_TEMPERATURE_FAHRENHEIT) {
+			return "F";
+		} else { // VALUE_UNITS_TEMPERATURE_CELSIUS
+			return "°C";
+		}
     }
 
 	/**************************************************/
