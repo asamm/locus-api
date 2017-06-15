@@ -310,45 +310,91 @@ public class LocusUtils {
      * @return active version
      */
     public static LocusVersion getActiveVersion(Context ctx, int minVersionCode) {
-        // get valid Locus version for any actions
-        List<LocusVersion> versions = getAvailableVersions(ctx);
-        if (versions.size() == 0) {
-            return null;
-        }
-
-        // check locus
-        LocusVersion backupVersion = null;
-        for (int i = 0, m = versions.size(); i < m; i++) {
-            try {
-                LocusVersion lv = versions.get(i);
-                if (lv.getVersionCode() < minVersionCode) {
-                    continue;
-                }
-
-                // get LocusInfo container
-                LocusInfo li = ActionTools.getLocusInfo(ctx, lv);
-
-                // check if Locus runs and if so, set it as active version
-                if (li != null) {
-                    // backup valid version
-                    backupVersion = lv;
-
-                    // check if is running
-                    if (li.isRunning()) {
-                        return lv;
-                    }
-                }
-            } catch (RequiredVersionMissingException e) {
-                Logger.logE(TAG, "prepareActiveLocus()", e);
-            }
-        }
-
-        // if version is not set, use backup
-        if (backupVersion != null) {
-            return backupVersion;
-        }
-        return versions.get(0);
+		return getActiveVersion(ctx, minVersionCode, minVersionCode, minVersionCode);
     }
+
+	/**
+	 * Search for existing (and better also running) version of Locus. This function
+	 * search for Locus, but also grab data from all instances. So it's suggested
+	 * not to use this function too often. It is also possible to define minimum versionCode.
+	 * @param ctx current context
+	 * @param vc version code
+	 * @return active version
+	 */
+	public static LocusVersion getActiveVersion(Context ctx, VersionCode vc) {
+		return getActiveVersion(ctx, vc.vcFree, vc.vcPro, vc.vcGis);
+	}
+
+	/**
+	 * Search for existing (and better also running) version of Locus. This function
+	 * search for Locus, but also grab data from all instances. So it's suggested
+	 * not to use this function too often. It is also possible to define minimum versionCode.
+	 * @param ctx current context
+	 * @param minLocusMapFree minimal version code of Locus Map Free
+	 * @param minLocusMapPro minimal version code of Locus Map Pro
+	 * @param minLocusGis minimal version code of Locus GIS
+	 * @return active version
+	 */
+	private static LocusVersion getActiveVersion(Context ctx,
+			int minLocusMapFree, int minLocusMapPro, int minLocusGis) {
+		// get valid Locus version for any actions
+		List<LocusVersion> versions = getAvailableVersions(ctx);
+		if (versions.size() == 0) {
+			return null;
+		}
+
+		// search for optimal version
+		LocusVersion backupVersion = null;
+		for (int i = 0, m = versions.size(); i < m; i++) {
+			try {
+
+				// get and test version
+				LocusVersion lv = versions.get(i);
+				if (lv.isVersionFree()) {
+					if (minLocusMapFree <= 0 ||
+							lv.getVersionCode() < minLocusMapFree) {
+						continue;
+					}
+				} else if (lv.isVersionPro()) {
+					if (minLocusMapPro <= 0 ||
+							lv.getVersionCode() < minLocusMapPro) {
+						continue;
+					}
+				} else if (lv.isVersionGis()) {
+					if (minLocusGis <= 0 ||
+							lv.getVersionCode() < minLocusGis) {
+						continue;
+					}
+				} else {
+					// unknown version
+					continue;
+				}
+
+
+				// get LocusInfo container
+				LocusInfo li = ActionTools.getLocusInfo(ctx, lv);
+
+				// check if Locus runs and if so, set it as active version
+				if (li != null) {
+					// backup valid version
+					backupVersion = lv;
+
+					// check if is running
+					if (li.isRunning()) {
+						return lv;
+					}
+				}
+			} catch (RequiredVersionMissingException e) {
+				Logger.logE(TAG, "prepareActiveLocus()", e);
+			}
+		}
+
+		// if version is not set, use backup
+		if (backupVersion != null) {
+			return backupVersion;
+		}
+		return versions.get(0);
+	}
 
 	/**
 	 * Search through whole Android system and search for existing versions of Locus
@@ -972,6 +1018,20 @@ public class LocusUtils {
 			Logger.logE(TAG, "getLocationFromIntent(" + intent + ")", e);
 			return null;
 		}
+	}
+
+	/**
+	 * Send explicit intent to Locus app defined by it's type and version.
+	 * @param ctx current context
+	 * @param intent intent to send
+	 * @param lv version of receiver
+	 */
+	public static void sendBroadcast(Context ctx, Intent intent, LocusVersion lv) {
+		// define package
+		intent.setPackage(lv.getPackageName());
+
+		// send broadcast
+		ctx.sendBroadcast(intent);
 	}
 	
 	/**************************************************/

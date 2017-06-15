@@ -27,9 +27,11 @@ public class ActionDisplay {
 				callImport, center, VersionCode.UPDATE_01);
 	}
 	
-	static boolean sendData(String action, Context context, Intent intent,
+	static boolean sendData(String action, Context ctx, Intent intent,
 			boolean callImport, boolean center, VersionCode vc) throws RequiredVersionMissingException {
-		if (!LocusUtils.isLocusAvailable(context, vc.vcFree, vc.vcPro, 0)) {
+		// get valid version
+		LocusVersion lv = LocusUtils.getActiveVersion(ctx, vc);
+		if (lv == null) {
 			throw new RequiredVersionMissingException(vc.vcFree);
 		}
 		
@@ -48,38 +50,17 @@ public class ActionDisplay {
 		// set import tag
 		if (action.equals(LocusConst.ACTION_DISPLAY_DATA_SILENTLY)) {
 			// send broadcast
-			context.sendBroadcast(intent);
+			LocusUtils.sendBroadcast(ctx, intent, lv);
 		} else {
 			// set import tag
 			intent.putExtra(LocusConst.INTENT_EXTRA_CALL_IMPORT, callImport);
 			// finally start activity
-			context.startActivity(intent);			
+			ctx.startActivity(intent);
 		}
 		
 		return true;
 	}
 
-	/**
-	 * Test if intent is valid and contains any data to display.
-	 * @param intent intent to test
-	 * @return {@code true} if intent is valid and contains data
-	 */
-	public static boolean hasData(Intent intent) {
-		// check intent object
-		if (intent == null) {
-			return false;
-		}
-
-		// test on possible parameters
-		return !(
-				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINTS_DATA) == null &&
-				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINTS_DATA_ARRAY) == null &&
-				intent.getStringExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH) == null &&
-				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_TRACKS_SINGLE) == null &&
-				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_TRACKS_MULTI) == null &&
-				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_CIRCLES_MULTI) == null);
-	}
-	
 	/**
 	 * Method used for removing special objects from Locus map. Currently this method
 	 * is used only for removing circles. If you want to remove any visible points or
@@ -111,7 +92,30 @@ public class ActionDisplay {
 		intent.putExtra(extraName, itemsId);
 		
 		// set import tag
-		ctx.sendBroadcast(intent);
+		LocusUtils.sendBroadcast(ctx, intent, lv);
 		return true;
+	}
+
+	// TOOLS
+
+	/**
+	 * Test if intent is valid and contains any data to display.
+	 * @param intent intent to test
+	 * @return {@code true} if intent is valid and contains data
+	 */
+	public static boolean hasData(Intent intent) {
+		// check intent object
+		if (intent == null) {
+			return false;
+		}
+
+		// test on possible parameters
+		return !(
+				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINTS_DATA) == null &&
+				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINTS_DATA_ARRAY) == null &&
+				intent.getStringExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH) == null &&
+				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_TRACKS_SINGLE) == null &&
+				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_TRACKS_MULTI) == null &&
+				intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_CIRCLES_MULTI) == null);
 	}
 }

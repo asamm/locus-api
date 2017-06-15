@@ -116,6 +116,8 @@ public class UtilsAddonAR {
         mLastLocation = loc;
         Intent intent = new Intent(BROADCAST_DATA);
         intent.putExtra(EXTRA_LOCATION, mLastLocation.getAsBytes());
+
+		// TODO fix inexact broadcast intent
         context.sendBroadcast(intent);
 	}
 

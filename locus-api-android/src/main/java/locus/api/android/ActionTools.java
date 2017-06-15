@@ -51,7 +51,7 @@ public class ActionTools {
 	 * check if Locus version 231 and above are installed <b>isLocusAvailable(context, 231)</b>!
 	 * @param activity starting activity that also receive result
 	 * @param requestCode request code
-	 * @throws ActivityNotFoundException
+	 * @throws ActivityNotFoundException thrown in case of missing required Locus app
 	 */
 	public static void actionPickFile(Activity activity, int requestCode) 
 			throws ActivityNotFoundException {
@@ -511,23 +511,30 @@ public class ActionTools {
             intent.putExtra(LocusConst.INTENT_EXTRA_TRACK_REC_PROFILE, profileName);
         }
 
-        // finally execute intent
-        ctx.sendBroadcast(intent);
-    }
+		// sent intent
+		LocusUtils.sendBroadcast(ctx, intent, lv);
+	}
 
     public static void actionTrackRecordPause(Context ctx, LocusVersion lv)
             throws RequiredVersionMissingException {
-        ctx.sendBroadcast(actionTrackRecord(
-                LocusConst.ACTION_TRACK_RECORD_PAUSE, lv));
+		// create intent
+		Intent intent = actionTrackRecord(
+				LocusConst.ACTION_TRACK_RECORD_PAUSE, lv);
+
+		// sent intent
+		LocusUtils.sendBroadcast(ctx, intent, lv);
     }
 
     public static void actionTrackRecordStop(Context ctx, LocusVersion lv, boolean autoSave)
             throws RequiredVersionMissingException {
+		// create intent
         Intent intent = actionTrackRecord(
                 LocusConst.ACTION_TRACK_RECORD_STOP, lv);
         intent.putExtra(LocusConst.INTENT_EXTRA_TRACK_REC_AUTO_SAVE, autoSave);
-        ctx.sendBroadcast(intent);
-    }
+
+		// sent intent
+		LocusUtils.sendBroadcast(ctx, intent, lv);
+	}
 
     // ADD WAYPOINT
 
@@ -570,7 +577,9 @@ public class ActionTools {
             intent.putExtra(LocusConst.INTENT_EXTRA_NAME, wptName);
         }
         intent.putExtra(LocusConst.INTENT_EXTRA_TRACK_REC_AUTO_SAVE, autoSave);
-        ctx.sendBroadcast(intent);
+
+		// sent intent
+		LocusUtils.sendBroadcast(ctx, intent, lv);
     }
 
     /**
@@ -595,7 +604,9 @@ public class ActionTools {
 
         // extra parameter
         intent.putExtra(LocusConst.INTENT_EXTRA_TRACK_REC_ACTION_AFTER, actionAfter);
-        ctx.sendBroadcast(intent);
+
+		// sent intent
+		LocusUtils.sendBroadcast(ctx, intent, lv);
     }
 
     /**
@@ -1152,8 +1163,9 @@ public class ActionTools {
 
         // call intent
         Intent intent = new Intent(LocusConst.ACTION_REFRESH_PERIODIC_UPDATE_LISTENERS);
-        intent.setPackage(lv.getPackageName());
-        ctx.sendBroadcast(intent);
+
+		// sent intent
+		LocusUtils.sendBroadcast(ctx, intent, lv);
     }
 
     /**************************************************/

@@ -493,11 +493,11 @@ public class Location extends Storable {
 		// perform checks on range
         if (lat < -90.0 ) {
             Logger.logE(TAG, "setLatitude(" + lat + "), " +
-                    "invalid latitude", new Exception(""));
+                    "invalid latitude"); //, new Exception(""));
             lat = -90.0;
         } else if (lat > 90.0) {
             Logger.logE(TAG, "setLatitude(" + lat + "), " +
-                    "invalid latitude", new Exception(""));
+                    "invalid latitude"); //, new Exception(""));
             lat = 90.0;
         }
 
