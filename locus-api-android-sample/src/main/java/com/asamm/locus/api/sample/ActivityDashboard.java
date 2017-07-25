@@ -1,13 +1,10 @@
 package com.asamm.locus.api.sample;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.TextView;
 
+import com.asamm.locus.api.sample.receivers.PeriodicUpdateReceiver;
 import com.asamm.locus.api.sample.utils.SampleCalls;
 
 import java.text.SimpleDateFormat;
@@ -15,14 +12,15 @@ import java.util.Date;
 
 import locus.api.android.features.periodicUpdates.PeriodicUpdatesHandler;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
-import locus.api.android.utils.LocusConst;
 import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.LocusUtils.LocusVersion;
+import locus.api.android.utils.exceptions.RequiredVersionMissingException;
+import locus.api.utils.Logger;
 
 public class ActivityDashboard extends FragmentActivity {
 
-	// receiver for events
-	private BroadcastReceiver receiver;
+	// tag for logger
+	private static final String TAG = "ActivityDashboard";
 
 	// text containers
 	private TextView tvInfo;
@@ -53,41 +51,37 @@ public class ActivityDashboard extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_dashboard);
 
-		tvInfo = (TextView) findViewById(R.id.textView_info);
-		tv01 = (TextView) findViewById(R.id.textView1);
-		tv02 = (TextView) findViewById(R.id.textView2);
-		tv03 = (TextView) findViewById(R.id.textView3);
-		tv04 = (TextView) findViewById(R.id.textView4);
-		tv05 = (TextView) findViewById(R.id.textView5);
-		tv06 = (TextView) findViewById(R.id.textView6);
-		tv07 = (TextView) findViewById(R.id.textView7);
-		tv08 = (TextView) findViewById(R.id.textView8);
+		// prepare references to views
+		tvInfo = (TextView)
+				findViewById(R.id.textView_info);
+		tv01 = (TextView)
+				findViewById(R.id.textView1);
+		tv02 = (TextView)
+				findViewById(R.id.textView2);
+		tv03 = (TextView)
+				findViewById(R.id.textView3);
+		tv04 = (TextView)
+				findViewById(R.id.textView4);
+		tv05 = (TextView)
+				findViewById(R.id.textView5);
+		tv06 = (TextView)
+				findViewById(R.id.textView6);
+		tv07 = (TextView)
+				findViewById(R.id.textView7);
+		tv08 = (TextView)
+				findViewById(R.id.textView8);
 	}
 	
 	@Override
 	public void onStart() {
 		super.onStart();
 		
-		// prepare receiver
-		receiver = new BroadcastReceiver() {
-
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				if (isFinishing()) {
-					return;
-				}
-				
-				// handle received data
-				PeriodicUpdatesHandler.getInstance().onReceive(
-						ActivityDashboard.this,
-						intent, updateHandler);
-			}
-		};
-
-		// register receiver
-		IntentFilter filter = new IntentFilter(
-				LocusConst.ACTION_PERIODIC_UPDATE);
-		registerReceiver(receiver, filter);
+		// register update handler
+		try {
+			PeriodicUpdateReceiver.setOnUpdateListener(this, updateHandler);
+		} catch (RequiredVersionMissingException e) {
+			Logger.logE(TAG, "onStart()", e);
+		}
 
 		// set info text
 		handleUpdate(null);
@@ -97,10 +91,11 @@ public class ActivityDashboard extends FragmentActivity {
 	public void onStop() {
 		super.onStop();
 		
-		// set receiver
-		if (receiver != null) {
-			unregisterReceiver(receiver);
-			receiver = null;
+		// clear reference to prevent memory leaks
+		try {
+			PeriodicUpdateReceiver.setOnUpdateListener(this, null);
+		} catch (RequiredVersionMissingException e) {
+			Logger.logE(TAG, "onStop()", e);
 		}
 	}
 

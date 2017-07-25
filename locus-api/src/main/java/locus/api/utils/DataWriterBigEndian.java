@@ -138,7 +138,7 @@ public class DataWriterBigEndian {
 		// set current location to index
 		mCurrentPos = index;
 	}
-    
+
 	// WRITE FUNCTIONS
 	
     private byte mWriteBuffer[] = new byte[8];

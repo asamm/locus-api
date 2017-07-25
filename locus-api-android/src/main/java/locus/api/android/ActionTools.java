@@ -1107,9 +1107,8 @@ public class ActionTools {
     /**************************************************/
 
     /**
-     * Enable updates receiver for PeriodicUpdates. Use this function in case, you do NOT have
-     * defined received in manifest file and instead, you want to enable/disable received
-     * dynamically at runtime.
+     * Enable updates receiver for PeriodicUpdates. Use this function in case, you have defined received
+	 * in manifest file and you want to enable/disable received dynamically at runtime.
      * @param ctx current context
      * @param lv Locus version to work with
      * @param receiver class that will be registered as receiver
@@ -1128,9 +1127,8 @@ public class ActionTools {
     }
 
     /**
-     * Disable updates receiver for PeriodicUpdates. Use this function in case, you do NOT have
-     * defined received in manifest file and instead, you want to enable/disable received
-     * dynamically at runtime.
+     * Disable updates receiver for PeriodicUpdates. Use this function in case, you have defined received
+	 * in manifest file and you want to enable/disable received dynamically at runtime.
      * @param ctx current context
      * @param lv Locus version to work with
      * @param receiver class that will be registered as receiver
@@ -1149,12 +1147,13 @@ public class ActionTools {
     }
 
     /**
-     * Send broadcast to refresh internal list of periodic update listeners.
+     * Send broadcast to refresh internal list of periodic update listeners. Use in case, app change active
+	 * receivers for periodic updates. Use this even in case, you unregister receiver, it may save some battery to user.
      * @param ctx current context
      * @param lv expected target locus
      * @throws RequiredVersionMissingException
      */
-    private static void refreshPeriodicUpdateListeners(Context ctx, LocusVersion lv)
+    public static void refreshPeriodicUpdateListeners(Context ctx, LocusVersion lv)
             throws RequiredVersionMissingException {
         // check version (available only in Free/Pro)
         if (!LocusUtils.isLocusFreePro(lv, VersionCode.UPDATE_01.vcFree)) {

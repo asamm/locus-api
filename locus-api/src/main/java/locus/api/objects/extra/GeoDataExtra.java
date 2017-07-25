@@ -87,8 +87,9 @@ public class GeoDataExtra extends Storable {
 
     // ROUTE TYPES DEFINED IN PARAMETER 'PAR_RTE_COMPUTE_TYPE'
 	
-	public static final int VALUE_RTE_TYPE_GENERATED = -1;
+	public static final int VALUE_RTE_TYPE_GENERATED 							= -1;
 
+	public static final int VALUE_RTE_TYPE_NO_TYPE                              = 100;
 	public static final int VALUE_RTE_TYPE_CAR                                  = 6;
 	public static final int VALUE_RTE_TYPE_CAR_FAST                             = 0;
 	public static final int VALUE_RTE_TYPE_CAR_SHORT                            = 1;
@@ -106,6 +107,7 @@ public class GeoDataExtra extends Storable {
      * All possible RTE_TYPES also sorted in correct order.
      */
     public static final int[] RTE_TYPES_SORTED = new int[] {
+			VALUE_RTE_TYPE_NO_TYPE,
             VALUE_RTE_TYPE_CAR,
             VALUE_RTE_TYPE_CAR_FAST,
             VALUE_RTE_TYPE_CAR_SHORT,

@@ -106,7 +106,8 @@
 
         <!-- receiver for handling of periodic updates -->
         <receiver
-            android:name=".receivers.PeriodicUpdateReceiver">
+            android:name=".receivers.PeriodicUpdateReceiver"
+            android:enabled="false">
 
             <intent-filter>
                 <action

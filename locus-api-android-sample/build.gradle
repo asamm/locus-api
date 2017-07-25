@@ -20,7 +20,7 @@ dependencies {
 
     // get locus API
 //    compile project(':locus-api-android')
-    compile 'com.asamm:locus-api-android:0.2.9'
+    compile 'com.asamm:locus-api-android:0.2.10'
 
     // Android support libraries
     // lib with some design utils

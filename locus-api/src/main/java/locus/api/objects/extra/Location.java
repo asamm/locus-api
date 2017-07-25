@@ -1076,10 +1076,11 @@ public class Location extends Storable {
 	@Override
 	public String toString() {
 		return "Location [" +
-				"tag:" + provider + ", " +
-				"lon:" + longitude + ", " +
-				"lat:" + latitude + ", " +
-				"alt:" + mAltitude + "]";
+				"tag: " + provider + ", " +
+				"time: " + time + ", " +
+				"lon: " + longitude + ", " +
+				"lat: " + latitude + ", " +
+				"alt: " + mAltitude + "]";
 	}
 
 	/**
