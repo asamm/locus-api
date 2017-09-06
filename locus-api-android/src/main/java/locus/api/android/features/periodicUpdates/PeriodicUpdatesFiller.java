@@ -106,8 +106,8 @@ public class PeriodicUpdatesFiller {
 			try {
 				byte[] data = i.getByteArrayExtra(PeriodicUpdatesConst.VAR_L_REC_TRACK_STATS);
 				if (data != null && data.length > 0) {
-					update.trackStats = new TrackStats();
-					update.trackStats.read(data);
+					update.trackRecStats = new TrackStats();
+					update.trackRecStats.read(data);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -115,31 +115,31 @@ public class PeriodicUpdatesFiller {
 
 			// load old values for compatibility reasons with old Locus versions,
 			// that do not provide "TrackStats" directly
-			if (update.trackStats == null) {
-				update.trackStats = new TrackStats();
-				update.trackStats.setTotalLength((float) i.getDoubleExtra(
+			if (update.trackRecStats == null) {
+				update.trackRecStats = new TrackStats();
+				update.trackRecStats.setTotalLength((float) i.getDoubleExtra(
 						PeriodicUpdatesConst.VAR_D_REC_DIST, 0.0));
-				update.trackStats.setEleNegativeDistance((float) i.getDoubleExtra(
+				update.trackRecStats.setEleNegativeDistance((float) i.getDoubleExtra(
 						PeriodicUpdatesConst.VAR_D_REC_DIST_DOWNHILL, 0.0));
-				update.trackStats.setElePositiveDistance((float) i.getDoubleExtra(
+				update.trackRecStats.setElePositiveDistance((float) i.getDoubleExtra(
 						PeriodicUpdatesConst.VAR_D_REC_DIST_UPHILL, 0.0));
-				update.trackStats.setAltitudeMin(i.getFloatExtra(
+				update.trackRecStats.setAltitudeMin(i.getFloatExtra(
 						PeriodicUpdatesConst.VAR_F_REC_ALT_MIN, 0.0f));
-				update.trackStats.setAltitudeMax(i.getFloatExtra(
+				update.trackRecStats.setAltitudeMax(i.getFloatExtra(
 						PeriodicUpdatesConst.VAR_F_REC_ALT_MAX, 0.0f));
-				update.trackStats.setEleNegativeHeight(i.getFloatExtra(
+				update.trackRecStats.setEleNegativeHeight(i.getFloatExtra(
 						PeriodicUpdatesConst.VAR_F_REC_ALT_DOWNHILL, 0.0f));
-				update.trackStats.setElePositiveHeight(i.getFloatExtra(
+				update.trackRecStats.setElePositiveHeight(i.getFloatExtra(
 						PeriodicUpdatesConst.VAR_F_REC_ALT_UPHILL, 0.0f));
-				update.trackStats.setEleTotalAbsHeight(i.getFloatExtra(
+				update.trackRecStats.setEleTotalAbsHeight(i.getFloatExtra(
 						PeriodicUpdatesConst.VAR_F_REC_ALT_CUMULATIVE, 0.0f));
-				update.trackStats.setTotalTime(i.getLongExtra(
+				update.trackRecStats.setTotalTime(i.getLongExtra(
 						PeriodicUpdatesConst.VAR_L_REC_TIME, 0L));
-				update.trackStats.setTotalTimeMove(i.getLongExtra(
+				update.trackRecStats.setTotalTimeMove(i.getLongExtra(
 						PeriodicUpdatesConst.VAR_L_REC_TIME_MOVE, 0L));
-				update.trackStats.setSpeedMax(i.getFloatExtra(
+				update.trackRecStats.setSpeedMax(i.getFloatExtra(
 						PeriodicUpdatesConst.VAR_F_REC_SPEED_MAX, 0.0f));
-				update.trackStats.setNumOfPoints(i.getIntExtra(
+				update.trackRecStats.setNumOfPoints(i.getIntExtra(
 						PeriodicUpdatesConst.VAR_I_REC_POINTS, 0));
 			}
 		}
@@ -315,37 +315,37 @@ public class PeriodicUpdatesFiller {
             i.putExtra(PeriodicUpdatesConst.VAR_S_REC_PROFILE_NAME,
                     cont.trackRecProfileName);
 			i.putExtra(PeriodicUpdatesConst.VAR_L_REC_TRACK_STATS,
-					cont.trackStats.getAsBytes());
+					cont.trackRecStats.getAsBytes());
 
 			// because of compatibility with older add-ons, store also stats in base values
 			i.putExtra(PeriodicUpdatesConst.VAR_D_REC_DIST,
-					(double) cont.trackStats.getTotalLength());
+					(double) cont.trackRecStats.getTotalLength());
 			i.putExtra(PeriodicUpdatesConst.VAR_D_REC_DIST_DOWNHILL,
-					(double) cont.trackStats.getEleNegativeDistance());
+					(double) cont.trackRecStats.getEleNegativeDistance());
 			i.putExtra(PeriodicUpdatesConst.VAR_D_REC_DIST_UPHILL,
-					(double) cont.trackStats.getElePositiveDistance());
+					(double) cont.trackRecStats.getElePositiveDistance());
 			i.putExtra(PeriodicUpdatesConst.VAR_F_REC_ALT_MIN,
-					cont.trackStats.getAltitudeMin());
+					cont.trackRecStats.getAltitudeMin());
 			i.putExtra(PeriodicUpdatesConst.VAR_F_REC_ALT_MAX,
-					cont.trackStats.getAltitudeMax());
+					cont.trackRecStats.getAltitudeMax());
 			i.putExtra(PeriodicUpdatesConst.VAR_F_REC_ALT_DOWNHILL,
-					cont.trackStats.getEleNegativeHeight());
+					cont.trackRecStats.getEleNegativeHeight());
 			i.putExtra(PeriodicUpdatesConst.VAR_F_REC_ALT_UPHILL,
-					cont.trackStats.getElePositiveHeight());
+					cont.trackRecStats.getElePositiveHeight());
 			i.putExtra(PeriodicUpdatesConst.VAR_F_REC_ALT_CUMULATIVE,
-					cont.trackStats.getEleTotalAbsHeight());
+					cont.trackRecStats.getEleTotalAbsHeight());
 			i.putExtra(PeriodicUpdatesConst.VAR_L_REC_TIME,
-					cont.trackStats.getTotalTime());
+					cont.trackRecStats.getTotalTime());
 			i.putExtra(PeriodicUpdatesConst.VAR_L_REC_TIME_MOVE,
-					cont.trackStats.getTotalTimeMove());
+					cont.trackRecStats.getTotalTimeMove());
 			i.putExtra(PeriodicUpdatesConst.VAR_F_REC_SPEED_AVG,
-					cont.trackStats.getSpeedAverage(false));
+					cont.trackRecStats.getSpeedAverage(false));
 			i.putExtra(PeriodicUpdatesConst.VAR_F_REC_SPEED_AVG_MOVE,
-					cont.trackStats.getSpeedAverage(true));
+					cont.trackRecStats.getSpeedAverage(true));
 			i.putExtra(PeriodicUpdatesConst.VAR_F_REC_SPEED_MAX,
-					cont.trackStats.getSpeedMax());
+					cont.trackRecStats.getSpeedMax());
 			i.putExtra(PeriodicUpdatesConst.VAR_I_REC_POINTS,
-					cont.trackStats.getNumOfPoints());
+					cont.trackRecStats.getNumOfPoints());
 		}
 	}
 	

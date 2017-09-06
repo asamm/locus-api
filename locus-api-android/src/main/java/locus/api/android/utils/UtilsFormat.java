@@ -90,14 +90,26 @@ public class UtilsFormat {
      * @return formatted value
      */
     public static String formatAltitude(int format, double altitude, boolean addUnits) {
-    	double value = formatAltitudeValue(format, altitude);
-    	String res =  formatDouble(value, 0);
-    	if (addUnits) {
-    		return res + " " + formatAltitudeUnits(format);
-    	} else {
-    		return res;
-    	}
+		return formatAltitude(format, altitude, 0, addUnits);
     }
+
+	/**
+	 * Format altitude value.
+	 * @param format format of altitude
+	 * @param altitude altitude [in metres]
+	 * @param accuracy number of decimal places
+	 * @param addUnits {@code true} to add units
+	 * @return formatted value
+	 */
+	public static String formatAltitude(int format, double altitude, int accuracy, boolean addUnits) {
+		double value = formatAltitudeValue(format, altitude);
+		String res =  formatDouble(value, accuracy);
+		if (addUnits) {
+			return res + " " + formatAltitudeUnits(format);
+		} else {
+			return res;
+		}
+	}
 
 	/**
 	 * Format (convert) altitude value to require format.

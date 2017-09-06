@@ -126,7 +126,14 @@ public class LocusUtils {
          * </ul><br>
          * Locus Free/Pro 3.13.0(421)<br>
          */
-        UPDATE_12(421, 421, 0);
+        UPDATE_12(421, 421, 0),
+		/**
+		 * <ul>
+		 * <li>Added direct request on LocusInfo and UpdateContainer over ActionTools</li>
+		 * </ul><br>
+		 * Locus Free/Pro 3.25.6(652)<br>
+		 */
+		UPDATE_13(652, 652, 0);
 
 		/**
 		 * Version code for a Free version.
@@ -140,7 +147,13 @@ public class LocusUtils {
 		 * Version code for a GIS version.
 		 */
 		public final int vcGis;
-		
+
+		/**
+		 * Create container with API code parameters.
+		 * @param vcFree version code for Locus Map Free
+		 * @param vcPro version code for Locus Map Pro
+		 * @param vcGis version code for Locus GIS
+		 */
 		VersionCode(int vcFree, int vcPro, int vcGis) {
 			this.vcFree = vcFree;
 			this.vcPro = vcPro;
@@ -242,7 +255,7 @@ public class LocusUtils {
 
 		/**
 		 * Check if current version is valid compare to required VersionCode
-		 * @param code code of version
+		 * @param code code of required version
 		 * @return <code>true</code> if version, compared to code, is valid
 		 */
 		public boolean isVersionValid(VersionCode code) {
@@ -298,7 +311,7 @@ public class LocusUtils {
 	 * @return active version
 	 */
 	public static LocusVersion getActiveVersion(Context ctx) {
-        return getActiveVersion(ctx, 0);
+        return getActiveVersion(ctx, VersionCode.UPDATE_01);
 	}
 
     /**

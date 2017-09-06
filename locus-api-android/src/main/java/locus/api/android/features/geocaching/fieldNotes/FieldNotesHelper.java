@@ -427,12 +427,8 @@ public class FieldNotesHelper {
      */
     private static Uri getUriFieldNoteTable(LocusUtils.LocusVersion lv)
             throws RequiredVersionMissingException {
-        Uri uri = ActionTools.getContentProviderGeocaching(lv,
-                LocusUtils.VersionCode.UPDATE_05, PATH_FIELD_NOTES);
-        if (uri == null) {
-            throw new RequiredVersionMissingException(LocusUtils.VersionCode.UPDATE_05);
-        }
-        return uri;
+		return ActionTools.getProviderUrlGeocaching(lv,
+				LocusUtils.VersionCode.UPDATE_05, PATH_FIELD_NOTES);
     }
 
     /**
@@ -443,12 +439,8 @@ public class FieldNotesHelper {
      */
     private static Uri getUriFieldNoteImagesTable(LocusUtils.LocusVersion lv)
             throws RequiredVersionMissingException {
-        Uri uri = ActionTools.getContentProviderGeocaching(lv,
-                LocusUtils.VersionCode.UPDATE_05, PATH_FIELD_NOTE_IMAGES);
-        if (uri == null) {
-            throw new RequiredVersionMissingException(LocusUtils.VersionCode.UPDATE_05);
-        }
-        return uri;
+		return ActionTools.getProviderUrlGeocaching(lv,
+				LocusUtils.VersionCode.UPDATE_05, PATH_FIELD_NOTE_IMAGES);
     }
 
     /**************************************************/

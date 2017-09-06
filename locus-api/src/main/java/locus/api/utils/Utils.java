@@ -174,7 +174,7 @@ public class Utils {
     	}
     	
     	// handle existing object
-    	result.append(obj.getClass().getName()).append(" {").append(NEW_LINE);
+    	result.append(obj.getClass().getName()).append(" [").append(NEW_LINE);
 
     	// determine fields declared in this class only (no fields of superclass)
     	Field[] fields = obj.getClass().getDeclaredFields();
@@ -194,7 +194,7 @@ public class Utils {
     		}
     		result.append(NEW_LINE);
     	}
-    	result.append(prefix).append("}");
+    	result.append(prefix).append("]");
     	return result.toString();
     }
     

@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
 				// store value
 				PreferenceManager.getDefaultSharedPreferences(MainActivity.this).
-						edit().putInt(KEY_I_SELECTED_ITEM_ID, mCurrentSelectedItemId).commit();
+						edit().putInt(KEY_I_SELECTED_ITEM_ID, mCurrentSelectedItemId).apply();
 
 			}
 		});
@@ -283,26 +283,6 @@ public class MainActivity extends AppCompatActivity {
 				return "Utils";
 			default:
 				return "";
-		}
-	}
-
-	/**
-	 * Get title for certain page.
-	 * @param itemId ID of item
-	 * @return title for certain page
-	 */
-	private int getIconById(int itemId) {
-		switch (itemId) {
-			case ITEM_ID_WELCOME:
-				return R.drawable.ic_launcher;
-			case ITEM_ID_POINTS:
-				return R.drawable.ic_launcher;
-			case ITEM_ID_TRACKS:
-				return R.drawable.ic_launcher;
-			case ITEM_ID_UTILS:
-				return R.drawable.ic_launcher;
-			default:
-				return 0;
 		}
 	}
 

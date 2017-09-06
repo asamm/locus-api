@@ -129,7 +129,6 @@ public class GeocachingWaypoint extends Storable {
      */
 	public void setDesc(String desc) {
 		if (desc == null) {
-			Logger.logD(TAG, "setDesc(), empty parameter");
 			desc = "";
 		}
 		this.mDesc = desc;

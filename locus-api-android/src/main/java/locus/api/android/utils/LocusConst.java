@@ -379,40 +379,44 @@ public class LocusConst {
     public static final String CONTENT_PROVIDER_AUTHORITY_GEOCACHING = "GeocachingDataProvider";
 
 	// PROVIDER PATHS
-	
+
+	/**
+	 * Path for basic information cursor
+	 */
+	public static final String CONTENT_PROVIDER_PATH_DATA = "data";
 	/**
 	 * Path for basic information cursor
 	 */
 	public static final String CONTENT_PROVIDER_PATH_INFO = "info";
 	/**
-	 * Path for renderer map preview
-	 */
-	public static final String CONTENT_PROVIDER_PATH_MAP_PREVIEW = "mapPreview";
-	/**
 	 * Path for question on item purchase state
 	 */
 	public static final String CONTENT_PROVIDER_PATH_ITEM_PURCHASE_STATE = "itemPurchaseState";
-    /**
-     * Path for retrieving waypoints from application.
-     */
-    public static final String CONTENT_PROVIDER_PATH_WAYPOINT = "waypoint";
+	/**
+	 * Path for renderer map preview
+	 */
+	public static final String CONTENT_PROVIDER_PATH_MAP_PREVIEW = "mapPreview";
     /**
      * Path for retrieving tracks from application.
      */
     public static final String CONTENT_PROVIDER_PATH_TRACK = "track";
+	/**
+	 * Path for retrieving waypoints from application.
+	 */
+	public static final String CONTENT_PROVIDER_PATH_WAYPOINT = "waypoint";
     /**
      * Path for question on item purchase state
      */
     public static final String CONTENT_PROVIDER_PATH_TRACK_RECORD_PROFILE_NAMES = "trackRecordProfileNames";
 
-	/**
-	 * Generated map preview
-	 */
+	// value for LocusInfo object
+	public static final String VALUE_LOCUS_INFO = "locusInfo";
+	// generated map preview
 	public static final String VALUE_MAP_PREVIEW = "mapPreview";
-	/**
-	 * Number of tiles that still needs to render to have map full
-	 */
+	// number of tiles that still needs to render to have map full
 	public static final String VALUE_MAP_PREVIEW_MISSING_TILES = "mapPreviewMissingTiles";
+	// value for UpdateContainer object
+	public static final String VALUE_UPDATE_CONTAINER = "updateContainer";
 
     // TRACK RECORDING - ADD WAYPOINT
 

@@ -16,8 +16,8 @@ apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.bintray"
 
 // library parameters
-def libraryCode = 12
-def libraryVersion = '0.2.10'
+def libraryCode = 13
+def libraryVersion = '0.2.11'
 
 // Android basics
 android {
@@ -51,7 +51,7 @@ dependencies {
     // use in case of direct handling over Locus Core project
 //    compile project(':locus-api')
     // use in case of publishing to Maven
-    compile 'com.asamm:locus-api:0.2.10'
+    compile 'com.asamm:locus-api:0.2.11'
 }
 
 task createSourceJar(type: Jar) {

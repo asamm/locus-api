@@ -133,7 +133,8 @@ public abstract class GeoData extends Storable {
 	 * @return {@code true} if item is visible
 	 */
 	public boolean isVisible() {
-		return isEnabled() && isStateValue(1);
+		return isStateValue(0) && 					// enabled
+				isStateValue(1);  					// visible
 	}
 
 	/**
@@ -149,7 +150,9 @@ public abstract class GeoData extends Storable {
 	 * @return {@code true} if item is selected
 	 */
 	public boolean isSelected() {
-		return isVisible() && isStateValue(2);
+		return isStateValue(0) && 					// enabled
+				isStateValue(1) && 					// visible
+				isStateValue(2);					// selected
 	}
 
 	/**

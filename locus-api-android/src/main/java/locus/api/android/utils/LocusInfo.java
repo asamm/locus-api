@@ -75,6 +75,15 @@ public class LocusInfo extends Storable {
 		super();
 	}
 
+	/**
+	 * Constructor based on received, previously stored, data.
+	 * @param data received data
+	 * @throws IOException exception in case of invalid content
+	 */
+	public LocusInfo(byte[] data) throws IOException {
+		super(data);
+	}
+
     // PACKAGE NAME
 
     /**

@@ -20,6 +20,7 @@ import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
 
+import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.utils.LocusConst;
 import locus.api.android.utils.LocusInfo;
 import locus.api.android.utils.LocusUtils;
@@ -37,11 +38,138 @@ import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
 import locus.api.utils.Logger;
 
+@SuppressWarnings ({"unused", "WeakerAccess"})
 public class ActionTools {
 
     // tag for logger
 	private static final String TAG = "ActionTools";
-	
+
+	/**************************************************/
+	// INFO FUNCTIONS
+	/**************************************************/
+
+	/**
+	 * Use getLocusInfo() instead
+	 */
+	@Deprecated
+	public static String getLocusRootDirectory(Context context)
+			throws RequiredVersionMissingException {
+		LocusInfo locusInfo = getLocusInfoData(context);
+		if (locusInfo != null) {
+			return locusInfo.getRootDirectory();
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Use getLocusInfo() instead
+	 */
+	@Deprecated
+	public static boolean isPeriodicUpdatesEnabled(Context context)
+			throws RequiredVersionMissingException {
+		LocusInfo locusInfo = getLocusInfoData(context);
+		return locusInfo != null &&
+				locusInfo.isPeriodicUpdatesEnabled();
+	}
+
+	@Deprecated
+	private static LocusInfo getLocusInfoData(Context ctx)
+			throws RequiredVersionMissingException {
+		return getLocusInfo(ctx, LocusUtils.createLocusVersion(ctx));
+	}
+
+	/**
+	 * Return complete information about required LocusVersion. LocusInfo object
+	 * contains all main parameters of existing Locus installation, together with
+	 * some user preferences etc. More in LocusInfo object
+	 * @param ctx current context
+	 * @param lv version of Locus that's asked
+	 * @return {@link LocusInfo} object or <code>null</code> if problem happen. It's
+	 * always required to check that return value is correct!
+	 * @throws RequiredVersionMissingException
+	 */
+	public static LocusInfo getLocusInfo(Context ctx, LocusVersion lv)
+			throws RequiredVersionMissingException {
+		// get scheme if valid Locus is available
+		Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_01,
+				LocusConst.CONTENT_PROVIDER_PATH_INFO);
+
+		// execute action
+		Cursor cursor = null;
+		try {
+			// get cursor data
+			cursor = queryData(ctx, scheme);
+			if (cursor == null || !cursor.moveToFirst()) {
+				return null;
+			}
+
+			// return info container
+			return LocusInfo.create(cursor);
+		} catch (Exception e) {
+			Logger.logE(TAG, "getLocusInfo(" + ctx + ", " + lv + ")", e);
+		} finally {
+			Utils.closeQuietly(cursor);
+		}
+		return null;
+	}
+
+	/**************************************************/
+	// REQUEST ON DATA FROM LOCUS APP
+	/**************************************************/
+
+	/**
+	 * Get LocusInfo container with various Locus app parameters.
+	 * @param ctx current context
+	 * @param lv required Locus version
+	 * @return loaded info container or 'null' in case of problem
+	 * @throws RequiredVersionMissingException exception in case of missing version
+	 */
+	public static LocusInfo getDataLocusInfo(Context ctx, LocusVersion lv)
+			throws RequiredVersionMissingException {
+		// get scheme if valid Locus is available
+		Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_13,
+				LocusConst.CONTENT_PROVIDER_PATH_DATA + "/" + LocusConst.VALUE_LOCUS_INFO);
+
+		// execute action
+		Cursor cursor = null;
+		try {
+			byte[] data = queryData(ctx, scheme, LocusConst.VALUE_LOCUS_INFO);
+			if (data != null && data.length > 0) {
+				return new LocusInfo(data);
+			}
+		} catch (Exception e) {
+			Logger.logE(TAG, "getDataLocusInfo(" + ctx + ", " + lv + ")", e);
+		}
+		return null;
+	}
+
+	/**
+	 * Get #UpdateContainer container with current fresh data based on users activity.
+	 * @param ctx current context
+	 * @param lv required Locus version
+	 * @return loaded update container or 'null' in case of problem
+	 * @throws RequiredVersionMissingException exception in case of missing version
+	 */
+	public static UpdateContainer getDataUpdateContainer(Context ctx, LocusVersion lv)
+			throws RequiredVersionMissingException {
+		// get scheme if valid Locus is available
+		Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_13,
+				LocusConst.CONTENT_PROVIDER_PATH_DATA + "/" + LocusConst.VALUE_UPDATE_CONTAINER);
+
+		// execute action
+		Cursor cursor = null;
+		try {
+			byte[] data = queryData(ctx, scheme, LocusConst.VALUE_UPDATE_CONTAINER);
+			if (data != null && data.length > 0) {
+				return new UpdateContainer(data);
+			}
+		} catch (Exception e) {
+			Logger.logE(TAG, "getDataUpdateContainer(" + ctx + ", " + lv + ")", e);
+		}
+		return null;
+	}
+
 	/**************************************************/
 	// FILE PICKER
 	/**************************************************/
@@ -233,16 +361,12 @@ public class ActionTools {
 		
 		// generate cursor
 		Cursor cursor;
-		Uri scheme = getContentProviderData(lv, VersionCode.UPDATE_01,
+		Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_01,
                 LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT);
-		if (scheme != null) {
-            scheme = ContentUris.withAppendedId(scheme, wptId);
-			cursor = ctx.getContentResolver().query(scheme,
-					null, null, null, null);
-		} else {
-			throw new RequiredVersionMissingException(minVersion);
-		}
-		
+		scheme = ContentUris.withAppendedId(scheme, wptId);
+		cursor = ctx.getContentResolver().query(scheme,
+				null, null, null, null);
+
 		// check cursor
 		if (cursor == null || !cursor.moveToFirst()) {
 			Logger.logW(TAG, "getLocusWaypoint(" + ctx + ", " + wptId + "), " +
@@ -289,15 +413,11 @@ public class ActionTools {
 		
 		// generate cursor
 		Cursor cursor;
-        Uri scheme = getContentProviderData(lv, VersionCode.UPDATE_03,
+        Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_03,
                 LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT);
-		if (scheme != null) {
-			cursor = ctx.getContentResolver().query(scheme,
-					null, "getWaypointId", new String[] {wptName}, null);
-		} else {
-			throw new RequiredVersionMissingException(minVersion);
-		}
-		
+		cursor = ctx.getContentResolver().query(scheme,
+				null, "getWaypointId", new String[] {wptName}, null);
+
 		// handle result
 		long[] result = null;
 		try {
@@ -346,18 +466,15 @@ public class ActionTools {
 		}
 		
 		// generate cursor
-        Uri scheme = getContentProviderData(lv, VersionCode.UPDATE_01,
+        Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_01,
                 LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT);
-		if (scheme != null) {
-			// define empty cursor
-			ContentValues cv = new ContentValues();
-			cv.put("waypoint", wpt.getAsBytes());
-			cv.put("forceOverwrite", forceOverwrite);
-			cv.put("loadAllGcWaypoints", loadAllGcWaypoints);
-			return ctx.getContentResolver().update(scheme, cv, null, null);
-		} else {
-			throw new RequiredVersionMissingException(minVersion);
-		}
+
+		// define empty cursor
+		ContentValues cv = new ContentValues();
+		cv.put("waypoint", wpt.getAsBytes());
+		cv.put("forceOverwrite", forceOverwrite);
+		cv.put("loadAllGcWaypoints", loadAllGcWaypoints);
+		return ctx.getContentResolver().update(scheme, cv, null, null);
 	}
 
 	/**
@@ -445,15 +562,11 @@ public class ActionTools {
 
         // generate cursor
         Cursor cursor;
-        Uri scheme = getContentProviderData(lv, VersionCode.UPDATE_10,
+        Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_10,
                 LocusConst.CONTENT_PROVIDER_PATH_TRACK);
-        if (scheme != null) {
-            scheme = ContentUris.withAppendedId(scheme, trackId);
-            cursor = ctx.getContentResolver().query(scheme,
-                    null, null, null, null);
-        } else {
-            throw new RequiredVersionMissingException(minVersion);
-        }
+		scheme = ContentUris.withAppendedId(scheme, trackId);
+		cursor = ctx.getContentResolver().query(scheme,
+				null, null, null, null);
 
         // check cursor
         if (cursor == null || !cursor.moveToFirst()) {
@@ -751,14 +864,10 @@ public class ActionTools {
             Context ctx, LocusVersion lv) throws RequiredVersionMissingException {
         // get scheme if valid Locus is available
         Cursor cursor;
-        Uri scheme = getContentProviderData(lv, VersionCode.UPDATE_09,
+        Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_09,
                 LocusConst.CONTENT_PROVIDER_PATH_TRACK_RECORD_PROFILE_NAMES);
-        if (scheme != null) {
-            cursor = ctx.getContentResolver().query(scheme,
-                    null, null, null, null);
-        } else {
-            throw new RequiredVersionMissingException(VersionCode.UPDATE_09);
-        }
+		cursor = ctx.getContentResolver().query(scheme,
+				null, null, null, null);
 
         // handle result
         List<TrackRecordProfileSimple> profiles = new ArrayList<>();
@@ -810,76 +919,6 @@ public class ActionTools {
 		context.startActivity(intent);
 	}
 	
-	/**************************************************/
-	// INFO FUNCTIONS
-	/**************************************************/
-	
-	/**
-	 * Use getLocusInfo() instead
-	 */
-	@Deprecated
-	public static String getLocusRootDirectory(Context context) 
-			throws RequiredVersionMissingException {
-		LocusInfo locusInfo = getLocusInfoData(context);
-		if (locusInfo != null) {
-			return locusInfo.getRootDirectory();
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * Use getLocusInfo() instead
-	 */
-	@Deprecated
-	public static boolean isPeriodicUpdatesEnabled(Context context) 
-			throws RequiredVersionMissingException {
-		LocusInfo locusInfo = getLocusInfoData(context);
-		return locusInfo != null &&
-				locusInfo.isPeriodicUpdatesEnabled();
-	}
-	
-	private static LocusInfo getLocusInfoData(Context ctx)
-			throws RequiredVersionMissingException {
-		return getLocusInfo(ctx, LocusUtils.createLocusVersion(ctx));
-	}
-	
-	/**
-	 * Return complete information about required LocusVersion. LocusInfo object
-	 * contains all main parameters of existing Locus installation, together with
-	 * some user preferences etc. More in LocusInfo object
-	 * @param ctx current context
-	 * @param lv version of Locus that's asked
-	 * @return {@link LocusInfo} object or <code>null</code> if problem happen. It's 
-	 * always required to check that return value is correct!
-	 * @throws RequiredVersionMissingException
-	 */
-	public static LocusInfo getLocusInfo(Context ctx, LocusVersion lv)
-			throws RequiredVersionMissingException {
-		// get scheme if valid Locus is available
-		Cursor cursor;
-        Uri scheme = getContentProviderData(lv, VersionCode.UPDATE_01,
-                LocusConst.CONTENT_PROVIDER_PATH_INFO);
-		if (scheme == null) {
-			Logger.logD(TAG, "getLocusInfo(" + ctx + ", " + lv + "), invalid version");
-			throw new RequiredVersionMissingException(VersionCode.UPDATE_01);
-		}
-		
-		// generate cursor
-		cursor = ctx.getContentResolver().query(scheme,
-					null, null, null, null);
-		
-		// handle result
-		try {
-			return LocusInfo.create(cursor);
-		} catch (Exception e) {
-			Logger.logE(TAG, "getLocusInfo(" + ctx + ", " + lv + ")", e);
-		} finally {
-			Utils.closeQuietly(cursor);
-		}
-		return null;
-	}
-
     /**************************************************/
     // CONTENT OF LOCUS STORE
     /**************************************************/
@@ -896,15 +935,11 @@ public class ActionTools {
 			throws RequiredVersionMissingException {
 		// get scheme if valid Locus is available
 		Cursor cursor;
-		Uri scheme = getContentProviderData(lv, VersionCode.UPDATE_06,
+		Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_06,
 				LocusConst.CONTENT_PROVIDER_PATH_ITEM_PURCHASE_STATE);
-		if (scheme != null) {
-			scheme = ContentUris.withAppendedId(scheme, itemId);
-			cursor = ctx.getContentResolver().query(scheme,
-					null, null, null, null);
-		} else {
-			throw new RequiredVersionMissingException(VersionCode.UPDATE_06);
-		}
+		scheme = ContentUris.withAppendedId(scheme, itemId);
+		cursor = ctx.getContentResolver().query(scheme,
+				null, null, null, null);
 
 		// handle result
 		try {
@@ -1059,12 +1094,9 @@ public class ActionTools {
 			throws RequiredVersionMissingException {
 		// get scheme if valid Locus is available
 		Cursor cursor;
-        Uri scheme = getContentProviderData(lv, VersionCode.UPDATE_04,
+        Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_04,
                 LocusConst.CONTENT_PROVIDER_PATH_MAP_PREVIEW);
-		if (scheme == null) {
-			throw new RequiredVersionMissingException(VersionCode.UPDATE_04);
-		}
-		
+
 		StringBuilder sbQuery = new StringBuilder();
 		sbQuery.append("lon=").append(locCenter.getLongitude()).append(",");
 		sbQuery.append("lat=").append(locCenter.getLatitude()).append(",");
@@ -1103,7 +1135,7 @@ public class ActionTools {
 	}
 
     /**************************************************/
-    // WORK WITH DYNAMICALLY REGISTERED PERIODIC UPDATES RECEIVER
+    // DYNAMIC PERIODIC UPDATES RECEIVER
     /**************************************************/
 
     /**
@@ -1171,33 +1203,109 @@ public class ActionTools {
     // WORK WITH CONTENT PROVIDERS
     /**************************************************/
 
-    private static Uri getContentProviderData(LocusVersion lv, VersionCode vc, String path) {
-        return getContentProviderUri(lv, vc,
+	/**
+	 * Query data from defined Uri.
+	 * @param ctx current context
+	 * @param uri Uri to load data from
+	 * @return valid cursor with data or 'null' in case of empty or invalid cursor
+	 */
+    private static Cursor queryData(Context ctx, Uri uri) {
+		// generate cursor
+		Cursor cursor = ctx.getContentResolver().query(uri,
+				null, null, null, null);
+		if (cursor == null || cursor.getCount() == 0) {
+			Logger.logE(TAG, "queryData(" + ctx + ", " + uri + "), " +
+					"invalid or empty cursor received");
+			return null;
+		}
+		return cursor;
+	}
+
+	/**
+	 * Query data from defined Uri and return loaded byte array content.
+	 * @param ctx current context
+	 * @param uri Uri to load data from
+	 * @param keyName key under which we expect received data
+	 * @return valid cursor with data or 'null' in case of empty or invalid cursor
+	 */
+	private static byte[] queryData(Context ctx, Uri uri, String keyName) {
+		Cursor cursor = null;
+		try {
+			// get cursor data
+			cursor = queryData(ctx, uri);
+			if (cursor == null || !cursor.moveToFirst()) {
+				return null;
+			}
+
+			// handle query
+			String key = cursor.getString(0);
+			if (key.equals(keyName)) {
+				return cursor.getBlob(1);
+			}
+		} finally {
+			Utils.closeQuietly(cursor);
+		}
+
+		// no data loaded
+		Logger.logW(TAG, "queryData(" + ctx + ", " + uri + ", " + keyName + "), " +
+				"received data does not contains required key");
+		return null;
+	}
+
+	/**
+	 * Get Uri to certain content in Locus Map data system.
+	 * @param lv Locus version we request to
+	 * @param requiredVc required minimal Locus version
+	 * @param path path to data
+	 * @return generated Uri
+	 * @throws RequiredVersionMissingException exception in case of invalid version
+	 */
+    private static Uri getProviderUriData(LocusVersion lv, VersionCode requiredVc, String path)
+			throws RequiredVersionMissingException {
+        return getProviderUri(lv, requiredVc,
                 LocusConst.CONTENT_PROVIDER_AUTHORITY_DATA,
                 path);
     }
 
-    public static Uri getContentProviderGeocaching(LocusVersion lv, VersionCode vc, String path) {
-        return getContentProviderUri(lv, vc,
+	/**
+	 * Get Uri to certain content in Locus Map geocaching system.
+	 * @param lv Locus version we request to
+	 * @param requiredVc required minimal Locus version
+	 * @param path path to data
+	 * @return generated Uri
+	 * @throws RequiredVersionMissingException exception in case of invalid version
+	 */
+    public static Uri getProviderUrlGeocaching(LocusVersion lv, VersionCode requiredVc, String path)
+			throws RequiredVersionMissingException {
+        return getProviderUri(lv, requiredVc,
                 LocusConst.CONTENT_PROVIDER_AUTHORITY_GEOCACHING,
                 path);
     }
 
-    private static Uri getContentProviderUri(LocusVersion lv, VersionCode vc,
-            String provider, String path) {
-        // check URI parts
+	/**
+	 * Get Uri to certain content in Locus Map app.
+	 * @param lv Locus version we request to
+	 * @param requiredVc required minimal Locus version
+	 * @param provider provider for data
+	 * @param path path to data
+	 * @return generated Uri
+	 * @throws RequiredVersionMissingException exception in case of invalid version
+	 */
+    private static Uri getProviderUri(LocusVersion lv, VersionCode requiredVc,
+            String provider, String path) throws RequiredVersionMissingException {
+        // check URI parts ( should not happen, just check )
         if (provider == null || provider.length() == 0 ||
                 path == null || path.length() == 0) {
-            Logger.logW(TAG, "getContentProviderUri(), " +
+            Logger.logW(TAG, "getProviderUri(), " +
                     "invalid 'authority' or 'path'parameters");
-            return null;
+			throw new RequiredVersionMissingException(requiredVc);
         }
 
         // check if application is available
-        if (lv == null || vc == null || !lv.isVersionValid(vc)) {
-            Logger.logW(TAG, "getContentProviderUri(), " +
+        if (lv == null || requiredVc == null || !lv.isVersionValid(requiredVc)) {
+            Logger.logW(TAG, "getProviderUri(), " +
                     "invalid Locus version");
-            return null;
+			throw new RequiredVersionMissingException(requiredVc);
         }
 
         // generate content provider by type
@@ -1209,9 +1317,9 @@ public class ActionTools {
         } else if (lv.isVersionGis()) {
             sb.append("content://menion.android.locus.gis");
         } else {
-            Logger.logW(TAG, "getContentProviderUri(), " +
+            Logger.logW(TAG, "getProviderUri(), " +
                     "unknown Locus version:" + lv);
-            return null;
+			throw new RequiredVersionMissingException(requiredVc);
         }
 
         // finish URI

@@ -588,9 +588,10 @@ public class GeocachingData extends Storable {
 			return res;
 		}
 
+		GZIPInputStream zis = null;
 		try {
 			// prepare input stream
-			GZIPInputStream zis = new GZIPInputStream(
+			zis = new GZIPInputStream(
 					new ByteArrayInputStream(mDescBytes), 10240);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			
@@ -613,6 +614,8 @@ public class GeocachingData extends Storable {
 			Logger.logE(TAG, "", e);
 			res[0] = "";
 			res[1] = "";
+		} finally {
+			Utils.closeStream(zis);
 		}
 		
 		// return result
@@ -1026,7 +1029,12 @@ public class GeocachingData extends Storable {
 	// VARIOUS UTILS
 	/**************************************************/
 
-	private String fixToHtml(String text) {
+	/**
+	 * Fix text so it display correctly in webView component.
+	 * @param text text to display
+	 * @return improved text
+	 */
+	public static String fixToHtml(String text) {
 		try {
 			String result = text.replace("\n", "<br>");
 			result = result.replace("  ", "&nbsp;&nbsp;");

@@ -83,6 +83,14 @@ public class GeoDataExtra extends Storable {
 	 * Items loaded from Live-tracking service
 	 */
 	public static final byte SOURCE_LIVE_TRACKING 					            = 59;
+	/**
+	 * Blocked area point for navigation and routing
+	 */
+	public static final byte SOURCE_NAVI_BLOCKED_AREA		            		= 60;
+	/**
+	 * Point generated from map "selection point"
+	 */
+	public static final byte SOURCE_MAP_SELECTION								= 61;
 
 
     // ROUTE TYPES DEFINED IN PARAMETER 'PAR_RTE_COMPUTE_TYPE'
@@ -99,8 +107,11 @@ public class GeoDataExtra extends Storable {
 	public static final int VALUE_RTE_TYPE_CYCLE_SHORT                          = 5;
     public static final int VALUE_RTE_TYPE_CYCLE_MTB                            = 8;
     public static final int VALUE_RTE_TYPE_CYCLE_RACING                         = 9;
+	// basic routing profile, type "walk"
 	public static final int VALUE_RTE_TYPE_FOOT_01                              = 3;
+	// routing profile usually used for "hiking"
 	public static final int VALUE_RTE_TYPE_FOOT_02                            	= 10;
+	// routing profile usually used for "climb" or "mountain hiking"
 	public static final int VALUE_RTE_TYPE_FOOT_03                           	= 11;
 
     /**
@@ -236,6 +247,10 @@ public class GeoDataExtra extends Storable {
 	 * In case of usage only exit point, it's need to set this flag
 	 */
 	public static final int PAR_RTE_SIMPLE_ROUNDABOUTS = 121;
+	/**
+	 * Configuration of (route) plan as defined in route planner.
+	 */
+	public static final int PAR_RTE_PLAN_DEFINITION = 122;
 	
 	// OSM BUGS (300 - 309)
 	public static final int PAR_OSM_NOTES_ID = 301;

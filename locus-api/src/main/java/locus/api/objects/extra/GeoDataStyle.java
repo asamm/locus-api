@@ -553,14 +553,24 @@ public class GeoDataStyle extends Storable {
 		 * Special color style for a lines.
 		 */
 		public enum ColorStyle {
+			// simple coloring
 			SIMPLE,
-			BY_SPEED, 
+			// coloring by speed value
+			BY_SPEED,
+			// coloring (relative) by altitude value
 			BY_ALTITUDE,
+			// coloring (relative) by accuracy
 			BY_ACCURACY,
+			// coloring (relative) by speed change
 			BY_SPEED_CHANGE,
-			BY_ALTITUDE_CHANGE,
+			// coloring (relative) by slope
+			BY_SLOPE_REL,
+			// coloring (relative) by heart rate value
 			BY_HRM,
-			BY_CADENCE
+			// coloring (relative) by cadence
+			BY_CADENCE,
+			// coloring (absolute) by slope
+			BY_SLOPE_ABS
 		}
 
 		/**
