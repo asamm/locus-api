@@ -378,7 +378,7 @@ public class SampleCalls {
 		c0.styleNormal = new GeoDataStyle();
 
 		c0.styleNormal.setPolyStyle(Color.argb(50, Color.red(Color.RED),
-				Color.green(Color.RED), Color.blue(Color.RED)), true);
+				Color.green(Color.RED), Color.blue(Color.RED)));
 		circles.add(c0);
 
 		Circle c1 = new Circle(new Location("c1", 50, 15), 1000);
@@ -394,7 +394,7 @@ public class SampleCalls {
 		Circle c3 = new Circle(new Location("c1", 50.2, 15), 2000);
 		c3.styleNormal = new GeoDataStyle();
 		c3.styleNormal.setLineStyle(Color.GREEN, 4);
-		c3.styleNormal.setPolyStyle(Color.LTGRAY, true);
+		c3.styleNormal.setPolyStyle(Color.LTGRAY);
 		circles.add(c3);
 
 		Circle c4 = new Circle(new Location("c1", 50.3, 15), 1500);
@@ -402,8 +402,7 @@ public class SampleCalls {
 		c4.styleNormal.setLineStyle(Color.MAGENTA, 0);
 		c4.styleNormal.setPolyStyle(
 				Color.argb(100, Color.red(Color.MAGENTA),
-						Color.green(Color.MAGENTA), Color.blue(Color.MAGENTA)),
-				true);
+						Color.green(Color.MAGENTA), Color.blue(Color.MAGENTA)));
 		circles.add(c4);
 
 		// send data
@@ -517,9 +516,7 @@ public class SampleCalls {
 		
 		// set style
 		GeoDataStyle style = new GeoDataStyle();
-		style.setLineStyle(LineStyle.Coloring.SIMPLE,
-				Color.CYAN, 7.0f,
-				LineStyle.Units.PIXELS);
+		style.setLineStyle(Color.CYAN, 7.0f);
 		track.styleNormal = style;
 		
 		// generate points

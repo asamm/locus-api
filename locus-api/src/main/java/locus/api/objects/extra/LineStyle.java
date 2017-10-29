@@ -19,6 +19,7 @@ public class LineStyle extends Storable {
 	// black color
 	private static final int COLOR_BLACK                                       	= 0x00000000;
 
+	// parameters for storing extra meta information for line coloring
 	public static String KEY_CP_ALTITUDE_MANUAL									= "alt_man";
 	public static String KEY_CP_ALTITUDE_MANUAL_MIN								= "alt_man_min";
 	public static String KEY_CP_ALTITUDE_MANUAL_MAX								= "alt_man_max";
@@ -30,7 +31,8 @@ public class LineStyle extends Storable {
 	 * Type how line is presented to user.
 	 */
 	public enum Symbol {
-		DOTTED, DASHED_1, DASHED_2, DASHED_3,
+		DOTTED,
+		DASHED_1, DASHED_2, DASHED_3,
 		SPECIAL_1, SPECIAL_2, SPECIAL_3,
 		ARROW_1, ARROW_2, ARROW_3,
 		CROSS_1, CROSS_2
@@ -97,6 +99,7 @@ public class LineStyle extends Storable {
 	/**
 	 * Default empty constructor.
 	 */
+	@SuppressWarnings ("WeakerAccess")
 	public LineStyle() {
 		super();
 	}
@@ -113,15 +116,29 @@ public class LineStyle extends Storable {
 		return mDrawBase;
 	}
 
+	/**
+	 * Set to draw a base line.
+	 * @param drawBase {@code true} to draw a base line
+	 * @return current object
+	 */
 	public LineStyle setDrawBase(boolean drawBase) {
 		mDrawBase = drawBase;
 		return this;
 	}
 
+	/**
+	 * Get base style color.
+	 * @return color
+	 */
 	public int getColorBase() {
 		return mColorBase;
 	}
 
+	/**
+	 * Set base style color.
+	 * @param colorBase color
+	 * @return current object
+	 */
 	public LineStyle setColorBase(int colorBase) {
 		mColorBase = colorBase;
 		return this;
@@ -135,24 +152,47 @@ public class LineStyle extends Storable {
 		return mDrawSymbol;
 	}
 
+	/**
+	 *
+	 * @param drawSymbol
+	 * @return current object
+	 */
 	public LineStyle setDrawSymbol(boolean drawSymbol) {
 		mDrawSymbol = drawSymbol;
 		return this;
 	}
 
+	/**
+	 * Get color for a symbol.
+	 * @return color
+	 */
 	public int getColorSymbol() {
 		return mColorSymbol;
 	}
 
+	/**
+	 * Set color for a draw symbol.
+	 * @param colorSymbol color
+	 * @return current object
+	 */
 	public LineStyle setColorSymbol(int colorSymbol) {
 		mColorSymbol = colorSymbol;
 		return this;
 	}
 
+	/**
+	 * Get style of symbol to draw.
+	 * @return defined symbol
+	 */
 	public Symbol getSymbol() {
 		return mSymbol;
 	}
 
+	/**
+	 * Set symbol to draw.
+	 * @param symbol symbol
+	 * @return current object
+	 */
 	public LineStyle setSymbol(Symbol symbol) {
 		mSymbol = symbol;
 		return this;
@@ -164,6 +204,11 @@ public class LineStyle extends Storable {
 		return mColoring;
 	}
 
+	/**
+	 *
+	 * @param coloring
+	 * @return current object
+	 */
 	public LineStyle setColoring(Coloring coloring) {
 		mColoring = coloring;
 		return this;
@@ -190,7 +235,7 @@ public class LineStyle extends Storable {
 	 * Put valid coloring parameter into container.
 	 * @param key key of parameter
 	 * @param value parameter value
-	 * @return current style
+	 * @return current object
 	 */
 	public LineStyle setColoringParam(String key, String value) {
 		// check params
@@ -209,19 +254,37 @@ public class LineStyle extends Storable {
 
 	// WIDTH
 
+	/**
+	 * Get width value independent on units.
+	 * @return width value
+	 */
 	public float getWidth() {
 		return mWidth;
 	}
 
+	/**
+	 * Set width value for current style.
+	 * @param width width value
+	 * @return current object
+	 */
 	public LineStyle setWidth(float width) {
 		mWidth = width;
 		return this;
 	}
 
+	/**
+	 * Get units for defined line width.
+	 * @return line units
+	 */
 	public Units getUnits() {
 		return mUnits;
 	}
 
+	/**
+	 * Set units for line width.
+	 * @param units units
+	 * @return current object
+	 */
 	public LineStyle setUnits(Units units) {
 		mUnits = units;
 		return this;
@@ -235,6 +298,11 @@ public class LineStyle extends Storable {
 		return mDrawOutline;
 	}
 
+	/**
+	 *
+	 * @param drawOutline
+	 * @return current object
+	 */
 	public LineStyle setDrawOutline(boolean drawOutline) {
 		mDrawOutline = drawOutline;
 		return this;
@@ -244,6 +312,11 @@ public class LineStyle extends Storable {
 		return mColorOutline;
 	}
 
+	/**
+	 *
+	 * @param colorOutline
+	 * @return current object
+	 */
 	public LineStyle setColorOutline(int colorOutline) {
 		mColorOutline = colorOutline;
 		return this;
@@ -257,15 +330,29 @@ public class LineStyle extends Storable {
 		return mDrawFill;
 	}
 
+	/**
+	 * Set flag to fill an area with a color.
+	 * @param drawFill {@code true} to draw a fill
+	 * @return current object
+	 */
 	public LineStyle setDrawFill(boolean drawFill) {
 		mDrawFill = drawFill;
 		return this;
 	}
 
+	/**
+	 * Get color for a fill style.
+	 * @return fill color
+	 */
 	public int getColorFill() {
 		return mColorFill;
 	}
 
+	/**
+	 * Set color for a polygon fill.
+	 * @param colorFill fill color
+	 * @return current object
+	 */
 	public LineStyle setColorFill(int colorFill) {
 		mColorFill = colorFill;
 		return this;

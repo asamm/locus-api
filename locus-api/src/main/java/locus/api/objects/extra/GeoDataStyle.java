@@ -220,7 +220,7 @@ public class GeoDataStyle extends Storable {
     // LINE STYLE
 
 	/**
-	 * Get current defined style for line & polygons.
+	 * Get current defined style for line and polygons.
 	 * @return current line style
 	 */
 	public LineStyle getLineStyle() {

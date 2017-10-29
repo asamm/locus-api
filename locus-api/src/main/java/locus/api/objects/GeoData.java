@@ -188,8 +188,8 @@ public abstract class GeoData extends Storable {
     /**************************************************/
     // STORABLE PART
     /**************************************************/
-	
-	protected void readExtraData(DataReaderBigEndian dr) throws IOException {
+
+    protected void readExtraData(DataReaderBigEndian dr) throws IOException {
 		if (dr.readBoolean()) {
 			extraData = new GeoDataExtra();
 			extraData.read(dr);
