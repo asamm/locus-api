@@ -5,7 +5,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
+        classpath 'com.android.tools.build:gradle:2.3.3'
+//        classpath 'com.android.tools.build:gradle:3.0.0'
 //        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.4'
     }
 }
@@ -14,6 +15,9 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+
+        // Google repository
+        google()
     }
 }
 
@@ -23,8 +27,8 @@ task clean(type: Delete) {
 
 ext {
     // compile parameters
-    compileSdkVersion = 25
-    buildToolsVersion = '25.0.2'
+    compileSdkVersion = 26
+    buildToolsVersion = '26.0.2'
 
     // define default parameters
     minSdkVersion = 15
@@ -53,9 +57,6 @@ configure([
         defaultConfig {
             minSdkVersion rootProject.ext.minSdkVersion
             targetSdkVersion rootProject.ext.targetSdkVersion
-
-            // enable multidex support
-            multiDexEnabled true
         }
 
         dexOptions {
@@ -105,11 +106,6 @@ configure([
                 signingConfig signingConfigs.release
             }
         }
-
-//        // define release extension to each product flavor upon creation
-//        productFlavors.whenObjectAdded { flavor ->
-//            flavor.extensions.create("release", ReleaseExtension, '')
-//        }
     }
 
     // iterate over all versions
@@ -120,20 +116,17 @@ configure([
 
         // rename result file
         variant.outputs.each { output ->
+            // generate base name
+            def newName = variant.name.capitalize()
+            // remove from 'LocusFreeSamsungDebug', last work 'Debug'
+            newName = newName.substring(0, newName.length() - variant.buildType.name.length())
+            // create full name like 'LocusFreeSamsung_342_3.5.2_debug.apk'
+            def baseFileName = "${newName}_${variant.versionCode}_${variant.versionName}_${variant.buildType.name}"
+            // set new output file name
             def outputFile = output.outputFile
-            if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                // generate base name
-                def newName = variant.name.capitalize()
-                // remove from 'LocusFreeSamsungDebug', last work 'Debug'
-                newName = newName.substring(0, newName.length() - variant.buildType.name.length())
-                // create full name like 'LocusFreeSamsung_342_3.5.2_debug.apk'
-                def baseFileName = "${newName}_${variant.versionCode}_${variant.versionName}_${variant.buildType.name}"
-
-                // set new output file name
-                output.outputFile = new File(outputFile.parent, "${baseFileName}.apk")
-                println "Output:" + output.outputFile
-
-            }
+            output.outputFile = new File(outputFile.parent, "${baseFileName}.apk")
+//            outputFileName = "${baseFileName}.apk"
+            println "Output:" + output.outputFile
         }
 
         // create also release task for "release builds"

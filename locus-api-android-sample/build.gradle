@@ -4,10 +4,14 @@ android {
         versionName '0.2'
     }
 
+    // specifies flavor dimension
+    flavorDimensions "base"
+
     // product flavors
     productFlavors {
         locusApiSample {
             applicationId "com.asamm.locus.api.sample"
+            dimension "base"
         }
     }
 }
@@ -26,5 +30,5 @@ dependencies {
     // lib with some design utils
     // lib for a card view
     // lib for a recycler view
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:27.0.0'
 }

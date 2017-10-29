@@ -87,7 +87,7 @@ public class ActionTools {
 	 * @param lv version of Locus that's asked
 	 * @return {@link LocusInfo} object or <code>null</code> if problem happen. It's
 	 * always required to check that return value is correct!
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException if Locus in required version is missing
 	 */
 	public static LocusInfo getLocusInfo(Context ctx, LocusVersion lv)
 			throws RequiredVersionMissingException {
@@ -95,11 +95,10 @@ public class ActionTools {
 		Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_01,
 				LocusConst.CONTENT_PROVIDER_PATH_INFO);
 
-		// execute action
+		// get data
 		Cursor cursor = null;
 		try {
-			// get cursor data
-			cursor = queryData(ctx, scheme);
+			cursor = queryData(ctx, scheme, null);
 			if (cursor == null || !cursor.moveToFirst()) {
 				return null;
 			}
@@ -123,7 +122,7 @@ public class ActionTools {
 	 * @param ctx current context
 	 * @param lv required Locus version
 	 * @return loaded info container or 'null' in case of problem
-	 * @throws RequiredVersionMissingException exception in case of missing version
+	 * @throws RequiredVersionMissingException if Locus in required version is missing
 	 */
 	public static LocusInfo getDataLocusInfo(Context ctx, LocusVersion lv)
 			throws RequiredVersionMissingException {
@@ -134,7 +133,7 @@ public class ActionTools {
 		// execute action
 		Cursor cursor = null;
 		try {
-			byte[] data = queryData(ctx, scheme, LocusConst.VALUE_LOCUS_INFO);
+			byte[] data = queryData(ctx, scheme, null, LocusConst.VALUE_LOCUS_INFO);
 			if (data != null && data.length > 0) {
 				return new LocusInfo(data);
 			}
@@ -149,7 +148,7 @@ public class ActionTools {
 	 * @param ctx current context
 	 * @param lv required Locus version
 	 * @return loaded update container or 'null' in case of problem
-	 * @throws RequiredVersionMissingException exception in case of missing version
+	 * @throws RequiredVersionMissingException if Locus in required version is missing
 	 */
 	public static UpdateContainer getDataUpdateContainer(Context ctx, LocusVersion lv)
 			throws RequiredVersionMissingException {
@@ -160,7 +159,7 @@ public class ActionTools {
 		// execute action
 		Cursor cursor = null;
 		try {
-			byte[] data = queryData(ctx, scheme, LocusConst.VALUE_UPDATE_CONTAINER);
+			byte[] data = queryData(ctx, scheme, null, LocusConst.VALUE_UPDATE_CONTAINER);
 			if (data != null && data.length > 0) {
 				return new UpdateContainer(data);
 			}
@@ -227,7 +226,7 @@ public class ActionTools {
     /**
      * Start basic "Pick location" event.
      * @param act current activity
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
 	public static void actionPickLocation(Activity act) 
 			throws RequiredVersionMissingException {
@@ -249,7 +248,7 @@ public class ActionTools {
      * @param name name of target
      * @param latitude latitude of target
      * @param longitude longitude of target
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
 	public static void actionStartNavigation(Activity act, 
 			String name, double latitude, double longitude) 
@@ -273,7 +272,7 @@ public class ActionTools {
      * Intent that starts navigation in Locus app based on defined target.
      * @param act current activity
      * @param wpt waypoint - destination
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
 	public static void actionStartNavigation(Activity act, Waypoint wpt) 
 			throws RequiredVersionMissingException {
@@ -292,7 +291,7 @@ public class ActionTools {
      * Intent that starts navigation in Locus to target address.
      * @param act current activity
      * @param address target address
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     public static void actionStartNavigation(Activity act, String address)
             throws RequiredVersionMissingException {
@@ -502,7 +501,7 @@ public class ActionTools {
      *  retrieved by String data = getIntent.getStringExtra("returnData");
      * @param returnDataValue String under which data will be stored. Can be
      *  retrieved by String data = getIntent.getStringExtra("returnData");
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     public static void displayWaypointScreen(Context ctx, LocusVersion lv, long wptId,
             String packageName, String className, String returnDataName, String returnDataValue)
@@ -521,7 +520,7 @@ public class ActionTools {
      * @param lv LocusVersion we call
      * @param wptId ID of waypoints we wants to display
      * @param callback generated callback (optional)
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     private static void displayWaypointScreen(Context ctx, LocusVersion lv, long wptId, String callback)
             throws RequiredVersionMissingException {
@@ -598,7 +597,7 @@ public class ActionTools {
      * Main call to start track recording over API.
      * @param ctx current context
      * @param lv version of Locus used for track record
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     public static void actionTrackRecordStart(Context ctx, LocusVersion lv)
             throws RequiredVersionMissingException {
@@ -611,7 +610,7 @@ public class ActionTools {
      * @param lv version of Locus used for track record
      * @param profileName name of profile used for record (optional), otherwise last
      *                    used will be used for recording
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     public static void actionTrackRecordStart(Context ctx, LocusVersion lv, String profileName)
             throws RequiredVersionMissingException {
@@ -655,7 +654,7 @@ public class ActionTools {
      * Send broadcast to Locus to add a new waypoint to current track record.
      * @param ctx current context
      * @param lv version of Locus used for track record
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     public static void actionTrackRecordAddWpt(Context ctx, LocusVersion lv)
             throws RequiredVersionMissingException {
@@ -667,7 +666,7 @@ public class ActionTools {
      * @param ctx current context
      * @param lv version of Locus used for track record
      * @param autoSave <code>true</code> to automatically save waypoint without dialog
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     public static void actionTrackRecordAddWpt(Context ctx, LocusVersion lv, boolean autoSave)
             throws RequiredVersionMissingException {
@@ -680,7 +679,7 @@ public class ActionTools {
      * @param lv version of Locus used for track record
      * @param wptName optional waypoint name
      * @param autoSave <code>true</code> to automatically save waypoint without dialog
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     public static void actionTrackRecordAddWpt(Context ctx, LocusVersion lv,
             String wptName, boolean autoSave) throws RequiredVersionMissingException {
@@ -701,7 +700,7 @@ public class ActionTools {
      * @param lv version of Locus used for track record
      * @param wptName nameof waypoint
      * @param actionAfter action that may happen after (defined in LocusConst class)
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     public static void actionTrackRecordAddWpt(Context ctx, LocusVersion lv,
             String wptName, String actionAfter) throws RequiredVersionMissingException {
@@ -727,7 +726,7 @@ public class ActionTools {
      * @param action action that should be performed
      * @param lv version of Locus used for track record
      * @return created ready-to-use intent
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     private static Intent actionTrackRecord(String action, LocusVersion lv)
             throws RequiredVersionMissingException {
@@ -858,20 +857,23 @@ public class ActionTools {
      * @param ctx current context
      * @param lv version of Locus that's asked
      * @return array of profiles, where first item in array is profile ID, second item is profile name
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     public static List<TrackRecordProfileSimple> getTrackRecordingProfiles(
             Context ctx, LocusVersion lv) throws RequiredVersionMissingException {
         // get scheme if valid Locus is available
-        Cursor cursor;
+		List<TrackRecordProfileSimple> profiles = new ArrayList<>();
         Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_09,
                 LocusConst.CONTENT_PROVIDER_PATH_TRACK_RECORD_PROFILE_NAMES);
-		cursor = ctx.getContentResolver().query(scheme,
-				null, null, null, null);
 
-        // handle result
-        List<TrackRecordProfileSimple> profiles = new ArrayList<>();
+        // get data
+        Cursor cursor = null;
         try {
+			cursor = queryData(ctx, scheme, null);
+			if (cursor == null || !cursor.moveToFirst()) {
+				return profiles;
+			}
+
             // search in cursor for valid key
             for (int i = 0; i < cursor.getCount(); i++)  {
                 cursor.moveToPosition(i);
@@ -929,21 +931,24 @@ public class ActionTools {
 	 * @param lv version of Locus that's asked
 	 * @param itemId know ID of item
 	 * @return ItemPurchaseState state of purcahse
-	 * @throws RequiredVersionMissingException
+	 * @throws RequiredVersionMissingException if Locus in required version is missing
 	 */
 	public static int getItemPurchaseState(Context ctx, LocusVersion lv, long itemId)
 			throws RequiredVersionMissingException {
 		// get scheme if valid Locus is available
-		Cursor cursor;
 		Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_06,
 				LocusConst.CONTENT_PROVIDER_PATH_ITEM_PURCHASE_STATE);
 		scheme = ContentUris.withAppendedId(scheme, itemId);
-		cursor = ctx.getContentResolver().query(scheme,
-				null, null, null, null);
 
-		// handle result
+		// get data
+		Cursor cursor = null;
 		try {
-			// search in cursor for valid key
+			cursor = queryData(ctx, scheme, null);
+			if (cursor == null || !cursor.moveToFirst()) {
+				return LocusConst.PURCHASE_STATE_UNKNOWN;
+			}
+
+			// search for a valid key
 			for (int i = 0; i < cursor.getCount(); i++)  {
 				cursor.moveToPosition(i);
 				String key = cursor.getString(0);
@@ -966,7 +971,7 @@ public class ActionTools {
      * @param ctx current context
      * @param lv known LocusVersion
      * @param itemId known item ID
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     public static void displayLocusStoreItemDetail(Context ctx, LocusVersion lv, long itemId)
             throws RequiredVersionMissingException {
@@ -1087,40 +1092,42 @@ public class ActionTools {
      * @param widthPx required width in pixels
      * @param heightPx required height in pixels
      * @return generated result
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
 	public static BitmapLoadResult getMapPreview(Context ctx, LocusVersion lv, 
 			Location locCenter, int zoomValue, int widthPx, int heightPx, boolean tinyMode)
 			throws RequiredVersionMissingException {
 		// get scheme if valid Locus is available
-		Cursor cursor;
         Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_04,
                 LocusConst.CONTENT_PROVIDER_PATH_MAP_PREVIEW);
 
-		StringBuilder sbQuery = new StringBuilder();
-		sbQuery.append("lon=").append(locCenter.getLongitude()).append(",");
-		sbQuery.append("lat=").append(locCenter.getLatitude()).append(",");
-		sbQuery.append("zoom=").append(zoomValue).append(",");
-		sbQuery.append("width=").append(widthPx).append(",");
-		sbQuery.append("height=").append(heightPx).append(",");
-        sbQuery.append("tinyMode=").append(tinyMode ? 1 : 0);
-		
-		// generate cursor
-		cursor = ctx.getContentResolver().query(scheme,
-					null, sbQuery.toString(), null, null);
-				
-		// handle result
+        // prepare base query with parameters
+		String sbQuery =
+				"lon=" + locCenter.getLongitude() + "," +
+				"lat=" + locCenter.getLatitude() + "," +
+				"zoom=" + zoomValue + "," +
+				"width=" + widthPx + "," +
+				"height=" + heightPx + "," +
+				"tinyMode=" + (tinyMode ? 1 : 0);
+
+		// get data
+		Cursor cursor = null;
 		try {
+			cursor = queryData(ctx, scheme, sbQuery);
+			if (cursor == null || !cursor.moveToFirst()) {
+				return null;
+			}
+
+			// load data
             byte[] img = null;
 			int notYetLoadedTiles = 0;
 			for (int i = 0; i < cursor.getCount(); i++)  {
 				cursor.moveToPosition(i);
 				String key = new String(cursor.getBlob(0));
-				byte[] data = cursor.getBlob(1);
 				if (key.equals(LocusConst.VALUE_MAP_PREVIEW)) {
-					img = data;
+					img = cursor.getBlob(1);
 				} else if (key.equals(LocusConst.VALUE_MAP_PREVIEW_MISSING_TILES)) {
-					notYetLoadedTiles = Utils.parseInt(new String(data));
+					notYetLoadedTiles = cursor.getInt(1);
 				}
 			}
 
@@ -1183,7 +1190,7 @@ public class ActionTools {
 	 * receivers for periodic updates. Use this even in case, you unregister receiver, it may save some battery to user.
      * @param ctx current context
      * @param lv expected target locus
-     * @throws RequiredVersionMissingException
+     * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     public static void refreshPeriodicUpdateListeners(Context ctx, LocusVersion lv)
             throws RequiredVersionMissingException {
@@ -1209,10 +1216,10 @@ public class ActionTools {
 	 * @param uri Uri to load data from
 	 * @return valid cursor with data or 'null' in case of empty or invalid cursor
 	 */
-    private static Cursor queryData(Context ctx, Uri uri) {
+    private static Cursor queryData(Context ctx, Uri uri, String selection) {
 		// generate cursor
 		Cursor cursor = ctx.getContentResolver().query(uri,
-				null, null, null, null);
+				null, selection, null, null);
 		if (cursor == null || cursor.getCount() == 0) {
 			Logger.logE(TAG, "queryData(" + ctx + ", " + uri + "), " +
 					"invalid or empty cursor received");
@@ -1228,11 +1235,11 @@ public class ActionTools {
 	 * @param keyName key under which we expect received data
 	 * @return valid cursor with data or 'null' in case of empty or invalid cursor
 	 */
-	private static byte[] queryData(Context ctx, Uri uri, String keyName) {
+	private static byte[] queryData(Context ctx, Uri uri, String selection, String keyName) {
 		Cursor cursor = null;
 		try {
 			// get cursor data
-			cursor = queryData(ctx, uri);
+			cursor = queryData(ctx, uri, selection);
 			if (cursor == null || !cursor.moveToFirst()) {
 				return null;
 			}
@@ -1258,7 +1265,7 @@ public class ActionTools {
 	 * @param requiredVc required minimal Locus version
 	 * @param path path to data
 	 * @return generated Uri
-	 * @throws RequiredVersionMissingException exception in case of invalid version
+	 * @throws RequiredVersionMissingException if Locus in required version is missing
 	 */
     private static Uri getProviderUriData(LocusVersion lv, VersionCode requiredVc, String path)
 			throws RequiredVersionMissingException {
@@ -1273,7 +1280,7 @@ public class ActionTools {
 	 * @param requiredVc required minimal Locus version
 	 * @param path path to data
 	 * @return generated Uri
-	 * @throws RequiredVersionMissingException exception in case of invalid version
+	 * @throws RequiredVersionMissingException if Locus in required version is missing
 	 */
     public static Uri getProviderUrlGeocaching(LocusVersion lv, VersionCode requiredVc, String path)
 			throws RequiredVersionMissingException {
@@ -1289,7 +1296,7 @@ public class ActionTools {
 	 * @param provider provider for data
 	 * @param path path to data
 	 * @return generated Uri
-	 * @throws RequiredVersionMissingException exception in case of invalid version
+	 * @throws RequiredVersionMissingException if Locus in required version is missing
 	 */
     private static Uri getProviderUri(LocusVersion lv, VersionCode requiredVc,
             String provider, String path) throws RequiredVersionMissingException {

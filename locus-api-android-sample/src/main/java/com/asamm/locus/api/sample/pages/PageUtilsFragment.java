@@ -3,6 +3,7 @@ package com.asamm.locus.api.sample.pages;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.asamm.locus.api.sample.ActivityDashboard;
@@ -20,6 +21,7 @@ import locus.api.android.utils.LocusConst;
 import locus.api.android.utils.LocusInfo;
 import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.Utils;
+import locus.api.objects.extra.Location;
 import locus.api.utils.Logger;
 
 /**
@@ -73,6 +75,9 @@ public class PageUtilsFragment extends ABasePageFragment {
 		items.add(new BasicAdapterItem(16,
 				"Display detail of Store item",
 				"Display detail of a certain Locus Store item (with known ID)"));
+		items.add(new BasicAdapterItem(18,
+				"Take a 'screenshot'",
+				"Take a bitmap screenshot of certain place in app"));
 
 		// TEMPORARY TEST ITEMS
 
@@ -174,12 +179,38 @@ public class PageUtilsFragment extends ABasePageFragment {
 							setTitle("Fresh UpdateContainer").
 							setMessage("UC: " + Utils.toString(uc)).
 							setPositiveButton("Close", new DialogInterface.OnClickListener() {
+
 								@Override
 								public void onClick(DialogInterface dialog, int which) {}
 							}).show();
 				} else {
 					Toast.makeText(getActivity(),
 							"Unable to obtain UpdateContainer from " + activeLocus, Toast.LENGTH_LONG).show();
+				}
+				break;
+			case 18:
+				ActionTools.BitmapLoadResult result = ActionTools.getMapPreview(getActivity(), activeLocus,
+						new Location(50.0, 14.0), 12, 256, 256, false);
+				if (result == null || !result.isValid()) {
+					new AlertDialog.Builder(getActivity()).
+							setTitle("Unable to obtain map preview").
+							setPositiveButton("Close", new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog, int which) {}
+							}).show();
+				} else {
+					ImageView iv = new ImageView(getActivity());
+					iv.setImageBitmap(result.getImage());
+					new AlertDialog.Builder(getActivity()).
+							setTitle("Image loaded").
+							setMessage("Not yet loaded tiles: " + result.getNumOfNotYetLoadedTiles()).
+							setView(iv).
+							setPositiveButton("Close", new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog, int which) {}
+							}).show();
 				}
 				break;
 			case 100:

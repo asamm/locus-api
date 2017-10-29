@@ -241,6 +241,16 @@ public class Location extends Storable {
         setProvider(provider);
     }
     
+    public Location(double lat, double lon) {
+		super();
+		setLatitude(lat);
+		setLongitude(lon);
+	}
+
+	/**
+	 * Use coordinate-based constructor + setProvider() instead.
+	 */
+	@Deprecated
     public Location(String provider, double lat, double lon) {
     	super();
     	setProvider(provider);
@@ -402,7 +412,7 @@ public class Location extends Storable {
     @Override
     public void reset() {
     	mId = -1L;
-        provider = null;
+        provider = "";
         time = 0L;
         latitude = 0.0;
         longitude = 0.0;

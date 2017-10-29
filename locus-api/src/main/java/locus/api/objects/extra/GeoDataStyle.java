@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import locus.api.objects.Storable;
-import locus.api.objects.extra.GeoDataStyle.LineStyle.ColorStyle;
-import locus.api.objects.extra.GeoDataStyle.LineStyle.Units;
 import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
 import locus.api.utils.Logger;
@@ -46,12 +44,11 @@ public class GeoDataStyle extends Storable {
 	IconStyle iconStyle;
 	// LABEL STYLE
 	LabelStyle labelStyle;
-	// LINE STYLE
-	LineStyle lineStyle;
 	// LIST STYLE (not used yet)
 	ListStyle listStyle;
-	// POLY STYLE
-	PolyStyle polyStyle;
+
+	// line style system (line, polygon)
+	private LineStyle mLineStyle;
 
 	/**
 	 * Create new instance of style container.
@@ -210,79 +207,6 @@ public class GeoDataStyle extends Storable {
 		iconStyle.hotSpot = vec2;
 	}
 	
-	// LINE STYLE
-
-    /**
-     * Get current defined style for lines.
-     * @return style for lines
-     */
-	public LineStyle getLineStyle() {
-		return lineStyle;
-	}
-
-    /**
-     * Remove defined style for lines.
-     */
-    public void removeLineStyle() {
-    	lineStyle = null;
-    }
-
-    /**
-     * Set parameters for style that draw a lines.
-     * @param color color of lines
-     * @param width width of lines in pixels
-     */
-    public void setLineStyle(int color, float width) {
-    	setLineStyle(ColorStyle.SIMPLE, color, width, Units.PIXELS);
-    }
-    
-    public void setLineStyle(LineStyle.ColorStyle style, int color,
-    		float width, LineStyle.Units units) {
-    	if (lineStyle == null) {
-    		lineStyle = new LineStyle();
-    	}
-    	lineStyle.colorStyle = style;
-    	lineStyle.color = color;
-    	lineStyle.setWidth(width);
-    	lineStyle.units = units;
-    }
-    
-    public void setLineType(LineStyle.LineType type) {
-    	if (lineStyle == null) {
-    		lineStyle = new LineStyle();
-    	}
-    	lineStyle.lineType = type;
-    }
-    
-	public void setLineOutline(boolean drawOutline, int colorOutline) {
-    	if (lineStyle == null) {
-    		lineStyle = new LineStyle();
-    	}
-    	lineStyle.drawOutline = drawOutline;
-    	lineStyle.colorOutline = colorOutline;
-	}
-
-    // POLY STYLE
-
-    /**
-     * Get current defined style for polygons.
-     * @return style for polygons
-     */
-    public PolyStyle getPolyStyle() {
-        return polyStyle;
-    }
-
-    public void setPolyStyle(int color, boolean fill, boolean outline) {
-    	polyStyle = new PolyStyle();
-    	polyStyle.color = color;
-    	polyStyle.fill = fill;
-    	polyStyle.outline = outline;
-    }
-    
-    public void removePolyStyle() {
-    	polyStyle = null;
-    }
-
     // LABEL STYLE
 
     /**
@@ -293,7 +217,54 @@ public class GeoDataStyle extends Storable {
         return labelStyle;
     }
 
-    /**************************************************/
+    // LINE STYLE
+
+	/**
+	 * Get current defined style for line & polygons.
+	 * @return current line style
+	 */
+	public LineStyle getLineStyle() {
+		return mLineStyle;
+	}
+
+	/**
+	 * Set completely new style for lines.
+	 * @param lineStyle new line style
+	 */
+	public void setLineStyle(LineStyle lineStyle) {
+		mLineStyle = lineStyle;
+	}
+
+	/**
+	 * Set parameters for style that draw a lines.
+	 * @param color color of lines
+	 * @param width width of lines in pixels
+	 */
+	public void setLineStyle(int color, float width) {
+		// check if style exists
+		if (mLineStyle == null) {
+			mLineStyle = new LineStyle();
+		}
+
+		// set parameters
+		mLineStyle.setColorBase(color);
+		mLineStyle.setWidth(width);
+	}
+
+	/**
+	 * Set line style for drawing a polygons.
+	 * @param color color of inner area
+	 */
+	public void setPolyStyle(int color) {
+		if (mLineStyle == null) {
+			mLineStyle = new LineStyle();
+			mLineStyle.setDrawBase(false);
+		}
+		mLineStyle.setDrawFill(true);
+		mLineStyle.setColorFill(color);
+	}
+
+	/**************************************************/
     // STYLES
     /**************************************************/
 
@@ -544,213 +515,6 @@ public class GeoDataStyle extends Storable {
 		}
 	}
 
-	/**
-	 * Style of lines.
-	 */
-	public static class LineStyle extends Storable {
-
-		/**
-		 * Special color style for a lines.
-		 */
-		public enum ColorStyle {
-			// simple coloring
-			SIMPLE,
-			// coloring by speed value
-			BY_SPEED,
-			// coloring (relative) by altitude value
-			BY_ALTITUDE,
-			// coloring (relative) by accuracy
-			BY_ACCURACY,
-			// coloring (relative) by speed change
-			BY_SPEED_CHANGE,
-			// coloring (relative) by slope
-			BY_SLOPE_REL,
-			// coloring (relative) by heart rate value
-			BY_HRM,
-			// coloring (relative) by cadence
-			BY_CADENCE,
-			// coloring (absolute) by slope
-			BY_SLOPE_ABS
-		}
-
-		/**
-		 * Used units for line width.
-		 */
-		public enum Units {
-			PIXELS, METRES
-		}
-
-		/**
-		 * Type how line is presented to user.
-		 */
-		public enum LineType {
-			NORMAL, DOTTED, DASHED_1, DASHED_2, DASHED_3,
-			SPECIAL_1, SPECIAL_2, SPECIAL_3,
-			ARROW_1, ARROW_2, ARROW_3,
-			CROSS_1, CROSS_2
-		}
-		
-		// KML styles
-		public int color;
-		// width of line [px | m]
-		private float mWidth;
-		public int gxOuterColor;
-		public float gxOuterWidth;
-		/**
-		 * Not used. Instead of using this parameter, use {@link #mWidth} and define
-		 * {@link #units} to Units.METRES
-		 */
-		@Deprecated
-		public float gxPhysicalWidth;
-		public boolean gxLabelVisibility;
-		
-		// Locus extension
-		public ColorStyle colorStyle;
-		public Units units;
-		public LineType lineType;
-		public boolean drawOutline;
-		public int colorOutline;
-
-		// temporary helper to convert old widths. Because of this, we increased version of object to V2,
-		// so it's clear if value is in DPI or PX values.
-		private int mObjectVersion;
-
-		/**
-		 * Create new line style object.
-		 */
-		public LineStyle() {
-			super();
-		}
-
-		/**
-		 * Get temporary version of line style object.
-		 * @return object version defined by storable container
-		 */
-		public int getObjectVersion() {
-			return mObjectVersion;
-		}
-
-		/**
-		 * Set special object version type.
-		 * @param objectVersion object version
-		 */
-		public void setObjectVersion(int objectVersion) {
-			mObjectVersion = objectVersion;
-		}
-
-		// WIDTH
-
-		/**
-		 * Get width of line in units defined by {@link #units} parameter.
-		 * @return line width
-		 */
-		public float getWidth() {
-			return mWidth;
-		}
-
-		/**
-		 * Set line width in units defined by {@link #units} parameter.
-		 * @param width line width
-		 */
-		public void setWidth(float width) {
-			this.mWidth = width;
-		}
-
-		// WIDTH UNITS
-
-		/**
-		 * Get line units.
-		 * @return line units
-		 */
-		public Units getUnits() {
-			return units;
-		}
-
-		/**
-		 * Define line units.
-		 * @param units line units
-		 */
-		public void setUnits(Units units) {
-			this.units = units;
-		}
-
-
-		// STORABLE
-
-		@Override
-		protected int getVersion() {
-			return 2;
-		}
-
-		@Override
-		public void reset() {
-			mObjectVersion = getVersion();
-			color = COLOR_DEFAULT;
-			mWidth = 1.0f;
-			gxOuterColor = COLOR_DEFAULT;
-			gxOuterWidth = 0.0f;
-			gxPhysicalWidth = 0.0f;
-			gxLabelVisibility = false;
-			
-			// Locus extension
-			colorStyle = ColorStyle.SIMPLE;
-			units = Units.PIXELS;
-			lineType = LineType.NORMAL;
-			drawOutline = false;
-			colorOutline = WHITE;
-		}
-
-		@Override
-		protected void readObject(int version, DataReaderBigEndian dr)
-				throws IOException {
-			mObjectVersion = version;
-			color = dr.readInt();
-			mWidth = dr.readFloat();
-			gxOuterColor = dr.readInt();
-			gxOuterWidth = dr.readFloat();
-			gxPhysicalWidth = dr.readFloat();
-			gxLabelVisibility = dr.readBoolean();
-			
-			int cs = dr.readInt();
-			if (cs < ColorStyle.values().length) {
-				colorStyle = ColorStyle.values()[cs];
-			}
-			int un = dr.readInt();
-			if (un < Units.values().length) {
-				units = Units.values()[un];
-			}
-			int lt = dr.readInt();
-			if (lt < LineType.values().length) {
-				lineType = LineType.values()[lt];
-			}
-			
-			// V1
-
-			if (version >= 1) {
-				drawOutline = dr.readBoolean();
-				colorOutline = dr.readInt();
-			}
-		}
-		
-		@Override
-		protected void writeObject(DataWriterBigEndian dw) throws IOException {
-			dw.writeInt(color);
-			dw.writeFloat(mWidth);
-			dw.writeInt(gxOuterColor);
-			dw.writeFloat(gxOuterWidth);
-			dw.writeFloat(gxPhysicalWidth);
-			dw.writeBoolean(gxLabelVisibility);
-			dw.writeInt(colorStyle.ordinal());
-			dw.writeInt(units.ordinal());
-			dw.writeInt(lineType.ordinal());
-
-			// V1
-
-			dw.writeBoolean(drawOutline);
-			dw.writeInt(colorOutline);
-		}
-	}
-	
 	public static class ListStyle extends Storable {
 		
 		public enum ListItemType {
@@ -815,8 +579,189 @@ public class GeoDataStyle extends Storable {
 			}
 		}
 	}
-	
-	public static class PolyStyle extends Storable {
+
+	// DEPRECATED CONTAINERS
+
+	/**
+	 * Style of lines.
+	 */
+	@Deprecated
+	public static class LineStyleOld extends Storable {
+
+		/**
+		 * Special color style for a lines.
+		 */
+		private enum ColorStyle {
+			// simple coloring
+			SIMPLE,
+			// coloring by speed value
+			BY_SPEED,
+			// coloring (relative) by altitude value
+			BY_ALTITUDE,
+			// coloring (relative) by accuracy
+			BY_ACCURACY,
+			// coloring (relative) by speed change
+			BY_SPEED_CHANGE,
+			// coloring (relative) by slope
+			BY_SLOPE_REL,
+			// coloring (relative) by heart rate value
+			BY_HRM,
+			// coloring (relative) by cadence
+			BY_CADENCE,
+			// coloring (absolute) by slope
+			BY_SLOPE_ABS
+		}
+
+		/**
+		 * Used units for line width.
+		 */
+		private enum Units {
+			PIXELS, METRES
+		}
+
+		/**
+		 * Type how line is presented to user.
+		 */
+		private enum LineType {
+			NORMAL, DOTTED, DASHED_1, DASHED_2, DASHED_3,
+			SPECIAL_1, SPECIAL_2, SPECIAL_3,
+			ARROW_1, ARROW_2, ARROW_3,
+			CROSS_1, CROSS_2
+		}
+
+		// KML styles
+		public int color;
+		// width of line [px | m]
+		private float mWidth;
+		int gxOuterColor;
+		float gxOuterWidth;
+		/**
+		 * Not used. Instead of using this parameter, use {@link #mWidth} and define
+		 * {@link #units} to Units.METRES
+		 */
+		@Deprecated
+		float gxPhysicalWidth;
+		boolean gxLabelVisibility;
+
+		// Locus extension
+		ColorStyle colorStyle;
+		public Units units;
+		LineType lineType;
+		boolean drawOutline;
+		int colorOutline;
+
+		// temporary helper to convert old widths. Because of this, we increased version of object to V2,
+		// so it's clear if value is in DPI or PX values.
+		private int mObjectVersion;
+
+		/**
+		 * Create new line style object.
+		 */
+		public LineStyleOld() {
+			super();
+		}
+
+		// WIDTH
+
+		/**
+		 * Get width of line in units defined by {@link #units} parameter.
+		 * @return line width
+		 */
+		public float getWidth() {
+			return mWidth;
+		}
+
+		/**
+		 * Set line width in units defined by {@link #units} parameter.
+		 * @param width line width
+		 */
+		public void setWidth(float width) {
+			this.mWidth = width;
+		}
+
+		// WIDTH UNITS
+
+		/**
+		 * Get line units.
+		 * @return line units
+		 */
+		public Units getUnits() {
+			return units;
+		}
+
+		/**
+		 * Define line units.
+		 * @param units line units
+		 */
+		public void setUnits(Units units) {
+			this.units = units;
+		}
+
+		// STORABLE
+
+		@Override
+		protected int getVersion() {
+			return 2;
+		}
+
+		@Override
+		public void reset() {
+			mObjectVersion = getVersion();
+			color = COLOR_DEFAULT;
+			mWidth = 1.0f;
+			gxOuterColor = COLOR_DEFAULT;
+			gxOuterWidth = 0.0f;
+			gxPhysicalWidth = 0.0f;
+			gxLabelVisibility = false;
+
+			// Locus extension
+			colorStyle = ColorStyle.SIMPLE;
+			units = Units.PIXELS;
+			lineType = LineType.NORMAL;
+			drawOutline = false;
+			colorOutline = WHITE;
+		}
+
+		@Override
+		protected void readObject(int version, DataReaderBigEndian dr)
+				throws IOException {
+			mObjectVersion = version;
+			color = dr.readInt();
+			mWidth = dr.readFloat();
+			gxOuterColor = dr.readInt();
+			gxOuterWidth = dr.readFloat();
+			gxPhysicalWidth = dr.readFloat();
+			gxLabelVisibility = dr.readBoolean();
+
+			int cs = dr.readInt();
+			if (cs < ColorStyle.values().length) {
+				colorStyle = ColorStyle.values()[cs];
+			}
+			int un = dr.readInt();
+			if (un < Units.values().length) {
+				units = Units.values()[un];
+			}
+			int lt = dr.readInt();
+			if (lt < LineType.values().length) {
+				lineType = LineType.values()[lt];
+			}
+
+			// V1
+
+			if (version >= 1) {
+				drawOutline = dr.readBoolean();
+				colorOutline = dr.readInt();
+			}
+		}
+
+		@Override
+		protected void writeObject(DataWriterBigEndian dw) throws IOException {
+			// no write task is done
+		}
+	}
+
+	@Deprecated
+	public static class PolyStyleOld extends Storable {
 		
 		public int color = COLOR_DEFAULT;
 		public boolean fill = true;
@@ -844,9 +789,7 @@ public class GeoDataStyle extends Storable {
 		
 		@Override
 		protected void writeObject(DataWriterBigEndian dw) throws IOException {
-			dw.writeInt(color);
-			dw.writeBoolean(fill);
-			dw.writeBoolean(outline);
+			// no write task is done
 		}
 	}
 
@@ -856,7 +799,7 @@ public class GeoDataStyle extends Storable {
 
     @Override
     protected int getVersion() {
-        return 1;
+        return 2;
     }
 
     @Override
@@ -866,9 +809,8 @@ public class GeoDataStyle extends Storable {
         balloonStyle = null;
         iconStyle = null;
         labelStyle = null;
-        lineStyle = null;
         listStyle = null;
-        polyStyle = null;
+		mLineStyle = null;
     }
 
     @Override
@@ -878,14 +820,14 @@ public class GeoDataStyle extends Storable {
 		mId = dr.readString();
 		mName = dr.readString();
 
-        // read old version 0
+        // ignore old version, not compatible anymore
         if (version == 0) {
-            // this method breaks compatibility if any app with older API will try to load new data
-            readVersion0(dr);
             return;
         }
 
         // balloon style
+		LineStyleOld lineStyleOld = null;
+		PolyStyleOld polyStyleOld = null;
         try {
             if (dr.readBoolean()) {
                 balloonStyle = (BalloonStyle) Storable.read(BalloonStyle.class, dr);
@@ -897,99 +839,28 @@ public class GeoDataStyle extends Storable {
                 labelStyle = (LabelStyle) Storable.read(LabelStyle.class, dr);
             }
             if (dr.readBoolean()) {
-                lineStyle = (LineStyle) Storable.read(LineStyle.class, dr);
+				lineStyleOld = (LineStyleOld) Storable.read(LineStyleOld.class, dr);
             }
             if (dr.readBoolean()) {
                 listStyle = (ListStyle) Storable.read(ListStyle.class, dr);
             }
             if (dr.readBoolean()) {
-                polyStyle = (PolyStyle) Storable.read(PolyStyle.class, dr);
+				polyStyleOld = (PolyStyleOld) Storable.read(PolyStyleOld.class, dr);
             }
-        } catch (InstantiationException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
-			e.printStackTrace();
+        }
+
+		// convert old style to new system
+		mLineStyle = convertToNewLineStyle(lineStyleOld, polyStyleOld);
+
+		// V2
+		if (version >= 2) {
+			if (dr.readBoolean()) {
+				mLineStyle = new LineStyle();
+				mLineStyle.read(dr);
+			}
 		}
-    }
-
-    private void readVersion0(DataReaderBigEndian dr) throws IOException {
-        // balloon style
-        if (dr.readBoolean()) {
-            balloonStyle = new BalloonStyle();
-            balloonStyle.bgColor = dr.readInt();
-            balloonStyle.textColor = dr.readInt();
-            balloonStyle.text = dr.readString();
-            int displayMode = dr.readInt();
-            if (displayMode < BalloonStyle.DisplayMode.values().length) {
-                balloonStyle.displayMode = BalloonStyle.
-                        DisplayMode.values()[displayMode];
-            }
-        }
-
-        // icon style
-        if (dr.readBoolean()) {
-            iconStyle = new IconStyle();
-            iconStyle.color = dr.readInt();
-            iconStyle.setScale(dr.readFloat());
-            iconStyle.heading = dr.readFloat();
-            iconStyle.iconHref = dr.readString();
-            iconStyle.hotSpot = KmlVec2.read(dr);
-        }
-
-        // label style
-        if (dr.readBoolean()) {
-            labelStyle = new LabelStyle();
-            labelStyle.setColor(dr.readInt());
-            labelStyle.setScale(dr.readFloat());
-        }
-
-        // line style
-        if (dr.readBoolean()) {
-            lineStyle = new LineStyle();
-            lineStyle.color = dr.readInt();
-            lineStyle.mWidth = dr.readFloat();
-            lineStyle.gxOuterColor = dr.readInt();
-            lineStyle.gxOuterWidth = dr.readFloat();
-            lineStyle.gxPhysicalWidth = dr.readFloat();
-            lineStyle.gxLabelVisibility = dr.readBoolean();
-
-            int colorStyle = dr.readInt();
-            if (colorStyle < LineStyle.ColorStyle.values().length) {
-                lineStyle.colorStyle = LineStyle.ColorStyle.values()[colorStyle];
-            }
-            int units = dr.readInt();
-            if (units < LineStyle.Units.values().length) {
-                lineStyle.units = LineStyle.Units.values()[units];
-            }
-        }
-
-        // list style
-        if (dr.readBoolean()) {
-            listStyle = new ListStyle();
-            int listItemStyle = dr.readInt();
-            if (listItemStyle < ListStyle.ListItemType.values().length) {
-                listStyle.listItemType = ListStyle.ListItemType.values()[listItemStyle];
-            }
-            listStyle.bgColor = dr.readInt();
-            int itemsCount = dr.readInt();
-            for (int i = 0; i < itemsCount; i++) {
-                ListStyle.ItemIcon itemIcon = new ListStyle.ItemIcon();
-                int iconStyle = dr.readInt();
-                if (iconStyle < ListStyle.ItemIcon.State.values().length) {
-                    itemIcon.state = ListStyle.ItemIcon.State.values()[iconStyle];
-                }
-                itemIcon.href = dr.readString();
-                listStyle.itemIcons.add(itemIcon);
-            }
-        }
-
-        // poly style
-        if (dr.readBoolean()) {
-            polyStyle = new PolyStyle();
-            polyStyle.color = dr.readInt();
-            polyStyle.fill = dr.readBoolean();
-            polyStyle.outline = dr.readBoolean();
-        }
     }
 
     @Override
@@ -1022,13 +893,8 @@ public class GeoDataStyle extends Storable {
             labelStyle.write(dw);
         }
 
-        // line style
-        if (lineStyle == null) {
-            dw.writeBoolean(false);
-        } else {
-            dw.writeBoolean(true);
-            lineStyle.write(dw);
-        }
+        // line style (removed)
+		dw.writeBoolean(false);
 
         // list style
         if (listStyle == null) {
@@ -1038,13 +904,62 @@ public class GeoDataStyle extends Storable {
             listStyle.write(dw);
         }
 
-        // poly style
-        if (polyStyle == null) {
-            dw.writeBoolean(false);
-        } else {
-            dw.writeBoolean(true);
-            polyStyle.write(dw);
-        }
+        // poly style (removed)
+		dw.writeBoolean(false);
+
+        // V2
+		if (mLineStyle == null) {
+			dw.writeBoolean(false);
+		} else {
+			dw.writeBoolean(true);
+			mLineStyle.write(dw);
+		}
     }
+
+	/**
+	 * Convert old line & poly styles to new system.
+	 * @param ls old line style container
+	 * @param ps old poly style container
+	 * @return new converted style
+	 */
+    private LineStyle convertToNewLineStyle(LineStyleOld ls, PolyStyleOld ps) {
+		// check objects
+		if (ls == null && ps == null) {
+			return null;
+		}
+
+		// convert to new container
+		LineStyle lsNew = new LineStyle();
+
+		// re-use line style
+		if (ls != null) {
+			lsNew.setDrawBase(true);
+			lsNew.setColorBase(ls.color);
+			if (ls.lineType == GeoDataStyle.LineStyleOld.LineType.NORMAL) {
+				lsNew.setDrawSymbol(false);
+			} else {
+				lsNew.setDrawSymbol(true);
+				lsNew.setSymbol(LineStyle.Symbol.valueOf(ls.lineType.name()));
+			}
+			lsNew.setColoring(LineStyle.Coloring.valueOf(ls.colorStyle.name()));
+			lsNew.setWidth(ls.getWidth());
+			lsNew.setUnits(LineStyle.Units.valueOf(ls.units.name()));
+			lsNew.setDrawOutline(ls.drawOutline);
+			lsNew.setColorOutline(ls.colorOutline);
+		} else {
+			lsNew.setDrawBase(false);
+		}
+
+		// re-use poly style
+		if (ps != null) {
+			lsNew.setDrawFill(ps.fill);
+			lsNew.setColorFill(ps.color);
+		} else {
+			lsNew.setDrawFill(false);
+		}
+
+		// return new style
+		return lsNew;
+	}
 }
 

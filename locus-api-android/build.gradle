@@ -23,15 +23,10 @@ def libraryVersion = '0.2.11'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
-    
+
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
     }
 
     buildTypes {
@@ -49,9 +44,9 @@ android {
 
 dependencies {
     // use in case of direct handling over Locus Core project
-//    compile project(':locus-api')
+    compile project(':locus-api')
     // use in case of publishing to Maven
-    compile 'com.asamm:locus-api:0.2.11'
+//    compile 'com.asamm:locus-api:0.2.11'
 }
 
 task createSourceJar(type: Jar) {
