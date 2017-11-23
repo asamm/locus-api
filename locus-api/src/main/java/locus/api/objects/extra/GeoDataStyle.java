@@ -830,22 +830,22 @@ public class GeoDataStyle extends Storable {
 		PolyStyleOld polyStyleOld = null;
         try {
             if (dr.readBoolean()) {
-                balloonStyle = (BalloonStyle) Storable.read(BalloonStyle.class, dr);
+                balloonStyle = Storable.read(BalloonStyle.class, dr);
             }
             if (dr.readBoolean()) {
-                iconStyle = (IconStyle) Storable.read(IconStyle.class, dr);
+                iconStyle = Storable.read(IconStyle.class, dr);
             }
             if (dr.readBoolean()) {
-                labelStyle = (LabelStyle) Storable.read(LabelStyle.class, dr);
+                labelStyle = Storable.read(LabelStyle.class, dr);
             }
             if (dr.readBoolean()) {
-				lineStyleOld = (LineStyleOld) Storable.read(LineStyleOld.class, dr);
+				lineStyleOld = Storable.read(LineStyleOld.class, dr);
             }
             if (dr.readBoolean()) {
-                listStyle = (ListStyle) Storable.read(ListStyle.class, dr);
+                listStyle = Storable.read(ListStyle.class, dr);
             }
             if (dr.readBoolean()) {
-				polyStyleOld = (PolyStyleOld) Storable.read(PolyStyleOld.class, dr);
+				polyStyleOld = Storable.read(PolyStyleOld.class, dr);
             }
         } catch (Exception e) {
             e.printStackTrace();

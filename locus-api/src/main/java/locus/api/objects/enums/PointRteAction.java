@@ -190,13 +190,16 @@ public enum PointRteAction {
 	// HELP TOOLS
 	/**************************************************/
 
+	// array of enums for optimized/faster access
+	private static final PointRteAction[] VALUES = values();
+
 	/**
 	 * Get action defined by it's ID.
 	 * @param id ID of required action
 	 * @return found action or 'null' if not found
 	 */
 	public static PointRteAction getActionById(int id) {
-		for (PointRteAction action : values()) {
+		for (PointRteAction action : VALUES) {
 			if (action.mId == id) {
 				return action;
 			}
@@ -218,7 +221,7 @@ public enum PointRteAction {
 		}
 
 		// test actions
-		for (PointRteAction action : values()) {
+		for (PointRteAction action : VALUES) {
 			if (text.equalsIgnoreCase(action.getTextId())) {
 				return action;
 			}

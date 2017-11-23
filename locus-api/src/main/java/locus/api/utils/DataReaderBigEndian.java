@@ -136,11 +136,20 @@ public class DataReaderBigEndian {
 					mPosition - textLength, textLength, "UTF-8");
 		}
 	}
-    
-    public Storable readStorable(Class<? extends Storable> claz) 
-    		throws InstantiationException, IllegalAccessException, IOException {
-    	return Storable.read(claz, this);
-    }
+
+	/**
+	 * Read Storable object.
+	 * @param claz class parameter
+	 * @param <E> class type
+	 * @return loaded Storable class
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IOException
+	 */
+	public <E extends Storable> E readStorable(Class<E> claz)
+			throws InstantiationException, IllegalAccessException, IOException {
+		return Storable.read(claz, this);
+	}
     
     // LIST TOOLS
     
@@ -161,10 +170,10 @@ public class DataReaderBigEndian {
 		return objs;
 	}
 	
-	public List<? extends Storable> readListStorable(Class<? extends Storable> claz)
+	public <E extends Storable> List<E> readListStorable(Class<E> claz)
 			throws IOException {
 		// prepare container
-		List<Storable> objs = new ArrayList<>();
+		List<E> objs = new ArrayList<>();
 				
 		// read size
 		int count = readInt();
@@ -176,7 +185,7 @@ public class DataReaderBigEndian {
 		for (int i = 0; i < count; i++) {
             //noinspection TryWithIdenticalCatches
             try {
-				Storable item = claz.newInstance();
+				E item = claz.newInstance();
 				item.read(this);
 				objs.add(item);
 			} catch (InstantiationException e) {

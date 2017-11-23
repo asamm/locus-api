@@ -647,7 +647,7 @@ public class UtilsFormat {
 	public static String formatEnergyValue(int format, int energy) {
 		if (format == VALUE_UNITS_ENERGY_KJ) {
 			return formatDouble(energy * 1.0 / 1000.0, 0);
-		} else {
+		} else { // VALUE_UNITS_ENERGY_KCAL
 			return formatDouble(energy * 1.0 / (ENERGY_CAL_TO_J * 1000.0), 0);
 		}
 	}

@@ -179,7 +179,8 @@ public abstract class Storable {
 
     	// read object data
     	bc.data = new byte[size];
-    	dis.read(bc.data);
+		//noinspection ResultOfMethodCallIgnored
+		dis.read(bc.data);
 
     	// return filled container
     	return bc;
@@ -277,13 +278,13 @@ public abstract class Storable {
 	 * @throws InstantiationException throws if class cannot be initialized
 	 * @throws IllegalAccessException in case of access to class constructor is limited
 	 */
-	public static Storable read(Class<? extends Storable> claz, DataReaderBigEndian dr)
+	public static <E extends Storable> E read(Class<E> claz, DataReaderBigEndian dr)
 			throws IOException, InstantiationException, IllegalAccessException {
 		// read header
 		BodyContainer bc = readHeader(dr);
 
 		// now initialize object. Data are already loaded, so error will not break data flow
-		Storable storable = claz.newInstance();
+		E storable = claz.newInstance();
 		storable.readObject(bc.version, new DataReaderBigEndian(bc.data));
 		return storable;
 	}
@@ -307,7 +308,7 @@ public abstract class Storable {
 	 * @return loaded list of items
 	 * @throws IOException thrown in case of invalid data format
 	 */
-	public static List<? extends Storable> readList(Class<? extends Storable> claz, 
+	public static <E extends Storable> List<E> readList(Class<E> claz,
 			byte[] data) throws IOException {
 		return new DataReaderBigEndian(data).readListStorable(claz);
 	}
@@ -319,10 +320,10 @@ public abstract class Storable {
 	 * @return loaded list of items
 	 * @throws IOException thrown in case of invalid data format
 	 */
-	public static List<? extends Storable> readList(Class<? extends Storable> claz,
+	public static <E extends Storable> List<E> readList(Class<E> claz,
 			DataInputStream dis) throws IOException {
 		// prepare container
-		List<Storable> objs = new ArrayList<>();
+		List<E> objs = new ArrayList<>();
 				
 		// read size
 		int count = dis.readInt();
@@ -333,7 +334,7 @@ public abstract class Storable {
 		// read locations
 		for (int i = 0; i < count; i++) {
 			try {
-				Storable item = claz.newInstance();
+				E item = claz.newInstance();
 				item.read(dis);
 				objs.add(item);
 			} catch (InstantiationException e) {

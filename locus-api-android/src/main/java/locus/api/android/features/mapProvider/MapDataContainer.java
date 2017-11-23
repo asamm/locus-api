@@ -115,8 +115,7 @@ public class MapDataContainer implements Parcelable {
         if (mDataType == DATA_TYPE_CONFIGURATION) {
         	byte[] data = new byte[in.readInt()];
         	in.readByteArray(data);
-        	mMapConfigs = (List<MapConfigLayer>) 
-        			Storable.readList(MapConfigLayer.class, data);
+        	mMapConfigs = Storable.readList(MapConfigLayer.class, data);
         } else if (mDataType == DATA_TYPE_TILE_REQUEST) {
         	byte[] data = new byte[in.readInt()];
         	in.readByteArray(data);

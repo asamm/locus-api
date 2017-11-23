@@ -17,7 +17,7 @@ public class LineStyle extends Storable {
 	// white color
 	private static final int COLOR_WHITE                                       	= 0xFFFFFFFF;
 	// black color
-	private static final int COLOR_BLACK                                       	= 0x00000000;
+	private static final int COLOR_BLACK                                       	= 0xFF000000;
 
 	// parameters for storing extra meta information for line coloring
 	public static String KEY_CP_ALTITUDE_MANUAL									= "alt_man";

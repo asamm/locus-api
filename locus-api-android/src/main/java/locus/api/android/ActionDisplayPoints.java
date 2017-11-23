@@ -1,5 +1,8 @@
 package locus.api.android;
 
+import android.content.Context;
+import android.content.Intent;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -14,8 +17,6 @@ import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.Storable;
 import locus.api.utils.Logger;
 import locus.api.utils.Utils;
-import android.content.Context;
-import android.content.Intent;
 
 @SuppressWarnings ({"WeakerAccess", "unused"})
 public class ActionDisplayPoints extends ActionDisplay {
@@ -232,7 +233,7 @@ public class ActionDisplayPoints extends ActionDisplay {
 		try {
 			
 			dis = new DataInputStream(new FileInputStream(file));
-			return (List<PackWaypoints>) Storable.readList(PackWaypoints.class, dis);
+			return Storable.readList(PackWaypoints.class, dis);
 		} catch (Exception e) {
 			Logger.logE(TAG, "readDataWriteOnCard(" + filepath + ")", e);
 		} finally {
