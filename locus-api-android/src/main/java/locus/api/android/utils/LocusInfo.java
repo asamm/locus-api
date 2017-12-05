@@ -17,6 +17,8 @@ public class LocusInfo extends Storable {
 	private String mPackageName;
 	// flag if Locus is currently running
 	private boolean mIsRunning;
+	// last active flag
+	private long mLastActive;
 
 	// BASIC CONSTANTS
 	
@@ -123,7 +125,26 @@ public class LocusInfo extends Storable {
 		this.mIsRunning = isRunning;
 	}
 
-    // ROOT DIRECTORY
+	// LAST ACTIVE
+
+	/**
+	 * Get tile of last activity.
+	 * @return last activity time [ms]
+	 */
+	public long getLastActive() {
+		return mLastActive;
+	}
+
+	/**
+	 * Set time of last activity.
+	 * @param lastActive last active time [ms]
+	 */
+	public void setLastActive(long lastActive) {
+		mLastActive = lastActive;
+	}
+
+
+	// ROOT DIRECTORY
 
 	/**
 	 * Get ROOT directory of requested Locus application. Is required to check
@@ -528,6 +549,8 @@ public class LocusInfo extends Storable {
 			"packageName";
 	private static final String VALUE_IS_RUNNING =
 			"isRunning";
+	private static final String VALUE_LAST_ACTIVE =
+			"lastActive";
 
 	// BASIC CONSTANTS
 
@@ -601,6 +624,9 @@ public class LocusInfo extends Storable {
                 case VALUE_IS_RUNNING:
                     info.mIsRunning = cursor.getInt(1) == 1;
                     break;
+				case VALUE_LAST_ACTIVE:
+					info.mLastActive = cursor.getLong(1);
+					break;
                 case VALUE_ROOT_DIR:
                     info.mRootDir = cursor.getString(1);
                     break;
@@ -680,6 +706,8 @@ public class LocusInfo extends Storable {
 				mPackageName});
 		c.addRow(new Object[] {VALUE_IS_RUNNING, 
 				mIsRunning ? "1" : "0"});
+		c.addRow(new Object[] {VALUE_LAST_ACTIVE,
+				mLastActive});
 
 		// BASIC CONSTANTS
 		
@@ -741,13 +769,14 @@ public class LocusInfo extends Storable {
 
     @Override
     protected int getVersion() {
-        return 1;
+        return 2;
     }
 
     @Override
     public void reset() {
         mPackageName = "";
         mIsRunning = false;
+        mLastActive = 0L;
 
         // BASIC CONSTANTS
 
@@ -822,6 +851,12 @@ public class LocusInfo extends Storable {
 			mUnitsFormatSlope = dr.readInt();
 			mUnitsFormatWeight = dr.readInt();
 		}
+
+		// V2
+
+		if (version >= 2) {
+			mLastActive = dr.readLong();
+		}
     }
 
     @Override
@@ -861,5 +896,9 @@ public class LocusInfo extends Storable {
 		dw.writeInt(mUnitsFormatEnergy);
 		dw.writeInt(mUnitsFormatSlope);
 		dw.writeInt(mUnitsFormatWeight);
+
+		// V2
+
+		dw.writeLong(mLastActive);
     }
 }

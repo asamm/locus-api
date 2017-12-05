@@ -2,7 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/core_private/locus-api-live-tracking" vcs="hg4idea" />
-    <mapping directory="$PROJECT_DIR$/core_private/locus-api-server" vcs="hg4idea" />
   </component>
 </project>

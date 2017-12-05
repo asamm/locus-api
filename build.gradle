@@ -2,41 +2,30 @@
 
 buildscript {
     repositories {
+        // basic repositories
+        google()
         jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-//        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
 //        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.5.4'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
     }
 }
 
 // define global parameters
 allprojects {
     repositories {
-        jcenter()
-
-        // Google repository
+        // basic repositories
         google()
+        jcenter()
+        mavenCentral()
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-ext {
-    // compile parameters
-    compileSdkVersion = 26
-    buildToolsVersion = '26.0.2'
-
-    // define default parameters
-    minSdkVersion = 15
-    targetSdkVersion = 25
-
-    // load properties file
-    props = new Properties()
-    props.load(new FileInputStream(file('keystore.properties')))
 }
 
 configure([
@@ -46,8 +35,8 @@ configure([
 
     android {
         // setup SDK
-        compileSdkVersion rootProject.ext.compileSdkVersion
-        buildToolsVersion rootProject.ext.buildToolsVersion
+        compileSdkVersion Integer.valueOf(PARAM_COMPILE_SDK_VERSION)
+        buildToolsVersion PARAM_BUILD_TOOLS_VERSION
 
         // since API23 is Http Apache library only on demand. It is anyway needed for MultiPartEntity,
         // so here we follow this suggestion
@@ -55,8 +44,8 @@ configure([
         useLibrary 'org.apache.http.legacy'
 
         defaultConfig {
-            minSdkVersion rootProject.ext.minSdkVersion
-            targetSdkVersion rootProject.ext.targetSdkVersion
+            minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
+            targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
         }
 
         dexOptions {
@@ -84,16 +73,16 @@ configure([
         // signing of versions
         signingConfigs {
             debug {
-                storeFile = file(props['signDebugPath'])
-                storePassword = props['signDebugPassword']
-                keyAlias = props['signDebugKeyAlias']
-                keyPassword = props['signDebugKeyPassword']
+                storeFile file(SIGN_DEBUG_STORE_FILE)
+                storePassword = SIGN_DEBUG_STORE_PASSWORD
+                keyAlias = SIGN_DEBUG_KEY_ALIAS
+                keyPassword = SIGN_DEBUG_KEY_PASSWORD
             }
             release {
-                storeFile = file(props['signReleasePath'])
-                storePassword = props['signReleasePassword']
-                keyAlias = props['signReleaseKeyAlias']
-                keyPassword = props['signReleaseKeyPassword']
+                storeFile file(SIGN_RELEASE_STORE_FILE)
+                storePassword = SIGN_RELEASE_STORE_PASSWORD
+                keyAlias = SIGN_RELEASE_KEY_ALIAS
+                keyPassword = SIGN_RELEASE_KEY_PASSWORD
             }
         }
 
@@ -115,7 +104,7 @@ configure([
         println "Config for: " + build
 
         // rename result file
-        variant.outputs.each { output ->
+        variant.outputs.all {
             // generate base name
             def newName = variant.name.capitalize()
             // remove from 'LocusFreeSamsungDebug', last work 'Debug'
@@ -123,10 +112,7 @@ configure([
             // create full name like 'LocusFreeSamsung_342_3.5.2_debug.apk'
             def baseFileName = "${newName}_${variant.versionCode}_${variant.versionName}_${variant.buildType.name}"
             // set new output file name
-            def outputFile = output.outputFile
-            output.outputFile = new File(outputFile.parent, "${baseFileName}.apk")
-//            outputFileName = "${baseFileName}.apk"
-            println "Output:" + output.outputFile
+            outputFileName = "${baseFileName}.apk"
         }
 
         // create also release task for "release builds"

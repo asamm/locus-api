@@ -1,14 +1,3 @@
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3"
-    }
-}
-
 // apply plugins
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
@@ -16,17 +5,17 @@ apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.bintray"
 
 // library parameters
-def libraryCode = 14
-def libraryVersion = '0.2.12'
+def libraryCode = 15
+def libraryVersion = '0.2.13'
 
 // Android basics
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion Integer.valueOf(PARAM_COMPILE_SDK_VERSION)
+    buildToolsVersion PARAM_BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
+        targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
     }
 
     buildTypes {
@@ -46,40 +35,22 @@ dependencies {
     // use in case of direct handling over Locus Core project
 //    compile project(':locus-api')
     // use in case of publishing to Maven
-    compile 'com.asamm:locus-api:0.2.12'
-}
-
-task createSourceJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-task createJavadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    failOnError false
-}
-
-task createJavadocJar(type: Jar, dependsOn: createJavadoc) {
-    classifier = 'javadoc'
-    from createJavadoc.destinationDir
+    implementation 'com.asamm:locus-api:0.2.13'
 }
 
 // generate publication in Maven format
 // https://docs.gradle.org/current/dsl/org.gradle.api.publish.maven.MavenPublication.html
 publishing {
     publications {
-        pubLibLocusApiAndroid(MavenPublication) {
+        Production(MavenPublication) {
+            // define sources
+            artifact "${project.buildDir}/outputs/aar/${project.name}-release.aar"
 
+            // set parameters
             groupId 'com.asamm'
             artifactId 'locus-api-android'
             //noinspection GroovyAssignabilityCheck
             version libraryVersion
-
-            // define source
-            artifact "${project.buildDir}/outputs/aar/${project.name}-release.aar"
-            artifact createSourceJar
-            artifact createJavadocJar
 
             // improve generated POM file
             pom.withXml {
@@ -109,13 +80,16 @@ publishing {
                 def nodeDeveloper = nodeDevelopers.appendNode('developer')
                 nodeDeveloper.appendNode('name', 'Asamm software, s. r. o.')
 
-                // add all dependencies
+                // iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
                 def dependencies = asNode().appendNode('dependencies')
-                configurations.getByName("_releaseCompile").getResolvedConfiguration().getFirstLevelModuleDependencies().each {
-                    def dependency = dependencies.appendNode('dependency')
-                    dependency.appendNode('groupId', it.moduleGroup)
-                    dependency.appendNode('artifactId', it.moduleName)
-                    dependency.appendNode('version', it.moduleVersion)
+                configurations.implementation.allDependencies.each {
+                    // Ensure dependencies such as fileTree are not included.
+                    if (it.name != 'unspecified') {
+                        def dependencyNode = dependencies.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
                 }
             }
         }
@@ -127,8 +101,9 @@ publishing {
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
-    publications = ['pubLibLocusApiAndroid']
+    publications = ['Production']
     publish = true
+    override = true
 
     pkg {
         repo = 'maven'

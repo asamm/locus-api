@@ -102,6 +102,8 @@ public class UpdateContainer extends Storable {
 	// expected time to target
 	protected long guideWptTime;
 
+	// flag if active rack guidance is valid
+	protected boolean guideValid;
 	// distance from start (in case of guiding along track)
 	protected double guideDistFromStart;
 	// distance to finish (in case of guiding along track)
@@ -565,6 +567,16 @@ public class UpdateContainer extends Storable {
 		}
 
 		/**
+		 * Get flag if current track guide is valid, this means that active guidance is not out of route and match
+		 * all necessary parameters.
+		 *
+		 * @return {@code true} if valid
+		 */
+		public boolean isValid() {
+			return guideValid;
+		}
+
+		/**
 		 * Get distance from start of track to current place.
 		 *
 		 * @return distance in metres
@@ -735,7 +747,7 @@ public class UpdateContainer extends Storable {
 
 	@Override
 	protected int getVersion() {
-		return 0;
+		return 1;
 	}
 
 	@Override
@@ -789,6 +801,7 @@ public class UpdateContainer extends Storable {
 		guideWptAzim = 0.0f;
 		guideWptAngle = 0.0f;
 		guideWptTime = 0L;
+		guideValid = true;
 		guideDistFromStart = 0.0;
 		guideDistToFinish = 0.0;
 		guideTimeToFinish = 0L;
@@ -881,6 +894,12 @@ public class UpdateContainer extends Storable {
 
 		deviceBatteryValue = dr.readInt();
 		deviceBatteryTemperature = dr.readFloat();
+
+		// V1
+
+		if (version >= 1) {
+			guideValid = dr.readBoolean();
+		}
 	}
 
 	@Override
@@ -957,6 +976,10 @@ public class UpdateContainer extends Storable {
 
 		dw.writeInt(deviceBatteryValue);
 		dw.writeFloat(deviceBatteryTemperature);
+
+		// V1
+
+		dw.writeBoolean(guideValid);
 	}
 
 	/**

@@ -358,6 +358,7 @@ public class LocusUtils {
 
 		// search for optimal version
 		LocusVersion backupVersion = null;
+		long backupLastActive = 0L;
 		for (int i = 0, m = versions.size(); i < m; i++) {
 			try {
 
@@ -388,14 +389,20 @@ public class LocusUtils {
 				LocusInfo li = ActionTools.getLocusInfo(ctx, lv);
 
 				// check if Locus runs and if so, set it as active version
-				if (li != null) {
-					// backup valid version
-					backupVersion = lv;
+				if (li == null) {
+					continue;
+				}
 
-					// check if is running
-					if (li.isRunning()) {
-						return lv;
-					}
+				// backup valid version
+				if (backupVersion == null ||
+						li.getLastActive() >= backupLastActive) {
+					backupVersion = lv;
+					backupLastActive = li.getLastActive();
+				}
+
+				// check if is running
+				if (li.isRunning()) {
+					return lv;
 				}
 			} catch (RequiredVersionMissingException e) {
 				Logger.logE(TAG, "prepareActiveLocus()", e);
