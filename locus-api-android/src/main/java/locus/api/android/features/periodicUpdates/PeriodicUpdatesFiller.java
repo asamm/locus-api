@@ -172,6 +172,8 @@ public class PeriodicUpdatesFiller {
                     PeriodicUpdatesConst.VAR_D_GUIDE_DIST_TO_FINISH, 0.0);
 			update.guideTimeToFinish = i.getLongExtra(
 					PeriodicUpdatesConst.VAR_L_GUIDE_TIME_TO_FINISH, 0L);
+			update.guideValid = i.getBooleanExtra(
+					PeriodicUpdatesConst.VAR_L_GUIDE_VALID, true);
 
             // get first navigation point
             update.guideNavPoint1Loc = LocusUtils.getLocationFromIntent(
@@ -380,6 +382,8 @@ public class PeriodicUpdatesFiller {
                 cont.guideDistToFinish);
         i.putExtra(PeriodicUpdatesConst.VAR_L_GUIDE_TIME_TO_FINISH,
                 cont.guideTimeToFinish);
+        i.putExtra(PeriodicUpdatesConst.VAR_L_GUIDE_VALID,
+                cont.guideValid);
 
         // first navigation waypoint
 		UpdateContainer.GuideTypeTrack guideTrack = cont.getGuideTypeTrack();

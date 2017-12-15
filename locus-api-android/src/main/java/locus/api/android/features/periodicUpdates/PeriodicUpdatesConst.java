@@ -60,7 +60,7 @@ class PeriodicUpdatesConst {
 	static final String VAR_F_REC_SPEED_MAX 									= "1214";
 	static final String VAR_I_REC_POINTS 										= "1215";
 
-	// GUIDING PART (last 1410)
+	// GUIDING PART (last 1421)
 	
     static final String VAR_I_GUIDE_TYPE                                        = "1410";
 	static final String VAR_S_GUIDE_WPT_NAME                                    = "1401";
@@ -73,6 +73,7 @@ class PeriodicUpdatesConst {
 	static final String VAR_D_GUIDE_DIST_FROM_START                             = "1409";
 	static final String VAR_D_GUIDE_DIST_TO_FINISH                              = "1404";
 	static final String VAR_L_GUIDE_TIME_TO_FINISH                              = "1408";
+	static final String VAR_L_GUIDE_VALID										= "1421";
 
     static final String VAR_S_GUIDE_NAV_POINT1_NAME                             = "1411";
     static final String VAR_LOC_GUIDE_NAV_POINT1_LOC                            = "1412";

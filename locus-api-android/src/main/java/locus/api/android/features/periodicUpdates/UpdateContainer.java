@@ -998,7 +998,7 @@ public class UpdateContainer extends Storable {
 
 		// finally read location
 		try {
-			return (Location) dr.readStorable(Location.class);
+			return dr.readStorable(Location.class);
 		} catch (InstantiationException | IllegalAccessException | IOException e) {
 			throw new IOException(e.getMessage());
 		}

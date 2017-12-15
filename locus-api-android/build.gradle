@@ -4,18 +4,24 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.bintray"
 
-// library parameters
-def libraryCode = 15
-def libraryVersion = '0.2.13'
-
 // Android basics
 android {
     compileSdkVersion Integer.valueOf(PARAM_COMPILE_SDK_VERSION)
     buildToolsVersion PARAM_BUILD_TOOLS_VERSION
 
+    // define default parameters
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
+
+        versionCode Integer.valueOf(API_CODE)
+        versionName API_VERSION
+    }
+
+    // enable support for Java 8
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildTypes {
@@ -23,19 +29,15 @@ android {
             minifyEnabled false
         }
     }
-
-    // define default parameters
-    defaultConfig {
-        versionCode libraryCode
-        versionName libraryVersion
-    }
 }
 
 dependencies {
     // use in case of direct handling over Locus Core project
 //    compile project(':locus-api')
+//    debugImplementation project(':locus-api')
     // use in case of publishing to Maven
-    implementation 'com.asamm:locus-api:0.2.13'
+    compile 'com.asamm:locus-api:0.2.14'
+    //releaseImplementation 'com.asamm:locus-api:0.2.14'
 }
 
 // generate publication in Maven format
@@ -50,7 +52,7 @@ publishing {
             groupId 'com.asamm'
             artifactId 'locus-api-android'
             //noinspection GroovyAssignabilityCheck
-            version libraryVersion
+            version API_VERSION
 
             // improve generated POM file
             pom.withXml {
@@ -82,7 +84,7 @@ publishing {
 
                 // iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
                 def dependencies = asNode().appendNode('dependencies')
-                configurations.implementation.allDependencies.each {
+                configurations.compile.allDependencies.each {
                     // Ensure dependencies such as fileTree are not included.
                     if (it.name != 'unspecified') {
                         def dependencyNode = dependencies.appendNode('dependency')
@@ -118,10 +120,10 @@ bintray {
 
         //noinspection GroovyAssignabilityCheck
         version {
-            name = libraryVersion
-            desc = 'Locus API - Android, version ' + libraryVersion
+            name = API_VERSION
+            desc = 'Locus API - Android, version ' + API_VERSION
             released  = new Date()
-            vcsTag = libraryVersion
+            vcsTag = API_VERSION
         }
     }
 }

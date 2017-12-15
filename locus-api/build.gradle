@@ -4,12 +4,9 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.bintray"
 
-// current library version
-def libraryVersion = '0.2.13'
-
-// set Java 7 compatibility
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+// set Java 8 compatibility
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 task createSourceJar(type: Jar, dependsOn: classes) {
     classifier "sources"
@@ -30,7 +27,7 @@ publishing {
             groupId 'com.asamm'
             artifactId 'locus-api'
             //noinspection GroovyAssignabilityCheck
-            version libraryVersion
+            version API_VERSION
 
             // define source
             from components.java
@@ -90,10 +87,10 @@ bintray {
 
         //noinspection GroovyAssignabilityCheck
         version {
-            name = libraryVersion
-            desc = 'Locus API, version ' + libraryVersion
+            name = API_VERSION
+            desc = 'Locus API, version ' + API_VERSION
             released  = new Date()
-            vcsTag = libraryVersion
+            vcsTag = API_VERSION
         }
     }
 }
