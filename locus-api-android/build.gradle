@@ -34,10 +34,9 @@ android {
 dependencies {
     // use in case of direct handling over Locus Core project
 //    compile project(':locus-api')
-//    debugImplementation project(':locus-api')
+    debugImplementation project(':locus-api')
     // use in case of publishing to Maven
-    compile 'com.asamm:locus-api:0.2.14'
-    //releaseImplementation 'com.asamm:locus-api:0.2.14'
+    releaseImplementation 'com.asamm:locus-api:0.2.15'
 }
 
 // generate publication in Maven format
@@ -46,7 +45,7 @@ publishing {
     publications {
         Production(MavenPublication) {
             // define sources
-            artifact "${project.buildDir}/outputs/aar/${project.name}-release.aar"
+            artifact("${project.buildDir}/outputs/aar/${project.name}-release.aar")
 
             // set parameters
             groupId 'com.asamm'
@@ -84,7 +83,7 @@ publishing {
 
                 // iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
                 def dependencies = asNode().appendNode('dependencies')
-                configurations.compile.allDependencies.each {
+                configurations.releaseImplementation.allDependencies.each {
                     // Ensure dependencies such as fileTree are not included.
                     if (it.name != 'unspecified') {
                         def dependencyNode = dependencies.appendNode('dependency')
