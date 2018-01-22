@@ -34,29 +34,24 @@ public abstract class ABasePageFragment extends Fragment {
 		final List<BasicAdapterItem> items = getItems();
 		BasicAdapter adapter = new BasicAdapter(getActivity(), items);
 		lv.setAdapter(adapter);
-		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		lv.setOnItemClickListener((parent, view, position, id) -> {
+			// check valid Locus version
+			LocusUtils.LocusVersion activeLocus = LocusUtils.getActiveVersion(getActivity());
+			if (activeLocus == null) {
+				Toast.makeText(getActivity(),
+						"Locus is not installed", Toast.LENGTH_LONG).show();
+				return;
+			}
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// check valid Locus version
-				LocusUtils.LocusVersion activeLocus = LocusUtils.getActiveVersion(getActivity());
-				if (activeLocus == null) {
-					Toast.makeText(getActivity(),
-							"Locus is not installed", Toast.LENGTH_LONG).show();
-					return;
-				}
-
-				// handle event
-				final BasicAdapterItem item = items.get(position);
-				try {
-					onItemClicked(item.id, activeLocus);
-				} catch (Exception e) {
-					Toast.makeText(getActivity(),
-							"Problem with action:" + item.id, Toast.LENGTH_LONG).show();
-					Logger.logE(TAG, "onItemClick(), " +
-							"item:" + item.id + " failed");
-				}
+			// handle event
+			final BasicAdapterItem item = items.get(position);
+			try {
+				onItemClicked(item.id, activeLocus);
+			} catch (Exception e) {
+				Toast.makeText(getActivity(),
+						"Problem with action:" + item.id, Toast.LENGTH_LONG).show();
+				Logger.logE(TAG, "onItemClick(), " +
+						"item:" + item.id + " failed");
 			}
 		});
 

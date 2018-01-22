@@ -9,9 +9,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/locus-api" />
             <option value="$PROJECT_DIR$/locus-api-android" />
             <option value="$PROJECT_DIR$/locus-api-android-sample" />
+            <option value="$PROJECT_DIR$/locus-api-core" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

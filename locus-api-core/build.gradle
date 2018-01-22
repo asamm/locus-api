@@ -18,13 +18,26 @@ task createJavadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
+// maven parameters
+group = 'com.asamm'
+version = API_VERSION
+
+// upload archives to local mavem
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: mavenLocal().getUrl())
+        }
+    }
+}
+
 // generate publication in Maven format
 // https://docs.gradle.org/current/dsl/org.gradle.api.publish.maven.MavenPublication.html
 publishing {
     publications {
         pubLibLocusApi(MavenPublication) {
 
-            groupId 'com.asamm'
+            groupId group
             artifactId 'locus-api'
             //noinspection GroovyAssignabilityCheck
             version API_VERSION
@@ -73,6 +86,7 @@ bintray {
     key = System.getenv('BINTRAY_KEY')
     publications = ['pubLibLocusApi']
     publish = true
+    override = true
 
     pkg {
         repo = 'maven'

@@ -52,24 +52,15 @@ public class ActivityDashboard extends FragmentActivity {
 		setContentView(R.layout.activity_dashboard);
 
 		// prepare references to views
-		tvInfo = (TextView)
-				findViewById(R.id.textView_info);
-		tv01 = (TextView)
-				findViewById(R.id.textView1);
-		tv02 = (TextView)
-				findViewById(R.id.textView2);
-		tv03 = (TextView)
-				findViewById(R.id.textView3);
-		tv04 = (TextView)
-				findViewById(R.id.textView4);
-		tv05 = (TextView)
-				findViewById(R.id.textView5);
-		tv06 = (TextView)
-				findViewById(R.id.textView6);
-		tv07 = (TextView)
-				findViewById(R.id.textView7);
-		tv08 = (TextView)
-				findViewById(R.id.textView8);
+		tvInfo = findViewById(R.id.textView_info);
+		tv01 = findViewById(R.id.textView1);
+		tv02 = findViewById(R.id.textView2);
+		tv03 = findViewById(R.id.textView3);
+		tv04 = findViewById(R.id.textView4);
+		tv05 = findViewById(R.id.textView5);
+		tv06 = findViewById(R.id.textView6);
+		tv07 = findViewById(R.id.textView7);
+		tv08 = findViewById(R.id.textView8);
 	}
 	
 	@Override

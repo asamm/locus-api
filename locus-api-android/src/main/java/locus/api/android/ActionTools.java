@@ -1216,7 +1216,7 @@ public class ActionTools {
 	 * @param uri Uri to load data from
 	 * @return valid cursor with data or 'null' in case of empty or invalid cursor
 	 */
-    private static Cursor queryData(Context ctx, Uri uri, String selection) {
+    public static Cursor queryData(Context ctx, Uri uri, String selection) {
 		// generate cursor
 		Cursor cursor = ctx.getContentResolver().query(uri,
 				null, selection, null, null);
@@ -1298,7 +1298,7 @@ public class ActionTools {
 	 * @return generated Uri
 	 * @throws RequiredVersionMissingException if Locus in required version is missing
 	 */
-    private static Uri getProviderUri(LocusVersion lv, VersionCode requiredVc,
+    public static Uri getProviderUri(LocusVersion lv, VersionCode requiredVc,
             String provider, String path) throws RequiredVersionMissingException {
         // check URI parts ( should not happen, just check )
         if (provider == null || provider.length() == 0 ||

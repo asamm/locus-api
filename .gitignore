@@ -46,3 +46,4 @@ captures/
 # Custom directories
 _various/
 core_private/
+.idea/modules.xml

@@ -49,7 +49,6 @@ import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Circle;
 import locus.api.objects.extra.GeoDataExtra;
 import locus.api.objects.extra.GeoDataStyle;
-import locus.api.objects.extra.LineStyle;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Track;
 import locus.api.objects.extra.Waypoint;

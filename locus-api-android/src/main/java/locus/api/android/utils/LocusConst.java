@@ -377,6 +377,8 @@ public class LocusConst {
      * Currently special provider for geocaching stuff (only FieldNotes for now)
      */
     public static final String CONTENT_PROVIDER_AUTHORITY_GEOCACHING = "GeocachingDataProvider";
+	// path for provider of map previews
+	public static final String CONTENT_PROVIDER_AUTHORITY_MAP_TOOLS = "MapTools";
 
 	// PROVIDER PATHS
 

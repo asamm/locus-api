@@ -133,7 +133,14 @@ public class LocusUtils {
 		 * </ul><br>
 		 * Locus Free/Pro 3.25.6(652)<br>
 		 */
-		UPDATE_13(652, 652, 0);
+		UPDATE_13(652, 652, 0),
+		/**
+		 * <ul>
+		 * <li>New version of "Get map preview" system</li>
+		 * </ul><br>
+		 * Locus Free/Pro 3.29.0(684)<br>
+		 */
+		UPDATE_14(684, 684, 0);
 
 		/**
 		 * Version code for a Free version.

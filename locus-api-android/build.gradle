@@ -3,6 +3,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: "com.jfrog.bintray"
+apply plugin: "kotlin-android"
 
 // Android basics
 android {
@@ -32,11 +33,26 @@ android {
 }
 
 dependencies {
+    // Kotlin
+    compile 'org.jetbrains.kotlin:kotlin-stdlib-jre8:' + KOTLIN_VERSION
+
     // use in case of direct handling over Locus Core project
-//    compile project(':locus-api')
-    debugImplementation project(':locus-api')
+//    api project(':locus-api-core')
     // use in case of publishing to Maven
-    releaseImplementation 'com.asamm:locus-api:0.2.15'
+    api 'com.asamm:locus-api:' + API_VERSION
+}
+
+// maven parameters
+group = 'com.asamm'
+version = API_VERSION
+
+// upload archives to local mavem
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: mavenLocal().getUrl())
+        }
+    }
 }
 
 // generate publication in Maven format
@@ -110,10 +126,10 @@ bintray {
         repo = 'maven'
         name = 'locus-api-android'
         licenses = ['LGPL-3.0']
-        vcsUrl = 'https://github.com/asamm/locus-api-android.git'
+        vcsUrl = 'https://github.com/asamm/locus-api.git'
 
         // optional Github repository
-        githubRepo = 'asamm/locus-api-android'
+        githubRepo = 'asamm/locus-api'
         // optional Github readme file
         githubReleaseNotesFile = 'README.md'
 
