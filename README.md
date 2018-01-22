@@ -1,4 +1,4 @@
-Locus API:  [ ![Download](https://api.bintray.com/packages/asammsoft/maven/locus-api/images/download.svg) ](https://bintray.com/asammsoft/maven/locus-api/_latestVersion)
+Locus API - Core:  [ ![Download](https://api.bintray.com/packages/asammsoft/maven/locus-api/images/download.svg) ](https://bintray.com/asammsoft/maven/locus-api/_latestVersion)
 
 Locus API - Android:  [ ![Download](https://api.bintray.com/packages/asammsoft/maven/locus-api-android/images/download.svg) ](https://bintray.com/asammsoft/maven/locus-api-android/_latestVersion)
 
@@ -8,7 +8,7 @@ Library for [Locus Map](http://www.locusmap.eu) application for Android devices.
 
 Whole API is divided into two separate parts:
 
-- library written in pure Java - **Locus API**
+- library written in pure Java - **Locus API - Core**
 - its extension for Android devices - **Locus API - Android**
 
 In most cases, Android version is the only interesting one here.
@@ -35,7 +35,7 @@ Add dependency to your `build.gradle` module config
 ```gradle
 dependencies {
      // get locus API
-     compile 'com.asamm:locus-api-android:0.2.14'
+     compile 'com.asamm:locus-api-android:[latest]'
 }
 ```
 
