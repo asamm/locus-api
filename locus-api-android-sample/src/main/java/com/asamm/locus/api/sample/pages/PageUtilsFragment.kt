@@ -181,6 +181,8 @@ class PageUtilsFragment : ABasePageFragment() {
                     widthPx = 512
                     heightPx = 512
                     densityDpi = resources.displayMetrics.densityDpi
+                    rotation = 45
+                    radius = (Math.sqrt(512.0 * 512.0 + 512.0 * 512.0) / 2).toInt()
                 }
 
                 // get and display preview

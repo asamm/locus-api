@@ -31,6 +31,7 @@ class ActionMapTools {
          * Generate map preview for a defined [params]. This method returns container with loaded data as well
          * as number if incorrectly loaded map tiles (useful for repeated request with same [params]).
          */
+        @JvmStatic
         @Throws(RequiredVersionMissingException::class)
         fun getMapPreview(ctx: Context, lv: LocusUtils.LocusVersion, params: MapPreviewParams): MapPreviewResult? {
 
@@ -81,15 +82,29 @@ class ActionMapTools {
  */
 class MapPreviewParams {
 
+    // center location of request
     var locCenter: Location? = null
+    // offset [px] in X axis
     var offsetX = 0
+    // offset [px] in Y axis
     var offsetY = 0
+    // zoom level value [0..19+]
     var zoom = 0
+    // required width [px] of final preview
     var widthPx = 0
+    // required height [px] of final preview
     var heightPx: Int = 0
     // density in DPI of device that send request (set '0' to let app default)
     var densityDpi = 0
+    // required rotation of final screenshot [°]. Needs to be used together with [radius]
+    var rotation = 0
+    // radius parameter of device [px] used for rotation. Usually it is "diagonal" of screen, so
+    // biggest possible radius of map that may be visible on screen
+    var radius = 0
 
+    /**
+     * Generate required query for a preview request.
+     */
     fun generateQuery(): String {
         return "lon=${(locCenter?.longitude ?: "")}," +
                 "lat=${locCenter?.latitude ?: ""}," +
@@ -98,7 +113,9 @@ class MapPreviewParams {
                 "zoom=$zoom," +
                 "width=$widthPx," +
                 "height=$heightPx," +
-                "densityDpi=$densityDpi"
+                "densityDpi=$densityDpi," +
+                "rotation=$rotation," +
+                "radius=$radius"
     }
 }
 
