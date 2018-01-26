@@ -14,6 +14,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.view.MotionEvent;
+import android.widget.FrameLayout;
 
 import java.io.IOException;
 import java.io.InvalidObjectException;
@@ -1225,6 +1227,13 @@ public class ActionTools {
 					"invalid or empty cursor received");
 			return null;
 		}
+
+		FrameLayout container = new FrameLayout(ctx) {
+			public boolean onTouchEvent(MotionEvent event) {
+				return super.onTouchEvent(event);
+			}
+		};
+
 		return cursor;
 	}
 

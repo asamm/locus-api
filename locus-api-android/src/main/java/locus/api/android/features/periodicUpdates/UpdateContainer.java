@@ -42,7 +42,8 @@ public class UpdateContainer extends Storable {
 	protected int gpsSatsAll;
 	// current declination value
 	protected float declination;
-	// current orientation
+	// last loaded heading value (in case of enabled valid navigation, this value is corrected heading and not
+	// the original one)
 	protected float orientHeading;
 	// -1 * current orientation
 	protected float orientHeadingOpposit;

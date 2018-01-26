@@ -26,9 +26,9 @@ dependencies {
     // releaseCompile('com.asamm:locus-api-android:0.2.6')
 
     // get locus API
-    compile project(':locus-api-android')
+    api project(':locus-api-android')
 //    compile 'com.asamm:locus-api-android:0.2.16'
 
     // Android support libraries
-    compile 'com.android.support:appcompat-v7:' + LIB_ANDROID_SUPPORT
+    api 'com.android.support:appcompat-v7:' + LIB_ANDROID_SUPPORT
 }

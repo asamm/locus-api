@@ -585,7 +585,7 @@ public class FieldNotesHelper {
      */
     private static ContentValues createContentValues(FieldNoteImage img, boolean alsoData) {
         // check parameters
-        if (img == null || img.getImage() == null) {
+        if (img == null || (alsoData && img.getImage() == null)) {
             throw new IllegalArgumentException("Field note image cannot be 'null'");
         }
 

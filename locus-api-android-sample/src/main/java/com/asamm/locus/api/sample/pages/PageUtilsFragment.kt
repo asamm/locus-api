@@ -8,9 +8,7 @@ import com.asamm.locus.api.sample.ActivityDashboard
 import com.asamm.locus.api.sample.BuildConfig
 import com.asamm.locus.api.sample.utils.BasicAdapterItem
 import com.asamm.locus.api.sample.utils.SampleCalls
-import locus.api.android.ActionMapTools
 import locus.api.android.ActionTools
-import locus.api.android.MapPreviewParams
 import locus.api.android.features.geocaching.fieldNotes.FieldNotesHelper
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
@@ -172,35 +170,12 @@ class PageUtilsFragment : ABasePageFragment() {
                 }
             }
             19 -> {
-                // prepare parameters
-                val params = MapPreviewParams().apply {
-                    locCenter = Location(50.0, 14.0)
-                    zoom = 12
-                    offsetX = 50
-                    offsetY = 50
-                    widthPx = 512
-                    heightPx = 512
-                    densityDpi = resources.displayMetrics.densityDpi
-                    rotation = 45
-                    radius = (Math.sqrt(512.0 * 512.0 + 512.0 * 512.0) / 2).toInt()
-                }
-
-                // get and display preview
-                val result = ActionMapTools.getMapPreview(activity!!, activeLocus, params)
-                if (result != null && result.isValid()) {
-                    val iv = ImageView(activity)
-                    iv.setImageBitmap(result.getAsImage())
-                    AlertDialog.Builder(activity)
-                            .setTitle("Image loaded")
-                            .setMessage("Not yet loaded tiles: " + result.numOfNotYetLoadedTiles)
-                            .setView(iv)
-                            .setPositiveButton("Close") { dialog, which -> }
-                            .show()
-                } else {
-                    AlertDialog.Builder(activity)
-                            .setTitle("Unable to obtain map preview")
-                            .setPositiveButton("Close") { dialog, which -> }
-                            .show()
+                @Suppress("ReplaceSingleLineLet")
+                activity?.let {
+                    it.supportFragmentManager
+                            .beginTransaction()
+                            .add(MapFragment(), "MAP_FRAGMENT")
+                            .commit()
                 }
             }
             100 -> {
