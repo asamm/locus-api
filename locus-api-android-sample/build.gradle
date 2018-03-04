@@ -18,7 +18,7 @@ android {
 
 dependencies {
     // Kotlin
-    compile 'org.jetbrains.kotlin:kotlin-stdlib-jre8:' + KOTLIN_VERSION
+    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + KOTLIN_VERSION
 
     // use current Locus API module in "debug" mode
     // debugCompile project(':core:locus-api-android')
@@ -26,8 +26,8 @@ dependencies {
     // releaseCompile('com.asamm:locus-api-android:0.2.6')
 
     // get locus API
-    api project(':locus-api-android')
-//    compile 'com.asamm:locus-api-android:0.2.16'
+//    api project(':locus-api-android')
+    api 'com.asamm:locus-api-android:' + API_VERSION
 
     // Android support libraries
     api 'com.android.support:appcompat-v7:' + LIB_ANDROID_SUPPORT

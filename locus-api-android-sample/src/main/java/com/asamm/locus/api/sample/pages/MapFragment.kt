@@ -154,6 +154,7 @@ class MapFragment : DialogFragment() {
 
                         // call recursively if missing tiles
                         if (result.numOfNotYetLoadedTiles > 0) {
+                            Thread.sleep(2000)
                             loadMap()
                         }
                     } else {

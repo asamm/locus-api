@@ -34,7 +34,7 @@ android {
 
 dependencies {
     // Kotlin
-    compile 'org.jetbrains.kotlin:kotlin-stdlib-jre8:' + KOTLIN_VERSION
+    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + KOTLIN_VERSION
 
     // use in case of direct handling over Locus Core project
 //    api project(':locus-api-core')

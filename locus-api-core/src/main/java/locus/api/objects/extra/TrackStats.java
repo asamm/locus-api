@@ -48,8 +48,10 @@ public class TrackStats extends Storable {
     // negative grade (elevation)
     private float mEleNegativeHeight;
     // total grade (distance)
+	@Deprecated
     private float mEleTotalAbsDistance;
     // total grade (elevation)
+	@Deprecated
     private float mEleTotalAbsHeight;
 
 	// number of measured beats
@@ -347,6 +349,7 @@ public class TrackStats extends Storable {
 
     // ELEVATION TOTAL - DISTANCE
 
+	@Deprecated
     public float getEleTotalAbsDistance() {
         return mEleTotalAbsDistance;
     }
@@ -361,6 +364,7 @@ public class TrackStats extends Storable {
 
     // ELEVATION TOTAL - HEIGHT
 
+	@Deprecated
     public float getEleTotalAbsHeight() {
         return mEleTotalAbsHeight;
     }
