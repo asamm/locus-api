@@ -368,7 +368,6 @@ public class LocusUtils {
 		long backupLastActive = 0L;
 		for (int i = 0, m = versions.size(); i < m; i++) {
 			try {
-
 				// get and test version
 				LocusVersion lv = versions.get(i);
 				if (lv.isVersionFree()) {
@@ -431,20 +430,19 @@ public class LocusUtils {
 	public static List<LocusVersion> getAvailableVersions(Context ctx) {
 		// prepare container for existing versions
 		List<LocusVersion> versions = new ArrayList<>();
-		
-		// get all applications and search for locus
-		PackageManager pm = ctx.getPackageManager();
-		List<ApplicationInfo> appInfos = pm.getInstalledApplications(0);
-		for (int i = 0, m = appInfos.size(); i < m; i++) {
-			ApplicationInfo appInfo = appInfos.get(i);
-			if (isPackageNameLocus(appInfo.packageName)) {
 
-				// get information about version
-				LocusVersion lv = createLocusVersion(ctx, appInfo.packageName);
-				if (lv != null) {
-					versions.add(lv);
-				}
-			}
+        // get information about version from supported list (if app is installed)
+		PackageManager pm = ctx.getPackageManager();
+		for (String pn : getPackageNames()) {
+            try {
+                ApplicationInfo appInfo = pm.getApplicationInfo(pn, 0);
+                if (appInfo != null) {
+                    LocusVersion lv = createLocusVersion(ctx, appInfo.packageName);
+                    if (lv != null) {
+                        versions.add(lv);
+                    }
+                }
+            } catch (PackageManager.NameNotFoundException ignored) {}
 		}
 
 		// return result
@@ -452,36 +450,22 @@ public class LocusUtils {
 	}
 
 	/**
-	 * CHeck if package name define any version of Locus (so it's possible to
-	 * create LocusVersion for this packageName).
-	 * @param packageName name to test
-	 * @return {@code true} if name define Locus app
+	 * Get all available app packages supported by Locus API system.
 	 */
-	private static boolean isPackageNameLocus(String packageName) {
-		// check package name
-		if (packageName == null || packageName.length() == 0) {
-			return false;
-		}
-
-		// quick check
-		if (!packageName.startsWith("menion")) {
-			return false;
-		}
-
-		// check on Locus Map
-		if (packageName.equals("menion.android.locus") ||
-				packageName.startsWith("menion.android.locus.free") ||
-				packageName.startsWith("menion.android.locus.pro")) {
-			return true;
-		}
-
-//		// check on Locus GIS - TODO currently disabled
-//		if (packageName.startsWith("menion.android.locus.gis")) {
-//			return true;
-//		}
-
-		// not valid package name
-		return false;
+	private static String[] getPackageNames() {
+	    return new String[] {
+	            // LOCUS MAP FREE
+                "menion.android.locus",
+                "menion.android.locus.free.amazon",
+                "menion.android.locus.free.samsung",
+                //"menion.android.locus.free.ubinuri",
+                //"menion.android.locus.free.xiaomi",
+                "menion.android.locus.pro",
+                "menion.android.locus.pro.amazon",
+                "menion.android.locus.pro.asamm",
+                "menion.android.locus.pro.computerBild",
+                //"menion.android.locus.pro.samsung",
+        };
 	}
 	
 	/**

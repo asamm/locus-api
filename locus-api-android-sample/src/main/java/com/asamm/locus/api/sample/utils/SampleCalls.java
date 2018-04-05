@@ -44,6 +44,7 @@ import locus.api.android.ActionDisplayVarious;
 import locus.api.android.ActionFiles;
 import locus.api.android.ActionTools;
 import locus.api.android.objects.PackWaypoints;
+import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.LocusUtils.LocusVersion;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Circle;
@@ -337,7 +338,26 @@ public class SampleCalls {
 	/**************************************************/
 	// TOOLS PART
 	/**************************************************/
-	
+
+    /**
+     * Write stats about app into log.
+     * @param ctx current context
+     */
+	public static void callDisplayLocusMapInfo(Context ctx) {
+	    // iterate over versions
+	    Logger.logI(TAG, "Locus versions:");
+        for (LocusVersion version : LocusUtils.getAvailableVersions(ctx)) {
+            Logger.logI(TAG, "  version: " + version);
+        }
+
+        // active version
+        Logger.logI(TAG, "Active version:");
+        Logger.logI(TAG, "  version: " + LocusUtils.getActiveVersion(ctx));
+
+        // notify
+        Toast.makeText(ctx, "Check log for result", Toast.LENGTH_SHORT).show();
+    }
+
 	public static void callSendFileToSystem(Context ctx) {
 		boolean send = ActionFiles.importFileSystem(ctx, getTempGpxFile());
 		Logger.logD(TAG, "callSendFileToSystem(" + ctx + "), " +

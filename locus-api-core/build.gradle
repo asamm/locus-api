@@ -35,7 +35,7 @@ version = API_VERSION
 //             ':bintrayUpload']
 //}
 
-// upload archives to local mavem
+// upload archives to local maven
 uploadArchives {
     repositories {
         mavenDeployer {

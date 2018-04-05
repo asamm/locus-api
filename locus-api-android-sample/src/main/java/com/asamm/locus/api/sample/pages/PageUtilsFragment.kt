@@ -25,6 +25,9 @@ class PageUtilsFragment : ABasePageFragment() {
 
     override fun getItems(): List<BasicAdapterItem> {
         val items = ArrayList<BasicAdapterItem>()
+        items.add(BasicAdapterItem(-1,
+                "Get basic info about Locus app",
+                "Basic checks on installed Locus apps."))
         items.add(BasicAdapterItem(1,
                 "Send GPX file to system",
                 "Send existing GPX file to system. This should invoke selection of an app that will handle this request."))
@@ -88,6 +91,7 @@ class PageUtilsFragment : ABasePageFragment() {
     override fun onItemClicked(itemId: Int, activeLocus: LocusUtils.LocusVersion) {
         // handle action
         when (itemId) {
+            -1 -> SampleCalls.callDisplayLocusMapInfo(activity)
             1 -> SampleCalls.callSendFileToSystem(activity)
             2 -> SampleCalls.callSendFileToLocus(activity, activeLocus)
             3 -> SampleCalls.pickLocation(activity)
@@ -114,7 +118,7 @@ class PageUtilsFragment : ABasePageFragment() {
             14 -> {
                 val count = FieldNotesHelper.getCount(activity, activeLocus)
                 Toast.makeText(activity,
-                        "Available field notes:" + count, Toast.LENGTH_LONG).show()
+                        "Available field notes:$count", Toast.LENGTH_LONG).show()
             }
             15 -> {
                 // We test here if user has purchased "Add-on Field Notes Pro. Unique ID is defined on our Store
