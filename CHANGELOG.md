@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.2.21] - 2018-04-05
+### Changed
+- [fixed #9](https://github.com/asamm/locus-api/issues/9) - getting info about available Locus versions 
+
 ## [0.2.20] - 2018-03-04
 ### Changed
 - updated versions of relevant libraries
