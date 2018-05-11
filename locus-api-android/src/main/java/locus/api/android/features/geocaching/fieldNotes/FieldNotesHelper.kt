@@ -6,15 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
-
-import java.util.ArrayList
-
 import locus.api.android.ActionTools
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.Utils
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
-import locus.api.utils.Logger
+import java.util.*
 
 /**
  * Created by menion on 8. 7. 2014.
@@ -50,24 +47,26 @@ class FieldNotesHelper private constructor() {
         const val DATA = "data"
     }
 
-    object ColFieldNoteItems {
+    object ColTrackableLogs {
 
         const val ID = "_id"
-        const val FIELD_NOTE_ID = "field_note_id"
-        const val ACTION = "action"
-        const val CODE = "code"
+        const val TB_CODE = "tb_code"
         const val NAME = "name"
         const val ICON = "icon"
+        const val CACHE_CODE = "cache_code"
+        const val ACTION = "action"
+        const val TRACKING_CODE = "tracking_code"
+        const val TIME = "time"
+        const val NOTE = "note"
+        const val LOGGED = "logged"
     }
 
     companion object {
 
-        // tag for logger
-        private const val TAG = "FieldNotesHelper"
-
+        // paths to content provider
         const val PATH_FIELD_NOTES = "fieldNotes"
         const val PATH_FIELD_NOTE_IMAGES = "fieldNoteImages"
-        const val PATH_FIELD_NOTE_ITEMS = "fieldNoteItems"
+        const val PATH_TRACKABLE_LOGS = "trackableLogs"
 
         /**************************************************/
         // HELPERS FOR WORK WITH CONTENT PROVIDER
@@ -120,7 +119,7 @@ class FieldNotesHelper private constructor() {
          * @return [locus.api.android.features.geocaching.fieldNotes.FieldNote] or 'null'
          */
         @Throws(RequiredVersionMissingException::class)
-        operator fun get(ctx: Context, lv: LocusUtils.LocusVersion, id: Long): FieldNote? {
+        fun get(ctx: Context, lv: LocusUtils.LocusVersion, id: Long): FieldNote? {
             // get parameters for query
             var cpUri = getUriLogsTable(lv)
             cpUri = ContentUris.withAppendedId(cpUri, id)
@@ -138,7 +137,6 @@ class FieldNotesHelper private constructor() {
 
                 // get extra data
                 getImages(ctx, lv, fn)
-                getItems(ctx, lv, fn)
 
                 // return field note
                 return fn
@@ -155,7 +153,7 @@ class FieldNotesHelper private constructor() {
          * @return list of all field notes for certain cache
          */
         @Throws(RequiredVersionMissingException::class)
-        operator fun get(ctx: Context, lv: LocusUtils.LocusVersion, cacheCode: String?): List<FieldNote> {
+        fun get(ctx: Context, lv: LocusUtils.LocusVersion, cacheCode: String?): List<FieldNote> {
             // get parameters for query
             val cpUri = getUriLogsTable(lv)
 
@@ -164,10 +162,11 @@ class FieldNotesHelper private constructor() {
             try {
                 // perform request based on 'cacheCode'
                 c = if (cacheCode == null || cacheCode.isEmpty()) {
-                    ctx.contentResolver.query(cpUri, null, null, null, null)
+                    ctx.contentResolver.query(cpUri,
+                            null, null, null, null)
                 } else {
-                    ctx.contentResolver.query(cpUri, null,
-                            ColFieldNote.CACHE_CODE + "=?",
+                    ctx.contentResolver.query(cpUri,
+                            null, ColFieldNote.CACHE_CODE + "=?",
                             arrayOf(cacheCode), null)
                 }
 
@@ -177,6 +176,32 @@ class FieldNotesHelper private constructor() {
                 } else {
                     createLogs(c)
                 }
+            } finally {
+                Utils.closeQuietly(c)
+            }
+        }
+
+        /**
+         * Get last logged field note from database. Returned field not will also contain all
+         * images and logged items.
+         */
+        fun getLastLog(ctx: Context, lv: LocusUtils.LocusVersion): FieldNote? {
+            // execute request
+            var c: Cursor? = null
+            try {
+                // perform request based on 'cacheCode'
+                c = ctx.contentResolver.query(getUriLogsTable(lv),
+                        null, null, null,
+                        ColFieldNote.ID + " DESC LIMIT 1")
+
+                // handle result
+                if (c.moveToNext()) {
+                    val logs = createLogs(c)
+                    if (logs.isNotEmpty()) {
+                        return logs[0]
+                    }
+                }
+                return null
             } finally {
                 Utils.closeQuietly(c)
             }
@@ -204,7 +229,6 @@ class FieldNotesHelper private constructor() {
 
             // delete images
             deleteImages(ctx, lv, fieldNoteId)
-            deleteItems(ctx, lv, fieldNoteId)
 
             // return result
             return res == 1
@@ -239,21 +263,17 @@ class FieldNotesHelper private constructor() {
         @Throws(RequiredVersionMissingException::class)
         fun insert(ctx: Context, lv: LocusUtils.LocusVersion,
                 gcFn: FieldNote): Boolean {
-            // get parameters for query
-            val cpUri = getUriLogsTable(lv)
-
             // createLogs data container
             val cv = createContentValues(gcFn)
 
             // execute request
-            val newRow = ctx.contentResolver.insert(cpUri, cv) ?: return false
+            val newRow = ctx.contentResolver.insert(getUriLogsTable(lv), cv) ?: return false
 
             // set new ID to field note
             gcFn.id = Utils.parseLong(newRow.lastPathSegment)
 
             // insert extra data
             storeAllImages(ctx, lv, gcFn)
-            storeAllItems(ctx, lv, gcFn)
 
             // return result
             return true
@@ -269,8 +289,7 @@ class FieldNotesHelper private constructor() {
          * @return `true` if update was successful, otherwise false
          */
         @Throws(RequiredVersionMissingException::class)
-        fun update(ctx: Context, lv: LocusUtils.LocusVersion,
-                gcFn: FieldNote): Boolean {
+        fun update(ctx: Context, lv: LocusUtils.LocusVersion, gcFn: FieldNote): Boolean {
             // createLogs data container
             val cv = createContentValues(gcFn)
 
@@ -278,7 +297,6 @@ class FieldNotesHelper private constructor() {
             return if (update(ctx, lv, gcFn, cv)) {
                 // update extra data
                 storeAllImages(ctx, lv, gcFn)
-                storeAllItems(ctx, lv, gcFn)
 
                 // all went well
                 true
@@ -376,7 +394,7 @@ class FieldNotesHelper private constructor() {
             ctx.contentResolver.delete(
                     getUriImagesTable(lv),
                     ColFieldNoteImage.FIELD_NOTE_ID + "=?",
-                    arrayOf(java.lang.Long.toString(fieldNoteId)))
+                    arrayOf(fieldNoteId.toString()))
         }
 
         @Throws(RequiredVersionMissingException::class)
@@ -388,12 +406,12 @@ class FieldNotesHelper private constructor() {
         // UPDATE
 
         @Throws(RequiredVersionMissingException::class)
-        private fun updateImage(ctx: Context, lv: LocusUtils.LocusVersion, img: FieldNoteImage): Boolean {
+        fun updateImage(ctx: Context, lv: LocusUtils.LocusVersion, img: FieldNoteImage): Boolean {
             return ctx.contentResolver.update(
                     getUriImagesTable(lv),
                     createContentValues(img, false),
                     ColFieldNoteImage.ID + "=?",
-                    arrayOf(java.lang.Long.toString(img.id))) == 1
+                    arrayOf(img.id.toString())) == 1
         }
 
         // INSERT
@@ -409,94 +427,97 @@ class FieldNotesHelper private constructor() {
         // ITEMS HANDLERS
         /**************************************************/
 
-        @Throws(RequiredVersionMissingException::class)
-        private fun storeAllItems(ctx: Context, lv: LocusUtils.LocusVersion, fn: FieldNote) {
-            // get existing items
-            val existingItems = ArrayList<Long>()
-            ctx.contentResolver.query(getUriItemsTable(lv),
-                    arrayOf(ColFieldNoteItems.ID),
-                    ColFieldNoteItems.FIELD_NOTE_ID + "=?",
-                    arrayOf(java.lang.Long.toString(fn.id)), null)?.apply {
-                while (moveToNext()) {
-                    existingItems.add(getLong(0))
-                }
-                Utils.closeQuietly(this)
-            }
-
-            // update all items
-            for (item in fn.items) {
-                if (item.id >= 0) {
-                    if (!existingItems.contains(item.id)) {
-                        Logger.logD(TAG, "storeAllItems($ctx, $lv, $fn), " +
-                                "item no longer exists in database")
-                    } else {
-                        existingItems.remove(item.id)
-                        updateItem(ctx, lv, item)
-                    }
-                } else {
-                    insertItem(ctx, lv, item)
-                }
-            }
-
-            // remove remaining items
-            for (remainingItem in existingItems) {
-                deleteItem(ctx, lv, remainingItem)
-            }
-        }
+//        @Throws(RequiredVersionMissingException::class)
+//        private fun storeAllItems(ctx: Context, lv: LocusUtils.LocusVersion, items: List<TrackableLog>) {
+//            // update all items
+//            for (item in items) {
+//                if (item.id >= 0) {
+//                    updateItem(ctx, lv, item)
+//                } else {
+//                    insertItem(ctx, lv, item)
+//                }
+//            }
+//        }
 
         // GET
 
+        /**
+         * Get all existing trackable logs for defined cache by it's [cacheCode].
+         */
         @Throws(RequiredVersionMissingException::class)
-        private fun getItems(ctx: Context, lv: LocusUtils.LocusVersion, fn: FieldNote) {
-            fn.items.clear()
-            ctx.contentResolver.query(getUriItemsTable(lv),
+        fun getTrackableLogs(ctx: Context, lv: LocusUtils.LocusVersion, cacheCode: String)
+                : MutableList<TrackableLog> {
+            val items = arrayListOf<TrackableLog>()
+            ctx.contentResolver.query(getUriTrackablesLogsTable(lv),
                     null,
-                    ColFieldNoteItems.FIELD_NOTE_ID + "=?",
-                    arrayOf(fn.id.toString()), null)?.apply {
-                fn.items.addAll(createItems(this))
+                    ColTrackableLogs.CACHE_CODE + "=?",
+                    arrayOf(cacheCode), null)?.apply {
+                items.addAll(createItems(this))
                 Utils.closeQuietly(this)
             }
+
+            // return container
+            return items
         }
 
+        /**
+         * Get all existing trackable logs that was not yet correctly logged.
+         */
+        @Throws(RequiredVersionMissingException::class)
+        fun getTrackablesLogsNotLogged(ctx: Context, lv: LocusUtils.LocusVersion)
+                : MutableList<TrackableLog> {
+            val items = arrayListOf<TrackableLog>()
+            ctx.contentResolver.query(getUriTrackablesLogsTable(lv),
+                    null,
+                    ColTrackableLogs.LOGGED + "=?",
+                    arrayOf("0"), null)?.apply {
+                items.addAll(createItems(this))
+                Utils.closeQuietly(this)
+            }
+
+            // return container
+            return items
+        }
 
         // INSERT
 
         @Throws(RequiredVersionMissingException::class)
-        private fun insertItem(ctx: Context, lv: LocusUtils.LocusVersion, item: FieldNoteItem): Boolean {
+        fun insertTrackableLog(ctx: Context, lv: LocusUtils.LocusVersion, item: TrackableLog): Boolean {
             return ctx.contentResolver.insert(
-                    getUriItemsTable(lv), createContentValues(item)) != null
+                    getUriTrackablesLogsTable(lv),
+                    createContentValues(item)) != null
         }
 
         // UPDATE
 
         @Throws(RequiredVersionMissingException::class)
-        private fun updateItem(ctx: Context, lv: LocusUtils.LocusVersion, item: FieldNoteItem): Boolean {
+        fun updateTrackableLog(ctx: Context, lv: LocusUtils.LocusVersion, item: TrackableLog): Boolean {
             return ctx.contentResolver.update(
-                    getUriItemsTable(lv), createContentValues(item),
-                    ColFieldNoteItems.ID + "=?",
+                    getUriTrackablesLogsTable(lv), createContentValues(item),
+                    ColTrackableLogs.ID + "=?",
                     arrayOf(item.id.toString())) == 1
         }
 
         // DELETE
 
         @Throws(RequiredVersionMissingException::class)
-        private fun deleteItem(ctx: Context, lv: LocusUtils.LocusVersion, itemId: Long) {
-            ctx.contentResolver.delete(getUriItemsTable(lv),
-                    "${ColFieldNoteItems.ID}=?",
-                    arrayOf(itemId.toString()))
+        fun deleteTrackableLog(ctx: Context, lv: LocusUtils.LocusVersion, itemId: Long): Boolean {
+            return ctx.contentResolver.delete(getUriTrackablesLogsTable(lv),
+                    "${ColTrackableLogs.ID}=?",
+                    arrayOf(itemId.toString())) == 1
         }
 
-        @Throws(RequiredVersionMissingException::class)
-        private fun deleteItems(ctx: Context, lv: LocusUtils.LocusVersion, fieldNoteId: Long) {
-            ctx.contentResolver.delete(getUriItemsTable(lv),
-                    ColFieldNoteItems.FIELD_NOTE_ID + "=?",
-                    arrayOf(fieldNoteId.toString()))
-        }
+//        @Throws(RequiredVersionMissingException::class)
+//        private fun deleteItems(ctx: Context, lv: LocusUtils.LocusVersion, fieldNoteId: Long) {
+//            ctx.contentResolver.delete(getUriTrackablesLogsTable(lv),
+//                    ColTrackableLogs.FIELD_NOTE_ID + "=?",
+//                    arrayOf(fieldNoteId.toString()))
+//        }
 
-        @Throws(RequiredVersionMissingException::class)
-        private fun deleteItemsAll(ctx: Context, lv: LocusUtils.LocusVersion) {
-            ctx.contentResolver.delete(getUriItemsTable(lv), null, null)
-        }
+//        @Throws(RequiredVersionMissingException::class)
+//        private fun deleteItemsAll(ctx: Context, lv: LocusUtils.LocusVersion) {
+//            ctx.contentResolver.delete(getUriTrackablesLogsTable(lv), null, null)
+//        }
 
         /**********************************************/
         // HELP FUNCTIONS
@@ -524,9 +545,9 @@ class FieldNotesHelper private constructor() {
          * Create valid Uri to provider of items.
          */
         @Throws(RequiredVersionMissingException::class)
-        private fun getUriItemsTable(lv: LocusUtils.LocusVersion): Uri {
+        private fun getUriTrackablesLogsTable(lv: LocusUtils.LocusVersion): Uri {
             return ActionTools.getProviderUrlGeocaching(lv,
-                    LocusUtils.VersionCode.UPDATE_05, PATH_FIELD_NOTE_ITEMS)
+                    LocusUtils.VersionCode.UPDATE_05, PATH_TRACKABLE_LOGS)
         }
 
         // CREATE CONTENT VALUES
@@ -580,13 +601,17 @@ class FieldNotesHelper private constructor() {
         /**
          * Create ContentValues object for [item], that is used for updates and inserts of items.
          */
-        private fun createContentValues(item: FieldNoteItem): ContentValues {
+        private fun createContentValues(item: TrackableLog): ContentValues {
             return ContentValues().apply {
-                put(ColFieldNoteItems.FIELD_NOTE_ID, item.fieldNoteId)
-                put(ColFieldNoteItems.ACTION, item.action)
-                put(ColFieldNoteItems.CODE, item.code)
-                put(ColFieldNoteItems.NAME, item.name)
-                put(ColFieldNoteItems.ICON, item.icon)
+                put(ColTrackableLogs.TB_CODE, item.tbCode)
+                put(ColTrackableLogs.NAME, item.name)
+                put(ColTrackableLogs.ICON, item.icon)
+                put(ColTrackableLogs.CACHE_CODE, item.cacheCode)
+                put(ColTrackableLogs.ACTION, item.action)
+                put(ColTrackableLogs.TRACKING_CODE, item.trackingCode)
+                put(ColTrackableLogs.TIME, item.time)
+                put(ColTrackableLogs.NOTE, item.note)
+                put(ColTrackableLogs.LOGGED, item.isLogged)
             }
         }
 
@@ -603,43 +628,34 @@ class FieldNotesHelper private constructor() {
             }
 
             // iterate over cursor
-            var i = 0
-            val m = cursor.count
-            while (i < m) {
+            for (i in 0 until cursor.count) {
                 cursor.moveToPosition(i)
 
-                // createLogs empty object
-                val fn = FieldNote()
-
-                // set parameters (required)
-                fn.id = cursor.getLong(
-                        cursor.getColumnIndexOrThrow(ColFieldNote.ID))
-                fn.cacheCode = cursor.getString(
-                        cursor.getColumnIndexOrThrow(ColFieldNote.CACHE_CODE))
-                fn.cacheName = cursor.getString(
-                        cursor.getColumnIndexOrThrow(ColFieldNote.CACHE_NAME))
-                fn.type = cursor.getInt(
-                        cursor.getColumnIndexOrThrow(ColFieldNote.TYPE))
-                fn.time = cursor.getLong(
-                        cursor.getColumnIndex(ColFieldNote.TIME))
-
-                // set parameters (optional)
-                val iNote = cursor.getColumnIndex(ColFieldNote.NOTE)
-                if (iNote >= 0) {
-                    fn.note = cursor.getString(iNote)
-                }
-                val iFavorite = cursor.getColumnIndex(ColFieldNote.FAVORITE)
-                if (iFavorite >= 0) {
-                    fn.isFavorite = cursor.getInt(iFavorite) == 1
-                }
-                val iLogged = cursor.getColumnIndex(ColFieldNote.LOGGED)
-                if (iLogged >= 0) {
-                    fn.isLogged = cursor.getInt(iLogged) == 1
-                }
-
                 // add field note to container
-                res.add(fn)
-                i++
+                res.add(FieldNote().apply {
+                    // set parameters (required)
+                    id = cursor.getLong(
+                            cursor.getColumnIndexOrThrow(ColFieldNote.ID))
+                    cacheCode = cursor.getString(
+                            cursor.getColumnIndexOrThrow(ColFieldNote.CACHE_CODE))
+                    cacheName = cursor.getString(
+                            cursor.getColumnIndexOrThrow(ColFieldNote.CACHE_NAME))
+                    type = cursor.getInt(
+                            cursor.getColumnIndexOrThrow(ColFieldNote.TYPE))
+                    time = cursor.getLong(
+                            cursor.getColumnIndex(ColFieldNote.TIME))
+
+                    // set parameters (optional)
+                    cursor.getColumnIndex(ColFieldNote.NOTE)
+                            .takeIf { it >= 0 }
+                            ?.let { note = cursor.getString(it) }
+                    cursor.getColumnIndex(ColFieldNote.FAVORITE)
+                            .takeIf { it >= 0 }
+                            ?.let { isFavorite = cursor.getInt(it) == 1 }
+                    cursor.getColumnIndex(ColFieldNote.LOGGED)
+                            .takeIf { it >= 0 }
+                            ?.let { isLogged = cursor.getInt(it) == 1 }
+                })
             }
 
             // return result
@@ -649,7 +665,6 @@ class FieldNotesHelper private constructor() {
         /**
          * Create list of images from [cursor].
          */
-
         private fun createImages(cursor: Cursor?): List<FieldNoteImage> {
             // createLogs container and check data
             val res = ArrayList<FieldNoteImage>()
@@ -661,33 +676,26 @@ class FieldNotesHelper private constructor() {
             for (i in 0 until cursor.count) {
                 cursor.moveToPosition(i)
 
-                // createLogs empty object
-                val img = FieldNoteImage()
-
-                // set parameters (required)
-                img.id = cursor.getLong(
-                        cursor.getColumnIndexOrThrow(ColFieldNoteImage.ID))
-
-                // set parameters (optional)
-                val iFnId = cursor.getColumnIndex(ColFieldNoteImage.FIELD_NOTE_ID)
-                if (iFnId >= 0) {
-                    img.fieldNoteId = cursor.getLong(iFnId)
-                }
-                val iCap = cursor.getColumnIndex(ColFieldNoteImage.CAPTION)
-                if (iCap >= 0) {
-                    img.caption = cursor.getString(iCap)
-                }
-                val iDesc = cursor.getColumnIndex(ColFieldNoteImage.DESCRIPTION)
-                if (iDesc >= 0) {
-                    img.description = cursor.getString(iDesc)
-                }
-                val iData = cursor.getColumnIndex(ColFieldNoteImage.DATA)
-                if (iData >= 0) {
-                    img.image = cursor.getBlob(iData)
-                }
-
                 // add field note to container
-                res.add(img)
+                res.add(FieldNoteImage().apply {
+                    // set parameters (required)
+                    id = cursor.getLong(
+                            cursor.getColumnIndexOrThrow(ColFieldNoteImage.ID))
+
+                    // set parameters (optional)
+                    cursor.getColumnIndex(ColFieldNoteImage.FIELD_NOTE_ID)
+                            .takeIf { it >= 0 }
+                            ?.let { fieldNoteId = cursor.getLong(it) }
+                    cursor.getColumnIndex(ColFieldNoteImage.CAPTION)
+                            .takeIf { it >= 0 }
+                            ?.let { caption = cursor.getString(it) }
+                    cursor.getColumnIndex(ColFieldNoteImage.DESCRIPTION)
+                            .takeIf { it >= 0 }
+                            ?.let { description = cursor.getString(it) }
+                    cursor.getColumnIndex(ColFieldNoteImage.DATA)
+                            .takeIf { it >= 0 }
+                            ?.let { image = cursor.getBlob(it) }
+                })
             }
 
             // return result
@@ -697,9 +705,9 @@ class FieldNotesHelper private constructor() {
         /**
          * Create list of items from [cursor].
          */
-        private fun createItems(cursor: Cursor?): List<FieldNoteItem> {
+        private fun createItems(cursor: Cursor?): List<TrackableLog> {
             // createLogs container and check data
-            val res = ArrayList<FieldNoteItem>()
+            val res = ArrayList<TrackableLog>()
             if (cursor == null) {
                 throw IllegalArgumentException("Cursor cannot be 'null'")
             }
@@ -709,26 +717,38 @@ class FieldNotesHelper private constructor() {
                 cursor.moveToPosition(i)
 
                 // createLogs object
-                res.add(FieldNoteItem().apply {
+                res.add(TrackableLog().apply {
                     id = cursor.getLong(
-                            cursor.getColumnIndexOrThrow(ColFieldNoteItems.ID))
+                            cursor.getColumnIndexOrThrow(ColTrackableLogs.ID))
 
                     // set parameters (optional)
-                    cursor.getColumnIndex(ColFieldNoteItems.FIELD_NOTE_ID)
+                    cursor.getColumnIndex(ColTrackableLogs.TB_CODE)
                             .takeIf { it >= 0 }
-                            ?.let { fieldNoteId = cursor.getLong(it) }
-                    cursor.getColumnIndex(ColFieldNoteItems.ACTION)
-                            .takeIf { it >= 0 }
-                            ?.let { action = cursor.getInt(it) }
-                    cursor.getColumnIndex(ColFieldNoteItems.CODE)
-                            .takeIf { it >= 0 }
-                            ?.let { code = cursor.getString(it) }
-                    cursor.getColumnIndex(ColFieldNoteItems.NAME)
+                            ?.let { tbCode = cursor.getString(it) }
+                    cursor.getColumnIndex(ColTrackableLogs.NAME)
                             .takeIf { it >= 0 }
                             ?.let { name = cursor.getString(it) }
-                    cursor.getColumnIndex(ColFieldNoteItems.ICON)
+                    cursor.getColumnIndex(ColTrackableLogs.ICON)
                             .takeIf { it >= 0 }
                             ?.let { icon = cursor.getString(it) }
+                    cursor.getColumnIndex(ColTrackableLogs.CACHE_CODE)
+                            .takeIf { it >= 0 }
+                            ?.let { cacheCode = cursor.getString(it) }
+                    cursor.getColumnIndex(ColTrackableLogs.ACTION)
+                            .takeIf { it >= 0 }
+                            ?.let { action = cursor.getInt(it) }
+                    cursor.getColumnIndex(ColTrackableLogs.TRACKING_CODE)
+                            .takeIf { it >= 0 }
+                            ?.let { trackingCode = cursor.getString(it) }
+                    cursor.getColumnIndex(ColTrackableLogs.TIME)
+                            .takeIf { it >= 0 }
+                            ?.let { time = cursor.getLong(it) }
+                    cursor.getColumnIndex(ColTrackableLogs.NOTE)
+                            .takeIf { it >= 0 }
+                            ?.let { note = cursor.getString(it) }
+                    cursor.getColumnIndex(ColTrackableLogs.LOGGED)
+                            .takeIf { it >= 0 }
+                            ?.let { isLogged = cursor.getInt(it) == 1 }
                 })
             }
 

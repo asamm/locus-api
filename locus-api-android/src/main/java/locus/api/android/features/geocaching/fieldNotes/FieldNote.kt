@@ -31,9 +31,6 @@ class FieldNote : Storable {
     // list of attached images
     var images: MutableList<FieldNoteImage> = arrayListOf()
         private set
-    // list of attached items
-    var items: MutableList<FieldNoteItem> = arrayListOf()
-        private set
 
     /**
      * Default empty constructor.
@@ -61,9 +58,6 @@ class FieldNote : Storable {
         isFavorite = false
         isLogged = false
         images = arrayListOf()
-
-        // V1
-        items = arrayListOf()
     }
 
     @Throws(IOException::class)
@@ -77,11 +71,6 @@ class FieldNote : Storable {
         isFavorite = dr.readBoolean()
         isLogged = dr.readBoolean()
         images = dr.readListStorable(FieldNoteImage::class.java)
-
-        // V1
-        if (version >= 1) {
-            items = dr.readListStorable(FieldNoteItem::class.java)
-        }
     }
 
     @Throws(IOException::class)
@@ -95,8 +84,5 @@ class FieldNote : Storable {
         dw.writeBoolean(isFavorite)
         dw.writeBoolean(isLogged)
         dw.writeListStorable(images)
-
-        // V1
-        dw.writeListStorable(items)
     }
 }

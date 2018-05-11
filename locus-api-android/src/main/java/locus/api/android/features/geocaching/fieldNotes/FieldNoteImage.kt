@@ -1,10 +1,9 @@
 package locus.api.android.features.geocaching.fieldNotes
 
-import java.io.IOException
-
 import locus.api.objects.Storable
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
+import java.io.IOException
 
 /**
  * Created by menion on 14. 7. 2014.
@@ -38,7 +37,7 @@ class FieldNoteImage : Storable() {
     /**************************************************/
 
     override fun getVersion(): Int {
-        return 0
+        return 1
     }
 
     override fun reset() {
