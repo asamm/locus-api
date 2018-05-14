@@ -32,6 +32,7 @@ import locus.api.utils.Logger;
 import locus.api.utils.SparseArrayCompat;
 import locus.api.utils.Utils;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class GeoDataExtra extends Storable {
 
 	// tag for logger
@@ -182,6 +183,8 @@ public class GeoDataExtra extends Storable {
 	public static final int PAR_TYPE 								            = 33;
 	// Special code used in Geocache waypoints
 	public static final int PAR_GEOCACHE_CODE						            = 34;
+    // flag to include item from POI alert feature
+	public static final int PAR_POI_ALERT_INCLUDE                               = 35;
 	
 	// LOCATION PARAMETERS (50 - 59)
 
