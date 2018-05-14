@@ -82,13 +82,10 @@ class FieldNotesHelper private constructor() {
          */
         @Throws(RequiredVersionMissingException::class)
         fun getCount(ctx: Context, lv: LocusUtils.LocusVersion): Int {
-            // get parameters for query
-            val cpUri = getUriLogsTable(lv)
-
             // execute request
             var c: Cursor? = null
             try {
-                c = ctx.contentResolver.query(cpUri,
+                c = ctx.contentResolver.query(getUriLogsTable(lv),
                         arrayOf(ColFieldNote.ID), null, null, null)
                 return if (c == null) {
                     0
@@ -107,16 +104,13 @@ class FieldNotesHelper private constructor() {
          * @return List of all field notes
          */
         @Throws(RequiredVersionMissingException::class)
-        fun getAll(ctx: Context, lv: LocusUtils.LocusVersion): List<FieldNote> {
+        fun getAll(ctx: Context, lv: LocusUtils.LocusVersion): MutableList<FieldNote> {
             return get(ctx, lv, "")
         }
 
         /**
-         * Get single specific Field Note defined by it's ID
-         * @param ctx existing context
-         * @param lv active Locus version
-         * @param id ID of note we want
-         * @return [locus.api.android.features.geocaching.fieldNotes.FieldNote] or 'null'
+         * Get single specific Field Note defined by it's [id]. This also load images (only it's
+         * ID parameters).
          */
         @Throws(RequiredVersionMissingException::class)
         fun get(ctx: Context, lv: LocusUtils.LocusVersion, id: Long): FieldNote? {
@@ -153,29 +147,31 @@ class FieldNotesHelper private constructor() {
          * @return list of all field notes for certain cache
          */
         @Throws(RequiredVersionMissingException::class)
-        fun get(ctx: Context, lv: LocusUtils.LocusVersion, cacheCode: String?): List<FieldNote> {
-            // get parameters for query
-            val cpUri = getUriLogsTable(lv)
-
+        fun get(ctx: Context, lv: LocusUtils.LocusVersion, cacheCode: String?): MutableList<FieldNote> {
             // execute request
             var c: Cursor? = null
             try {
                 // perform request based on 'cacheCode'
                 c = if (cacheCode == null || cacheCode.isEmpty()) {
-                    ctx.contentResolver.query(cpUri,
+                    ctx.contentResolver.query(getUriLogsTable(lv),
                             null, null, null, null)
                 } else {
-                    ctx.contentResolver.query(cpUri,
+                    ctx.contentResolver.query(getUriLogsTable(lv),
                             null, ColFieldNote.CACHE_CODE + "=?",
                             arrayOf(cacheCode), null)
                 }
 
                 // handle result
-                return if (c == null) {
-                    ArrayList()
-                } else {
-                    createLogs(c)
+                if (c == null) {
+                    return arrayListOf()
                 }
+
+                // load logs & images
+                val logs = createLogs(c)
+                for (log in logs) {
+                    getImages(ctx, lv, log)
+                }
+                return logs
             } finally {
                 Utils.closeQuietly(c)
             }
@@ -218,11 +214,8 @@ class FieldNotesHelper private constructor() {
          */
         @Throws(RequiredVersionMissingException::class)
         fun delete(ctx: Context, lv: LocusUtils.LocusVersion, fieldNoteId: Long): Boolean {
-            // get parameters for query
-            val cpUri = getUriLogsTable(lv)
-
             // execute request
-            val res = ctx.contentResolver.delete(cpUri,
+            val res = ctx.contentResolver.delete(getUriLogsTable(lv),
                     ColFieldNote.ID + "=?",
                     arrayOf(java.lang.Long.toString(fieldNoteId))
             )
@@ -242,11 +235,8 @@ class FieldNotesHelper private constructor() {
          */
         @Throws(RequiredVersionMissingException::class)
         fun deleteAll(ctx: Context, lv: LocusUtils.LocusVersion): Int {
-            // get parameters for query
-            val cpUri = getUriLogsTable(lv)
-
             // execute request (logs and also images)
-            val count = ctx.contentResolver.delete(cpUri, null, null)
+            val count = ctx.contentResolver.delete(getUriLogsTable(lv), null, null)
             deleteImagesAll(ctx, lv)
             return count
         }
@@ -308,13 +298,10 @@ class FieldNotesHelper private constructor() {
         @Throws(RequiredVersionMissingException::class)
         fun update(ctx: Context, lv: LocusUtils.LocusVersion,
                 fn: FieldNote, cv: ContentValues): Boolean {
-            // get parameters for query
-            val cpUri = getUriLogsTable(lv)
-
             // execute request
-            val newRow = ctx.contentResolver.update(cpUri, cv,
+            val newRow = ctx.contentResolver.update(getUriLogsTable(lv), cv,
                     ColFieldNote.ID + "=?",
-                    arrayOf(java.lang.Long.toString(fn.id)))
+                    arrayOf(fn.id.toString()))
             return newRow == 1
         }
 
@@ -349,8 +336,6 @@ class FieldNotesHelper private constructor() {
                 return if (c == null || c.count != 1) {
                     null
                 } else createImages(c)[0]
-
-                // get 'all' notes and return first
             } finally {
                 Utils.closeQuietly(c)
             }
@@ -373,7 +358,7 @@ class FieldNotesHelper private constructor() {
                 c = ctx.contentResolver.query(getUriImagesTable(lv),
                         arrayOf(ColFieldNoteImage.ID),
                         ColFieldNoteImage.FIELD_NOTE_ID + "=?",
-                        arrayOf(java.lang.Long.toString(fn.id)), null)
+                        arrayOf(fn.id.toString()), null)
 
                 // handle result
                 if (c != null) {
@@ -507,18 +492,6 @@ class FieldNotesHelper private constructor() {
                     arrayOf(itemId.toString())) == 1
         }
 
-//        @Throws(RequiredVersionMissingException::class)
-//        private fun deleteItems(ctx: Context, lv: LocusUtils.LocusVersion, fieldNoteId: Long) {
-//            ctx.contentResolver.delete(getUriTrackablesLogsTable(lv),
-//                    ColTrackableLogs.FIELD_NOTE_ID + "=?",
-//                    arrayOf(fieldNoteId.toString()))
-//        }
-
-//        @Throws(RequiredVersionMissingException::class)
-//        private fun deleteItemsAll(ctx: Context, lv: LocusUtils.LocusVersion) {
-//            ctx.contentResolver.delete(getUriTrackablesLogsTable(lv), null, null)
-//        }
-
         /**********************************************/
         // HELP FUNCTIONS
         /**********************************************/
@@ -620,7 +593,7 @@ class FieldNotesHelper private constructor() {
         /**
          * Create list of logs from [cursor].
          */
-        private fun createLogs(cursor: Cursor?): List<FieldNote> {
+        private fun createLogs(cursor: Cursor?): MutableList<FieldNote> {
             // createLogs container and check data
             val res = ArrayList<FieldNote>()
             if (cursor == null) {
@@ -665,7 +638,7 @@ class FieldNotesHelper private constructor() {
         /**
          * Create list of images from [cursor].
          */
-        private fun createImages(cursor: Cursor?): List<FieldNoteImage> {
+        private fun createImages(cursor: Cursor?): MutableList<FieldNoteImage> {
             // createLogs container and check data
             val res = ArrayList<FieldNoteImage>()
             if (cursor == null) {
@@ -705,7 +678,7 @@ class FieldNotesHelper private constructor() {
         /**
          * Create list of items from [cursor].
          */
-        private fun createItems(cursor: Cursor?): List<TrackableLog> {
+        private fun createItems(cursor: Cursor?): MutableList<TrackableLog> {
             // createLogs container and check data
             val res = ArrayList<TrackableLog>()
             if (cursor == null) {
