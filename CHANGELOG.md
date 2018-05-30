@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.2.22] - 2018-05-30
+### Added
+- support for Geocaching trackables over API
+- `GeoDataExtra.PAR_POI_ALERT_INCLUDE` flag to manually include/exluce certain point from POI Alert
+
 ## [0.2.21] - 2018-04-05
 ### Changed
 - [fixed #9](https://github.com/asamm/locus-api/issues/9) - getting info about available Locus versions 
