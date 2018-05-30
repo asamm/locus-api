@@ -172,18 +172,30 @@ public class GeoDataExtra extends Storable {
 	public static final int PAR_INTENT_EXTRA_ON_DISPLAY 			            = 21;
 
 	// PUBLIC VALUES (30 - 49)
-	
-	// visible description
+
+    /**
+     * [STRING] Item visible description.
+     */
 	public static final int PAR_DESCRIPTION 						            = 30;
-	// storage for comments
+    /**
+     * [STRING] Storage for comments (extra tiny description available in GPX files).
+     */
 	public static final int PAR_COMMENT 							            = 31;
-	// relative path to working dir (for images for example)
+    /**
+     * [STRING] Relative path to working dir (for images for example).
+      */
 	public static final int PAR_RELATIVE_WORKING_DIR 				            = 32;
-	// Type (classification) of the waypoint.
+    /**
+     * [INT] Type (classification) of the item (point).
+     */
 	public static final int PAR_TYPE 								            = 33;
-	// Special code used in Geocache waypoints
+    /**
+     * [STRING] Special code used in Geocache waypoints.
+     */
 	public static final int PAR_GEOCACHE_CODE						            = 34;
-    // flag to include item from POI alert feature
+    /**
+     * [BOOLEAN] Flag to include item in POI alert feature. If missing, "true" used as default.
+     */
 	public static final int PAR_POI_ALERT_INCLUDE                               = 35;
 	
 	// LOCATION PARAMETERS (50 - 59)

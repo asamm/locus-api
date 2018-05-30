@@ -37,9 +37,9 @@ dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + KOTLIN_VERSION
 
     // use in case of direct handling over Locus Core project
-//    api project(':locus-api-core')
+    debugApi project(':locus-api-core')
     // use in case of publishing to Maven. 'api' needs to be set in artefact as well
-    api 'com.asamm:locus-api:' + API_VERSION
+    releaseApi 'com.asamm:locus-api:' + API_VERSION
 }
 
 // maven parameters
