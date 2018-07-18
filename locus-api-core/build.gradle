@@ -22,12 +22,12 @@ task createJavadocJar(type: Jar, dependsOn: javadoc) {
 group = 'com.asamm'
 version = API_VERSION
 
-task publishMavenLocal(type: GradleBuild) {
-    group 'Publish'
-    tasks = [':clean',
-             ':build',
-             ':publishToMavenLocal']
-}
+//task publishMavenLocal(type: GradleBuild) {
+//    group 'Publish'
+//    tasks = [':clean',
+//             ':build',
+//             ':publishToMavenLocal']
+//}
 
 //task publishMavenBintray(type: GradleBuild) {
 //    group 'Publish'
