@@ -9,7 +9,7 @@ buildscript {
     }
     dependencies {
         // Android build
-        classpath 'com.android.tools.build:gradle:' + BUILD_TOOLS
+        classpath 'com.android.tools.build:gradle:' + ANDROID_PLUGIN_GRADLE
 
         // Bintray support
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
@@ -45,7 +45,7 @@ configure([
     android {
         // setup SDK
         compileSdkVersion Integer.valueOf(PARAM_COMPILE_SDK_VERSION)
-        buildToolsVersion PARAM_BUILD_TOOLS_VERSION
+        buildToolsVersion ANDROID_BUILD_TOOLS
 
         defaultConfig {
             minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)

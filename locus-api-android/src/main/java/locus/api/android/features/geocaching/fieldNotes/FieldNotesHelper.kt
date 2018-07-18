@@ -11,6 +11,7 @@ import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.Utils
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
+import locus.api.objects.geocaching.GeocachingLog
 import java.util.*
 
 /**
@@ -178,16 +179,20 @@ class FieldNotesHelper private constructor() {
         }
 
         /**
-         * Get last logged field note from database. Returned field not will also contain all
-         * images and logged items.
+         * Get last logged "found" field note from database. Returned field not will also
+         * contain all images and logged items.
          */
-        fun getLastLog(ctx: Context, lv: LocusUtils.LocusVersion): FieldNote? {
+        fun getLastFoundLog(ctx: Context, lv: LocusUtils.LocusVersion): FieldNote? {
             // execute request
             var c: Cursor? = null
             try {
-                // perform request based on 'cacheCode'
+                // perform request based on 'cacheCode'. Type of logs needs to match to function
+                // GcLoggingActivity.isLogTrackablesSupported() in Locus Core
                 c = ctx.contentResolver.query(getUriLogsTable(lv),
-                        null, null, null,
+                        null, ColFieldNote.TYPE + " IN (?,?,?)",
+                        arrayOf(GeocachingLog.CACHE_LOG_TYPE_ATTENDED.toString(),
+                                GeocachingLog.CACHE_LOG_TYPE_FOUND.toString(),
+                                GeocachingLog.CACHE_LOG_TYPE_WRITE_NOTE.toString()),
                         ColFieldNote.ID + " DESC LIMIT 1")
 
                 // handle result

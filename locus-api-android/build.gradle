@@ -8,7 +8,7 @@ apply plugin: "kotlin-android"
 // Android basics
 android {
     compileSdkVersion Integer.valueOf(PARAM_COMPILE_SDK_VERSION)
-    buildToolsVersion PARAM_BUILD_TOOLS_VERSION
+    buildToolsVersion ANDROID_BUILD_TOOLS
 
     // define default parameters
     defaultConfig {
