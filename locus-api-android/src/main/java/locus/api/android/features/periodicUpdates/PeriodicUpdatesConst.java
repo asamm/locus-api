@@ -90,4 +90,6 @@ class PeriodicUpdatesConst {
 	
 	static final String VAR_I_DEVICE_BATTERY_VALUE 								= "1500";
 	static final String VAR_F_DEVICE_BATTERY_TEMPERATURE 						= "1501";
+	static final String VAR_S_ACTIVE_DASHBOARD_ID								= "1502";
+	static final String VAR_S_ACTIVE_LIVE_TRACK_ID								= "1503";
 }

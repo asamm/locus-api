@@ -116,7 +116,7 @@ class PageUtilsFragment : ABasePageFragment() {
                     .setPositiveButton("Close") { dialog, which -> }
                     .show()
             14 -> {
-                val count = FieldNotesHelper.getCount(activity, activeLocus)
+                val count = FieldNotesHelper.getCount(activity!!, activeLocus)
                 Toast.makeText(activity,
                         "Available field notes:$count", Toast.LENGTH_LONG).show()
             }

@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.2.25] - 2018-08-14
+### Changed
+- updated loading of last field note log
+- add active dashboard and active live tracking ID into update container
+- changes in gradle build system versions
+### Fixed
+- problem with missing locus-api dependency in locus-api-android module
+- geotour attribute for geocaches
+
 ## [0.2.22] - 2018-05-30
 ### Added
 - support for Geocaching trackables over API
