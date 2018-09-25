@@ -76,6 +76,9 @@ class PageUtilsFragment : ABasePageFragment() {
         items.add(BasicAdapterItem(19,
                 "Take a 'screenshot (new)'",
                 "Take a bitmap screenshot of certain place in app"))
+        items.add(BasicAdapterItem(20,
+                "Toggle map centering",
+                "Sample of new 'Action tasks' API"))
 
         // TEMPORARY TEST ITEMS
 
@@ -181,6 +184,12 @@ class PageUtilsFragment : ABasePageFragment() {
                             .add(MapFragment(), "MAP_FRAGMENT")
                             .commit()
                 }
+            }
+            20 -> {
+                activity?.sendBroadcast(Intent("com.asamm.locus.ACTION_TASK").apply {
+                    setPackage("menion.android.locus")
+                    putExtra("tasks", "{ map_center: { action: \"toggle\" } }")
+                })
             }
             100 -> {
                 // test old method
