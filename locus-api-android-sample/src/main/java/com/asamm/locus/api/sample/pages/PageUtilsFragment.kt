@@ -108,7 +108,7 @@ class PageUtilsFragment : ABasePageFragment() {
                     .setTitle("Locus Root directory")
                     .setMessage("dir:" + SampleCalls.getRootDirectory(activity, activeLocus) +
                     "\n\n'null' means no required version installed or different problem")
-                    .setPositiveButton("Close") { dialog, which -> }
+                    .setPositiveButton("Close") { _, which -> }
                     .show()
             7 -> ActionTools.callAddNewWmsMap(activity,
                     "http://mapy.geology.cz/arcgis/services/Inspire/GM500K/MapServer/WMSServer")
@@ -151,7 +151,7 @@ class PageUtilsFragment : ABasePageFragment() {
                     AlertDialog.Builder(activity)
                             .setTitle("Fresh UpdateContainer")
                             .setMessage("UC: " + Utils.toString(uc))
-                            .setPositiveButton("Close") { dialog, which -> }
+                            .setPositiveButton("Close") { dialog, _ -> }
                             .show()
                 } else {
                     Toast.makeText(activity,

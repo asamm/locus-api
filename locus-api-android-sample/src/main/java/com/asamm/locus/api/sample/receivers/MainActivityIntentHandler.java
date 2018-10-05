@@ -14,8 +14,8 @@ import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.GeoDataExtra;
 import locus.api.objects.extra.Location;
+import locus.api.objects.extra.Point;
 import locus.api.objects.extra.Track;
-import locus.api.objects.extra.Waypoint;
 import locus.api.utils.Logger;
 
 /**
@@ -65,7 +65,7 @@ public class MainActivityIntentHandler {
 				String value = intent.getStringExtra(SampleCalls.EXTRA_ON_DISPLAY_ACTION_ID);
 
 				// now create full point version and send it back for returned value
-				Waypoint wpt = SampleCalls.generateWaypoint(0);
+				Point wpt = SampleCalls.generateWaypoint(0);
 				wpt.setName("Improved version!");
 				wpt.addParameter(GeoDataExtra.PAR_DESCRIPTION,
 						"Extra description to ultra improved point!, received value:" + value);
@@ -79,7 +79,7 @@ public class MainActivityIntentHandler {
 			} else if (LocusUtils.isIntentReceiveLocation(intent)) {
 				// at this moment we check if returned intent contains location we previously
 				// requested from Locus
-				Waypoint wpt = LocusUtils.getWaypointFromIntent(intent);
+				Point wpt = LocusUtils.getWaypointFromIntent(intent);
 				if (wpt != null) {
 					new AlertDialog.Builder(act).
 							setTitle("Intent - PickLocation").
@@ -107,7 +107,7 @@ public class MainActivityIntentHandler {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						Location loc = new Location("Unknown source");
+						Location loc = new Location();
 						loc.setLatitude(Math.random() * 85);
 						loc.setLongitude(Math.random() * 180);
 						if (!LocusUtils.sendGetLocationData(act, "Non sence Loc ;)", loc)) {
@@ -119,7 +119,7 @@ public class MainActivityIntentHandler {
 
 	private static void handlePointToolsMenu(final MainActivity act, final Intent intent)
 			throws RequiredVersionMissingException {
-		final Waypoint wpt = LocusUtils.handleIntentPointTools(act, intent);
+		final Point wpt = LocusUtils.handleIntentPointTools(act, intent);
 		if (wpt == null) {
 			Toast.makeText(act, "Wrong INTENT - no point!", Toast.LENGTH_SHORT).show();
 		} else {
@@ -267,7 +267,7 @@ public class MainActivityIntentHandler {
 
 		for (long wptId : wptsIds) {
 			try {
-				Waypoint wpt = ActionTools.getLocusWaypoint(act, lv, wptId);
+				Point wpt = ActionTools.getLocusWaypoint(act, lv, wptId);
 				if (wpt != null) {
 					Logger.logD(TAG, "loadPointsFromLocus(), wptId:" + wptId + ", vs:" + wpt.id);
 					// do some modifications

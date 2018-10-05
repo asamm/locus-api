@@ -3,7 +3,6 @@ package locus.api.android.features.computeTrack;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.RemoteException;
 
 import locus.api.android.objects.ParcelableContainer;
 import locus.api.android.utils.LocusUtils;
@@ -33,7 +32,7 @@ public abstract class ComputeTrackService extends Service {
         }
 
         @Override
-        public int[] getTrackTypes() throws RemoteException {
+        public int[] getTrackTypes() {
             return ComputeTrackService.this.getTrackTypes();
         }
 
@@ -48,11 +47,12 @@ public abstract class ComputeTrackService extends Service {
         }
 
         @Override
-        public ParcelableContainer computeTrack(ParcelableContainer trackParams) throws RemoteException {
+        public ParcelableContainer computeTrack(ParcelableContainer trackParams) {
             try {
                 // get track parameters from container
                 byte[] containerData = trackParams.getData();
-                ComputeTrackParameters params = new ComputeTrackParameters(containerData);
+                ComputeTrackParameters params = new ComputeTrackParameters();
+                params.read(containerData);
 
                 // get active running Locus
                 LocusUtils.LocusVersion lv = LocusUtils.getActiveVersion(ComputeTrackService.this);
@@ -79,6 +79,7 @@ public abstract class ComputeTrackService extends Service {
     /**
      * Get visible attribution for this route/track provider. Attribution may be HTML code
      * that will be correctly converted (just basic tags) into TextView in Locus.
+     *
      * @return text visible as attribution
      */
     public abstract String getAttribution();
@@ -86,6 +87,7 @@ public abstract class ComputeTrackService extends Service {
     /**
      * Get list of available routing methods. Definition of possibilities is in
      * {@link GeoDataExtra} class.
+     *
      * @return array of supported routing methods
      */
     public abstract int[] getTrackTypes();
@@ -93,6 +95,7 @@ public abstract class ComputeTrackService extends Service {
     /**
      * If application offer some settings, here should return prepared
      * intent that should be called from Locus to display add-on settings.
+     *
      * @return prepared Intent pointing to settings, or <code>null</code>,
      * if no settings are available.
      */
@@ -100,6 +103,7 @@ public abstract class ComputeTrackService extends Service {
 
     /**
      * Number of additional transit points that may be passed to navigation
+     *
      * @return max number of transit points
      */
     public int getNumOfTransitPoints() {
@@ -108,7 +112,8 @@ public abstract class ComputeTrackService extends Service {
 
     /**
      * Main feature that perform routing itself.
-     * @param lv Locus version that is requesting routing.
+     *
+     * @param lv     Locus version that is requesting routing.
      * @param params parameters requested by Locus for a new track.
      * @return computed track with all defined parameters.
      */

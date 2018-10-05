@@ -22,7 +22,6 @@ package com.asamm.locus.api.sample.utils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Environment;
@@ -51,8 +50,8 @@ import locus.api.objects.extra.Circle;
 import locus.api.objects.extra.GeoDataExtra;
 import locus.api.objects.extra.GeoDataStyle;
 import locus.api.objects.extra.Location;
+import locus.api.objects.extra.Point;
 import locus.api.objects.extra.Track;
-import locus.api.objects.extra.Waypoint;
 import locus.api.objects.geocaching.GeocachingData;
 import locus.api.objects.geocaching.GeocachingWaypoint;
 import locus.api.utils.Logger;
@@ -231,7 +230,7 @@ public class SampleCalls {
 	public static void callSendOnePointWithCallbackOnDisplay(Context ctx) throws RequiredVersionMissingException {
 		// prepare data
 		PackWaypoints pd = new PackWaypoints("test2");
-		Waypoint p = generateWaypoint(0);
+		Point p = generateWaypoint(0);
 		p.setExtraOnDisplay(
 				"com.asamm.locus.api.sample",
 				"com.asamm.locus.api.sample.MainActivity",
@@ -258,28 +257,24 @@ public class SampleCalls {
                 setView(etName).
                 setMessage("Write name of waypoint you want to find. You may use '%' before or after " +
                         "name as wildcards. \n\nRead more at description of \'ActionTools.getLocusWaypointId\'").
-                setPositiveButton("Search", new DialogInterface.OnClickListener() {
+                setPositiveButton("Search", (dialog, which) -> {
+					// get defined name of point
+					String name = etName.getText().toString();
+					if (name.length() == 0) {
+						Toast.makeText(ctx, "Invalid text to search", Toast.LENGTH_LONG).show();
+						return;
+					}
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-						// get defined name of point
-                        String name = etName.getText().toString();
-                        if (name.length() == 0) {
-                            Toast.makeText(ctx, "Invalid text to search", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                        // start search
-                        try {
-                            long[] wpts = ActionTools.getLocusWaypointId(ctx, activeLocus, name);
-                            Toast.makeText(ctx, "Found wpts: \'" + Arrays.toString(wpts) +
-                                    "\'", Toast.LENGTH_LONG).show();
-                        } catch (RequiredVersionMissingException e) {
-                            Toast.makeText(ctx, "Invalid Locus version", Toast.LENGTH_LONG).show();
-                            e.printStackTrace();
-                        }
-                    }
-                }).show();
+					// start search
+					try {
+						long[] wpts = ActionTools.getLocusWaypointId(ctx, activeLocus, name);
+						Toast.makeText(ctx, "Found wpts: \'" + Arrays.toString(wpts) +
+								"\'", Toast.LENGTH_LONG).show();
+					} catch (RequiredVersionMissingException e) {
+						Toast.makeText(ctx, "Invalid Locus version", Toast.LENGTH_LONG).show();
+						e.printStackTrace();
+					}
+				}).show();
     }
 
     /**
@@ -393,30 +388,30 @@ public class SampleCalls {
 	public static void showCircles(FragmentActivity activity) throws Exception {
 		ArrayList<Circle> circles = new ArrayList<Circle>();
 
-		Circle c0 = new Circle(new Location("c1", 50.15, 15), 10000000, true);
+		Circle c0 = new Circle(new Location(50.15, 15), 10000000, true);
 		c0.styleNormal = new GeoDataStyle();
 
 		c0.styleNormal.setPolyStyle(Color.argb(50, Color.red(Color.RED),
 				Color.green(Color.RED), Color.blue(Color.RED)));
 		circles.add(c0);
 
-		Circle c1 = new Circle(new Location("c1", 50, 15), 1000);
+		Circle c1 = new Circle(new Location(50, 15), 1000, false);
 		c1.styleNormal = new GeoDataStyle();
 		c1.styleNormal.setLineStyle(Color.BLUE, 2);
 		circles.add(c1);
 
-		Circle c2 = new Circle(new Location("c2", 50.1, 15), 1500);
+		Circle c2 = new Circle(new Location(50.1, 15), 1500, false);
 		c2.styleNormal = new GeoDataStyle();
 		c2.styleNormal.setLineStyle(Color.RED, 3);
 		circles.add(c2);
 
-		Circle c3 = new Circle(new Location("c1", 50.2, 15), 2000);
+		Circle c3 = new Circle(new Location(50.2, 15), 2000, false);
 		c3.styleNormal = new GeoDataStyle();
 		c3.styleNormal.setLineStyle(Color.GREEN, 4);
 		c3.styleNormal.setPolyStyle(Color.LTGRAY);
 		circles.add(c3);
 
-		Circle c4 = new Circle(new Location("c1", 50.3, 15), 1500);
+		Circle c4 = new Circle(new Location(50.3, 15), 1500, false);
 		c4.styleNormal = new GeoDataStyle();
 		c4.styleNormal.setLineStyle(Color.MAGENTA, 0);
 		c4.styleNormal.setPolyStyle(
@@ -469,12 +464,12 @@ public class SampleCalls {
 	 * @param id ID of point we wants to generate
 	 * @return generated point
 	 */
-    public static Waypoint generateWaypoint(int id) {
+    public static Point generateWaypoint(int id) {
 		// create one simple point with location
-		Location loc = new Location(TAG);
+		Location loc = new Location();
 		loc.setLatitude(Math.random() + 50.0);
 		loc.setLongitude(Math.random() + 14.0);
-		return new Waypoint("Testing point - " + id, loc);
+		return new Point("Testing point - " + id, loc);
     }
 
 	/**
@@ -482,9 +477,9 @@ public class SampleCalls {
 	 * @param id ID of point we wants to generate
 	 * @return generated geocache
 	 */
-    private static Waypoint generateGeocache(int id) {
+    private static Point generateGeocache(int id) {
 		// generate basic point
-    	Waypoint wpt = generateWaypoint(id);
+		Point wpt = generateWaypoint(id);
     	
     	// generate new geocaching data
     	GeocachingData gcData = new GeocachingData();
@@ -545,7 +540,7 @@ public class SampleCalls {
 		for (int i = 0; i < 1000; i++) {
 			lat += ((Math.random() - 0.5) * 0.01);
 			lon += (Math.random() * 0.001);
-			Location loc = new Location(TAG);
+			Location loc = new Location();
 			loc.setLatitude(lat);
 			loc.setLongitude(lon);
 			locs.add(loc);
@@ -553,10 +548,10 @@ public class SampleCalls {
 		track.setPoints(locs);
 		
 		// set some points as highlighted wpts
-		ArrayList<Waypoint> pts = new ArrayList<>();
-		pts.add(new Waypoint("p1", locs.get(100)));
-		pts.add(new Waypoint("p2", locs.get(300)));
-		pts.add(new Waypoint("p3", locs.get(800)));
+		ArrayList<Point> pts = new ArrayList<>();
+		pts.add(new Point("p1", locs.get(100)));
+		pts.add(new Point("p2", locs.get(300)));
+		pts.add(new Point("p3", locs.get(800)));
 		track.setWaypoints(pts);
 		return track;
     }

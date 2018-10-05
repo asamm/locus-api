@@ -20,7 +20,7 @@ public class UtilsBitmap {
     private static final String TAG = "UtilsBitmap";
 
     public static Bitmap readBitmap(DataReaderBigEndian dr) {
-        int size = 0;
+        int size;
         if ((size = dr.readInt()) > 0) {
             byte[] data = dr.readBytes(size);
             return getBitmap(data);
@@ -30,7 +30,7 @@ public class UtilsBitmap {
     }
 
     public static void writeBitmap(DataWriterBigEndian dw, Bitmap bitmap,
-                                   Bitmap.CompressFormat format) throws IOException {
+            Bitmap.CompressFormat format) {
         if (bitmap == null) {
             dw.writeInt(0);
         } else {

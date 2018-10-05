@@ -10,10 +10,10 @@ import java.io.IOException
  * Created by menion on 7. 7. 2014.
  * Class is part of Locus project
  */
-class FieldNote : Storable {
+class FieldNote : Storable() {
 
     // ID of log in database
-    var id: Long = 0
+    var id = -1L
     // code of cache
     var cacheCode = ""
     // name of cache
@@ -32,32 +32,12 @@ class FieldNote : Storable {
     var images: MutableList<FieldNoteImage> = arrayListOf()
         private set
 
-    /**
-     * Default empty constructor.
-     */
-    constructor() : super()
-
-    @Throws(IOException::class)
-    constructor(data: ByteArray) : super(data)
-
     /**************************************************/
     // STORABLE
     /**************************************************/
 
     override fun getVersion(): Int {
         return 1
-    }
-
-    override fun reset() {
-        id = -1L
-        cacheCode = ""
-        cacheName = ""
-        type = GeocachingLog.CACHE_LOG_TYPE_FOUND
-        time = 0L
-        note = ""
-        isFavorite = false
-        isLogged = false
-        images = arrayListOf()
     }
 
     @Throws(IOException::class)

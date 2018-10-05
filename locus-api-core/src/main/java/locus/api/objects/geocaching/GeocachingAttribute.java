@@ -45,7 +45,7 @@ public class GeocachingAttribute extends Storable {
      * Basic constructor.
      */
     public GeocachingAttribute() {
-        super();
+        mId = -1;
     }
 
     /**
@@ -55,7 +55,7 @@ public class GeocachingAttribute extends Storable {
      * @param positive {@code true} to make attribute positive
      */
     public GeocachingAttribute(int id, boolean positive) {
-        super();
+        this();
         if (!positive) {
             this.mId = id;
         } else {
@@ -69,7 +69,7 @@ public class GeocachingAttribute extends Storable {
      * @param url url value
      */
     public GeocachingAttribute(String url) {
-        super();
+        this();
         if (url != null && url.length() > 0) {
             String imgName = url.substring(url.lastIndexOf("/" + 1), url.lastIndexOf("-"));
             mId = mAttrIds.get(imgName);
@@ -144,11 +144,6 @@ public class GeocachingAttribute extends Storable {
     @Override
     protected void writeObject(DataWriterBigEndian dw) throws IOException {
         dw.writeInt(mId);
-    }
-
-    @Override
-    public void reset() {
-        mId = -1;
     }
 
     //*************************************************/

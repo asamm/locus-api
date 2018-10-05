@@ -14,425 +14,437 @@ import locus.api.utils.DataWriterBigEndian;
 
 public class LineStyle extends Storable {
 
-	// white color
-	private static final int COLOR_WHITE                                       	= 0xFFFFFFFF;
-	// black color
-	private static final int COLOR_BLACK                                       	= 0xFF000000;
+    // white color
+    private static final int COLOR_WHITE = 0xFFFFFFFF;
+    // black color
+    private static final int COLOR_BLACK = 0xFF000000;
 
-	// parameters for storing extra meta information for line coloring
-	public static String KEY_CP_ALTITUDE_MANUAL									= "alt_man";
-	public static String KEY_CP_ALTITUDE_MANUAL_MIN								= "alt_man_min";
-	public static String KEY_CP_ALTITUDE_MANUAL_MAX								= "alt_man_max";
-	public static String KEY_CP_SLOPE_MANUAL									= "slo_man";
-	public static String KEY_CP_SLOPE_MANUAL_MIN								= "slo_man_min";
-	public static String KEY_CP_SLOPE_MANUAL_MAX								= "slo_man_max";
+    // parameters for storing extra meta information for line coloring
+    public static String KEY_CP_ALTITUDE_MANUAL = "alt_man";
+    public static String KEY_CP_ALTITUDE_MANUAL_MIN = "alt_man_min";
+    public static String KEY_CP_ALTITUDE_MANUAL_MAX = "alt_man_max";
+    public static String KEY_CP_SLOPE_MANUAL = "slo_man";
+    public static String KEY_CP_SLOPE_MANUAL_MIN = "slo_man_min";
+    public static String KEY_CP_SLOPE_MANUAL_MAX = "slo_man_max";
 
-	/**
-	 * Type how line is presented to user.
-	 */
-	public enum Symbol {
-		DOTTED,
-		DASHED_1, DASHED_2, DASHED_3,
-		SPECIAL_1, SPECIAL_2, SPECIAL_3,
-		ARROW_1, ARROW_2, ARROW_3,
-		CROSS_1, CROSS_2
-	}
+    /**
+     * Type how line is presented to user.
+     */
+    public enum Symbol {
+        DOTTED,
+        DASHED_1, DASHED_2, DASHED_3,
+        SPECIAL_1, SPECIAL_2, SPECIAL_3,
+        ARROW_1, ARROW_2, ARROW_3,
+        CROSS_1, CROSS_2
+    }
 
-	/**
-	 * Special color style for a lines.
-	 */
-	public enum Coloring {
-		// simple coloring
-		SIMPLE,
-		// coloring by speed value
-		BY_SPEED,
-		// coloring (relative) by speed change
-		BY_SPEED_CHANGE,
-		// coloring (relative) by altitude value
-		BY_ALTITUDE,
-		// coloring (relative) by slope
-		BY_SLOPE,
-		// coloring (relative) by accuracy
-		BY_ACCURACY,
-		// coloring (relative) by heart rate value
-		BY_HRM,
-		// coloring (relative) by cadence
-		BY_CADENCE,
-	}
+    /**
+     * Special color style for a lines.
+     */
+    public enum Coloring {
+        // simple coloring
+        SIMPLE,
+        // coloring by speed value
+        BY_SPEED,
+        // coloring (relative) by speed change
+        BY_SPEED_CHANGE,
+        // coloring (relative) by altitude value
+        BY_ALTITUDE,
+        // coloring (relative) by slope
+        BY_SLOPE,
+        // coloring (relative) by accuracy
+        BY_ACCURACY,
+        // coloring (relative) by heart rate value
+        BY_HRM,
+        // coloring (relative) by cadence
+        BY_CADENCE,
+    }
 
-	/**
-	 * Used units for line width.
-	 */
-	public enum Units {
-		PIXELS, METRES
-	}
+    /**
+     * Used units for line width.
+     */
+    public enum Units {
+        PIXELS, METRES
+    }
 
-	// PARAMETERS
+    // PARAMETERS
 
-	// flag to draw background
-	private boolean mDrawBase;
-	// base background color
-	private int mColorBase;
-	// flag to draw symbol
-	private boolean mDrawSymbol;
-	// symbol coloring
-	private int mColorSymbol;
-	// selected symbol
-	private Symbol mSymbol;
-	// coloring style
-	private Coloring mColoring;
-	// coloring parameters
-	private Hashtable<String, String> mColoringParams;
-	// width of line [px | m]
-	private float mWidth;
-	// width units
-	private Units mUnits;
-	// flag to draw outline
-	private boolean mDrawOutline;
-	// color of outline
-	private int mColorOutline;
-	// flag if track should be closed and filled
-	private boolean mDrawFill;
-	// color of fill
-	private int mColorFill;
+    // flag to draw background
+    private boolean mDrawBase;
+    // base background color
+    private int mColorBase;
+    // flag to draw symbol
+    private boolean mDrawSymbol;
+    // symbol coloring
+    private int mColorSymbol;
+    // selected symbol
+    private Symbol mSymbol;
+    // coloring style
+    private Coloring mColoring;
+    // coloring parameters
+    private Hashtable<String, String> mColoringParams;
+    // width of line [px | m]
+    private float mWidth;
+    // width units
+    private Units mUnits;
+    // flag to draw outline
+    private boolean mDrawOutline;
+    // color of outline
+    private int mColorOutline;
+    // flag if track should be closed and filled
+    private boolean mDrawFill;
+    // color of fill
+    private int mColorFill;
 
-	/**
-	 * Default empty constructor.
-	 */
-	@SuppressWarnings ("WeakerAccess")
-	public LineStyle() {
-		super();
-	}
+    /**
+     * Default empty constructor.
+     */
+    @SuppressWarnings("WeakerAccess")
+    public LineStyle() {
+        mDrawBase = true;
+        mColorBase = COLOR_BLACK;
+        mDrawSymbol = false;
+        mColorSymbol = COLOR_WHITE;
+        mSymbol = Symbol.DOTTED;
+        mColoring = Coloring.SIMPLE;
+        mColoringParams = new Hashtable<>();
+        mWidth = 1.0f;
+        mUnits = Units.PIXELS;
+        mDrawOutline = false;
+        mColorOutline = COLOR_WHITE;
+        mDrawFill = false;
+        mColorFill = COLOR_WHITE;
+    }
 
-	/**************************************************/
-	// GET & SET
-	/**************************************************/
+    //*************************************************
+    // GET & SET
+    //*************************************************
 
-	/**
-	 * Flag if draw base line.
-	 * @return {@code true} to draw base line
-	 */
-	public boolean isDrawBase() {
-		return mDrawBase;
-	}
+    /**
+     * Flag if draw base line.
+     *
+     * @return {@code true} to draw base line
+     */
+    public boolean isDrawBase() {
+        return mDrawBase;
+    }
 
-	/**
-	 * Set to draw a base line.
-	 * @param drawBase {@code true} to draw a base line
-	 * @return current object
-	 */
-	public LineStyle setDrawBase(boolean drawBase) {
-		mDrawBase = drawBase;
-		return this;
-	}
+    /**
+     * Set to draw a base line.
+     *
+     * @param drawBase {@code true} to draw a base line
+     * @return current object
+     */
+    public LineStyle setDrawBase(boolean drawBase) {
+        mDrawBase = drawBase;
+        return this;
+    }
 
-	/**
-	 * Get base style color.
-	 * @return color
-	 */
-	public int getColorBase() {
-		return mColorBase;
-	}
+    /**
+     * Get base style color.
+     *
+     * @return color
+     */
+    public int getColorBase() {
+        return mColorBase;
+    }
 
-	/**
-	 * Set base style color.
-	 * @param colorBase color
-	 * @return current object
-	 */
-	public LineStyle setColorBase(int colorBase) {
-		mColorBase = colorBase;
-		return this;
-	}
+    /**
+     * Set base style color.
+     *
+     * @param colorBase color
+     * @return current object
+     */
+    public LineStyle setColorBase(int colorBase) {
+        mColorBase = colorBase;
+        return this;
+    }
 
-	/**
-	 * Flag if draw overlay symbols.
-	 * @return {@code true} to draw symbols
-	 */
-	public boolean isDrawSymbol() {
-		return mDrawSymbol;
-	}
+    /**
+     * Flag if draw overlay symbols.
+     *
+     * @return {@code true} to draw symbols
+     */
+    public boolean isDrawSymbol() {
+        return mDrawSymbol;
+    }
 
-	/**
-	 *
-	 * @param drawSymbol
-	 * @return current object
-	 */
-	public LineStyle setDrawSymbol(boolean drawSymbol) {
-		mDrawSymbol = drawSymbol;
-		return this;
-	}
+    /**
+     * @param drawSymbol
+     * @return current object
+     */
+    public LineStyle setDrawSymbol(boolean drawSymbol) {
+        mDrawSymbol = drawSymbol;
+        return this;
+    }
 
-	/**
-	 * Get color for a symbol.
-	 * @return color
-	 */
-	public int getColorSymbol() {
-		return mColorSymbol;
-	}
+    /**
+     * Get color for a symbol.
+     *
+     * @return color
+     */
+    public int getColorSymbol() {
+        return mColorSymbol;
+    }
 
-	/**
-	 * Set color for a draw symbol.
-	 * @param colorSymbol color
-	 * @return current object
-	 */
-	public LineStyle setColorSymbol(int colorSymbol) {
-		mColorSymbol = colorSymbol;
-		return this;
-	}
+    /**
+     * Set color for a draw symbol.
+     *
+     * @param colorSymbol color
+     * @return current object
+     */
+    public LineStyle setColorSymbol(int colorSymbol) {
+        mColorSymbol = colorSymbol;
+        return this;
+    }
 
-	/**
-	 * Get style of symbol to draw.
-	 * @return defined symbol
-	 */
-	public Symbol getSymbol() {
-		return mSymbol;
-	}
+    /**
+     * Get style of symbol to draw.
+     *
+     * @return defined symbol
+     */
+    public Symbol getSymbol() {
+        return mSymbol;
+    }
 
-	/**
-	 * Set symbol to draw.
-	 * @param symbol symbol
-	 * @return current object
-	 */
-	public LineStyle setSymbol(Symbol symbol) {
-		mSymbol = symbol;
-		return this;
-	}
+    /**
+     * Set symbol to draw.
+     *
+     * @param symbol symbol
+     * @return current object
+     */
+    public LineStyle setSymbol(Symbol symbol) {
+        mSymbol = symbol;
+        return this;
+    }
 
-	// COLORING
+    // COLORING
 
-	public Coloring getColoring() {
-		return mColoring;
-	}
+    public Coloring getColoring() {
+        return mColoring;
+    }
 
-	/**
-	 *
-	 * @param coloring
-	 * @return current object
-	 */
-	public LineStyle setColoring(Coloring coloring) {
-		mColoring = coloring;
-		return this;
-	}
+    /**
+     * @param coloring
+     * @return current object
+     */
+    public LineStyle setColoring(Coloring coloring) {
+        mColoring = coloring;
+        return this;
+    }
 
-	// COLORING PARAMETERS
+    // COLORING PARAMETERS
 
-	/**
-	 * Get value for certain coloring parameter.
-	 * @param key key of parameter
-	 * @return parameter value
-	 */
-	public String getColoringParam(String key) {
-		// check key
-		if (key == null || key.length() == 0) {
-			return null;
-		}
+    /**
+     * Get value for certain coloring parameter.
+     *
+     * @param key key of parameter
+     * @return parameter value
+     */
+    public String getColoringParam(String key) {
+        // check key
+        if (key == null || key.length() == 0) {
+            return null;
+        }
 
-		// return value
-		return mColoringParams.get(key);
-	}
+        // return value
+        return mColoringParams.get(key);
+    }
 
-	/**
-	 * Put valid coloring parameter into container.
-	 * @param key key of parameter
-	 * @param value parameter value
-	 * @return current object
-	 */
-	public LineStyle setColoringParam(String key, String value) {
-		// check params
-		if (key == null || key.length() == 0) {
-			return this;
-		}
+    /**
+     * Put valid coloring parameter into container.
+     *
+     * @param key   key of parameter
+     * @param value parameter value
+     * @return current object
+     */
+    public LineStyle setColoringParam(String key, String value) {
+        // check params
+        if (key == null || key.length() == 0) {
+            return this;
+        }
 
-		// store value
-		if (value == null) {
-			mColoringParams.remove(key);
-		} else {
-			mColoringParams.put(key, value);
-		}
-		return this;
-	}
+        // store value
+        if (value == null) {
+            mColoringParams.remove(key);
+        } else {
+            mColoringParams.put(key, value);
+        }
+        return this;
+    }
 
-	// WIDTH
+    // WIDTH
 
-	/**
-	 * Get width value independent on units.
-	 * @return width value
-	 */
-	public float getWidth() {
-		return mWidth;
-	}
+    /**
+     * Get width value independent on units.
+     *
+     * @return width value
+     */
+    public float getWidth() {
+        return mWidth;
+    }
 
-	/**
-	 * Set width value for current style.
-	 * @param width width value
-	 * @return current object
-	 */
-	public LineStyle setWidth(float width) {
-		mWidth = width;
-		return this;
-	}
+    /**
+     * Set width value for current style.
+     *
+     * @param width width value
+     * @return current object
+     */
+    public LineStyle setWidth(float width) {
+        mWidth = width;
+        return this;
+    }
 
-	/**
-	 * Get units for defined line width.
-	 * @return line units
-	 */
-	public Units getUnits() {
-		return mUnits;
-	}
+    /**
+     * Get units for defined line width.
+     *
+     * @return line units
+     */
+    public Units getUnits() {
+        return mUnits;
+    }
 
-	/**
-	 * Set units for line width.
-	 * @param units units
-	 * @return current object
-	 */
-	public LineStyle setUnits(Units units) {
-		mUnits = units;
-		return this;
-	}
+    /**
+     * Set units for line width.
+     *
+     * @param units units
+     * @return current object
+     */
+    public LineStyle setUnits(Units units) {
+        mUnits = units;
+        return this;
+    }
 
-	/**
-	 * Flag if draw outline.
-	 * @return {@code true} to draw outline
-	 */
-	public boolean isDrawOutline() {
-		return mDrawOutline;
-	}
+    /**
+     * Flag if draw outline.
+     *
+     * @return {@code true} to draw outline
+     */
+    public boolean isDrawOutline() {
+        return mDrawOutline;
+    }
 
-	/**
-	 *
-	 * @param drawOutline
-	 * @return current object
-	 */
-	public LineStyle setDrawOutline(boolean drawOutline) {
-		mDrawOutline = drawOutline;
-		return this;
-	}
+    /**
+     * @param drawOutline
+     * @return current object
+     */
+    public LineStyle setDrawOutline(boolean drawOutline) {
+        mDrawOutline = drawOutline;
+        return this;
+    }
 
-	public int getColorOutline() {
-		return mColorOutline;
-	}
+    public int getColorOutline() {
+        return mColorOutline;
+    }
 
-	/**
-	 *
-	 * @param colorOutline
-	 * @return current object
-	 */
-	public LineStyle setColorOutline(int colorOutline) {
-		mColorOutline = colorOutline;
-		return this;
-	}
+    /**
+     * @param colorOutline
+     * @return current object
+     */
+    public LineStyle setColorOutline(int colorOutline) {
+        mColorOutline = colorOutline;
+        return this;
+    }
 
-	/**
-	 * Flag if draw polygon fill color.
-	 * @return {@code true} to draw fill
-	 */
-	public boolean isDrawFill() {
-		return mDrawFill;
-	}
+    /**
+     * Flag if draw polygon fill color.
+     *
+     * @return {@code true} to draw fill
+     */
+    public boolean isDrawFill() {
+        return mDrawFill;
+    }
 
-	/**
-	 * Set flag to fill an area with a color.
-	 * @param drawFill {@code true} to draw a fill
-	 * @return current object
-	 */
-	public LineStyle setDrawFill(boolean drawFill) {
-		mDrawFill = drawFill;
-		return this;
-	}
+    /**
+     * Set flag to fill an area with a color.
+     *
+     * @param drawFill {@code true} to draw a fill
+     * @return current object
+     */
+    public LineStyle setDrawFill(boolean drawFill) {
+        mDrawFill = drawFill;
+        return this;
+    }
 
-	/**
-	 * Get color for a fill style.
-	 * @return fill color
-	 */
-	public int getColorFill() {
-		return mColorFill;
-	}
+    /**
+     * Get color for a fill style.
+     *
+     * @return fill color
+     */
+    public int getColorFill() {
+        return mColorFill;
+    }
 
-	/**
-	 * Set color for a polygon fill.
-	 * @param colorFill fill color
-	 * @return current object
-	 */
-	public LineStyle setColorFill(int colorFill) {
-		mColorFill = colorFill;
-		return this;
-	}
+    /**
+     * Set color for a polygon fill.
+     *
+     * @param colorFill fill color
+     * @return current object
+     */
+    public LineStyle setColorFill(int colorFill) {
+        mColorFill = colorFill;
+        return this;
+    }
 
-	/**************************************************/
-	// TOOLS
-	/**************************************************/
+    //*************************************************
+    // TOOLS
+    //*************************************************
 
-	/**
-	 * Check if any valid "draw" parameter is defined.
-	 * @return {@code true} if anything to draw is set
-	 */
-	public boolean isDrawDefined() {
-		return isDrawBase() || isDrawSymbol() || isDrawFill();
-	}
+    /**
+     * Check if any valid "draw" parameter is defined.
+     *
+     * @return {@code true} if anything to draw is set
+     */
+    public boolean isDrawDefined() {
+        return isDrawBase() || isDrawSymbol() || isDrawFill();
+    }
 
-	/**************************************************/
-	// STORABLE
-	/**************************************************/
+    //*************************************************
+    // STORABLE
+    //*************************************************
 
-	@Override
-	protected int getVersion() {
-		return 0;
-	}
+    @Override
+    protected int getVersion() {
+        return 0;
+    }
 
-	@Override
-	public void reset() {
-		mDrawBase = true;
-		mColorBase = COLOR_BLACK;
-		mDrawSymbol = false;
-		mColorSymbol = COLOR_WHITE;
-		mSymbol = Symbol.DOTTED;
-		mColoring = Coloring.SIMPLE;
-		mColoringParams = new Hashtable<>();
-		mWidth = 1.0f;
-		mUnits = Units.PIXELS;
-		mDrawOutline = false;
-		mColorOutline = COLOR_WHITE;
-		mDrawFill = false;
-		mColorFill = COLOR_WHITE;
-	}
+    @Override
+    protected void readObject(int version, DataReaderBigEndian dr) throws IOException {
+        mDrawBase = dr.readBoolean();
+        mColorBase = dr.readInt();
+        mDrawSymbol = dr.readBoolean();
+        mColorSymbol = dr.readInt();
+        mSymbol = Symbol.valueOf(dr.readString());
+        mColoring = Coloring.valueOf(dr.readString());
+        for (int i = 0, m = dr.readInt(); i < m; i++) {
+            mColoringParams.put(dr.readString(), dr.readString());
+        }
+        mWidth = dr.readFloat();
+        mUnits = Units.valueOf(dr.readString());
+        mDrawOutline = dr.readBoolean();
+        mColorOutline = dr.readInt();
+        mDrawFill = dr.readBoolean();
+        mColorFill = dr.readInt();
+    }
 
-	@Override
-	protected void readObject(int version, DataReaderBigEndian dr) throws IOException {
-		mDrawBase = dr.readBoolean();
-		mColorBase = dr.readInt();
-		mDrawSymbol = dr.readBoolean();
-		mColorSymbol = dr.readInt();
-		mSymbol = Symbol.valueOf(dr.readString());
-		mColoring = Coloring.valueOf(dr.readString());
-		for (int i = 0, m = dr.readInt(); i < m; i++) {
-			mColoringParams.put(dr.readString(), dr.readString());
-		}
-		mWidth = dr.readFloat();
-		mUnits = Units.valueOf(dr.readString());
-		mDrawOutline = dr.readBoolean();
-		mColorOutline = dr.readInt();
-		mDrawFill = dr.readBoolean();
-		mColorFill = dr.readInt();
-	}
-
-	@Override
-	protected void writeObject(DataWriterBigEndian dw) throws IOException {
-		dw.writeBoolean(mDrawBase);
-		dw.writeInt(mColorBase);
-		dw.writeBoolean(mDrawSymbol);
-		dw.writeInt(mColorSymbol);
-		dw.writeString(mSymbol.name());
-		dw.writeString(mColoring.name());
-		dw.writeInt(mColoringParams.size());
-		for (String key : mColoringParams.keySet()) {
-			dw.writeString(key);
-			dw.writeString(mColoringParams.get(key));
-		}
-		dw.writeFloat(mWidth);
-		dw.writeString(mUnits.name());
-		dw.writeBoolean(mDrawOutline);
-		dw.writeInt(mColorOutline);
-		dw.writeBoolean(mDrawFill);
-		dw.writeInt(mColorFill);
-	}
+    @Override
+    protected void writeObject(DataWriterBigEndian dw) throws IOException {
+        dw.writeBoolean(mDrawBase);
+        dw.writeInt(mColorBase);
+        dw.writeBoolean(mDrawSymbol);
+        dw.writeInt(mColorSymbol);
+        dw.writeString(mSymbol.name());
+        dw.writeString(mColoring.name());
+        dw.writeInt(mColoringParams.size());
+        for (String key : mColoringParams.keySet()) {
+            dw.writeString(key);
+            dw.writeString(mColoringParams.get(key));
+        }
+        dw.writeFloat(mWidth);
+        dw.writeString(mUnits.name());
+        dw.writeBoolean(mDrawOutline);
+        dw.writeInt(mColorOutline);
+        dw.writeBoolean(mDrawFill);
+        dw.writeInt(mColorFill);
+    }
 }

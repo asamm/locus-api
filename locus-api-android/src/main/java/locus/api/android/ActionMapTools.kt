@@ -127,13 +127,12 @@ class MapPreviewResult() : Storable() {
     // loaded image
     private var imgData: ByteArray? = null
     // number of not yet loaded tiles
-    var numOfNotYetLoadedTiles: Int = 0
+    var numOfNotYetLoadedTiles = 0
 
     constructor(imgData: ByteArray?, numOfNotYetLoadedTiles: Int) : this() {
         this.imgData = imgData
         this.numOfNotYetLoadedTiles = numOfNotYetLoadedTiles
     }
-
 
     /**
      * Check if loaded result has valid image.
@@ -153,11 +152,6 @@ class MapPreviewResult() : Storable() {
 
     override fun getVersion(): Int {
         return 0
-    }
-
-    override fun reset() {
-        imgData = null
-        numOfNotYetLoadedTiles = 0
     }
 
     @Throws(IOException::class)

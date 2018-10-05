@@ -18,56 +18,56 @@ import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.Storable;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Track;
-import locus.api.objects.extra.Waypoint;
+import locus.api.objects.extra.Point;
 import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
 import locus.api.utils.Logger;
 import locus.api.utils.Utils;
 
-@SuppressWarnings ("unused")
+@SuppressWarnings("unused")
 public class LocusUtils {
 
-	// tag for logger
-	private static final String TAG = "LocusUtils";
-	
-	/**************************************************/
-	// LOCUS VERSION
-	/**************************************************/
-	
-	/**
-	 * Locus versions used in this API
-	 */
-	public enum VersionCode {
-		
-		/**
-		 * <ul>
-		 * <li>Base Locus versions.</li>
-		 * </ul>
-		 * Locus Free/Pro 2.7.0, Gis 1.0.0 (235, 235, 1)
-		 */
-		UPDATE_01(235, 235, 0),
-		/**
-		 * <ul>
-		 * <li>Control of track recording</li>
-		 * <li>Ability to add/hide Circle map items</li>
-		 * </ul>
-		 * Locus Free/Pro 2.8.4 (242, 242, 1)
-		 */
-		UPDATE_02(242, 242, 0),
-		/**
-		 * <ul>
-		 * <li>Get waypoint by ID</li>
-		 * </ul>
-		 * Locus Free/Pro 2.17.3 (269, 269, 1)
-		 */
-		UPDATE_03(269, 269, 0),
-		/**
-		 * <ul>
-		 * <li>Added MapPreview</li>
-		 * </ul>
-		 * Locus Free/Pro 2.20.2.4 (278, 278, 1)
-		 */
-		UPDATE_04(278, 278, 0),
+    // tag for logger
+    private static final String TAG = "LocusUtils";
+
+    //*************************************************
+    // LOCUS VERSION
+    //*************************************************
+
+    /**
+     * Locus versions used in this API
+     */
+    public enum VersionCode {
+
+        /**
+         * <ul>
+         * <li>Base Locus versions.</li>
+         * </ul>
+         * Locus Free/Pro 2.7.0, Gis 1.0.0 (235, 235, 1)
+         */
+        UPDATE_01(235, 235, 0),
+        /**
+         * <ul>
+         * <li>Control of track recording</li>
+         * <li>Ability to add/hide Circle map items</li>
+         * </ul>
+         * Locus Free/Pro 2.8.4 (242, 242, 1)
+         */
+        UPDATE_02(242, 242, 0),
+        /**
+         * <ul>
+         * <li>Get waypoint by ID</li>
+         * </ul>
+         * Locus Free/Pro 2.17.3 (269, 269, 1)
+         */
+        UPDATE_03(269, 269, 0),
+        /**
+         * <ul>
+         * <li>Added MapPreview</li>
+         * </ul>
+         * Locus Free/Pro 2.20.2.4 (278, 278, 1)
+         */
+        UPDATE_04(278, 278, 0),
         /**
          * <ul>
          * <li>Added Compute track service</li>
@@ -77,21 +77,21 @@ public class LocusUtils {
          * Locus GIS (no news)
          */
         UPDATE_05(296, 296, 0),
-		/**
-		 * <ul>
-		 * <li>Added request on purchase state of item in Locus Store</li>
-		 * </ul><br>
-		 * Locus Free/Pro 3.2.3(311), GIS 0.5.3 (5)<br>
-		 * Locus GIS (no news)
-		 */
-		UPDATE_06(311, 311, 5),
-		/**
-		 * <ul>
-		 * <li>Added request to display Point detail screen</li>
-		 * </ul><br>
-		 * Locus Free/Pro 3.3.0(317)<br>
-		 */
-		UPDATE_07(317, 317, 0),
+        /**
+         * <ul>
+         * <li>Added request on purchase state of item in Locus Store</li>
+         * </ul><br>
+         * Locus Free/Pro 3.2.3(311), GIS 0.5.3 (5)<br>
+         * Locus GIS (no news)
+         */
+        UPDATE_06(311, 311, 5),
+        /**
+         * <ul>
+         * <li>Added request to display Point detail screen</li>
+         * </ul><br>
+         * Locus Free/Pro 3.3.0(317)<br>
+         */
+        UPDATE_07(317, 317, 0),
         /**
          * <ul>
          * <li>Added "Navigation" on address</li>
@@ -127,154 +127,165 @@ public class LocusUtils {
          * Locus Free/Pro 3.13.0(421)<br>
          */
         UPDATE_12(421, 421, 0),
-		/**
-		 * <ul>
-		 * <li>Added direct request on LocusInfo and UpdateContainer over ActionTools</li>
-		 * </ul><br>
-		 * Locus Free/Pro 3.25.6(652)<br>
-		 */
-		UPDATE_13(652, 652, 0),
-		/**
-		 * <ul>
-		 * <li>New version of "Get map preview" system</li>
-		 * </ul><br>
-		 * Locus Free/Pro 3.29.0(684)<br>
-		 */
-		UPDATE_14(684, 684, 0);
+        /**
+         * <ul>
+         * <li>Added direct request on LocusInfo and UpdateContainer over ActionTools</li>
+         * </ul><br>
+         * Locus Free/Pro 3.25.6(652)<br>
+         */
+        UPDATE_13(652, 652, 0),
+        /**
+         * <ul>
+         * <li>New version of "Get map preview" system</li>
+         * </ul><br>
+         * Locus Free/Pro 3.29.0(684)<br>
+         */
+        UPDATE_14(684, 684, 0);
 
-		/**
-		 * Version code for a Free version.
-		 */
-		public final int vcFree;
-		/**
-		 * Version code for a Pro version.
-		 */
-		public final int vcPro;
-		/**
-		 * Version code for a GIS version.
-		 */
-		public final int vcGis;
+        /**
+         * Version code for a Free version.
+         */
+        public final int vcFree;
+        /**
+         * Version code for a Pro version.
+         */
+        public final int vcPro;
+        /**
+         * Version code for a GIS version.
+         */
+        public final int vcGis;
 
-		/**
-		 * Create container with API code parameters.
-		 * @param vcFree version code for Locus Map Free
-		 * @param vcPro version code for Locus Map Pro
-		 * @param vcGis version code for Locus GIS
-		 */
-		VersionCode(int vcFree, int vcPro, int vcGis) {
-			this.vcFree = vcFree;
-			this.vcPro = vcPro;
-			this.vcGis = vcGis;
-		}
-	}
-	
-	/**
-	 * Main container that keeps information about existing versions in
-	 * whole current Android system.  
-	 */
-	public static class LocusVersion extends Storable {
-		
-		// Version package name defined in manifest of Locus app. It is main
-		// parameter for calls to Locus.
-		private String mPackageName;
-		// Version name defined in manifest of Locus app. This is just textual
-		// information of versionCode.
-		private String mVersionName;
-		// Version code defined in manifest of Locus app. Core information used
-		// for checks, if Locus versions already has requested feature.
-		private int mVersionCode;
+        /**
+         * Create container with API code parameters.
+         *
+         * @param vcFree version code for Locus Map Free
+         * @param vcPro  version code for Locus Map Pro
+         * @param vcGis  version code for Locus GIS
+         */
+        VersionCode(int vcFree, int vcPro, int vcGis) {
+            this.vcFree = vcFree;
+            this.vcPro = vcPro;
+            this.vcGis = vcGis;
+        }
+    }
+
+    /**
+     * Main container that keeps information about existing versions in
+     * whole current Android system.
+     */
+    public static class LocusVersion extends Storable {
+
+        // Version package name defined in manifest of Locus app. It is main
+        // parameter for calls to Locus.
+        private String mPackageName;
+        // Version name defined in manifest of Locus app. This is just textual
+        // information of versionCode.
+        private String mVersionName;
+        // Version code defined in manifest of Locus app. Core information used
+        // for checks, if Locus versions already has requested feature.
+        private int mVersionCode;
 
         /**
          * Empty constructor for Storable class.
          */
         public LocusVersion() {
-            super();
+            mPackageName = "";
+            mVersionName = "";
+            mVersionCode = 0;
         }
 
         /**
          * Basic constructor.
+         *
          * @param packageName name of application package
          * @param versionName name of version
          * @param versionCode unique ID code
          */
-		private LocusVersion(String packageName, String versionName, int versionCode) {
-			if (packageName == null) {
-				packageName = "";
-			}
-			this.mPackageName = packageName;
-			if (versionName == null) {
-				versionName = "";
-			}
-			this.mVersionName = versionName;
-			if (versionCode < 0) {
-				versionCode = 0;
-			}
-			this.mVersionCode = versionCode;
-		}
+        private LocusVersion(String packageName, String versionName, int versionCode) {
+            if (packageName == null) {
+                packageName = "";
+            }
+            this.mPackageName = packageName;
+            if (versionName == null) {
+                versionName = "";
+            }
+            this.mVersionName = versionName;
+            if (versionCode < 0) {
+                versionCode = 0;
+            }
+            this.mVersionCode = versionCode;
+        }
 
         /**
          * Test if current app is "Free version".
+         *
          * @return {@code true} if app is "Free version"
          */
-		public boolean isVersionFree() {
-			return !isVersionPro() && !isVersionGis();
-		}
+        public boolean isVersionFree() {
+            return !isVersionPro() && !isVersionGis();
+        }
 
         /**
          * Test if current app is "Pro version".
+         *
          * @return {@code true} if app is "Pro version"
          */
         public boolean isVersionPro() {
-			return mPackageName.contains(".pro");
-		}
+            return mPackageName.contains(".pro");
+        }
 
         /**
          * Test if current app is "GIS version".
+         *
          * @return {@code true} if app is "GIS version"
          */
         public boolean isVersionGis() {
-			return mPackageName.contains(".gis");
-		}
+            return mPackageName.contains(".gis");
+        }
 
-		/**
-		 * Get name of package of current version.
-		 * @return package name
-		 */
+        /**
+         * Get name of package of current version.
+         *
+         * @return package name
+         */
         public String getPackageName() {
             return mPackageName;
         }
 
-		/**
-		 * Get readable name of current version.
-		 * @return version name
-		 */
+        /**
+         * Get readable name of current version.
+         *
+         * @return version name
+         */
         public String getVersionName() {
             return mVersionName;
         }
 
-		/**
-		 * Get version code of current version.
-		 * @return version code
-		 */
+        /**
+         * Get version code of current version.
+         *
+         * @return version code
+         */
         public int getVersionCode() {
             return mVersionCode;
         }
 
-		/**
-		 * Check if current version is valid compare to required VersionCode
-		 * @param code code of required version
-		 * @return <code>true</code> if version, compared to code, is valid
-		 */
-		public boolean isVersionValid(VersionCode code) {
-			if (isVersionFree()) {
-				return code.vcFree != 0 && mVersionCode >= code.vcFree;
-			} else if (isVersionPro()) {
-				return code.vcPro != 0 && mVersionCode >= code.vcPro;
-			} else if (isVersionGis()) {
-				return code.vcGis != 0 && mVersionCode >= code.vcGis;
-			}
-			return false;
-		}
+        /**
+         * Check if current version is valid compare to required VersionCode
+         *
+         * @param code code of required version
+         * @return <code>true</code> if version, compared to code, is valid
+         */
+        public boolean isVersionValid(VersionCode code) {
+            if (isVersionFree()) {
+                return code.vcFree != 0 && mVersionCode >= code.vcFree;
+            } else if (isVersionPro()) {
+                return code.vcPro != 0 && mVersionCode >= code.vcPro;
+            } else if (isVersionGis()) {
+                return code.vcGis != 0 && mVersionCode >= code.vcGis;
+            }
+            return false;
+        }
 
         @Override
         public String toString() {
@@ -282,17 +293,10 @@ public class LocusUtils {
         }
 
         // STORABLE PART
-		
+
         @Override
         protected int getVersion() {
             return 0;
-        }
-
-        @Override
-        public void reset() {
-            mPackageName = "";
-            mVersionName = "";
-            mVersionCode = 0;
         }
 
         @Override
@@ -309,131 +313,136 @@ public class LocusUtils {
             dw.writeInt(mVersionCode);
         }
     }
-	
-	/**
-	 * Search for existing (and better also running) version of Locus. This function
-	 * search for Locus, but also grab data from all instances. So it's suggested
-	 * not to use this function too often.
-	 * @param ctx current context
-	 * @return active version
-	 */
-	public static LocusVersion getActiveVersion(Context ctx) {
+
+    /**
+     * Search for existing (and better also running) version of Locus. This function
+     * search for Locus, but also grab data from all instances. So it's suggested
+     * not to use this function too often.
+     *
+     * @param ctx current context
+     * @return active version
+     */
+    public static LocusVersion getActiveVersion(Context ctx) {
         return getActiveVersion(ctx, VersionCode.UPDATE_01);
-	}
+    }
 
     /**
      * Search for existing (and better also running) version of Locus. This function
      * search for Locus, but also grab data from all instances. So it's suggested
      * not to use this function too often. It is also possible to define minimum versionCode.
-     * @param ctx current context
+     *
+     * @param ctx            current context
      * @param minVersionCode minimal version code of Locus
      * @return active version
      */
     public static LocusVersion getActiveVersion(Context ctx, int minVersionCode) {
-		return getActiveVersion(ctx, minVersionCode, minVersionCode, minVersionCode);
+        return getActiveVersion(ctx, minVersionCode, minVersionCode, minVersionCode);
     }
 
-	/**
-	 * Search for existing (and better also running) version of Locus. This function
-	 * search for Locus, but also grab data from all instances. So it's suggested
-	 * not to use this function too often. It is also possible to define minimum versionCode.
-	 * @param ctx current context
-	 * @param vc version code
-	 * @return active version
-	 */
-	public static LocusVersion getActiveVersion(Context ctx, VersionCode vc) {
-		return getActiveVersion(ctx, vc.vcFree, vc.vcPro, vc.vcGis);
-	}
+    /**
+     * Search for existing (and better also running) version of Locus. This function
+     * search for Locus, but also grab data from all instances. So it's suggested
+     * not to use this function too often. It is also possible to define minimum versionCode.
+     *
+     * @param ctx current context
+     * @param vc  version code
+     * @return active version
+     */
+    public static LocusVersion getActiveVersion(Context ctx, VersionCode vc) {
+        return getActiveVersion(ctx, vc.vcFree, vc.vcPro, vc.vcGis);
+    }
 
-	/**
-	 * Search for existing (and better also running) version of Locus. This function
-	 * search for Locus, but also grab data from all instances. So it's suggested
-	 * not to use this function too often. It is also possible to define minimum versionCode.
-	 * @param ctx current context
-	 * @param minLocusMapFree minimal version code of Locus Map Free
-	 * @param minLocusMapPro minimal version code of Locus Map Pro
-	 * @param minLocusGis minimal version code of Locus GIS
-	 * @return active version
-	 */
-	private static LocusVersion getActiveVersion(Context ctx,
-			int minLocusMapFree, int minLocusMapPro, int minLocusGis) {
-		// get valid Locus version for any actions
-		List<LocusVersion> versions = getAvailableVersions(ctx);
-		if (versions.size() == 0) {
-			return null;
-		}
+    /**
+     * Search for existing (and better also running) version of Locus. This function
+     * search for Locus, but also grab data from all instances. So it's suggested
+     * not to use this function too often. It is also possible to define minimum versionCode.
+     *
+     * @param ctx             current context
+     * @param minLocusMapFree minimal version code of Locus Map Free
+     * @param minLocusMapPro  minimal version code of Locus Map Pro
+     * @param minLocusGis     minimal version code of Locus GIS
+     * @return active version
+     */
+    private static LocusVersion getActiveVersion(Context ctx,
+            int minLocusMapFree, int minLocusMapPro, int minLocusGis) {
+        // get valid Locus version for any actions
+        List<LocusVersion> versions = getAvailableVersions(ctx);
+        if (versions.size() == 0) {
+            return null;
+        }
 
-		// search for optimal version
-		LocusVersion backupVersion = null;
-		long backupLastActive = 0L;
-		for (int i = 0, m = versions.size(); i < m; i++) {
-			try {
-				// get and test version
-				LocusVersion lv = versions.get(i);
-				if (lv.isVersionFree()) {
-					if (minLocusMapFree <= 0 ||
-							lv.getVersionCode() < minLocusMapFree) {
-						continue;
-					}
-				} else if (lv.isVersionPro()) {
-					if (minLocusMapPro <= 0 ||
-							lv.getVersionCode() < minLocusMapPro) {
-						continue;
-					}
-				} else if (lv.isVersionGis()) {
-					if (minLocusGis <= 0 ||
-							lv.getVersionCode() < minLocusGis) {
-						continue;
-					}
-				} else {
-					// unknown version
-					continue;
-				}
+        // search for optimal version
+        LocusVersion backupVersion = null;
+        long backupLastActive = 0L;
+        for (int i = 0, m = versions.size(); i < m; i++) {
+            try {
+                // get and test version
+                LocusVersion lv = versions.get(i);
+                if (lv.isVersionFree()) {
+                    if (minLocusMapFree <= 0 ||
+                            lv.getVersionCode() < minLocusMapFree) {
+                        continue;
+                    }
+                } else if (lv.isVersionPro()) {
+                    if (minLocusMapPro <= 0 ||
+                            lv.getVersionCode() < minLocusMapPro) {
+                        continue;
+                    }
+                } else if (lv.isVersionGis()) {
+                    if (minLocusGis <= 0 ||
+                            lv.getVersionCode() < minLocusGis) {
+                        continue;
+                    }
+                } else {
+                    // unknown version
+                    continue;
+                }
 
 
-				// get LocusInfo container
-				LocusInfo li = ActionTools.getLocusInfo(ctx, lv);
+                // get LocusInfo container
+                LocusInfo li = ActionTools.getLocusInfo(ctx, lv);
 
-				// check if Locus runs and if so, set it as active version
-				if (li == null) {
-					continue;
-				}
+                // check if Locus runs and if so, set it as active version
+                if (li == null) {
+                    continue;
+                }
 
-				// backup valid version
-				if (backupVersion == null ||
-						li.getLastActive() >= backupLastActive) {
-					backupVersion = lv;
-					backupLastActive = li.getLastActive();
-				}
+                // backup valid version
+                if (backupVersion == null ||
+                        li.getLastActive() >= backupLastActive) {
+                    backupVersion = lv;
+                    backupLastActive = li.getLastActive();
+                }
 
-				// check if is running
-				if (li.isRunning()) {
-					return lv;
-				}
-			} catch (RequiredVersionMissingException e) {
-				Logger.logE(TAG, "prepareActiveLocus()", e);
-			}
-		}
+                // check if is running
+                if (li.isRunning()) {
+                    return lv;
+                }
+            } catch (RequiredVersionMissingException e) {
+                Logger.logE(TAG, "prepareActiveLocus()", e);
+            }
+        }
 
-		// if version is not set, use backup
-		if (backupVersion != null) {
-			return backupVersion;
-		}
-		return versions.get(0);
-	}
+        // if version is not set, use backup
+        if (backupVersion != null) {
+            return backupVersion;
+        }
+        return versions.get(0);
+    }
 
-	/**
-	 * Search through whole Android system and search for existing versions of Locus
-	 * @param ctx current context
-	 * @return list of available versions
-	 */
-	public static List<LocusVersion> getAvailableVersions(Context ctx) {
-		// prepare container for existing versions
-		List<LocusVersion> versions = new ArrayList<>();
+    /**
+     * Search through whole Android system and search for existing versions of Locus
+     *
+     * @param ctx current context
+     * @return list of available versions
+     */
+    public static List<LocusVersion> getAvailableVersions(Context ctx) {
+        // prepare container for existing versions
+        List<LocusVersion> versions = new ArrayList<>();
 
         // get information about version from supported list (if app is installed)
-		PackageManager pm = ctx.getPackageManager();
-		for (String pn : getPackageNames()) {
+        PackageManager pm = ctx.getPackageManager();
+        for (String pn : getPackageNames()) {
             try {
                 ApplicationInfo appInfo = pm.getApplicationInfo(pn, 0);
                 if (appInfo != null) {
@@ -442,19 +451,20 @@ public class LocusUtils {
                         versions.add(lv);
                     }
                 }
-            } catch (PackageManager.NameNotFoundException ignored) {}
-		}
+            } catch (PackageManager.NameNotFoundException ignored) {
+            }
+        }
 
-		// return result
-		return versions;
-	}
+        // return result
+        return versions;
+    }
 
-	/**
-	 * Get all available app packages supported by Locus API system.
-	 */
-	private static String[] getPackageNames() {
-	    return new String[] {
-	            // LOCUS MAP FREE
+    /**
+     * Get all available app packages supported by Locus API system.
+     */
+    private static String[] getPackageNames() {
+        return new String[]{
+                // LOCUS MAP FREE
                 "menion.android.locus",
                 "menion.android.locus.free.amazon",
                 "menion.android.locus.free.samsung",
@@ -466,184 +476,192 @@ public class LocusUtils {
                 "menion.android.locus.pro.computerBild",
                 //"menion.android.locus.pro.samsung",
         };
-	}
-	
-	/**
-	 * Get LocusVersion for specific, known packageName. This method should not be used
-	 * in common work-flow. Better is receive list of versions and pick correct, or create
-	 * LocusVersion from received intent.
-	 * @param ctx current context
-	 * @param packageName Locus package name
-	 * @return generated Locus version
-	 */
-	public static LocusVersion createLocusVersion(Context ctx, String packageName) {
-		try {
-			// check package name
-			if (packageName == null || packageName.length() == 0 ||
-					!packageName.startsWith("menion.android.locus")) {
-				return null;
-			}
-			
-			// get information about version			
-			PackageManager pm = ctx.getPackageManager();
-			PackageInfo info = pm.getPackageInfo(packageName, 0);
-			if (info == null) {
-				return null;
-			}
-			
-			// finally add item to list
-			return new LocusVersion(packageName, info.versionName, info.versionCode);
-		} catch (Exception e) {
-			Logger.logE(TAG, "getLocusVersion(" + ctx + ", " + packageName + ")", e);
-			return null;
-		}
-	}
-	
-	/**
-	 * Get LocusVersion based on received Intent object. Since Locus version 279,
-	 * all Intents contains valid <code>packageName</code>, so it's simple possible
-	 * to get valid LocusVersion object. If user has older version of Locus, this call
-	 * just return first available version.
-	 * @param ctx current context
-	 * @param intent received intent from Locus
-	 * @return generated Locus version
-	 */
-	public static LocusVersion createLocusVersion(Context ctx, Intent intent) {
-		// check parameters
-		if (ctx == null || intent == null) {
-			return null;
-		}
-		
-		String packageName = intent.getStringExtra(LocusConst.INTENT_EXTRA_PACKAGE_NAME);
-		if (packageName != null && packageName.length() > 0) {
-			return createLocusVersion(ctx, packageName);
-		} else {
-			return createLocusVersion(ctx);
-		}
-	}
-	
-	/**
-	 * Old method that returns 'random' existing version of Locus installed on this 
-	 * device. In most cases, users has only one version, so it's not a big problem.
-	 * But in cases, where exists more then one version, this method may cause troubles
-	 * so it's not recommended to use it.
-	 * @param ctx current context
-	 * @return generated Locus version
-	 */
-	@Deprecated
-	public static LocusVersion createLocusVersion(Context ctx) {
-		// check parameters
-		if (ctx == null) {
-			return null;
-		}
-		
-		// older versions of Locus do not send package name in it's intents. 
-		// So we return closest valid Locus version (Pro/Free)
-		Logger.logW(TAG, "getLocusVersion(" + ctx + "), " +
-				"Warning: old version of Locus: Correct package name is not known!");
-		List<LocusVersion> versions = getAvailableVersions(ctx);
-		for (int i = 0, m = versions.size(); i < m; i++) {
-			LocusVersion lv = versions.get(i);
-			if (lv.isVersionFree() || lv.isVersionPro()) {
-				return lv;
-			}
-		}
-		return null;
-	}
-	
-	/**************************************************/
-	// CHECK LOCUS AVAILABILITY
-	/**************************************************/
-	
-	/**
-	 * Returns <code>true</code> if Locus in required version is installed.
-	 * 
-	 * @param ctx actual {@link Context}
-	 * @return <code>true</code> if any Locus version is available
-	 */
-	public static boolean isLocusAvailable(Context ctx) {
-		return isLocusAvailable(ctx, VersionCode.UPDATE_01);
-	}
-	
-	/**
-	 * Returns <code>true</code> if Locus in required version is installed.
-	 * @param ctx actual {@link Context}
-	 * @param vc required version code
-	 * @return <code>true</code> if Locus is available
-	 */
-	public static boolean isLocusAvailable(Context ctx, VersionCode vc) {
-		return isLocusAvailable(ctx, vc.vcFree, vc.vcPro, vc.vcGis);
-	}
-	
-	/**
-	 * Check if Locus in required version is installed on current system.
-	 * @param ctx Context
-	 * @param versionFree minimum required version of 
-	 * 		Locus Free (or '0' if we don't want Locus Free)
-	 * @param versionPro minimum required version of 
-	 * 		Locus Pro (or '0' if we don't want Locus Pro)
-	 * @param versionGis minimum required version of 
-	 * 		Locus Gis (or '0' if we don't want Locus Gis)
-	 * @return <code>true</code> if required Locus is installed
-	 */
-	public static boolean isLocusAvailable(Context ctx, 
-			int versionFree, int versionPro, int versionGis) {
-		List<LocusVersion> versions = getAvailableVersions(ctx);
-		for (int i = 0, m = versions.size(); i < m; i++) {
-			LocusVersion lv = versions.get(i);
-			if (lv.isVersionFree() && versionFree > 0 &&
-					lv.getVersionCode() >= versionFree) {
-				return true;
-			}
-			if (lv.isVersionPro() && versionPro > 0 &&
-					lv.getVersionCode() >= versionPro) {
-				return true;
-			}
-			if (lv.isVersionGis() && versionGis > 0 &&
-					lv.getVersionCode() >= versionGis) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * Check if LocusVersion if basic 'Locus Free' or 'Locus Pro' in required 
-	 * minimal version.
-	 * @param lv version of Locus
-	 * @param minVersion required minimal version
-	 * @return <code>true</code> if LocusVersion is Free/Pro version of
-	 * Locus, otherwise returns <code>false</code>
-	 */
-	public static boolean isLocusFreePro(LocusVersion lv, int minVersion) {
-		// check parameters
-		if (lv == null) {
-			return false;
-		}
-		
-		// check on versions		
-		if (lv.isVersionFree() && lv.getVersionCode() >= minVersion) {
-			return true;
-		}
-		if (lv.isVersionPro() && lv.getVersionCode() >= minVersion) {
-			return true;
-		}
-		return true;
-	}
-	
-	/**
-	 * Start intent that allows install Free version of Locus
-	 * @param ctx current context
-	 */
-	public static void callInstallLocus(Context ctx) {
-		Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
-	            "http://market.android.com/details?id=menion.android.locus"));
+    }
+
+    /**
+     * Get LocusVersion for specific, known packageName. This method should not be used
+     * in common work-flow. Better is receive list of versions and pick correct, or create
+     * LocusVersion from received intent.
+     *
+     * @param ctx         current context
+     * @param packageName Locus package name
+     * @return generated Locus version
+     */
+    public static LocusVersion createLocusVersion(Context ctx, String packageName) {
+        try {
+            // check package name
+            if (packageName == null || packageName.length() == 0 ||
+                    !packageName.startsWith("menion.android.locus")) {
+                return null;
+            }
+
+            // get information about version
+            PackageManager pm = ctx.getPackageManager();
+            PackageInfo info = pm.getPackageInfo(packageName, 0);
+            if (info == null) {
+                return null;
+            }
+
+            // finally add item to list
+            return new LocusVersion(packageName, info.versionName, info.versionCode);
+        } catch (Exception e) {
+            Logger.logE(TAG, "getLocusVersion(" + ctx + ", " + packageName + ")", e);
+            return null;
+        }
+    }
+
+    /**
+     * Get LocusVersion based on received Intent object. Since Locus version 279,
+     * all Intents contains valid <code>packageName</code>, so it's simple possible
+     * to get valid LocusVersion object. If user has older version of Locus, this call
+     * just return first available version.
+     *
+     * @param ctx    current context
+     * @param intent received intent from Locus
+     * @return generated Locus version
+     */
+    public static LocusVersion createLocusVersion(Context ctx, Intent intent) {
+        // check parameters
+        if (ctx == null || intent == null) {
+            return null;
+        }
+
+        String packageName = intent.getStringExtra(LocusConst.INTENT_EXTRA_PACKAGE_NAME);
+        if (packageName != null && packageName.length() > 0) {
+            return createLocusVersion(ctx, packageName);
+        } else {
+            return createLocusVersion(ctx);
+        }
+    }
+
+    /**
+     * Old method that returns 'random' existing version of Locus installed on this
+     * device. In most cases, users has only one version, so it's not a big problem.
+     * But in cases, where exists more then one version, this method may cause troubles
+     * so it's not recommended to use it.
+     *
+     * @param ctx current context
+     * @return generated Locus version
+     */
+    @Deprecated
+    public static LocusVersion createLocusVersion(Context ctx) {
+        // check parameters
+        if (ctx == null) {
+            return null;
+        }
+
+        // older versions of Locus do not send package name in it's intents.
+        // So we return closest valid Locus version (Pro/Free)
+        Logger.logW(TAG, "getLocusVersion(" + ctx + "), " +
+                "Warning: old version of Locus: Correct package name is not known!");
+        List<LocusVersion> versions = getAvailableVersions(ctx);
+        for (int i = 0, m = versions.size(); i < m; i++) {
+            LocusVersion lv = versions.get(i);
+            if (lv.isVersionFree() || lv.isVersionPro()) {
+                return lv;
+            }
+        }
+        return null;
+    }
+
+    //*************************************************
+    // CHECK LOCUS AVAILABILITY
+    //*************************************************
+
+    /**
+     * Returns <code>true</code> if Locus in required version is installed.
+     *
+     * @param ctx actual {@link Context}
+     * @return <code>true</code> if any Locus version is available
+     */
+    public static boolean isLocusAvailable(Context ctx) {
+        return isLocusAvailable(ctx, VersionCode.UPDATE_01);
+    }
+
+    /**
+     * Returns <code>true</code> if Locus in required version is installed.
+     *
+     * @param ctx actual {@link Context}
+     * @param vc  required version code
+     * @return <code>true</code> if Locus is available
+     */
+    public static boolean isLocusAvailable(Context ctx, VersionCode vc) {
+        return isLocusAvailable(ctx, vc.vcFree, vc.vcPro, vc.vcGis);
+    }
+
+    /**
+     * Check if Locus in required version is installed on current system.
+     *
+     * @param ctx         Context
+     * @param versionFree minimum required version of
+     *                    Locus Free (or '0' if we don't want Locus Free)
+     * @param versionPro  minimum required version of
+     *                    Locus Pro (or '0' if we don't want Locus Pro)
+     * @param versionGis  minimum required version of
+     *                    Locus Gis (or '0' if we don't want Locus Gis)
+     * @return <code>true</code> if required Locus is installed
+     */
+    public static boolean isLocusAvailable(Context ctx,
+            int versionFree, int versionPro, int versionGis) {
+        List<LocusVersion> versions = getAvailableVersions(ctx);
+        for (int i = 0, m = versions.size(); i < m; i++) {
+            LocusVersion lv = versions.get(i);
+            if (lv.isVersionFree() && versionFree > 0 &&
+                    lv.getVersionCode() >= versionFree) {
+                return true;
+            }
+            if (lv.isVersionPro() && versionPro > 0 &&
+                    lv.getVersionCode() >= versionPro) {
+                return true;
+            }
+            if (lv.isVersionGis() && versionGis > 0 &&
+                    lv.getVersionCode() >= versionGis) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if LocusVersion if basic 'Locus Free' or 'Locus Pro' in required
+     * minimal version.
+     *
+     * @param lv         version of Locus
+     * @param minVersion required minimal version
+     * @return <code>true</code> if LocusVersion is Free/Pro version of
+     * Locus, otherwise returns <code>false</code>
+     */
+    public static boolean isLocusFreePro(LocusVersion lv, int minVersion) {
+        // check parameters
+        if (lv == null) {
+            return false;
+        }
+
+        // check on versions
+        if (lv.isVersionFree() && lv.getVersionCode() >= minVersion) {
+            return true;
+        }
+        if (lv.isVersionPro() && lv.getVersionCode() >= minVersion) {
+            return true;
+        }
+        return true;
+    }
+
+    /**
+     * Start intent that allows install Free version of Locus
+     *
+     * @param ctx current context
+     */
+    public static void callInstallLocus(Context ctx) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+                "http://market.android.com/details?id=menion.android.locus"));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		ctx.startActivity(intent);
-	}
+        ctx.startActivity(intent);
+    }
 
     /**
      * Start existing Locus installation in device.
+     *
      * @param ctx current context
      */
     public static void callStartLocusMap(Context ctx) {
@@ -651,11 +669,11 @@ public class LocusUtils {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ctx.startActivity(intent);
     }
-	
-	/**************************************************/
-	// RESPONSE HANDLING
-	/**************************************************/
-	
+
+    //*************************************************
+    // RESPONSE HANDLING
+    //*************************************************
+
 	/*
 	   Add POI from your application
 	  -------------------------------
@@ -676,57 +694,58 @@ public class LocusUtils {
 			// get some data here and finally return value back, more below
 		}
 	 */
-	
-	public static boolean isIntentGetLocation(Intent intent) {
-		return isRequiredAction(intent, LocusConst.INTENT_ITEM_GET_LOCATION);
-	}
-	
-	public interface OnIntentGetLocation {
-		/**
-		 * Handle received request
-		 * @param locGps if GPS is enabled, location is included (may be null)
-		 * @param locMapCenter center location of displayed map (may be null)
-		 */
-        void onReceived(Location locGps, Location locMapCenter);
-		/**
-		 * If intent is not INTENT_GET_LOCATION intent or other problem occur
-		 */
-        void onFailed();
-	}
-	
-	public static void handleIntentGetLocation(Context context, Intent intent,
-			OnIntentGetLocation handler) throws NullPointerException {
-		// check source data
-		if (intent == null) {
-			throw new NullPointerException("Intent cannot be null");
-		}
-		
-		// check intent itself
-		if (!isIntentGetLocation(intent)) {
-			handler.onFailed();
-			return;
-		}
+    public static boolean isIntentGetLocation(Intent intent) {
+        return isRequiredAction(intent, LocusConst.INTENT_ITEM_GET_LOCATION);
+    }
 
-		// variables that may be obtain from intent
-		handler.onReceived(
-				getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_GPS),
-				getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER));
-	}
-	
-	public static boolean sendGetLocationData(Activity activity, String name, Location loc) {
-		if (loc == null) {
-			return false;
-		} else {
-			Intent intent = new Intent();
-			// string value name - OPTIONAL
-			if (!TextUtils.isEmpty(name))
-				intent.putExtra(LocusConst.INTENT_EXTRA_NAME, name);
-			intent.putExtra(LocusConst.INTENT_EXTRA_LOCATION, loc.getAsBytes());
-			activity.setResult(Activity.RESULT_OK, intent);
-			activity.finish();
-			return true;
-		}
-	}
+    public interface OnIntentGetLocation {
+        /**
+         * Handle received request
+         *
+         * @param locGps       if GPS is enabled, location is included (may be null)
+         * @param locMapCenter center location of displayed map (may be null)
+         */
+        void onReceived(Location locGps, Location locMapCenter);
+
+        /**
+         * If intent is not INTENT_GET_LOCATION intent or other problem occur
+         */
+        void onFailed();
+    }
+
+    public static void handleIntentGetLocation(Context context, Intent intent,
+            OnIntentGetLocation handler) throws NullPointerException {
+        // check source data
+        if (intent == null) {
+            throw new NullPointerException("Intent cannot be null");
+        }
+
+        // check intent itself
+        if (!isIntentGetLocation(intent)) {
+            handler.onFailed();
+            return;
+        }
+
+        // variables that may be obtain from intent
+        handler.onReceived(
+                getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_GPS),
+                getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER));
+    }
+
+    public static boolean sendGetLocationData(Activity activity, String name, Location loc) {
+        if (loc == null) {
+            return false;
+        } else {
+            Intent intent = new Intent();
+            // string value name - OPTIONAL
+            if (!TextUtils.isEmpty(name))
+                intent.putExtra(LocusConst.INTENT_EXTRA_NAME, name);
+            intent.putExtra(LocusConst.INTENT_EXTRA_LOCATION, loc.getAsBytes());
+            activity.setResult(Activity.RESULT_OK, intent);
+            activity.finish();
+            return true;
+        }
+    }
 	
 	/*
 	   Add action under point sub-menu
@@ -763,22 +782,22 @@ public class LocusUtils {
         	}
 		}
 	 */
-	
-	public static boolean isIntentPointTools(Intent intent) {
-		return isRequiredAction(intent, LocusConst.INTENT_ITEM_POINT_TOOLS);
-	}
-	
-	public static Waypoint handleIntentPointTools(Context ctx, Intent intent) 
-			throws RequiredVersionMissingException {
-		long wptId = intent.getLongExtra(LocusConst.INTENT_EXTRA_ITEM_ID, -1L);
-		if (wptId < 0) {
-			return null;
-		} else {
-			return ActionTools.getLocusWaypoint(ctx, 
-					createLocusVersion(ctx, intent),
-					wptId);
-		}
-	}
+
+    public static boolean isIntentPointTools(Intent intent) {
+        return isRequiredAction(intent, LocusConst.INTENT_ITEM_POINT_TOOLS);
+    }
+
+    public static Point handleIntentPointTools(Context ctx, Intent intent)
+            throws RequiredVersionMissingException {
+        long wptId = intent.getLongExtra(LocusConst.INTENT_EXTRA_ITEM_ID, -1L);
+        if (wptId < 0) {
+            return null;
+        } else {
+            return ActionTools.getLocusWaypoint(ctx,
+                    createLocusVersion(ctx, intent),
+                    wptId);
+        }
+    }
 
     public static boolean isIntentTrackTools(Intent intent) {
         return isRequiredAction(intent, LocusConst.INTENT_ITEM_TRACK_TOOLS);
@@ -824,6 +843,7 @@ public class LocusUtils {
 
     /**
      * Check if received intent is response on MAIN_FUNCTION intent.
+     *
      * @param intent received intent
      * @return <code>true</code> if intent is base on MAIN_FUNCTION parameter
      */
@@ -833,7 +853,8 @@ public class LocusUtils {
 
     /**
      * Handle received intent from section MAIN_FUNCTION.
-     * @param intent received intent
+     *
+     * @param intent  received intent
      * @param handler handler for events
      * @throws NullPointerException exception if any required data are missing
      */
@@ -844,6 +865,7 @@ public class LocusUtils {
 
     /**
      * Check if received intent is response on MAIN_FUNCTION_GC intent.
+     *
      * @param intent received intent
      * @return <code>true</code> if intent is base on MAIN_FUNCTION_GC parameter
      */
@@ -853,7 +875,8 @@ public class LocusUtils {
 
     /**
      * Handle received intent from section MAIN_FUNCTION_GC.
-     * @param intent received intent
+     *
+     * @param intent  received intent
      * @param handler handler for events
      * @throws NullPointerException exception if any required data are missing
      */
@@ -864,6 +887,7 @@ public class LocusUtils {
 
     /**
      * Check if received intent is response on SEARCH_LIST intent.
+     *
      * @param intent received intent
      * @return <code>true</code> if intent is base on SEARCH_LIST parameter
      */
@@ -873,7 +897,8 @@ public class LocusUtils {
 
     /**
      * Handle received intent from section SEARCH_LIST.
-     * @param intent received intent
+     *
+     * @param intent  received intent
      * @param handler handler for events
      * @throws NullPointerException exception if any required data are missing
      */
@@ -882,51 +907,53 @@ public class LocusUtils {
         handleIntentMenuItem(ctx, intent, handler, LocusConst.INTENT_ITEM_SEARCH_LIST);
     }
 
-	private static void handleIntentMenuItem(Context ctx, Intent intent,
-			OnIntentMainFunction handler, String item) 
-			throws NullPointerException {
-		// check source data
-		if (intent == null) {
-			throw new NullPointerException("Intent cannot be null");
-		}
-		if (handler == null) {
-			throw new NullPointerException("Handler cannot be null");
-		}
-		// check intent itself
-		if (!isRequiredAction(intent, item)) {
-			handler.onFailed();
-			return;
-		}
-		
-		handler.onReceived(
-				createLocusVersion(ctx, intent),
-				getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_GPS),
-				getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER));
-	}
-	
-	public interface OnIntentMainFunction {
-		/**
-		 * When intent really contain location, result is returned by this function
-		 * @param lv version of Locus
-		 * @param locGps if gpsEnabled is true, variable contain location, otherwise <code>null</code>
-		 * @param locMapCenter contain current map center location
-		 */
-		public void onReceived(LocusVersion lv, Location locGps, Location locMapCenter);
-		public void onFailed();
-	}
-	
+    private static void handleIntentMenuItem(Context ctx, Intent intent,
+            OnIntentMainFunction handler, String item)
+            throws NullPointerException {
+        // check source data
+        if (intent == null) {
+            throw new NullPointerException("Intent cannot be null");
+        }
+        if (handler == null) {
+            throw new NullPointerException("Handler cannot be null");
+        }
+        // check intent itself
+        if (!isRequiredAction(intent, item)) {
+            handler.onFailed();
+            return;
+        }
 
-	public static boolean isIntentPointsScreenTools(Intent intent) {
-		return isRequiredAction(intent, LocusConst.INTENT_ITEM_POINTS_SCREEN_TOOLS);
-	}
+        handler.onReceived(
+                createLocusVersion(ctx, intent),
+                getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_GPS),
+                getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER));
+    }
 
-	public static long[] handleIntentPointsScreenTools(Intent intent) {
-		long[] waypointIds = null;
-		if (intent.hasExtra(LocusConst.INTENT_EXTRA_ITEMS_ID)) {
-			waypointIds = intent.getLongArrayExtra(LocusConst.INTENT_EXTRA_ITEMS_ID);
-		}
-		return waypointIds;
-	}
+    public interface OnIntentMainFunction {
+        /**
+         * When intent really contain location, result is returned by this function
+         *
+         * @param lv           version of Locus
+         * @param locGps       if gpsEnabled is true, variable contain location, otherwise <code>null</code>
+         * @param locMapCenter contain current map center location
+         */
+        void onReceived(LocusVersion lv, Location locGps, Location locMapCenter);
+
+        void onFailed();
+    }
+
+
+    public static boolean isIntentPointsScreenTools(Intent intent) {
+        return isRequiredAction(intent, LocusConst.INTENT_ITEM_POINTS_SCREEN_TOOLS);
+    }
+
+    public static long[] handleIntentPointsScreenTools(Intent intent) {
+        long[] waypointIds = null;
+        if (intent.hasExtra(LocusConst.INTENT_EXTRA_ITEMS_ID)) {
+            waypointIds = intent.getLongArrayExtra(LocusConst.INTENT_EXTRA_ITEMS_ID);
+        }
+        return waypointIds;
+    }
 	
 	/*
 	   Pick location from Locus
@@ -953,169 +980,183 @@ public class LocusUtils {
 		check sample application, where this functionality is implemented
 
 	 */
-	
-	public static boolean isIntentReceiveLocation(Intent intent) {
-		return isRequiredAction(intent, LocusConst.ACTION_RECEIVE_LOCATION);
-	}
-	
-	/**************************************************/
-	// SOME HANDY FUNCTIONS
-	/**************************************************/
+
+    public static boolean isIntentReceiveLocation(Intent intent) {
+        return isRequiredAction(intent, LocusConst.ACTION_RECEIVE_LOCATION);
+    }
+
+    //*************************************************
+    // SOME HANDY FUNCTIONS
+    //*************************************************
 
     /**
      * Check if received intent contains required action.
+     *
      * @param intent received intent
      * @param action action that we expect
      * @return {@code true} if intent is valid and contains required action
      */
-	private static boolean isRequiredAction(Intent intent, String action) {
-		return intent != null &&
+    private static boolean isRequiredAction(Intent intent, String action) {
+        return intent != null &&
                 intent.getAction() != null &&
-				intent.getAction().equals(action);
-	}
+                intent.getAction().equals(action);
+    }
 
-	/**
-	 * Prepare intent that may be used for sending waypoint back to Locus application.
-	 * @param wpt waypoint to send back
-	 * @param overridePoint {@code true} to overwrite original point in application
-	 * @return generated intent
-	 */
-	public static Intent prepareResultExtraOnDisplayIntent(Waypoint wpt, boolean overridePoint) {
-		Intent intent = new Intent();
-		addWaypointToIntent(intent, wpt);
-		intent.putExtra(LocusConst.INTENT_EXTRA_POINT_OVERWRITE, overridePoint);
-		return intent;
-	}
+    /**
+     * Prepare intent that may be used for sending waypoint back to Locus application.
+     *
+     * @param wpt           waypoint to send back
+     * @param overridePoint {@code true} to overwrite original point in application
+     * @return generated intent
+     */
+    public static Intent prepareResultExtraOnDisplayIntent(Point wpt, boolean overridePoint) {
+        Intent intent = new Intent();
+        addWaypointToIntent(intent, wpt);
+        intent.putExtra(LocusConst.INTENT_EXTRA_POINT_OVERWRITE, overridePoint);
+        return intent;
+    }
 
-	/**
-	 * Attach point into intent, that may be send to Locus application.
-	 * @param intent created intent container
-	 * @param wpt waypoint to attach
-	 */
-	public static void addWaypointToIntent(Intent intent, Waypoint wpt) {
-		intent.putExtra(LocusConst.INTENT_EXTRA_POINT, wpt.getAsBytes());
-	}
+    /**
+     * Attach point into intent, that may be send to Locus application.
+     *
+     * @param intent created intent container
+     * @param wpt    waypoint to attach
+     */
+    public static void addWaypointToIntent(Intent intent, Point wpt) {
+        intent.putExtra(LocusConst.INTENT_EXTRA_POINT, wpt.getAsBytes());
+    }
 
-	/**
-	 * Get point from received intent.
-	 * @param intent received intent
-	 * @return point from intent or 'null' if intent has no point attached
-	 */
-	public static Waypoint getWaypointFromIntent(Intent intent) {
-		try {
-			return new Waypoint(intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINT));
-		} catch (Exception e) {
-			Logger.logE(TAG, "getWaypointFromIntent(" + intent + ")", e);
-			return null;
-		}
-	}
+    /**
+     * Get point from received intent.
+     *
+     * @param intent received intent
+     * @return point from intent or 'null' if intent has no point attached
+     */
+    public static Point getWaypointFromIntent(Intent intent) {
+        try {
+            Point pt = new Point();
+            pt.read(intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINT));
+            return pt;
+        } catch (Exception e) {
+            Logger.logE(TAG, "getWaypointFromIntent(" + intent + ")", e);
+            return null;
+        }
+    }
 
-	/**
-	 * Get location object from received intent.
-	 * @param intent received intent
-	 * @param extraName name of 'extra' under which should be location stored in intent
-	 * @return location from intent or 'null' if intent has no location attached
-	 */
-	public static Location getLocationFromIntent(Intent intent, String extraName) {
-		try {
-			// check if intent has required extra parameter
-			if (!intent.hasExtra(extraName)) {
-				return null;
-			}
-			
-			// convert data to valid Location object
-			return new Location(intent.getByteArrayExtra(extraName));
-		} catch (Exception e) {
-			Logger.logE(TAG, "getLocationFromIntent(" + intent + ")", e);
-			return null;
-		}
-	}
+    /**
+     * Get location object from received intent.
+     *
+     * @param intent    received intent
+     * @param extraName name of 'extra' under which should be location stored in intent
+     * @return location from intent or 'null' if intent has no location attached
+     */
+    public static Location getLocationFromIntent(Intent intent, String extraName) {
+        try {
+            // check if intent has required extra parameter
+            if (!intent.hasExtra(extraName)) {
+                return null;
+            }
 
-	/**
-	 * Send explicit intent to Locus app defined by it's type and version.
-	 * @param ctx current context
-	 * @param intent intent to send
-	 * @param lv version of receiver
-	 */
-	public static void sendBroadcast(Context ctx, Intent intent, LocusVersion lv) {
-		// define package
-		intent.setPackage(lv.getPackageName());
+            // convert data to valid Location object
+            Location loc = new Location();
+            loc.read(intent.getByteArrayExtra(extraName));
+            return loc;
+        } catch (Exception e) {
+            Logger.logE(TAG, "getLocationFromIntent(" + intent + ")", e);
+            return null;
+        }
+    }
 
-		// send broadcast
-		ctx.sendBroadcast(intent);
-	}
-	
-	/**************************************************/
-	// LOCATION CONVERSION
-	/**************************************************/
-	
-	/**
-	 * Convert a Location object from Android to Locus format
-	 * @param oldLoc location in Android object
-	 * @return new Locus object
-	 */
-	public static Location convertToL(android.location.Location oldLoc) {
-		Location loc = new Location(oldLoc.getProvider());
-		loc.setLongitude(oldLoc.getLongitude());
-		loc.setLatitude(oldLoc.getLatitude());
-		loc.setTime(oldLoc.getTime());
-		if (oldLoc.hasAccuracy()) {
-			loc.setAccuracy(oldLoc.getAccuracy());
-		}
-		if (oldLoc.hasAltitude()) {
-			loc.setAltitude(oldLoc.getAltitude());
-		}
-		if (oldLoc.hasBearing()) {
-			loc.setBearing(oldLoc.getBearing());
-		}
-		if (oldLoc.hasSpeed()) {
-			loc.setSpeed(oldLoc.getSpeed());
-		}
-		return loc;
-	}
-	
-	/**
-	 * Convert a Location object from Locus to Android format
-	 * @param oldLoc location in Locus object
-	 * @return converted location to Android object
-	 */
-	public static android.location.Location convertToA(Location oldLoc) {
-		android.location.Location loc = new android.location.Location(oldLoc.getProvider());
-		loc.setLongitude(oldLoc.getLongitude());
-		loc.setLatitude(oldLoc.getLatitude());
-		loc.setTime(oldLoc.getTime());
-		if (oldLoc.hasAccuracy()) {
-			loc.setAccuracy(oldLoc.getAccuracy());
-		}
-		if (oldLoc.hasAltitude()) {
-			loc.setAltitude(oldLoc.getAltitude());
-		}
-		if (oldLoc.hasBearing()) {
-			loc.setBearing(oldLoc.getBearing());
-		}
-		if (oldLoc.hasSpeed()) { 
-			loc.setSpeed(oldLoc.getSpeed());
-		}
-		return loc;
-	}
-	
-	/**************************************************/
-	// VARIOUS TOOLS
-	/**************************************************/
-	
-	/**
-	 * General check if 'any' app defined by it's package name is available in system.
-	 * @param ctx current context
-	 * @param packageName package name of tested app
-	 * @param version required application version
-	 * @return <code>true</code> if required application is available
-	 */
-	public static boolean isAppAvailable(Context ctx, String packageName, int version) {
-		try {
-			PackageInfo info = ctx.getPackageManager().getPackageInfo(packageName, 0);
+    /**
+     * Send explicit intent to Locus app defined by it's type and version.
+     *
+     * @param ctx    current context
+     * @param intent intent to send
+     * @param lv     version of receiver
+     */
+    public static void sendBroadcast(Context ctx, Intent intent, LocusVersion lv) {
+        // define package
+        intent.setPackage(lv.getPackageName());
+
+        // send broadcast
+        ctx.sendBroadcast(intent);
+    }
+
+    //*************************************************
+    // LOCATION CONVERSION
+    //*************************************************
+
+    /**
+     * Convert a Location object from Android to Locus format
+     *
+     * @param oldLoc location in Android object
+     * @return new Locus object
+     */
+    public static Location convertToL(android.location.Location oldLoc) {
+        Location loc = new Location();
+        loc.setProvider(oldLoc.getProvider());
+        loc.setLongitude(oldLoc.getLongitude());
+        loc.setLatitude(oldLoc.getLatitude());
+        loc.setTime(oldLoc.getTime());
+        if (oldLoc.hasAccuracy()) {
+            loc.setAccuracy(oldLoc.getAccuracy());
+        }
+        if (oldLoc.hasAltitude()) {
+            loc.setAltitude(oldLoc.getAltitude());
+        }
+        if (oldLoc.hasBearing()) {
+            loc.setBearing(oldLoc.getBearing());
+        }
+        if (oldLoc.hasSpeed()) {
+            loc.setSpeed(oldLoc.getSpeed());
+        }
+        return loc;
+    }
+
+    /**
+     * Convert a Location object from Locus to Android format
+     *
+     * @param oldLoc location in Locus object
+     * @return converted location to Android object
+     */
+    public static android.location.Location convertToA(Location oldLoc) {
+        android.location.Location loc = new android.location.Location(oldLoc.getProvider());
+        loc.setLongitude(oldLoc.getLongitude());
+        loc.setLatitude(oldLoc.getLatitude());
+        loc.setTime(oldLoc.getTime());
+        if (oldLoc.hasAccuracy()) {
+            loc.setAccuracy(oldLoc.getAccuracy());
+        }
+        if (oldLoc.hasAltitude()) {
+            loc.setAltitude(oldLoc.getAltitude());
+        }
+        if (oldLoc.hasBearing()) {
+            loc.setBearing(oldLoc.getBearing());
+        }
+        if (oldLoc.hasSpeed()) {
+            loc.setSpeed(oldLoc.getSpeed());
+        }
+        return loc;
+    }
+
+    //*************************************************
+    // VARIOUS TOOLS
+    //*************************************************
+
+    /**
+     * General check if 'any' app defined by it's package name is available in system.
+     *
+     * @param ctx         current context
+     * @param packageName package name of tested app
+     * @param version     required application version
+     * @return <code>true</code> if required application is available
+     */
+    public static boolean isAppAvailable(Context ctx, String packageName, int version) {
+        try {
+            PackageInfo info = ctx.getPackageManager().getPackageInfo(packageName, 0);
             return info != null && info.versionCode >= version;
         } catch (PackageManager.NameNotFoundException e) {
-			return false;
-		}
-	}
+            return false;
+        }
+    }
 }

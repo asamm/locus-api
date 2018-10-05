@@ -257,7 +257,7 @@ class FieldNotesHelper private constructor() {
          */
         @Throws(RequiredVersionMissingException::class)
         fun insert(ctx: Context, lv: LocusUtils.LocusVersion,
-                gcFn: FieldNote): Boolean {
+                   gcFn: FieldNote): Boolean {
             // createLogs data container
             val cv = createContentValues(gcFn)
 
@@ -302,7 +302,7 @@ class FieldNotesHelper private constructor() {
 
         @Throws(RequiredVersionMissingException::class)
         fun update(ctx: Context, lv: LocusUtils.LocusVersion,
-                fn: FieldNote, cv: ContentValues): Boolean {
+                   fn: FieldNote, cv: ContentValues): Boolean {
             // execute request
             val newRow = ctx.contentResolver.update(getUriLogsTable(lv), cv,
                     ColFieldNote.ID + "=?",
@@ -750,7 +750,7 @@ class FieldNotesHelper private constructor() {
          */
         @Throws(RequiredVersionMissingException::class)
         fun logOnline(ctx: Context?, lv: LocusUtils.LocusVersion?,
-                ids: LongArray?, createLog: Boolean) {
+                      ids: LongArray?, createLog: Boolean) {
             // check parameters
             if (ctx == null || lv == null || ids == null || ids.isEmpty()) {
                 throw IllegalArgumentException("logOnline(" + ctx + ", " + lv + ", " + ids + "), " +

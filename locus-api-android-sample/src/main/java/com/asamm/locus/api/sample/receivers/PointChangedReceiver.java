@@ -5,7 +5,7 @@ import locus.api.android.utils.LocusConst;
 import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.LocusUtils.LocusVersion;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
-import locus.api.objects.extra.Waypoint;
+import locus.api.objects.extra.Point;
 import locus.api.utils.Logger;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -50,7 +50,7 @@ public class PointChangedReceiver extends BroadcastReceiver {
 
 		// get full point from Locus
 		try {
-			Waypoint wpt = ActionTools.getLocusWaypoint(ctx, lv, pointId);
+			Point wpt = ActionTools.getLocusWaypoint(ctx, lv, pointId);
 			if (wpt == null) {
 				Logger.logE(TAG, "handleReceivedPoint(" + ctx + ", " + 
 						pointId + ", " + pointName + ", " + cacheCode + "), " +

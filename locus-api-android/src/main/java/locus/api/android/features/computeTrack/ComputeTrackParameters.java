@@ -29,10 +29,17 @@ public class ComputeTrackParameters extends Storable {
      * Empty constructor for 'Storable' class. Do not use directly
      */
     @SuppressWarnings("unused")
-    public ComputeTrackParameters() {}
+    public ComputeTrackParameters() {
+        super();
+        mType = GeoDataExtra.VALUE_RTE_TYPE_CAR;
+        mComputeInstructions = true;
+        mHasDirection = false;
+        mDirection = 0;
+        mLocs = new Location[0];
+    }
 
     public ComputeTrackParameters(int type, Location[] locs) {
-        super();
+        this();
 
         // set parameters
         this.mType = type;
@@ -41,10 +48,6 @@ public class ComputeTrackParameters extends Storable {
                     " cannot be 'null' or smaller then 2");
         }
         this.mLocs = locs;
-    }
-
-    public ComputeTrackParameters(byte[] data) throws IOException {
-        super(data);
     }
 
     public int getType() {
@@ -63,6 +66,7 @@ public class ComputeTrackParameters extends Storable {
 
     /**
      * Check if direction is currently defined.
+     *
      * @return <code>true</code> if direction for first point is set
      */
     public boolean hasDirection() {
@@ -71,6 +75,7 @@ public class ComputeTrackParameters extends Storable {
 
     /**
      * Get direction angle of movement at first point.
+     *
      * @return define direction angle
      */
     public float getCurrentDirection() {
@@ -78,7 +83,8 @@ public class ComputeTrackParameters extends Storable {
     }
 
     /**
-     * Set direction angle of movement at first point in degress.
+     * Set direction angle of movement at first point in degrees.
+     *
      * @param direction direction angle
      */
     public void setCurrentDirection(float direction) {
@@ -89,28 +95,20 @@ public class ComputeTrackParameters extends Storable {
 
     /**
      * Get list of defined via-points (location).
+     *
      * @return list of locations
      */
     public Location[] getLocations() {
         return mLocs;
     }
 
-    /**************************************************/
+    //*************************************************
     // STORABLE PART
-    /**************************************************/
+    //*************************************************
 
     @Override
     protected int getVersion() {
         return 1;
-    }
-
-    @Override
-    public void reset() {
-        mType = GeoDataExtra.VALUE_RTE_TYPE_CAR;
-        mComputeInstructions = true;
-        mHasDirection = false;
-        mDirection = 0;
-        mLocs = new Location[0];
     }
 
     @Override
@@ -120,7 +118,8 @@ public class ComputeTrackParameters extends Storable {
         mDirection = dr.readFloat();
         mLocs = new Location[dr.readInt()];
         for (int i = 0, m = mLocs.length; i < m; i++) {
-            mLocs[i] = new Location(dr);
+            mLocs[i] = new Location();
+            mLocs[i].read(dr);
         }
 
         // V1

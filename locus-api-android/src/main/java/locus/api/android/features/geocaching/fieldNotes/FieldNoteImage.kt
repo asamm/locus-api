@@ -40,14 +40,6 @@ class FieldNoteImage : Storable() {
         return 1
     }
 
-    override fun reset() {
-        id = -1L
-        fieldNoteId = -1L
-        caption = ""
-        description = ""
-        image = null
-    }
-
     @Throws(IOException::class)
     override fun readObject(version: Int, dr: DataReaderBigEndian) {
         id = dr.readLong()
@@ -67,7 +59,7 @@ class FieldNoteImage : Storable() {
         dw.writeLong(fieldNoteId)
         dw.writeString(caption)
         dw.writeString(description)
-        if (image != null && image!!.size > 0) {
+        if (image != null && image!!.isNotEmpty()) {
             dw.writeInt(image!!.size)
             dw.write(image!!)
         } else {

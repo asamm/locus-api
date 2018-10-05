@@ -48,113 +48,106 @@ public class TrackStats extends Storable {
     // negative grade (elevation)
     private float mEleNegativeHeight;
     // total grade (distance)
-	@Deprecated
+    @Deprecated
     private float mEleTotalAbsDistance;
     // total grade (elevation)
-	@Deprecated
+    @Deprecated
     private float mEleTotalAbsHeight;
 
-	// number of measured beats
-	private double mHeartRateBeats;
-	// time during which were beats measured
-	private long mHeartRateTime;
-	// maximum HRM value
-	private int mHeartRateMax;
+    // number of measured beats
+    private double mHeartRateBeats;
+    // time during which were beats measured
+    private long mHeartRateTime;
+    // maximum HRM value
+    private int mHeartRateMax;
 
-	// number of measured cadence revolutions
-	private double mCadenceNumber;
-	// time during which were cadence measured
-	private long mCadenceTime;
-	// maximum cadence value
-	private int mCadenceMax;
+    // number of measured cadence revolutions
+    private double mCadenceNumber;
+    // time during which were cadence measured
+    private long mCadenceTime;
+    // maximum cadence value
+    private int mCadenceMax;
 
-	// burned energy (in joule)
-	private int mEnergy;
+    // burned energy (in joule)
+    private int mEnergy;
 
-	// number of steps
-	private int mNumOfStrides;
+    // number of steps
+    private int mNumOfStrides;
 
-	/**
-	 * Default empty constructor.
-	 */
+    /**
+     * Default empty constructor.
+     */
     public TrackStats() {
-        super();
+        mNumOfPoints = 0;
+        mStartTime = -1L;
+        mStopTime = -1L;
+
+        // other variables
+        resetStatistics();
     }
 
-	/**
-	 * Constructor based on existing stored data.
-	 * @param dr existing data reader with stats
-	 * @throws IOException
-	 */
-    public TrackStats(DataReaderBigEndian dr) throws IOException {
-        super(dr);
-    }
-
-	/**
-	 * Constructor based on existing stored data.
-	 * @param data existing data reader with stats
-	 * @throws IOException
-	 */
-	public TrackStats(byte[] data) throws IOException {
-		super(data);
-	}
-
-    /**************************************************/
+    //*************************************************
     // GETTERS & SETTERS
-    /**************************************************/
+    //*************************************************
 
     // NUMBER OF POINTS
 
-	/**
-	 * Number of points in track.
-	 * @return number of trackpoints
-	 */
+    /**
+     * Number of points in track.
+     *
+     * @return number of trackpoints
+     */
     public int getNumOfPoints() {
         return mNumOfPoints;
     }
 
-	/**
-	 * Set number of trackpoints in current track.
-	 * @param numOfPoints number of trackpoints
-	 */
+    /**
+     * Set number of trackpoints in current track.
+     *
+     * @param numOfPoints number of trackpoints
+     */
     public void setNumOfPoints(int numOfPoints) {
         this.mNumOfPoints = numOfPoints;
     }
 
     // START TIME
 
-	/**
-	 * Get time when current track started.
-	 * @return time of start (in ms)
-	 */
+    /**
+     * Get time when current track started.
+     *
+     * @return time of start (in ms)
+     */
     public long getStartTime() {
         return mStartTime;
     }
 
-	/**
-	 * Set new value to start time parameter.
-	 * @param startTime time when track started (in ms)
-	 */
+    /**
+     * Set new value to start time parameter.
+     *
+     * @param startTime time when track started (in ms)
+     */
     public void setStartTime(long startTime) {
         this.mStartTime = startTime;
     }
 
     // STOP TIME
 
-	/**
-	 * Get current defined stop time of track.
-	 * @return stop time
-	 */
+    /**
+     * Get current defined stop time of track.
+     *
+     * @return stop time
+     */
     public long getStopTime() {
         return mStopTime;
     }
 
-	/**
-	 * Set new time when track record was stopped (time of last trackpoint).
-	 * @param stopTime stop time
-	 */
+    /**
+     * Set new time when track record was stopped (time of last trackpoint).
+     *
+     * @param stopTime stop time
+     */
     public void setStopTime(long stopTime) {
-		this.mStopTime = stopTime;
+        this.mStopTime = stopTime;
     }
 
     // TOTAL LENGTH
@@ -191,11 +184,11 @@ public class TrackStats extends Storable {
         return mTotalTime;
     }
 
-	public void addTotalTime(long add) {
-		this.mTotalTime += Math.abs(add);
-	}
+    public void addTotalTime(long add) {
+        this.mTotalTime += Math.abs(add);
+    }
 
-	public void setTotalTime(long totalTime) {
+    public void setTotalTime(long totalTime) {
         this.mTotalTime = Math.abs(totalTime);
     }
 
@@ -215,18 +208,20 @@ public class TrackStats extends Storable {
 
     // SPEED MAX
 
-	/**
-	 * Get maximal speed value received from GPS.
-	 * @return maximal speed value (in m/s)
-	 */
+    /**
+     * Get maximal speed value received from GPS.
+     *
+     * @return maximal speed value (in m/s)
+     */
     public float getSpeedMax() {
         return mSpeedMax;
     }
 
-	/**
-	 * Set maximal speed value.
-	 * @param speedMax max. speed value (in m/s)
-	 */
+    /**
+     * Set maximal speed value.
+     *
+     * @param speedMax max. speed value (in m/s)
+     */
     public void setSpeedMax(float speedMax) {
         this.mSpeedMax = speedMax;
     }
@@ -277,6 +272,7 @@ public class TrackStats extends Storable {
 
     /**
      * Add elevation value for "neutral height"
+     *
      * @param add value increment
      */
     public void addEleNeutralHeight(float add) {
@@ -309,6 +305,7 @@ public class TrackStats extends Storable {
 
     /**
      * Add elevation value for "positive height"
+     *
      * @param add value increment
      */
     public void addElePositiveHeight(float add) {
@@ -341,6 +338,7 @@ public class TrackStats extends Storable {
 
     /**
      * Add elevation value for "negative height"
+     *
      * @param add value increment
      */
     public void addEleNegativeHeight(float add) {
@@ -349,7 +347,7 @@ public class TrackStats extends Storable {
 
     // ELEVATION TOTAL - DISTANCE
 
-	@Deprecated
+    @Deprecated
     public float getEleTotalAbsDistance() {
         return mEleTotalAbsDistance;
     }
@@ -364,7 +362,7 @@ public class TrackStats extends Storable {
 
     // ELEVATION TOTAL - HEIGHT
 
-	@Deprecated
+    @Deprecated
     public float getEleTotalAbsHeight() {
         return mEleTotalAbsHeight;
     }
@@ -377,125 +375,135 @@ public class TrackStats extends Storable {
         this.mEleTotalAbsHeight += add;
     }
 
-	// HEART RATE VALUES
+    // HEART RATE VALUES
 
-	/**
-	 * Get average value of heart rate.
-	 * @return average value (in BPM)
-	 */
-	public int getHrmAverage() {
-		if (mHeartRateBeats > 0 && mHeartRateTime > 0L) {
-			double minutes = mHeartRateTime / (60.0 * 1000.0);
-			return (int) (mHeartRateBeats / minutes);
-		} else {
-			return 0;
-		}
-	}
+    /**
+     * Get average value of heart rate.
+     *
+     * @return average value (in BPM)
+     */
+    public int getHrmAverage() {
+        if (mHeartRateBeats > 0 && mHeartRateTime > 0L) {
+            double minutes = mHeartRateTime / (60.0 * 1000.0);
+            return (int) (mHeartRateBeats / minutes);
+        } else {
+            return 0;
+        }
+    }
 
-	/**
-	 * Get maximal value of heart rate.
-	 * @return maximal heart rate value (in BPM)
-	 */
-	public int getHrmMax() {
-		return mHeartRateMax;
-	}
+    /**
+     * Get maximal value of heart rate.
+     *
+     * @return maximal heart rate value (in BPM)
+     */
+    public int getHrmMax() {
+        return mHeartRateMax;
+    }
 
-	/**
-	 * Add measured heart rate values.
-	 * @param hrmMeasured measured heart rate value (in bpm)
-	 * @param hrmAvgSegment average heart rate value in segment (in bpm)
-	 * @param measureTime time of segment (in millis)
-	 */
-	public void addHeartRateMeasure(int hrmMeasured, int hrmAvgSegment, long measureTime) {
-		// store values
-		double inMinutes = measureTime * 1.0 / (60 * 1000);
-		double numOfBeats = hrmAvgSegment * inMinutes;
-		mHeartRateBeats += numOfBeats;
-		mHeartRateTime += measureTime;
+    /**
+     * Add measured heart rate values.
+     *
+     * @param hrmMeasured   measured heart rate value (in bpm)
+     * @param hrmAvgSegment average heart rate value in segment (in bpm)
+     * @param measureTime   time of segment (in millis)
+     */
+    public void addHeartRateMeasure(int hrmMeasured, int hrmAvgSegment, long measureTime) {
+        // store values
+        double inMinutes = measureTime * 1.0 / (60 * 1000);
+        double numOfBeats = hrmAvgSegment * inMinutes;
+        mHeartRateBeats += numOfBeats;
+        mHeartRateTime += measureTime;
 
-		// compute max. heart rate
-		mHeartRateMax = Math.max(mHeartRateMax, hrmMeasured);
-	}
+        // compute max. heart rate
+        mHeartRateMax = Math.max(mHeartRateMax, hrmMeasured);
+    }
 
-	// CADENCE VALUES
+    // CADENCE VALUES
 
-	/**
-	 * Get average value of cadence.
-	 * @return average cadence value (
-	 */
-	public int getCadenceAverage() {
-		if (mCadenceNumber > 0 && mCadenceTime > 0L) {
-			double minutes = mCadenceTime / (60.0 * 1000.0);
-			return (int) (mCadenceNumber / minutes);
-		} else {
-			return 0;
-		}
-	}
+    /**
+     * Get average value of cadence.
+     *
+     * @return average cadence value (
+     */
+    public int getCadenceAverage() {
+        if (mCadenceNumber > 0 && mCadenceTime > 0L) {
+            double minutes = mCadenceTime / (60.0 * 1000.0);
+            return (int) (mCadenceNumber / minutes);
+        } else {
+            return 0;
+        }
+    }
 
-	/**
-	 * Get maximal value of heart rate.
-	 * @return maximal heart rate value (in BPM)
-	 */
-	public int getCadenceMax() {
-		return mCadenceMax;
-	}
+    /**
+     * Get maximal value of heart rate.
+     *
+     * @return maximal heart rate value (in BPM)
+     */
+    public int getCadenceMax() {
+        return mCadenceMax;
+    }
 
-	/**
-	 * Add measured cadence values.
-	 * @param revMeasured measured cadence value (in rpm)
-	 * @param revAvgSegment average revolutions value in segment (in rpm)
-	 * @param measureTime time of segment (in millis)
-	 */
-	public void addCadenceMeasure(int revMeasured, int revAvgSegment, long measureTime) {
-		// store values
-		double inMinutes = measureTime * 1.0 / (60 * 1000);
-		double numOfRevolutions = revAvgSegment * inMinutes;
-		mCadenceNumber += numOfRevolutions;
-		mCadenceTime += measureTime;
+    /**
+     * Add measured cadence values.
+     *
+     * @param revMeasured   measured cadence value (in rpm)
+     * @param revAvgSegment average revolutions value in segment (in rpm)
+     * @param measureTime   time of segment (in millis)
+     */
+    public void addCadenceMeasure(int revMeasured, int revAvgSegment, long measureTime) {
+        // store values
+        double inMinutes = measureTime * 1.0 / (60 * 1000);
+        double numOfRevolutions = revAvgSegment * inMinutes;
+        mCadenceNumber += numOfRevolutions;
+        mCadenceTime += measureTime;
 
-		// compute max. heart rate
-		mCadenceMax = Math.max(mCadenceMax, revMeasured);
-	}
+        // compute max. heart rate
+        mCadenceMax = Math.max(mCadenceMax, revMeasured);
+    }
 
-	// ENERGY BURNED
+    // ENERGY BURNED
 
-	/**
-	 * Get burned energy.
-	 * @return burned energy (in joule)
-	 */
-	public int getEnergy() {
-		return mEnergy;
-	}
+    /**
+     * Get burned energy.
+     *
+     * @return burned energy (in joule)
+     */
+    public int getEnergy() {
+        return mEnergy;
+    }
 
-	/**
-	 * Add burned energy.
-	 * @param energy burned energy (in joule)
-	 */
-	public void addEnergy(int energy) {
-		mEnergy += energy;
-	}
+    /**
+     * Add burned energy.
+     *
+     * @param energy burned energy (in joule)
+     */
+    public void addEnergy(int energy) {
+        mEnergy += energy;
+    }
 
-	// STRIDES
+    // STRIDES
 
-	/**
-	 * Get total number of strides.
-	 * @return number of strides
-	 */
-	public int getNumOfStrides() {
-		return mNumOfStrides;
-	}
+    /**
+     * Get total number of strides.
+     *
+     * @return number of strides
+     */
+    public int getNumOfStrides() {
+        return mNumOfStrides;
+    }
 
-	/**
-	 * Set total number of strides.
-	 * @param numOfStrides number of strides
-	 */
-	public void setNumOfStrides(int numOfStrides) {
-		mNumOfStrides = numOfStrides;
-	}
+    /**
+     * Set total number of strides.
+     *
+     * @param numOfStrides number of strides
+     */
+    public void setNumOfStrides(int numOfStrides) {
+        mNumOfStrides = numOfStrides;
+    }
 
-	/**************************************************/
+    //*************************************************
     // OTHER TOOLS
-    /**************************************************/
+    //*************************************************
 
     public double getTrackLength(boolean onlyWithMove) {
         if (onlyWithMove) {
@@ -513,11 +521,12 @@ public class TrackStats extends Storable {
         }
     }
 
-	/**
-	 * Get average speed value for a track.
-	 * @param onlyWithMove {@code true} to get AVG. speed only during movement
-	 * @return average speed in m/s
-	 */
+    /**
+     * Get average speed value for a track.
+     *
+     * @param onlyWithMove {@code true} to get AVG. speed only during movement
+     * @return average speed in m/s
+     */
     public float getSpeedAverage(boolean onlyWithMove) {
         float trackTime = getTrackTime(onlyWithMove) / 1000.0f;
         if (trackTime > 0) {
@@ -527,18 +536,19 @@ public class TrackStats extends Storable {
         }
     }
 
-	/**
-	 * Check if track has some elevation values.
-	 * @return {@code true} if track has elevation values
-	 */
-	public boolean hasElevationValues() {
-		return mAltitudeMin != Float.POSITIVE_INFINITY && mAltitudeMin != 0.0 &&
-				mAltitudeMax != Float.NEGATIVE_INFINITY && mAltitudeMax != 0.0;
-	}
+    /**
+     * Check if track has some elevation values.
+     *
+     * @return {@code true} if track has elevation values
+     */
+    public boolean hasElevationValues() {
+        return mAltitudeMin != Float.POSITIVE_INFINITY && mAltitudeMin != 0.0 &&
+                mAltitudeMax != Float.NEGATIVE_INFINITY && mAltitudeMax != 0.0;
+    }
 
-	/**
-	 * Reset all parameters of track statistics.
-	 */
+    /**
+     * Reset all parameters of track statistics.
+     */
     public void resetStatistics() {
         // basic statistics variables
         mTotalLength = 0.0f;
@@ -546,22 +556,22 @@ public class TrackStats extends Storable {
         mTotalTime = 0L;
         mTotalTimeMove = 0L;
         mSpeedMax = 0.0f;
-		mHeartRateBeats = 0.0;
-		mHeartRateTime = 0L;
-		mHeartRateMax = 0;
-		mCadenceNumber = 0.0;
-		mCadenceTime = 0L;
-		mCadenceMax = 0;
-		mEnergy = 0;
-		mNumOfStrides = 0;
+        mHeartRateBeats = 0.0;
+        mHeartRateTime = 0L;
+        mHeartRateMax = 0;
+        mCadenceNumber = 0.0;
+        mCadenceTime = 0L;
+        mCadenceMax = 0;
+        mEnergy = 0;
+        mNumOfStrides = 0;
 
-		// reset also elevation values
+        // reset also elevation values
         resetStatisticsAltitude();
     }
 
-	/**
-	 * Reset only statistics related to elevation values.
-	 */
+    /**
+     * Reset only statistics related to elevation values.
+     */
     public void resetStatisticsAltitude() {
         mAltitudeMax = Float.NEGATIVE_INFINITY;
         mAltitudeMin = Float.POSITIVE_INFINITY;
@@ -577,60 +587,51 @@ public class TrackStats extends Storable {
         mEleTotalAbsHeight = 0.0f;
     }
 
-	/**
-	 * Function that allows to merge more statistics into one.
-	 * @param stats second statistics that will be merged into this.
-	 */
-	public void appendStatistics(TrackStats stats) {
-		this.mNumOfPoints += stats.mNumOfPoints;
-		this.mStartTime = Math.min(mStartTime, stats.mStartTime);
-		this.mStopTime = Math.max(mStopTime, stats.mStopTime);
-		this.mTotalLength += stats.mTotalLength;
-		this.mTotalLengthMove += stats.mTotalLengthMove;
-		this.mTotalTime += stats.mTotalTime;
-		this.mTotalTimeMove += stats.mTotalTimeMove;
-		this.mSpeedMax = Math.max(mSpeedMax, stats.mSpeedMax);
-		this.mAltitudeMax = Math.max(mAltitudeMax, stats.mAltitudeMax);
-		this.mAltitudeMin = Math.min(mAltitudeMin, stats.mAltitudeMin);
+    /**
+     * Function that allows to merge more statistics into one.
+     *
+     * @param stats second statistics that will be merged into this.
+     */
+    public void appendStatistics(TrackStats stats) {
+        this.mNumOfPoints += stats.mNumOfPoints;
+        this.mStartTime = Math.min(mStartTime, stats.mStartTime);
+        this.mStopTime = Math.max(mStopTime, stats.mStopTime);
+        this.mTotalLength += stats.mTotalLength;
+        this.mTotalLengthMove += stats.mTotalLengthMove;
+        this.mTotalTime += stats.mTotalTime;
+        this.mTotalTimeMove += stats.mTotalTimeMove;
+        this.mSpeedMax = Math.max(mSpeedMax, stats.mSpeedMax);
+        this.mAltitudeMax = Math.max(mAltitudeMax, stats.mAltitudeMax);
+        this.mAltitudeMin = Math.min(mAltitudeMin, stats.mAltitudeMin);
 
-		this.mEleNeutralDistance += stats.mEleNeutralDistance;
-		this.mEleNeutralHeight += stats.mEleNeutralHeight;
-		this.mElePositiveDistance += stats.mElePositiveDistance;
-		this.mElePositiveHeight += stats.mElePositiveHeight;
-		this.mEleNegativeDistance += stats.mEleNegativeDistance;
-		this.mEleNegativeHeight += stats.mEleNegativeHeight;
-		this.mEleTotalAbsDistance += stats.mEleTotalAbsDistance;
-		this.mEleTotalAbsHeight += stats.mEleTotalAbsHeight;
+        this.mEleNeutralDistance += stats.mEleNeutralDistance;
+        this.mEleNeutralHeight += stats.mEleNeutralHeight;
+        this.mElePositiveDistance += stats.mElePositiveDistance;
+        this.mElePositiveHeight += stats.mElePositiveHeight;
+        this.mEleNegativeDistance += stats.mEleNegativeDistance;
+        this.mEleNegativeHeight += stats.mEleNegativeHeight;
+        this.mEleTotalAbsDistance += stats.mEleTotalAbsDistance;
+        this.mEleTotalAbsHeight += stats.mEleTotalAbsHeight;
 
-		this.mHeartRateBeats += stats.mHeartRateBeats;
-		this.mHeartRateTime += stats.mHeartRateTime;
-		this.mHeartRateMax = Math.max(this.mHeartRateMax, stats.mHeartRateMax);
+        this.mHeartRateBeats += stats.mHeartRateBeats;
+        this.mHeartRateTime += stats.mHeartRateTime;
+        this.mHeartRateMax = Math.max(this.mHeartRateMax, stats.mHeartRateMax);
 
-		this.mCadenceNumber += stats.mCadenceNumber;
-		this.mCadenceTime += stats.mCadenceTime;
-		this.mCadenceMax = Math.max(this.mCadenceMax, stats.mCadenceMax);
+        this.mCadenceNumber += stats.mCadenceNumber;
+        this.mCadenceTime += stats.mCadenceTime;
+        this.mCadenceMax = Math.max(this.mCadenceMax, stats.mCadenceMax);
 
-		this.mEnergy += stats.mEnergy;
-		this.mNumOfStrides += stats.mNumOfStrides;
-	}
+        this.mEnergy += stats.mEnergy;
+        this.mNumOfStrides += stats.mNumOfStrides;
+    }
 
-    /**************************************************/
+    //*************************************************
     // STORABLE PART
-    /**************************************************/
+    //*************************************************
 
     @Override
     protected int getVersion() {
         return 3;
-    }
-
-    @Override
-    public void reset() {
-        mNumOfPoints = 0;
-        mStartTime = -1L;
-        mStopTime = -1L;
-
-        // other variables
-        resetStatistics();
     }
 
     @Override
@@ -660,29 +661,29 @@ public class TrackStats extends Storable {
         mEleTotalAbsDistance = dr.readFloat();
         mEleTotalAbsHeight = dr.readFloat();
 
-		// V1
+        // V1
 
-		if (version >= 1) {
-			mHeartRateBeats = dr.readInt();
-			mHeartRateTime = dr.readLong();
-			mHeartRateMax = dr.readInt();
-			mEnergy = dr.readInt();
-		}
+        if (version >= 1) {
+            mHeartRateBeats = dr.readInt();
+            mHeartRateTime = dr.readLong();
+            mHeartRateMax = dr.readInt();
+            mEnergy = dr.readInt();
+        }
 
-		// V2
+        // V2
 
-		if (version >= 2) {
-			mHeartRateBeats = dr.readDouble();
-			mCadenceNumber = dr.readDouble();
-			mCadenceTime = dr.readLong();
-			mCadenceMax = dr.readInt();
-		}
+        if (version >= 2) {
+            mHeartRateBeats = dr.readDouble();
+            mCadenceNumber = dr.readDouble();
+            mCadenceTime = dr.readLong();
+            mCadenceMax = dr.readInt();
+        }
 
-		// V3
+        // V3
 
-		if (version >= 3) {
-			mNumOfStrides = dr.readInt();
-		}
+        if (version >= 3) {
+            mNumOfStrides = dr.readInt();
+        }
     }
 
     @Override
@@ -712,22 +713,22 @@ public class TrackStats extends Storable {
         dw.writeFloat(mEleTotalAbsDistance);
         dw.writeFloat(mEleTotalAbsHeight);
 
-		// V1
+        // V1
 
-		dw.writeInt((int) mHeartRateBeats);
-		dw.writeLong(mHeartRateTime);
-		dw.writeInt(mHeartRateMax);
-		dw.writeInt(mEnergy);
+        dw.writeInt((int) mHeartRateBeats);
+        dw.writeLong(mHeartRateTime);
+        dw.writeInt(mHeartRateMax);
+        dw.writeInt(mEnergy);
 
-		// V2
+        // V2
 
-		dw.writeDouble(mHeartRateBeats);
-		dw.writeDouble(mCadenceNumber);
-		dw.writeLong(mCadenceTime);
-		dw.writeInt(mCadenceMax);
+        dw.writeDouble(mHeartRateBeats);
+        dw.writeDouble(mCadenceNumber);
+        dw.writeLong(mCadenceTime);
+        dw.writeInt(mCadenceMax);
 
-		// V3
+        // V3
 
-		dw.writeInt(mNumOfStrides);
+        dw.writeInt(mNumOfStrides);
     }
 }

@@ -1,33 +1,32 @@
 package locus.api.objects.extra;
 
-import java.io.IOException;
-
 import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
 
 public class KmlVec2 {
 
-	public static enum Units {
-		FRACTION, PIXELS, INSET_PIXELS
-	}
-	
-	public double x = 0.5f;
-	public Units xUnits = Units.FRACTION;
-	public double y = 0.5f;
-	public Units yUnits = Units.FRACTION;
-	
-	public KmlVec2() {}
+    public static enum Units {
+        FRACTION, PIXELS, INSET_PIXELS
+    }
 
-	public KmlVec2(double x, Units xUnits, double y, Units yUnits) {
-		this.x = x;
-		this.xUnits = xUnits;
-		this.y = y;
-		this.yUnits = yUnits;
-	}
-	
-	public double[] getCoords(double sourceWidth, double sourceHeight) {
+    public double x = 0.5f;
+    public Units xUnits = Units.FRACTION;
+    public double y = 0.5f;
+    public Units yUnits = Units.FRACTION;
+
+    public KmlVec2() {
+    }
+
+    public KmlVec2(double x, Units xUnits, double y, Units yUnits) {
+        this.x = x;
+        this.xUnits = xUnits;
+        this.y = y;
+        this.yUnits = yUnits;
+    }
+
+    public double[] getCoords(double sourceWidth, double sourceHeight) {
         return getCoords(sourceWidth, sourceHeight, new double[2]);
-	}
+    }
 
     public double[] getCoords(double sourceWidth, double sourceHeight, double[] result) {
         // check container for results
@@ -98,28 +97,28 @@ public class KmlVec2 {
         return sb.toString();
     }
 
-	public KmlVec2 getCopy() {
-		KmlVec2 vec = new KmlVec2();
-		vec.x = x;
-		vec.xUnits = xUnits;
-		vec.y = y;
-		vec.yUnits = yUnits;
-		return vec;
-	}
-	
-	public void write(DataWriterBigEndian dw) throws IOException {
-		dw.writeDouble(x);
-		dw.writeInt(xUnits.ordinal());
-		dw.writeDouble(y);
-		dw.writeInt(yUnits.ordinal());
-	}
-	
-	public static KmlVec2 read(DataReaderBigEndian dr) throws IOException {
-		KmlVec2 vec = new KmlVec2();
-		vec.x = dr.readDouble();
-		vec.xUnits = Units.values()[dr.readInt()];
-		vec.y = dr.readDouble();
-		vec.yUnits = Units.values()[dr.readInt()];
-		return vec;
-	}
+    public KmlVec2 getCopy() {
+        KmlVec2 vec = new KmlVec2();
+        vec.x = x;
+        vec.xUnits = xUnits;
+        vec.y = y;
+        vec.yUnits = yUnits;
+        return vec;
+    }
+
+    public void write(DataWriterBigEndian dw) {
+        dw.writeDouble(x);
+        dw.writeInt(xUnits.ordinal());
+        dw.writeDouble(y);
+        dw.writeInt(yUnits.ordinal());
+    }
+
+    public static KmlVec2 read(DataReaderBigEndian dr) {
+        KmlVec2 vec = new KmlVec2();
+        vec.x = dr.readDouble();
+        vec.xUnits = Units.values()[dr.readInt()];
+        vec.y = dr.readDouble();
+        vec.yUnits = Units.values()[dr.readInt()];
+        return vec;
+    }
 }

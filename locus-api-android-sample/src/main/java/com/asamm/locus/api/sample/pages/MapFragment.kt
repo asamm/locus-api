@@ -86,7 +86,7 @@ class MapFragment : DialogFragment() {
                 .setTitle("Map preview")
                 .setMessage("")
                 .setView(container)
-                .setPositiveButton("Close") { dialog, which -> }
+                .setPositiveButton("Close") { _, _ -> }
                 .create()
     }
 

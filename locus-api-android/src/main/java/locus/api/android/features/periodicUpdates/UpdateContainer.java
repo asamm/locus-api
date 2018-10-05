@@ -150,16 +150,76 @@ public class UpdateContainer extends Storable {
      */
     public UpdateContainer() {
         super();
-    }
 
-    /**
-     * Constructor based on received, previously stored, data.
-     *
-     * @param data received data
-     * @throws IOException exception in case of invalid content
-     */
-    public UpdateContainer(byte[] data) throws IOException {
-        super(data);
+        // STATE CUSTOM VARIABLES
+
+        newMyLocation = false;
+        newMapCenter = false;
+        newZoomLevel = false;
+        isUserTouching = false;
+        enabledMyLocation = false;
+
+        // LOCATION, GPS, BASIC VALUES
+
+        locMyLocation = null;
+        gpsSatsUsed = 0;
+        gpsSatsAll = 0;
+        declination = 0.0f;
+        orientHeading = 0.0f;
+        orientHeadingOpposit = 0.0f;
+        orientCourse = 0.0f;
+        orientPitch = 0.0f;
+        orientRoll = 0.0f;
+        orientGpsAngle = 0.0f;
+        speedVertical = 0.0f;
+        slope = 0.0f;
+
+        // MAP STUFF
+
+        mapVisible = false;
+        mapRotate = 0.0f;
+        locMapCenter = null;
+        mapTopLeft = null;
+        mapBottomRight = null;
+        mapZoomLevel = -1;
+
+        // TRACK RECORDING PART
+
+        trackRecRecording = false;
+        trackRecPaused = false;
+        trackRecProfileName = "";
+        trackRecStats = null;
+
+        // GUIDING PART
+
+        guideType = GUIDE_TYPE_DISABLED;
+        guideWptName = "";
+        guideWptLoc = null;
+        guideWptDist = 0.0;
+        guideWptAzim = 0.0f;
+        guideWptAngle = 0.0f;
+        guideWptTime = 0L;
+        guideValid = true;
+        guideDistFromStart = 0.0;
+        guideDistToFinish = 0.0;
+        guideTimeToFinish = 0L;
+        guideNavPoint1Name = "";
+        guideNavPoint1Loc = null;
+        guideNavPoint1Dist = 0.0;
+        guideNavPoint1Time = 0L;
+        guideNavPoint1Action = PointRteAction.UNDEFINED;
+        guideNavPoint2Name = "";
+        guideNavPoint2Loc = null;
+        guideNavPoint2Dist = 0.0;
+        guideNavPoint2Time = 0L;
+        guideNavPoint2Action = PointRteAction.UNDEFINED;
+
+        // VARIOUS
+
+        activeDashboardId = "";
+        activeLiveTrackId = "";
+        deviceBatteryValue = 0;
+        deviceBatteryTemperature = 0.0f;
     }
 
     //*************************************************/
@@ -768,80 +828,6 @@ public class UpdateContainer extends Storable {
     @Override
     protected int getVersion() {
         return 2;
-    }
-
-    @Override
-    public void reset() {
-
-        // STATE CUSTOM VARIABLES
-
-        newMyLocation = false;
-        newMapCenter = false;
-        newZoomLevel = false;
-        isUserTouching = false;
-        enabledMyLocation = false;
-
-        // LOCATION, GPS, BASIC VALUES
-
-        locMyLocation = null;
-        gpsSatsUsed = 0;
-        gpsSatsAll = 0;
-        declination = 0.0f;
-        orientHeading = 0.0f;
-        orientHeadingOpposit = 0.0f;
-        orientCourse = 0.0f;
-        orientPitch = 0.0f;
-        orientRoll = 0.0f;
-        orientGpsAngle = 0.0f;
-        speedVertical = 0.0f;
-        slope = 0.0f;
-
-        // MAP STUFF
-
-        mapVisible = false;
-        mapRotate = 0.0f;
-        locMapCenter = null;
-        mapTopLeft = null;
-        mapBottomRight = null;
-        mapZoomLevel = -1;
-
-        // TRACK RECORDING PART
-
-        trackRecRecording = false;
-        trackRecPaused = false;
-        trackRecProfileName = "";
-        trackRecStats = null;
-
-        // GUIDING PART
-
-        guideType = GUIDE_TYPE_DISABLED;
-        guideWptName = "";
-        guideWptLoc = null;
-        guideWptDist = 0.0;
-        guideWptAzim = 0.0f;
-        guideWptAngle = 0.0f;
-        guideWptTime = 0L;
-        guideValid = true;
-        guideDistFromStart = 0.0;
-        guideDistToFinish = 0.0;
-        guideTimeToFinish = 0L;
-        guideNavPoint1Name = "";
-        guideNavPoint1Loc = null;
-        guideNavPoint1Dist = 0.0;
-        guideNavPoint1Time = 0L;
-        guideNavPoint1Action = PointRteAction.UNDEFINED;
-        guideNavPoint2Name = "";
-        guideNavPoint2Loc = null;
-        guideNavPoint2Dist = 0.0;
-        guideNavPoint2Time = 0L;
-        guideNavPoint2Action = PointRteAction.UNDEFINED;
-
-        // VARIOUS
-
-        activeDashboardId = "";
-        activeLiveTrackId = "";
-        deviceBatteryValue = 0;
-        deviceBatteryTemperature = 0.0f;
     }
 
     @Override

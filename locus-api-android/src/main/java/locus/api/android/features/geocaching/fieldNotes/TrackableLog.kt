@@ -66,19 +66,6 @@ class TrackableLog : Storable() {
         return 0
     }
 
-    override fun reset() {
-        tbCode = ""
-        name = ""
-        icon = ""
-        id = -1L
-        cacheCode = ""
-        action = 0
-        trackingCode = ""
-        time = 0L
-        note = ""
-        isLogged = false
-    }
-
     override fun readObject(version: Int, dr: DataReaderBigEndian) {
         tbCode = dr.readString()
         name = dr.readString()

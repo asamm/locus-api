@@ -28,7 +28,6 @@ public class ParcelableContainer implements Parcelable {
 
     /**
      * Return inner byte array
-     * @return
      */
     public byte[] getData() {
         return mData;
