@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.0] - 2018-10-05
+### Changed
+- 'Storable' class variables have to be initialized in constructor, not in removed 'reset' call
+- removed other constructors for 'Storable' class. Use Storable.read if creating instance from existing data
+- renamed 'Waypoint' class to 'Point'
+- other minor refractoring
+
 ## [0.2.25] - 2018-08-14
 ### Changed
 - updated loading of last field note log
