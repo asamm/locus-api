@@ -1,6 +1,6 @@
 package locus.api.android;
 
-import locus.api.android.objects.PackWaypoints;
+import locus.api.android.objects.PackPoints;
 import locus.api.android.utils.LocusConst;
 import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.LocusUtils.LocusVersion;
@@ -67,7 +67,7 @@ public class ActionDisplay {
      * is used only for removing circles. If you want to remove any visible points or
      * tracks you already send by this API, send simply new same intent (as the one
      * with your data), but with empty list of data. So for example send again
-     * {@link PackWaypoints} that has same name!, but contain no data
+     * {@link PackPoints} that has same name!, but contain no data
      *
      * @param ctx       current context
      * @param extraName name of items to remove

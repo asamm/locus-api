@@ -1,11 +1,9 @@
 package com.asamm.locus.api.sample.pages;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -14,6 +12,8 @@ import com.asamm.locus.api.sample.utils.BasicAdapterItem;
 
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import locus.api.android.utils.LocusUtils;
 import locus.api.utils.Logger;
 
@@ -27,7 +27,7 @@ public abstract class ABasePageFragment extends Fragment {
 	private static final String TAG = "ABasePageFragment";
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		// prepare adapter and ListView
 		ListView lv = new ListView(getActivity());

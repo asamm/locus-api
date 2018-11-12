@@ -1,7 +1,6 @@
 package com.asamm.locus.api.sample;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.widget.TextView;
 
 import com.asamm.locus.api.sample.receivers.PeriodicUpdateReceiver;
@@ -10,6 +9,7 @@ import com.asamm.locus.api.sample.utils.SampleCalls;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import androidx.fragment.app.FragmentActivity;
 import locus.api.android.features.periodicUpdates.PeriodicUpdatesHandler;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.utils.LocusUtils;

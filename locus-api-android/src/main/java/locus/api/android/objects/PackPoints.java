@@ -32,36 +32,34 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PackWaypoints extends Storable {
-
-//	private static final String TAG = "PackWaypoints";
+public class PackPoints extends Storable {
 
     /**
      * Unique name
-     * PackWaypoints send to Locus with same name (to display), will be overwrite in Locus
+     * PackPoints send to Locus with same name (to display), will be overwrite in Locus
      */
     private String mName;
 
-    // icon applied to whole PackWaypoints
-    private GeoDataStyle mStyle;
+    // icon applied to whole PackPoints
+    private GeoDataStyle style;
     // bitmap for this pack
-    private Bitmap mBitmap;
+    private Bitmap imgBitmap;
 
     // ArrayList of all points stored in this object
-    private List<Point> mWpts;
+    private List<Point> points;
 
     /**
      * Empty constructor used for {@link Storable}
      * <br>
      * Do not use directly!
      */
-    public PackWaypoints() {
+    public PackPoints() {
         this.mName = "";
-        this.mStyle = null;
-        this.mWpts = new ArrayList<>();
+        this.style = null;
+        this.points = new ArrayList<>();
     }
 
-    public PackWaypoints(String uniqueName) {
+    public PackPoints(String uniqueName) {
         this();
         this.mName = uniqueName;
     }
@@ -71,27 +69,27 @@ public class PackWaypoints extends Storable {
     }
 
     public Bitmap getBitmap() {
-        return mBitmap;
+        return imgBitmap;
     }
 
     public void setBitmap(Bitmap bitmap) {
-        this.mBitmap = bitmap;
+        this.imgBitmap = bitmap;
     }
 
     public GeoDataStyle getExtraStyle() {
-        return mStyle;
+        return style;
     }
 
     public void setExtraStyle(GeoDataStyle extraStyle) {
-        mStyle = extraStyle;
+        style = extraStyle;
     }
 
     public void addWaypoint(Point wpt) {
-        this.mWpts.add(wpt);
+        this.points.add(wpt);
     }
 
     public List<Point> getWaypoints() {
-        return mWpts;
+        return points;
     }
 
     //*************************************************
@@ -112,15 +110,15 @@ public class PackWaypoints extends Storable {
 
         // style
         if (dr.readBoolean()) {
-            mStyle = new GeoDataStyle();
-            mStyle.read(dr);
+            style = new GeoDataStyle();
+            style.read(dr);
         }
 
         // icon
-        mBitmap = UtilsBitmap.readBitmap(dr);
+        imgBitmap = UtilsBitmap.readBitmap(dr);
 
         // waypoints
-        mWpts = dr.readListStorable(Point.class);
+        points = dr.readListStorable(Point.class);
     }
 
     @Override
@@ -129,17 +127,17 @@ public class PackWaypoints extends Storable {
         dw.writeString(mName);
 
         // style
-        if (mStyle == null) {
+        if (style == null) {
             dw.writeBoolean(false);
         } else {
             dw.writeBoolean(true);
-            dw.writeStorable(mStyle);
+            dw.writeStorable(style);
         }
 
         // bitmap icon
-        UtilsBitmap.writeBitmap(dw, mBitmap, Bitmap.CompressFormat.PNG);
+        UtilsBitmap.writeBitmap(dw, imgBitmap, Bitmap.CompressFormat.PNG);
 
         // waypoints itself
-        dw.writeListStorable(mWpts);
+        dw.writeListStorable(points);
     }
 }

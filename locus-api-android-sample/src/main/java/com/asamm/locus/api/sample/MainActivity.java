@@ -4,18 +4,10 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -32,6 +24,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import locus.api.utils.Logger;
 
 public class MainActivity extends AppCompatActivity {
@@ -89,8 +87,7 @@ public class MainActivity extends AppCompatActivity {
 	 * @return {@code true} if toolbar is correctly initialized
 	 */
 	private boolean initializeToolbar() {
-		setSupportActionBar((Toolbar)
-				findViewById(R.id.toolbar_top));
+		setSupportActionBar(findViewById(R.id.toolbar_top));
 		mToolbar = getSupportActionBar();
 		if (mToolbar == null) {
 			Logger.logD(TAG, "initializeToolbar(), " +
@@ -117,10 +114,8 @@ public class MainActivity extends AppCompatActivity {
 	 */
 	private void enableDrawer() {
 		// initialize drawer and drawer toggle button
-		mDrawerLayout = (DrawerLayout)
-				findViewById(R.id.drawer_layout);
-		FrameLayout drawerContent = (FrameLayout)
-				findViewById(R.id.frame_layout_drawer);
+		mDrawerLayout = findViewById(R.id.drawer_layout);
+		FrameLayout drawerContent = findViewById(R.id.frame_layout_drawer);
 
 		// set a custom shadow that overlays the main content when the drawer opens
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.LEFT);
@@ -207,22 +202,17 @@ public class MainActivity extends AppCompatActivity {
 		ListView lv = new ListView(this);
 		BasicAdapter adapter = new BasicAdapter(this, items);
 		lv.setAdapter(adapter);
-		lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		lv.setOnItemClickListener((parent, view, position, id) -> {
+			mCurrentSelectedItemId = items.get(position).id;
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				mCurrentSelectedItemId = items.get(position).id;
+			// refresh content
+			setFragment(mCurrentSelectedItemId);
+			mDrawerLayout.closeDrawers();
 
-				// refresh content
-				setFragment(mCurrentSelectedItemId);
-				mDrawerLayout.closeDrawers();
+			// store value
+			PreferenceManager.getDefaultSharedPreferences(MainActivity.this).
+					edit().putInt(KEY_I_SELECTED_ITEM_ID, mCurrentSelectedItemId).apply();
 
-				// store value
-				PreferenceManager.getDefaultSharedPreferences(MainActivity.this).
-						edit().putInt(KEY_I_SELECTED_ITEM_ID, mCurrentSelectedItemId).apply();
-
-			}
 		});
 		drawerContainer.addView(lv);
 	}

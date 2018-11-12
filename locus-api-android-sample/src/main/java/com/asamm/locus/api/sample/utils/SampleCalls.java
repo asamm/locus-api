@@ -25,7 +25,6 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Environment;
-import android.support.v4.app.FragmentActivity;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -36,13 +35,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.fragment.app.FragmentActivity;
 import locus.api.android.ActionDisplay.ExtraAction;
 import locus.api.android.ActionDisplayPoints;
 import locus.api.android.ActionDisplayTracks;
 import locus.api.android.ActionDisplayVarious;
 import locus.api.android.ActionFiles;
 import locus.api.android.ActionTools;
-import locus.api.android.objects.PackWaypoints;
+import locus.api.android.objects.PackPoints;
 import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.LocusUtils.LocusVersion;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
@@ -75,7 +75,7 @@ public class SampleCalls {
 	 */
 	public static void callSendOnePoint(Context ctx) throws RequiredVersionMissingException {
 		// generate pack
-		PackWaypoints pw = new PackWaypoints("callSendOnePoint");
+		PackPoints pw = new PackPoints("callSendOnePoint");
 		pw.addWaypoint(generateWaypoint(0));
 
 		// send data
@@ -92,7 +92,7 @@ public class SampleCalls {
 	 */
 	public static void callSendMorePoints(Context ctx) throws RequiredVersionMissingException {
 		// generate pack with points
-		PackWaypoints pw = new PackWaypoints("callSendMorePoints");
+		PackPoints pw = new PackPoints("callSendMorePoints");
 		for (int i = 0; i < 1000; i++) {
 			pw.addWaypoint(generateWaypoint(i));
 		}
@@ -110,7 +110,7 @@ public class SampleCalls {
 	 */
 	public static void callSendOnePointWithIcon(Context ctx) throws RequiredVersionMissingException {
 		// prepare pack with point (with icon)
-		PackWaypoints pw = new PackWaypoints("callSendOnePointWithIcon");
+		PackPoints pw = new PackPoints("callSendOnePointWithIcon");
 		pw.setBitmap(BitmapFactory.decodeResource(
 				ctx.getResources(), R.drawable.ic_launcher));
 		pw.addWaypoint(generateWaypoint(0));
@@ -122,17 +122,17 @@ public class SampleCalls {
 	}
 	
 	/**
-	 * Similar to previous method. Every PackWaypoints object have defined icon that is applied on
+	 * Similar to previous method. Every PackPoints object have defined icon that is applied on
 	 * every points. So if you want to send more points with various icons, you have to define for
-	 * every pack specific PackWaypoints object
+	 * every pack specific PackPoints object
 	 * @param ctx current context
 	 */
 	public static void callSendMorePointsWithIcons(Context ctx) throws RequiredVersionMissingException {
 		// container for pack of points
-		List<PackWaypoints> data = new ArrayList<>();
+		List<PackPoints> data = new ArrayList<>();
 
 		// prepare first pack
-		PackWaypoints pd1 = new PackWaypoints("test01");
+		PackPoints pd1 = new PackPoints("test01");
 		GeoDataStyle es1 = new GeoDataStyle();
 		es1.setIconStyle("http://www.googlemapsmarkers.com/v1/009900/", 1.0f);
 		pd1.setExtraStyle(es1);
@@ -142,7 +142,7 @@ public class SampleCalls {
 		data.add(pd1);
 
 		// prepare second pack with different icon
-		PackWaypoints pd2 = new PackWaypoints("test02");
+		PackPoints pd2 = new PackPoints("test02");
 		GeoDataStyle es2 = new GeoDataStyle();
 		es2.setIconStyle("http://www.googlemapsmarkers.com/v1/990000/", 1.0f);
 		pd2.setExtraStyle(es2);
@@ -164,7 +164,7 @@ public class SampleCalls {
 	 */
 	public static void callSendOnePointGeocache(Context ctx) throws RequiredVersionMissingException {
 		// prepare geocache
-		PackWaypoints pd = new PackWaypoints("callSendOnePointGeocache");
+		PackPoints pd = new PackPoints("callSendOnePointGeocache");
 		pd.addWaypoint(generateGeocache(0));
 
 		// send data
@@ -181,7 +181,7 @@ public class SampleCalls {
 	 */
 	public static void callSendMorePointsGeocacheIntentMethod(Context ctx) throws RequiredVersionMissingException {
 		// prepare geocaches
-		PackWaypoints pw = new PackWaypoints("test6");
+		PackPoints pw = new PackPoints("test6");
 		for (int i = 0; i < 100; i++) {
 			pw.addWaypoint(generateGeocache(i));
 		}
@@ -207,11 +207,11 @@ public class SampleCalls {
 		}
 
 		// prepare data
-		PackWaypoints pw = new PackWaypoints("test07");
+		PackPoints pw = new PackPoints("test07");
 		for (int i = 0; i < 1000; i++) {
 			pw.addWaypoint(generateGeocache(i));
 		}
-		ArrayList<PackWaypoints> data = new ArrayList<>();
+		ArrayList<PackPoints> data = new ArrayList<>();
 		data.add(pw);
 
 		// send data
@@ -229,7 +229,7 @@ public class SampleCalls {
 	 */
 	public static void callSendOnePointWithCallbackOnDisplay(Context ctx) throws RequiredVersionMissingException {
 		// prepare data
-		PackWaypoints pd = new PackWaypoints("test2");
+		PackPoints pd = new PackPoints("test2");
 		Point p = generateWaypoint(0);
 		p.setExtraOnDisplay(
 				"com.asamm.locus.api.sample",

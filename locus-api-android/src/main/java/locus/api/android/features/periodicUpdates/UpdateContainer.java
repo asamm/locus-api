@@ -90,6 +90,8 @@ public class UpdateContainer extends Storable {
 
     // information about type of active guidance
     protected int guideType;
+    // ID of current target
+    protected int guideTargetId;
     // name of guiding target
     protected String guideWptName;
     // current guiding location
@@ -149,7 +151,6 @@ public class UpdateContainer extends Storable {
      * Empty constructor.
      */
     public UpdateContainer() {
-        super();
 
         // STATE CUSTOM VARIABLES
 
@@ -194,6 +195,7 @@ public class UpdateContainer extends Storable {
 
         guideType = GUIDE_TYPE_DISABLED;
         guideWptName = "";
+        guideTargetId = -1;
         guideWptLoc = null;
         guideWptDist = 0.0;
         guideWptAzim = 0.0f;
@@ -552,6 +554,14 @@ public class UpdateContainer extends Storable {
     private class GuideTypeBasic {
 
         /**
+         * Get ID of guide target. In case of {@link #getGuideTypeTrack()} , this is app 'trackId'. In
+         * case of {@link #getGuideTypeWaypoint()} it is 'pointId'.
+         */
+        public int getTargetId() {
+            return guideTargetId;
+        }
+
+        /**
          * Get name of target point. In case of waypoint guide, it is waypoint itself, during
          * guiding/navigation, it is point where current guiding arrow points.
          *
@@ -827,7 +837,7 @@ public class UpdateContainer extends Storable {
 
     @Override
     protected int getVersion() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -904,16 +914,19 @@ public class UpdateContainer extends Storable {
         deviceBatteryTemperature = dr.readFloat();
 
         // V1
-
         if (version >= 1) {
             guideValid = dr.readBoolean();
         }
 
         // V2
-
         if (version >= 2) {
             activeDashboardId = dr.readString();
             activeLiveTrackId = dr.readString();
+        }
+
+        // V3
+        if (version >= 3) {
+            guideTargetId = dr.readInt();
         }
     }
 
@@ -993,13 +1006,14 @@ public class UpdateContainer extends Storable {
         dw.writeFloat(deviceBatteryTemperature);
 
         // V1
-
         dw.writeBoolean(guideValid);
 
         // V2
-
         dw.writeString(activeDashboardId);
         dw.writeString(activeLiveTrackId);
+
+        // V3
+        dw.writeInt(guideTargetId);
     }
 
     /**

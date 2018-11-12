@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import locus.api.android.ActionDisplay;
-import locus.api.android.objects.PackWaypoints;
+import locus.api.android.objects.PackPoints;
 import locus.api.android.utils.LocusConst;
 import locus.api.android.utils.LocusUtils;
 import locus.api.objects.Storable;
@@ -71,7 +71,7 @@ public class UtilsAddonAR {
      * @param guidedWptId ID of point on which is currently active guidance
      * @return {@code true} if add-on was correctly called
      */
-    public static boolean showPoints(Activity act, List<PackWaypoints> data,
+    public static boolean showPoints(Activity act, List<PackPoints> data,
             Location yourLoc, long guidedWptId) {
         if (!isInstalled(act)) {
             Logger.logW(TAG, "missing required version " + REQUIRED_VERSION);

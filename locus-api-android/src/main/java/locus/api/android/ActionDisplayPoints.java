@@ -11,7 +11,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import locus.api.android.objects.PackWaypoints;
+import locus.api.android.objects.PackPoints;
 import locus.api.android.utils.LocusConst;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.Storable;
@@ -31,12 +31,12 @@ public class ActionDisplayPoints extends ActionDisplay {
      * so for larger data, use below method {@link #sendPacksFile(Context, List, String, ExtraAction)}
      *
      * @param context     actual {@link Context}
-     * @param data        {@link PackWaypoints} object that should be send to Locus
+     * @param data        {@link PackPoints} object that should be send to Locus
      * @param extraAction extra action that should happen after display in app
      * @return {@code true} if action was success
      * @throws RequiredVersionMissingException exception in case of missing required app version
      */
-    public static boolean sendPack(Context context, PackWaypoints data, ExtraAction extraAction)
+    public static boolean sendPack(Context context, PackPoints data, ExtraAction extraAction)
             throws RequiredVersionMissingException {
         return sendPack(LocusConst.ACTION_DISPLAY_DATA,
                 context, data,
@@ -50,14 +50,14 @@ public class ActionDisplayPoints extends ActionDisplay {
      * Broadcast intent
      *
      * @param context      actual {@link Context}
-     * @param data         {@link PackWaypoints} object that should be send to Locus
+     * @param data         {@link PackPoints} object that should be send to Locus
      * @param centerOnData allows to center on send data. This parameter is ignored
      *                     if <code>callImport</code> is set to <code>true</code>. Suggested is value
      *                     <code>false</code> because unexpected centering breaks usability.
      * @return <code>true</code> if action was success
      * @throws RequiredVersionMissingException exception in case of missing required app version
      */
-    public static boolean sendPackSilent(Context context, PackWaypoints data, boolean centerOnData)
+    public static boolean sendPackSilent(Context context, PackPoints data, boolean centerOnData)
             throws RequiredVersionMissingException {
         return sendPack(LocusConst.ACTION_DISPLAY_DATA_SILENTLY,
                 context, data,
@@ -67,7 +67,7 @@ public class ActionDisplayPoints extends ActionDisplay {
     /**
      * @param action       action to perform
      * @param context      actual {@link Context}
-     * @param data         {@link PackWaypoints} object that should be send to Locus
+     * @param data         {@link PackPoints} object that should be send to Locus
      * @param callImport   whether import with this data should be called after Locus starts.
      *                     Otherwise data will be displayed as temporary objects on map.
      * @param centerOnData allow to center on displayed data. This parameter is ignored
@@ -77,7 +77,7 @@ public class ActionDisplayPoints extends ActionDisplay {
      * @throws RequiredVersionMissingException exception in case of missing required app version
      */
     private static boolean sendPack(String action, Context context,
-            PackWaypoints data, boolean callImport, boolean centerOnData)
+            PackPoints data, boolean callImport, boolean centerOnData)
             throws RequiredVersionMissingException {
         // check data
         if (data == null) {
@@ -94,7 +94,7 @@ public class ActionDisplayPoints extends ActionDisplay {
     // LIST OF PACK_WAYPOINTS OVER INTENT
 
     /**
-     * Simple way how to send ArrayList<PackWaypoints> object over intent to Locus. Count that
+     * Simple way how to send ArrayList<PackPoints> object over intent to Locus. Count that
      * intent in Android have some size limits so for larger data, use another method
      *
      * @param context actual {@link Context}
@@ -103,7 +103,7 @@ public class ActionDisplayPoints extends ActionDisplay {
      * @throws RequiredVersionMissingException exception in case of missing required app version
      */
     public static boolean sendPacks(Context context,
-            List<PackWaypoints> data, ExtraAction extraAction)
+            List<PackPoints> data, ExtraAction extraAction)
             throws RequiredVersionMissingException {
         return sendPacks(LocusConst.ACTION_DISPLAY_DATA,
                 context, data, extraAction == ExtraAction.IMPORT,
@@ -111,14 +111,14 @@ public class ActionDisplayPoints extends ActionDisplay {
     }
 
     public static boolean sendPacksSilent(Context context,
-            List<PackWaypoints> data, boolean centerOnData)
+            List<PackPoints> data, boolean centerOnData)
             throws RequiredVersionMissingException {
         return sendPacks(LocusConst.ACTION_DISPLAY_DATA_SILENTLY,
                 context, data, false, centerOnData);
     }
 
     private static boolean sendPacks(String action, Context context,
-            List<PackWaypoints> data, boolean callImport, boolean centerOnData)
+            List<PackPoints> data, boolean callImport, boolean centerOnData)
             throws RequiredVersionMissingException {
         // check data
         if (data == null) {
@@ -151,7 +151,7 @@ public class ActionDisplayPoints extends ActionDisplay {
      * @throws RequiredVersionMissingException exception in case of missing required app version
      */
     public static boolean sendPacksFile(Context context,
-            List<PackWaypoints> data, String filepath, ExtraAction extraAction)
+            List<PackPoints> data, String filepath, ExtraAction extraAction)
             throws RequiredVersionMissingException {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA,
                 context, data, filepath, extraAction == ExtraAction.IMPORT,
@@ -159,7 +159,7 @@ public class ActionDisplayPoints extends ActionDisplay {
     }
 
     public static boolean sendPacksFileSilent(Context context,
-            List<PackWaypoints> data, String filepath, boolean centerOnData)
+            List<PackPoints> data, String filepath, boolean centerOnData)
             throws RequiredVersionMissingException {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA_SILENTLY,
                 context, data, filepath, false, centerOnData);
@@ -178,7 +178,7 @@ public class ActionDisplayPoints extends ActionDisplay {
      * @throws RequiredVersionMissingException exception in case of missing required app version
      */
     private static boolean sendPacksFile(String action, Context context,
-            List<PackWaypoints> data, String filepath, boolean callImport, boolean centerOnData)
+            List<PackPoints> data, String filepath, boolean callImport, boolean centerOnData)
             throws RequiredVersionMissingException {
         if (sendDataWriteOnCard(data, filepath)) {
             Intent intent = new Intent();
@@ -189,7 +189,7 @@ public class ActionDisplayPoints extends ActionDisplay {
         }
     }
 
-    private static boolean sendDataWriteOnCard(List<PackWaypoints> data, String filepath) {
+    private static boolean sendDataWriteOnCard(List<PackPoints> data, String filepath) {
         if (data == null || data.size() == 0)
             return false;
 
@@ -226,7 +226,7 @@ public class ActionDisplayPoints extends ActionDisplay {
      * @return loaded pack of points
      */
     @SuppressWarnings("unchecked")
-    public static List<PackWaypoints> readDataWriteOnCard(String filepath) {
+    public static List<PackPoints> readDataWriteOnCard(String filepath) {
         // check file
         File file = new File(filepath);
         if (!file.exists()) {
@@ -237,7 +237,7 @@ public class ActionDisplayPoints extends ActionDisplay {
         try {
 
             dis = new DataInputStream(new FileInputStream(file));
-            return Storable.readList(PackWaypoints.class, dis);
+            return Storable.readList(PackPoints.class, dis);
         } catch (Exception e) {
             Logger.logE(TAG, "readDataWriteOnCard(" + filepath + ")", e);
         } finally {
@@ -262,7 +262,7 @@ public class ActionDisplayPoints extends ActionDisplay {
         }
 
         // create empty pack
-        PackWaypoints pw = new PackWaypoints(packName);
+        PackPoints pw = new PackPoints(packName);
 
         // create and send intent
         Intent intent = new Intent();

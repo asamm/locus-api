@@ -8,13 +8,13 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
 import android.view.GestureDetector
 import android.view.Gravity
 import android.view.MotionEvent
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import locus.api.android.ActionMapTools
 import locus.api.android.MapPreviewParams
 import locus.api.android.utils.LocusUtils

@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.1] - 2018-11-12
+### Changed
+- 'PackWaypoints' renamed to 'PackPoints'
+- 'UpdateContainer' now contains point/track ID of active guide
+- updated samples to AndroidX
+
 ## [0.3.0] - 2018-10-05
 ### Changed
 - 'Storable' class variables have to be initialized in constructor, not in removed 'reset' call

@@ -77,7 +77,7 @@ public class PeriodicUpdateReceiver extends BroadcastReceiver {
 //		try {
 //			// sending back few points near received center
 //			Location mapCenter = update.getLocMapCenter();
-//			PackWaypoints pw = new PackWaypoints("send_point_silently");
+//			PackPoints pw = new PackPoints("send_point_silently");
 //			for (int i = 0; i < 10; i++) {
 //				Location loc = new Location(TAG);
 //				loc.setLatitude(mapCenter.getLatitude() + (Math.random() - 0.5) / 100.0);
