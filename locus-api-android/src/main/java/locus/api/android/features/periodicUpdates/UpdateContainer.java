@@ -91,7 +91,7 @@ public class UpdateContainer extends Storable {
     // information about type of active guidance
     protected int guideType;
     // ID of current target
-    protected int guideTargetId;
+    protected long guideTargetId;
     // name of guiding target
     protected String guideWptName;
     // current guiding location
@@ -195,7 +195,7 @@ public class UpdateContainer extends Storable {
 
         guideType = GUIDE_TYPE_DISABLED;
         guideWptName = "";
-        guideTargetId = -1;
+        guideTargetId = -1L;
         guideWptLoc = null;
         guideWptDist = 0.0;
         guideWptAzim = 0.0f;
@@ -557,7 +557,7 @@ public class UpdateContainer extends Storable {
          * Get ID of guide target. In case of {@link #getGuideTypeTrack()} , this is app 'trackId'. In
          * case of {@link #getGuideTypeWaypoint()} it is 'pointId'.
          */
-        public int getTargetId() {
+        public long getTargetId() {
             return guideTargetId;
         }
 
@@ -926,7 +926,7 @@ public class UpdateContainer extends Storable {
 
         // V3
         if (version >= 3) {
-            guideTargetId = dr.readInt();
+            guideTargetId = dr.readLong();
         }
     }
 
@@ -1013,7 +1013,7 @@ public class UpdateContainer extends Storable {
         dw.writeString(activeLiveTrackId);
 
         // V3
-        dw.writeInt(guideTargetId);
+        dw.writeLong(guideTargetId);
     }
 
     /**
