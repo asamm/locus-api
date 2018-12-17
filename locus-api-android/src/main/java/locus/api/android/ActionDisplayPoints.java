@@ -254,7 +254,7 @@ public class ActionDisplayPoints extends ActionDisplay {
      * @param packName name of pack
      * @throws RequiredVersionMissingException exception in case of missing required app version
      */
-    public void removePackFromLocus(Context ctx, String packName)
+    public static void removePackFromLocus(Context ctx, String packName)
             throws RequiredVersionMissingException {
         // check data
         if (packName == null || packName.length() == 0) {
