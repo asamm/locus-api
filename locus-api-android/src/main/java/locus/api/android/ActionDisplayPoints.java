@@ -2,6 +2,7 @@ package locus.api.android;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -11,14 +12,17 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import locus.api.android.objects.PackPoints;
 import locus.api.android.utils.LocusConst;
+import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.Storable;
 import locus.api.utils.Logger;
 import locus.api.utils.Utils;
 
-@SuppressWarnings({"WeakerAccess", "unused"})
+@SuppressWarnings({"WeakerAccess", "UnusedReturnValue", "DeprecatedIsStillUsed"})
 public class ActionDisplayPoints extends ActionDisplay {
 
     // tag for logger
@@ -135,13 +139,15 @@ public class ActionDisplayPoints extends ActionDisplay {
     // MORE PACK_WAYPOINTS OVER FILE
 
     /**
-     * Allow to send data to locus, by storing serialized version of data into file. This method
-     * can have advantage over cursor in simplicity of implementation and also that filesize is
-     * not limited as in Cursor method.<br></br />
-     * On second case, <s>need permission for disk access</s> (not needed in latest android) and should
-     * be slower due to IO operations.<br></br />
-     * Be careful about size of data. This method can cause OutOfMemory error on Locus side if data
-     * are too big, because all needs to be loaded at once before process.
+     * <p>Allows to send data to Locus, by storing a serialized version of data into a file. This
+     * method can have advantage over a cursor in simplicity of implementation and also that
+     * the file size is not limited as in the cursor method.</p>
+     *
+     * <p>On the second case, <s>needs permission for disk access</s> (not needed in a latest
+     * Android) and should be slower due to an IO operations.</p>
+     *
+     * <p>Be careful about the size of data. This method can cause OutOfMemory error on Locus side
+     * if data are too big, because all needs to be loaded at once before process.</p>
      *
      * @param context     existing {@link Context}
      * @param data        data to send
@@ -149,20 +155,110 @@ public class ActionDisplayPoints extends ActionDisplay {
      * @param extraAction extra action that should happen after Locus reads data
      * @return {@code true} if data were correctly send, otherwise {@code false}
      * @throws RequiredVersionMissingException exception in case of missing required app version
+     * @deprecated Use {@link #sendPacksFile(Context, List, File, Uri, ExtraAction)} which doesn't
+     * require permission for disk access
      */
-    public static boolean sendPacksFile(Context context,
-            List<PackPoints> data, String filepath, ExtraAction extraAction)
-            throws RequiredVersionMissingException {
+    @Deprecated
+    public static boolean sendPacksFile(
+            @NonNull Context context,
+            @NonNull List<PackPoints> data,
+            @NonNull String filepath,
+            @NonNull ExtraAction extraAction
+    ) throws RequiredVersionMissingException {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA,
-                context, data, filepath, extraAction == ExtraAction.IMPORT,
+                context, data, new File(filepath), null, extraAction == ExtraAction.IMPORT,
                 extraAction == ExtraAction.CENTER);
     }
 
-    public static boolean sendPacksFileSilent(Context context,
-            List<PackPoints> data, String filepath, boolean centerOnData)
-            throws RequiredVersionMissingException {
+    /**
+     * <p>Allow to send data to Locus, by storing a serialized version of data into a file This
+     * method can have advantage over a cursor in simplicity of implementation and also that
+     * the file size is not limited as in the cursor method.</p>
+     *
+     * <p>On second case, should be slower due to IO operations.</p>
+     *
+     * <p>Be careful about the size of data. This method can cause OutOfMemory error on Locus side
+     * if data are too big, because all needs to be loaded at once before process.</p>
+     *
+     * @param context     existing {@link Context}
+     * @param data        data to send
+     * @param file        path where data should be stored
+     * @param fileUri     uri from {@code FileProvider}, which represents filepath
+     * @param extraAction extra action that should happen after Locus reads data
+     * @return {@code true} if data were correctly send, otherwise {@code false}
+     * @throws RequiredVersionMissingException exception in case of missing required app version
+     */
+    public static boolean sendPacksFile(
+            @NonNull Context context,
+            @NonNull List<PackPoints> data,
+            @NonNull File file,
+            @NonNull Uri fileUri,
+            @NonNull ExtraAction extraAction
+    ) throws RequiredVersionMissingException {
+        return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA,
+                context, data, file, fileUri, extraAction == ExtraAction.IMPORT,
+                extraAction == ExtraAction.CENTER);
+    }
+
+    /**
+     * <p>Allows to send data to Locus silently without user interaction, by storing a serialized
+     * version of data into a file. This method can have advantage over a cursor in simplicity of
+     * implementation and also that the file size is not limited as in the cursor method.</p>
+     *
+     * <p>On the second case, <s>needs permission for disk access</s> (not needed in a latest
+     * Android) and should be slower due to an IO operations.</p>
+     *
+     * <p>Be careful about the size of data. This method can cause OutOfMemory error on Locus side
+     * if data are too big, because all needs to be loaded at once before process.</p>
+     *
+     * @param context      existing {@link Context}
+     * @param data         data to send
+     * @param filepath     path where data should be stored
+     * @param centerOnData {@code true} to center on data
+     * @return {@code true} if data were correctly send, otherwise {@code false}
+     * @throws RequiredVersionMissingException exception in case of missing required app version
+     * @deprecated Use {@link #sendPacksFileSilent(Context, List, File, Uri, boolean)} which
+     * doesn't require permission for disk access
+     */
+    @Deprecated
+    public static boolean sendPacksFileSilent(
+            @NonNull Context context,
+            @NonNull List<PackPoints> data,
+            @NonNull String filepath,
+            boolean centerOnData
+    ) throws RequiredVersionMissingException {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA_SILENTLY,
-                context, data, filepath, false, centerOnData);
+                context, data, new File(filepath), null, false, centerOnData);
+    }
+
+    /**
+     * <p>Allows to send data to Locus silently without user interaction, by storing a serialized
+     * version of data into a file. This method can have advantage over a cursor in simplicity of
+     * implementation and also that the file size is not limited as in the cursor method.</p>
+     *
+     * <p>On the second case, <s>needs permission for disk access</s> (not needed in a latest
+     * Android) and should be slower due to an IO operations.</p>
+     *
+     * <p>Be careful about the size of data. This method can cause OutOfMemory error on Locus side
+     * if data are too big, because all needs to be loaded at once before process.</p>
+     *
+     * @param context      existing {@link Context}
+     * @param data         data to send
+     * @param file         path where data should be stored
+     * @param fileUri      uri from {@code FileProvider}, which represents filepath
+     * @param centerOnData {@code true} to center on data
+     * @return {@code true} if data were correctly send, otherwise {@code false}
+     * @throws RequiredVersionMissingException exception in case of missing required app version
+     */
+    public static boolean sendPacksFileSilent(
+            @NonNull Context context,
+            @NonNull List<PackPoints> data,
+            @NonNull File file,
+            @NonNull Uri fileUri,
+            boolean centerOnData
+    ) throws RequiredVersionMissingException {
+        return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA_SILENTLY,
+                context, data, file, fileUri, false, centerOnData);
     }
 
     /**
@@ -171,31 +267,43 @@ public class ActionDisplayPoints extends ActionDisplay {
      * @param action       action we wants to perform
      * @param context      current context
      * @param data         data to send
-     * @param filepath     path where file will be temporary stored
+     * @param file         path where file will be temporary stored
+     * @param fileUri      uri from {@code FileProvider}, which represents {@code file}
      * @param callImport   {@code true} to call import after load in Locus
      * @param centerOnData {@code true} to center on data
      * @return {@code true} if request was correctly send
      * @throws RequiredVersionMissingException exception in case of missing required app version
      */
-    private static boolean sendPacksFile(String action, Context context,
-            List<PackPoints> data, String filepath, boolean callImport, boolean centerOnData)
-            throws RequiredVersionMissingException {
-        if (sendDataWriteOnCard(data, filepath)) {
+    private static boolean sendPacksFile(
+            @NonNull String action,
+            @NonNull Context context,
+            @NonNull List<PackPoints> data,
+            @NonNull File file,
+            @Nullable Uri fileUri,
+            boolean callImport,
+            boolean centerOnData
+    ) throws RequiredVersionMissingException {
+        if (sendDataWriteOnCard(data, file)) {
             Intent intent = new Intent();
-            intent.putExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH, filepath);
-            return sendData(action, context, intent, callImport, centerOnData);
+            if (fileUri != null) {
+                intent.putExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_URI, fileUri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                return sendData(action, context, intent, callImport, centerOnData, LocusUtils.VersionCode.UPDATE_15);
+            } else {
+                intent.putExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH, file.getAbsolutePath());
+                return sendData(action, context, intent, callImport, centerOnData);
+            }
         } else {
             return false;
         }
     }
 
-    private static boolean sendDataWriteOnCard(List<PackPoints> data, String filepath) {
-        if (data == null || data.size() == 0)
+    private static boolean sendDataWriteOnCard(@NonNull List<PackPoints> data, @NonNull File file) {
+        if (data.size() == 0)
             return false;
 
         DataOutputStream dos = null;
         try {
-            File file = new File(filepath);
             file.getParentFile().mkdirs();
 
             // delete previous file
@@ -211,35 +319,57 @@ public class ActionDisplayPoints extends ActionDisplay {
             dos.flush();
             return true;
         } catch (Exception e) {
-            Logger.logE(TAG, "sendDataWriteOnCard(" + filepath + ", " + data + ")", e);
+            Logger.logE(TAG, "sendDataWriteOnCard(" + file.getAbsolutePath() + ", " + data + ")", e);
             return false;
         } finally {
             Utils.closeStream(dos);
         }
     }
 
-    /**
-     * Invert method to {@link #sendPacksFile(Context, List, String, ExtraAction)} . This load serialized data
-     * from file object.
-     *
-     * @param filepath path to file
-     * @return loaded pack of points
-     */
-    @SuppressWarnings("unchecked")
-    public static List<PackPoints> readDataWriteOnCard(String filepath) {
+    private static List<PackPoints> readDataFromPath(@NonNull String filepath) {
         // check file
         File file = new File(filepath);
-        if (!file.exists()) {
+        if (!file.exists() || !file.isFile()) {
             return new ArrayList<>();
         }
 
         DataInputStream dis = null;
         try {
-
             dis = new DataInputStream(new FileInputStream(file));
             return Storable.readList(PackPoints.class, dis);
         } catch (Exception e) {
-            Logger.logE(TAG, "readDataWriteOnCard(" + filepath + ")", e);
+            Logger.logE(TAG, "readDataFromPath(" + filepath + ")", e);
+        } finally {
+            Utils.closeStream(dis);
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * Invert method to {@link #sendPacksFile(Context, List, File, Uri, ExtraAction)} or
+     * {@link #sendPacksFile(Context, List, String, ExtraAction)}. This load serialized data from
+     * a file stored in {@link Intent}.
+     *
+     * @param ctx    context
+     * @param intent intent data
+     * @return loaded pack of points
+     */
+    public static List<PackPoints> readPacksFile(@NonNull Context ctx, @NonNull Intent intent) {
+        if (intent.hasExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_URI)) {
+            return readDataFromUri(ctx, intent.getParcelableExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_URI));
+        } else {
+            // backward compatibility
+            return readDataFromPath(intent.getStringExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH));
+        }
+    }
+
+    private static List<PackPoints> readDataFromUri(@NonNull Context ctx, @NonNull Uri fileUri) {
+        DataInputStream dis = null;
+        try {
+            dis = new DataInputStream(ctx.getContentResolver().openInputStream(fileUri));
+            return Storable.readList(PackPoints.class, dis);
+        } catch (Exception e) {
+            Logger.logE(TAG, "readDataFromUri(" + fileUri + ")", e);
         } finally {
             Utils.closeStream(dis);
         }

@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Environment;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
 import locus.api.android.ActionDisplay.ExtraAction;
 import locus.api.android.ActionDisplayPoints;
@@ -199,12 +201,22 @@ public class SampleCalls {
 	 * @param ctx current context
 	 */
 	public static void callSendMorePointsGeocacheFileMethod(Context ctx) throws RequiredVersionMissingException {
+		LocusVersion version = LocusUtils.getActiveVersion(ctx);
+
 		// get filepath
-		File externalDir = ctx.getExternalCacheDir();
-		if (externalDir == null || !(externalDir.exists())) {
-			Logger.logW(TAG, "problem with obtain of External dir");
-			return;
+		File dir;
+		if (version.isVersionValid(LocusUtils.VersionCode.UPDATE_15)) {
+			dir = new File(ctx.getCacheDir(), "shared");
+			dir.mkdirs();
+		} else  {
+			dir = ctx.getExternalCacheDir();
+			if (dir == null || !(dir.exists())) {
+				Logger.logW(TAG, "problem with obtain of External dir");
+				return;
+			}
 		}
+
+		File file = new File(dir, "testFile.locus");
 
 		// prepare data
 		PackPoints pw = new PackPoints("test07");
@@ -215,10 +227,17 @@ public class SampleCalls {
 		data.add(pw);
 
 		// send data
-		boolean send = ActionDisplayPoints.sendPacksFile(ctx, data,
-				new File(externalDir, "testFile.locus").getAbsolutePath(), ExtraAction.CENTER);
-		Logger.logD(TAG, "callSendMorePointsGeocacheFileMethod(), " +
-				"send:" + send);
+		boolean send;
+		if (version.isVersionValid(LocusUtils.VersionCode.UPDATE_15)) {
+			// send file via FileProvider, you don't need WRITE_EXTERNAL_STORAGE permission for this
+			Uri uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file);
+			send = ActionDisplayPoints.sendPacksFile(ctx, data, file, uri, ExtraAction.CENTER);
+		} else {
+			// send file old way, you need WRITE_EXTERNAL_STORAGE permission for this
+			send = ActionDisplayPoints.sendPacksFile(ctx, data, file.getAbsolutePath(),
+					ExtraAction.CENTER);
+		}
+		Logger.logD(TAG, "callSendMorePointsGeocacheFileMethod(), send:" + send);
 	}
 
 	/**
