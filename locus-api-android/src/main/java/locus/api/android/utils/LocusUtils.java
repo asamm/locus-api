@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import locus.api.android.ActionTools;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.Storable;
@@ -145,10 +146,9 @@ public class LocusUtils {
          * <ul>
          * <li>Send pack file via FileProvider</li>
          * </ul><br>
-         * Locus Free/Pro 3.x.x(x)<br>
+         * Locus Free/Pro 3.36.0(791)<br>
          */
-        // TODO set correct version
-        UPDATE_15(2000, 2000, 0);
+        UPDATE_15(791, 791, 0);
 
 
         /**
@@ -297,7 +297,7 @@ public class LocusUtils {
         }
 
         @Override
-        public String toString() {
+        public @NonNull String toString() {
             return Utils.toString(this);
         }
 
