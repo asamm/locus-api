@@ -28,7 +28,9 @@ public class ActionDisplayPoints extends ActionDisplay {
     // tag for logger
     private static final String TAG = "ActionDisplayPoints";
 
-    // ONE PACK_WAYPOINT OVER INTENT
+    //*************************************************
+    // ONE PACK_POINT OVER INTENT
+    //*************************************************
 
     /**
      * Simple way how to send data over intent to Locus. Be aware that intent in Android have some size limits,
@@ -95,7 +97,9 @@ public class ActionDisplayPoints extends ActionDisplay {
         return sendData(action, context, intent, callImport, centerOnData);
     }
 
-    // LIST OF PACK_WAYPOINTS OVER INTENT
+    //*************************************************
+    // LIST OF PACK_POINTS OVER INTENT
+    //*************************************************
 
     /**
      * Simple way how to send ArrayList<PackPoints> object over intent to Locus. Count that
@@ -136,7 +140,9 @@ public class ActionDisplayPoints extends ActionDisplay {
         return sendData(action, context, intent, callImport, centerOnData);
     }
 
-    // MORE PACK_WAYPOINTS OVER FILE
+    //*************************************************
+    // MORE PACK_POINTS OVER FILE
+    //*************************************************
 
     /**
      * <p>Allows to send data to Locus, by storing a serialized version of data into a file. This
@@ -326,24 +332,7 @@ public class ActionDisplayPoints extends ActionDisplay {
         }
     }
 
-    private static List<PackPoints> readDataFromPath(@NonNull String filepath) {
-        // check file
-        File file = new File(filepath);
-        if (!file.exists() || !file.isFile()) {
-            return new ArrayList<>();
-        }
-
-        DataInputStream dis = null;
-        try {
-            dis = new DataInputStream(new FileInputStream(file));
-            return Storable.readList(PackPoints.class, dis);
-        } catch (Exception e) {
-            Logger.logE(TAG, "readDataFromPath(" + filepath + ")", e);
-        } finally {
-            Utils.closeStream(dis);
-        }
-        return new ArrayList<>();
-    }
+    // HANDLE RECEIVED DATA
 
     /**
      * Invert method to {@link #sendPacksFile(Context, List, File, Uri, ExtraAction)} or
@@ -370,6 +359,25 @@ public class ActionDisplayPoints extends ActionDisplay {
             return Storable.readList(PackPoints.class, dis);
         } catch (Exception e) {
             Logger.logE(TAG, "readDataFromUri(" + fileUri + ")", e);
+        } finally {
+            Utils.closeStream(dis);
+        }
+        return new ArrayList<>();
+    }
+
+    private static List<PackPoints> readDataFromPath(@NonNull String filepath) {
+        // check file
+        File file = new File(filepath);
+        if (!file.exists() || !file.isFile()) {
+            return new ArrayList<>();
+        }
+
+        DataInputStream dis = null;
+        try {
+            dis = new DataInputStream(new FileInputStream(file));
+            return Storable.readList(PackPoints.class, dis);
+        } catch (Exception e) {
+            Logger.logE(TAG, "readDataFromPath(" + filepath + ")", e);
         } finally {
             Utils.closeStream(dis);
         }

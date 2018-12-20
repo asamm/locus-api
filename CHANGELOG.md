@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.3] - 2018-12-20
+### Added
+- handling files over FileProvider API
+- samples for new "broadcasts API"
+### Changed
+- base java API renamed to "locus-api-core" (no change in your app needed, if you use `locus-api-android`)
+### Fixed
+- static access to `ActionDisplayPoints.removePackFromLocus` method
+
 ## [0.3.2] - 2018-11-12
 ### Fixed
 - ID of guidance target

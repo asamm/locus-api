@@ -48,10 +48,10 @@ uploadArchives {
 // https://docs.gradle.org/current/dsl/org.gradle.api.publish.maven.MavenPublication.html
 publishing {
     publications {
-        pubLibLocusApi(MavenPublication) {
+        pubLibLocusApiCore(MavenPublication) {
 
             groupId group
-            artifactId 'locus-api'
+            artifactId 'locus-api-core'
             //noinspection GroovyAssignabilityCheck
             version API_VERSION
 
@@ -97,13 +97,13 @@ publishing {
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
-    publications = ['pubLibLocusApi']
+    publications = ['pubLibLocusApiCore']
     publish = true
     override = true
 
     pkg {
         repo = 'maven'
-        name = 'locus-api'
+        name = 'locus-api-core'
         licenses = ['LGPL-3.0']
         vcsUrl = 'https://github.com/asamm/locus-api.git'
 
@@ -115,7 +115,7 @@ bintray {
         //noinspection GroovyAssignabilityCheck
         version {
             name = API_VERSION
-            desc = 'Locus API, version ' + API_VERSION
+            desc = 'Locus API - Core, version ' + API_VERSION
             released  = new Date()
             vcsTag = API_VERSION
         }
