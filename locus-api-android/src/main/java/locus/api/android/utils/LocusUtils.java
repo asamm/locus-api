@@ -140,7 +140,16 @@ public class LocusUtils {
          * </ul><br>
          * Locus Free/Pro 3.29.0(684)<br>
          */
-        UPDATE_14(684, 684, 0);
+        UPDATE_14(684, 684, 0),
+        /**
+         * <ul>
+         * <li>Send pack file via FileProvider</li>
+         * </ul><br>
+         * Locus Free/Pro 3.x.x(x)<br>
+         */
+        // TODO set correct version
+        UPDATE_15(2000, 2000, 0);
+
 
         /**
          * Version code for a Free version.

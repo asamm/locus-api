@@ -19,7 +19,9 @@
 
 package locus.api.android.utils;
 
-public class LocusConst {
+public final class LocusConst {
+    private LocusConst() {
+    }
 
     /******************
      * these intent are used for extending functionality of Locus. All description is
@@ -262,6 +264,11 @@ public class LocusConst {
      * sends points data serialized as byte[] through file stored on SD card
      */
     public static final String INTENT_EXTRA_POINTS_FILE_PATH = "INTENT_EXTRA_POINTS_FILE_PATH";
+
+    /**
+     * sends points data serialized as byte[] through file shared via {@code FileProvider}
+     */
+    public static final String INTENT_EXTRA_POINTS_FILE_URI = "INTENT_EXTRA_POINTS_FILE_URI";
 
     /**
      * Sends one single track to Locus

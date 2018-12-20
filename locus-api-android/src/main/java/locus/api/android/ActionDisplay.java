@@ -1,5 +1,8 @@
 package locus.api.android;
 
+import android.content.Context;
+import android.content.Intent;
+
 import locus.api.android.objects.PackPoints;
 import locus.api.android.utils.LocusConst;
 import locus.api.android.utils.LocusUtils;
@@ -7,9 +10,6 @@ import locus.api.android.utils.LocusUtils.LocusVersion;
 import locus.api.android.utils.LocusUtils.VersionCode;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.utils.Logger;
-
-import android.content.Context;
-import android.content.Intent;
 
 public class ActionDisplay {
 
@@ -117,6 +117,7 @@ public class ActionDisplay {
                 intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINTS_DATA) == null &&
                         intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINTS_DATA_ARRAY) == null &&
                         intent.getStringExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH) == null &&
+                        intent.getParcelableExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_URI) == null &&
                         intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_TRACKS_SINGLE) == null &&
                         intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_TRACKS_MULTI) == null &&
                         intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_CIRCLES_MULTI) == null);
