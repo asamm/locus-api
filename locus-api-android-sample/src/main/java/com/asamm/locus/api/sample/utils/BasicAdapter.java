@@ -36,7 +36,7 @@ public class BasicAdapter extends ArrayAdapter<BasicAdapterItem> {
     private View prepareView(final int position, View convertView, ViewGroup parent) {
 		// prepare item
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.basic_list_item, null);
+			convertView = inflater.inflate(R.layout.basic_list_item, parent, false);
 		}
 
 		// get current item
