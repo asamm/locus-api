@@ -39,9 +39,9 @@ dependencies {
 
     // use in case of direct handling over Locus Core project
     // debugApi and releaseApi is not correctly stored in maven POM!
-    api project(':locus-api-core')
+//    api project(':locus-api-core')
     // use in case of publishing to Maven. 'api' needs to be set in artifact as well
-//    api 'com.asamm:locus-api:' + API_VERSION
+    api 'com.asamm:locus-api-core:' + API_VERSION
 }
 
 task createSourceJar(type: Jar) {

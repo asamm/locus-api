@@ -108,10 +108,10 @@ public class ActivityDashboard extends FragmentActivity {
 					append(activeVersion.getVersionCode()).
 					append("\n");
 			sb.append("- Locus Map is running: ").
-					append(SampleCalls.isRunning(this, activeVersion) ? "running" : "stopped").
+					append(SampleCalls.INSTANCE.isRunning(this, activeVersion) ? "running" : "stopped").
 					append("\n");
 			sb.append("- periodic updates: ").
-					append(SampleCalls.isPeriodicUpdateEnabled(this, activeVersion) ? "enabled" : "disabled").
+					append(SampleCalls.INSTANCE.isPeriodicUpdateEnabled(this, activeVersion) ? "enabled" : "disabled").
 					append("\n");
 
 			// set text to field

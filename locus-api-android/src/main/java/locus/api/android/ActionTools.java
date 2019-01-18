@@ -47,13 +47,10 @@ public class ActionTools {
     private static final String TAG = "ActionTools";
 
     //*************************************************
-    // INFO FUNCTIONS
+    // PART ALREADY REWROTE IN 'ACTIONBASICS' CLASS
     //*************************************************
 
-    /**
-     * Use getLocusInfo() instead
-     */
-    @Deprecated
+    @Deprecated // use ActionBasic.getLocusInfo() instead
     public static String getLocusRootDirectory(Context context)
             throws RequiredVersionMissingException {
         LocusInfo locusInfo = getLocusInfoData(context);
@@ -64,10 +61,7 @@ public class ActionTools {
         }
     }
 
-    /**
-     * Use getLocusInfo() instead
-     */
-    @Deprecated
+    @Deprecated // use ActionBasic.getLocusInfo() instead
     public static boolean isPeriodicUpdatesEnabled(Context context)
             throws RequiredVersionMissingException {
         LocusInfo locusInfo = getLocusInfoData(context);
@@ -75,23 +69,12 @@ public class ActionTools {
                 locusInfo.isPeriodicUpdatesEnabled();
     }
 
-    @Deprecated
     private static LocusInfo getLocusInfoData(Context ctx)
             throws RequiredVersionMissingException {
         return getLocusInfo(ctx, LocusUtils.createLocusVersion(ctx));
     }
 
-    /**
-     * Return complete information about required LocusVersion. LocusInfo object
-     * contains all main parameters of existing Locus installation, together with
-     * some user preferences etc. More in LocusInfo object
-     *
-     * @param ctx current context
-     * @param lv  version of Locus that's asked
-     * @return {@link LocusInfo} object or <code>null</code> if problem happen. It's
-     * always required to check that return value is correct!
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
+    @Deprecated // use ActionBasic.getLocusInfo() instead
     public static LocusInfo getLocusInfo(Context ctx, LocusVersion lv)
             throws RequiredVersionMissingException {
         // get scheme if valid Locus is available
@@ -116,18 +99,7 @@ public class ActionTools {
         return null;
     }
 
-    //*************************************************
-    // REQUEST ON DATA FROM LOCUS APP
-    //*************************************************
-
-    /**
-     * Get LocusInfo container with various Locus app parameters.
-     *
-     * @param ctx current context
-     * @param lv  required Locus version
-     * @return loaded info container or 'null' in case of problem
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
+    @Deprecated // use ActionBasic.getLocusInfo() instead
     public static LocusInfo getDataLocusInfo(Context ctx, LocusVersion lv)
             throws RequiredVersionMissingException {
         // get scheme if valid Locus is available
@@ -149,14 +121,7 @@ public class ActionTools {
         return null;
     }
 
-    /**
-     * Get #UpdateContainer container with current fresh data based on users activity.
-     *
-     * @param ctx current context
-     * @param lv  required Locus version
-     * @return loaded update container or 'null' in case of problem
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
+    @Deprecated // use ActionBasic.getUpdateContainer() instead
     public static UpdateContainer getDataUpdateContainer(Context ctx, LocusVersion lv)
             throws RequiredVersionMissingException {
         // get scheme if valid Locus is available
@@ -177,6 +142,251 @@ public class ActionTools {
         }
         return null;
     }
+
+    //*************************************************
+    // NAVIGATION
+    //*************************************************
+
+    /**
+     * Intent that starts navigation in Locus app based on defined target.
+     *
+     * @param act       current activity
+     * @param name      name of target
+     * @param latitude  latitude of target
+     * @param longitude longitude of target
+     * @throws RequiredVersionMissingException if Locus in required version is missing
+     */
+    public static void actionStartNavigation(Activity act,
+            String name, double latitude, double longitude)
+            throws RequiredVersionMissingException {
+        // check required version
+        if (!LocusUtils.isLocusAvailable(act, VersionCode.UPDATE_01)) {
+            throw new RequiredVersionMissingException(VersionCode.UPDATE_01);
+        }
+
+        // call Locus
+        Intent intent = new Intent(LocusConst.ACTION_NAVIGATION_START);
+        if (name != null) {
+            intent.putExtra(LocusConst.INTENT_EXTRA_NAME, name);
+        }
+        intent.putExtra(LocusConst.INTENT_EXTRA_LATITUDE, latitude);
+        intent.putExtra(LocusConst.INTENT_EXTRA_LONGITUDE, longitude);
+        act.startActivity(intent);
+    }
+
+    /**
+     * Intent that starts navigation in Locus app based on defined target.
+     *
+     * @param act current activity
+     * @param pt  waypoint - destination
+     * @throws RequiredVersionMissingException if Locus in required version is missing
+     */
+    public static void actionStartNavigation(Activity act, Point pt)
+            throws RequiredVersionMissingException {
+        // check required version
+        if (!LocusUtils.isLocusAvailable(act, VersionCode.UPDATE_01)) {
+            throw new RequiredVersionMissingException(VersionCode.UPDATE_01);
+        }
+
+        // call Locus
+        Intent intent = new Intent(LocusConst.ACTION_NAVIGATION_START);
+        LocusUtils.addWaypointToIntent(intent, pt);
+        act.startActivity(intent);
+    }
+
+    /**
+     * Intent that starts navigation in Locus to target address.
+     *
+     * @param act     current activity
+     * @param address target address
+     * @throws RequiredVersionMissingException if Locus in required version is missing
+     */
+    public static void actionStartNavigation(Activity act, String address)
+            throws RequiredVersionMissingException {
+        // check required version
+        if (!LocusUtils.isLocusAvailable(act, VersionCode.UPDATE_08)) {
+            throw new RequiredVersionMissingException(VersionCode.UPDATE_08);
+        }
+
+        // call Locus
+        Intent intent = new Intent(LocusConst.ACTION_NAVIGATION_START);
+        intent.putExtra(LocusConst.INTENT_EXTRA_ADDRESS_TEXT, address);
+        act.startActivity(intent);
+    }
+
+    //*************************************************
+    // GUIDING
+    //*************************************************
+
+    public static void actionStartGuiding(Activity act,
+            String name, double latitude, double longitude)
+            throws RequiredVersionMissingException {
+        if (LocusUtils.isLocusAvailable(act, 243, 243, 0)) {
+            Intent intent = new Intent(LocusConst.ACTION_GUIDING_START);
+            if (name != null) {
+                intent.putExtra(LocusConst.INTENT_EXTRA_NAME, name);
+            }
+            intent.putExtra(LocusConst.INTENT_EXTRA_LATITUDE, latitude);
+            intent.putExtra(LocusConst.INTENT_EXTRA_LONGITUDE, longitude);
+            act.startActivity(intent);
+        } else {
+            throw new RequiredVersionMissingException(243);
+        }
+    }
+
+    public static void actionStartGuiding(Activity act, Point pt)
+            throws RequiredVersionMissingException {
+        if (LocusUtils.isLocusAvailable(act, 243, 243, 0)) {
+            Intent intent = new Intent(LocusConst.ACTION_GUIDING_START);
+            LocusUtils.addWaypointToIntent(intent, pt);
+            act.startActivity(intent);
+        } else {
+            throw new RequiredVersionMissingException(243);
+        }
+    }
+
+    //*************************************************
+    // POINTS HANDLING
+    //*************************************************
+
+    @Deprecated // use ActionBasic.getPoint instead
+    public static Point getLocusWaypoint(Context ctx, LocusVersion lv, long ptId)
+            throws RequiredVersionMissingException {
+        // check version
+        int minVersion = VersionCode.UPDATE_01.vcFree;
+        if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
+            throw new RequiredVersionMissingException(minVersion);
+        }
+
+        // generate cursor
+        Cursor cursor;
+        Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_01,
+                LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT);
+        scheme = ContentUris.withAppendedId(scheme, ptId);
+        cursor = ctx.getContentResolver().query(scheme,
+                null, null, null, null);
+
+        // check cursor
+        if (cursor == null || !cursor.moveToFirst()) {
+            Logger.logW(TAG, "getLocusWaypoint(" + ctx + ", " + ptId + "), " +
+                    "'cursor' in not valid");
+            return null;
+        }
+
+        // handle result
+        try {
+            Point pt = new Point();
+            pt.read(cursor.getBlob(1));
+            return pt;
+        } catch (Exception e) {
+            Logger.logE(TAG, "getLocusWaypoint(" + ctx + ", " + ptId + ")", e);
+        } finally {
+            Utils.closeQuietly(cursor);
+        }
+        return null;
+    }
+
+    @Deprecated // use ActionBasic.getPointsId instead
+    public static long[] getLocusWaypointId(Context ctx, LocusVersion lv, String ptName)
+            throws RequiredVersionMissingException {
+        // check version (available only in Free/Pro)
+        int minVersion = VersionCode.UPDATE_03.vcFree;
+        if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
+            throw new RequiredVersionMissingException(minVersion);
+        }
+
+        // generate cursor
+        Cursor cursor;
+        Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_03,
+                LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT);
+        cursor = ctx.getContentResolver().query(scheme,
+                null, "getWaypointId", new String[]{ptName}, null);
+
+        // handle result
+        long[] result = null;
+        try {
+            result = new long[cursor.getCount()];
+            for (int i = 0, m = result.length; i < m; i++) {
+                cursor.moveToPosition(i);
+                result[i] = cursor.getLong(0);
+            }
+        } catch (Exception e) {
+            Logger.logE(TAG, "getLocusWaypointId(" + ctx + ", " + ptName + ")", e);
+        } finally {
+            Utils.closeQuietly(cursor);
+        }
+        return result;
+    }
+
+    @Deprecated // use ActionBasic.updatePoint instead
+    public static int updateLocusWaypoint(Context context, LocusVersion lv,
+            Point wpt, boolean forceOverwrite)
+            throws RequiredVersionMissingException {
+        return updateLocusWaypoint(context, lv, wpt, forceOverwrite, false);
+    }
+
+    @Deprecated // use ActionBasic.updatePoint instead
+    public static int updateLocusWaypoint(Context ctx, LocusVersion lv,
+            Point wpt, boolean forceOverwrite, boolean loadAllGcWaypoints)
+            throws RequiredVersionMissingException {
+        // check version (available only in Free/Pro)
+        int minVersion = VersionCode.UPDATE_01.vcFree;
+        if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
+            throw new RequiredVersionMissingException(minVersion);
+        }
+
+        // generate cursor
+        Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_01,
+                LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT);
+
+        // define empty cursor
+        ContentValues cv = new ContentValues();
+        cv.put("waypoint", wpt.getAsBytes());
+        cv.put("forceOverwrite", forceOverwrite);
+        cv.put("loadAllGcWaypoints", loadAllGcWaypoints);
+        return ctx.getContentResolver().update(scheme, cv, null, null);
+    }
+
+    @Deprecated // use ActionBasic.updatePoint instead
+    public static void displayWaypointScreen(Context ctx, LocusVersion lv, long wptId)
+            throws RequiredVersionMissingException {
+        displayWaypointScreen(ctx, lv, wptId, "");
+    }
+
+    @Deprecated // use ActionBasic.updatePoint instead
+    public static void displayWaypointScreen(Context ctx, LocusVersion lv, long wptId,
+            String packageName, String className, String returnDataName, String returnDataValue)
+            throws RequiredVersionMissingException {
+        // prepare callback
+        String callback = GeoDataExtra.generateCallbackString(
+                "", packageName, className, returnDataName, returnDataValue);
+
+        // call intent
+        displayWaypointScreen(ctx, lv, wptId, callback);
+    }
+
+    @Deprecated // use ActionBasic.updatePoint instead
+    private static void displayWaypointScreen(Context ctx, LocusVersion lv, long wptId, String callback)
+            throws RequiredVersionMissingException {
+        // check version (available only in Free/Pro)
+        if (!LocusUtils.isLocusFreePro(lv, VersionCode.UPDATE_07.vcFree)) {
+            throw new RequiredVersionMissingException(VersionCode.UPDATE_07);
+        }
+
+        // call intent
+        Intent intent = new Intent(LocusConst.ACTION_DISPLAY_POINT_SCREEN);
+        intent.putExtra(LocusConst.INTENT_EXTRA_ITEM_ID, wptId);
+        if (callback != null && callback.length() > 0) {
+            intent.putExtra(Point.TAG_EXTRA_CALLBACK, callback);
+        }
+        ctx.startActivity(intent);
+    }
+
+    //*************************************************
+    // PART TO REWRITE
+    //*************************************************
+
+    // TODO
 
     //*************************************************
     // FILE PICKER
@@ -247,317 +457,6 @@ public class ActionTools {
         } else {
             throw new RequiredVersionMissingException(235);
         }
-    }
-
-    //*************************************************
-    // NAVIGATION
-    //*************************************************
-
-    /**
-     * Intent that starts navigation in Locus app based on defined target.
-     *
-     * @param act       current activity
-     * @param name      name of target
-     * @param latitude  latitude of target
-     * @param longitude longitude of target
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
-    public static void actionStartNavigation(Activity act,
-            String name, double latitude, double longitude)
-            throws RequiredVersionMissingException {
-        // check required version
-        if (!LocusUtils.isLocusAvailable(act, VersionCode.UPDATE_01)) {
-            throw new RequiredVersionMissingException(VersionCode.UPDATE_01);
-        }
-
-        // call Locus
-        Intent intent = new Intent(LocusConst.ACTION_NAVIGATION_START);
-        if (name != null) {
-            intent.putExtra(LocusConst.INTENT_EXTRA_NAME, name);
-        }
-        intent.putExtra(LocusConst.INTENT_EXTRA_LATITUDE, latitude);
-        intent.putExtra(LocusConst.INTENT_EXTRA_LONGITUDE, longitude);
-        act.startActivity(intent);
-    }
-
-    /**
-     * Intent that starts navigation in Locus app based on defined target.
-     *
-     * @param act current activity
-     * @param wpt waypoint - destination
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
-    public static void actionStartNavigation(Activity act, Point wpt)
-            throws RequiredVersionMissingException {
-        // check required version
-        if (!LocusUtils.isLocusAvailable(act, VersionCode.UPDATE_01)) {
-            throw new RequiredVersionMissingException(VersionCode.UPDATE_01);
-        }
-
-        // call Locus
-        Intent intent = new Intent(LocusConst.ACTION_NAVIGATION_START);
-        LocusUtils.addWaypointToIntent(intent, wpt);
-        act.startActivity(intent);
-    }
-
-    /**
-     * Intent that starts navigation in Locus to target address.
-     *
-     * @param act     current activity
-     * @param address target address
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
-    public static void actionStartNavigation(Activity act, String address)
-            throws RequiredVersionMissingException {
-        // check required version
-        if (!LocusUtils.isLocusAvailable(act, VersionCode.UPDATE_08)) {
-            throw new RequiredVersionMissingException(VersionCode.UPDATE_08);
-        }
-
-        // call Locus
-        Intent intent = new Intent(LocusConst.ACTION_NAVIGATION_START);
-        intent.putExtra(LocusConst.INTENT_EXTRA_ADDRESS_TEXT, address);
-        act.startActivity(intent);
-    }
-
-    //*************************************************
-    // GUIDING
-    //*************************************************
-
-    public static void actionStartGuiding(Activity act,
-            String name, double latitude, double longitude)
-            throws RequiredVersionMissingException {
-        if (LocusUtils.isLocusAvailable(act, 243, 243, 0)) {
-            Intent intent = new Intent(LocusConst.ACTION_GUIDING_START);
-            if (name != null) {
-                intent.putExtra(LocusConst.INTENT_EXTRA_NAME, name);
-            }
-            intent.putExtra(LocusConst.INTENT_EXTRA_LATITUDE, latitude);
-            intent.putExtra(LocusConst.INTENT_EXTRA_LONGITUDE, longitude);
-            act.startActivity(intent);
-        } else {
-            throw new RequiredVersionMissingException(243);
-        }
-    }
-
-    public static void actionStartGuiding(Activity act, Point wpt)
-            throws RequiredVersionMissingException {
-        if (LocusUtils.isLocusAvailable(act, 243, 243, 0)) {
-            Intent intent = new Intent(LocusConst.ACTION_GUIDING_START);
-            LocusUtils.addWaypointToIntent(intent, wpt);
-            act.startActivity(intent);
-        } else {
-            throw new RequiredVersionMissingException(243);
-        }
-    }
-
-    //*************************************************
-    // WAYPOINTS HANDLING
-    //*************************************************
-
-    /**
-     * Get full waypoint from Locus database with all possible information, like
-     * {@link GeoDataExtra} object, {@link locus.api.objects.extra.Location}
-     * or {@link GeoDataStyle} and others
-     *
-     * @param ctx   current context
-     * @param wptId unique ID of waypoint in Locus database
-     * @return {@link Point} or {@code null} in case of problem
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
-    public static Point getLocusWaypoint(Context ctx, LocusVersion lv, long wptId)
-            throws RequiredVersionMissingException {
-        // check version
-        int minVersion = VersionCode.UPDATE_01.vcFree;
-        if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
-            throw new RequiredVersionMissingException(minVersion);
-        }
-
-        // generate cursor
-        Cursor cursor;
-        Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_01,
-                LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT);
-        scheme = ContentUris.withAppendedId(scheme, wptId);
-        cursor = ctx.getContentResolver().query(scheme,
-                null, null, null, null);
-
-        // check cursor
-        if (cursor == null || !cursor.moveToFirst()) {
-            Logger.logW(TAG, "getLocusWaypoint(" + ctx + ", " + wptId + "), " +
-                    "'cursor' in not valid");
-            return null;
-        }
-
-        // handle result
-        try {
-            Point pt = new Point();
-            pt.read(cursor.getBlob(1));
-            return pt;
-        } catch (Exception e) {
-            Logger.logE(TAG, "getLocusWaypoint(" + ctx + ", " + wptId + ")", e);
-        } finally {
-            Utils.closeQuietly(cursor);
-        }
-        return null;
-    }
-
-    /**
-     * Get ID of waypoint stored in Locus internal database. To search for waypoint ID
-     * is used it's name. Because search is executed on SQLite database, it is possible
-     * to also use wildcards.
-     * <br><br>
-     * Examples:
-     * <br><br>
-     * 1. search for point that has exact name "Cinema", just write "Cinema" as wptName
-     * <br>
-     * 2. search for point that starts with "Cinema", just write "Cinema%" as wptName
-     * <br>
-     * 3. search for point that contains word "cinema", just write "%cinema%" as wptName
-     *
-     * @param ctx     current context
-     * @param wptName name (or part of name) you search
-     * @return array of waypoint ids. Returns <code>null</code> in case, any problem happen, or
-     * empty array if no result was found
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
-    public static long[] getLocusWaypointId(Context ctx, LocusVersion lv, String wptName)
-            throws RequiredVersionMissingException {
-        // check version (available only in Free/Pro)
-        int minVersion = VersionCode.UPDATE_03.vcFree;
-        if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
-            throw new RequiredVersionMissingException(minVersion);
-        }
-
-        // generate cursor
-        Cursor cursor;
-        Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_03,
-                LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT);
-        cursor = ctx.getContentResolver().query(scheme,
-                null, "getWaypointId", new String[]{wptName}, null);
-
-        // handle result
-        long[] result = null;
-        try {
-            result = new long[cursor.getCount()];
-            for (int i = 0, m = result.length; i < m; i++) {
-                cursor.moveToPosition(i);
-                result[i] = cursor.getLong(0);
-            }
-        } catch (Exception e) {
-            Logger.logE(TAG, "getLocusWaypointId(" + ctx + ", " + wptName + ")", e);
-        } finally {
-            Utils.closeQuietly(cursor);
-        }
-        return result;
-    }
-
-    /**
-     * Update waypoint in Locus. More in extended
-     * {@link #updateLocusWaypoint(Context, LocusVersion, Point, boolean, boolean)} function.
-     */
-    public static int updateLocusWaypoint(Context context, LocusVersion lv,
-            Point wpt, boolean forceOverwrite)
-            throws RequiredVersionMissingException {
-        return updateLocusWaypoint(context, lv, wpt, forceOverwrite, false);
-    }
-
-    /**
-     * Update waypoint in Locus
-     *
-     * @param ctx                current context
-     * @param wpt                waypoint to update. Do not modify waypoint's ID value, because it's key to update
-     * @param forceOverwrite     if set to <code>true</code>, new waypoint will completely rewrite all
-     *                           user's data (do not use if necessary). If set to <code>false</code>, Locus will handle update based on user's
-     *                           settings (if user have defined "keep values", it will keep it)
-     * @param loadAllGcWaypoints allow to force Locus to load all GeocacheWaypoints (of course
-     *                           if point is Geocache and is visible on map)
-     * @return number of affected waypoints
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
-    public static int updateLocusWaypoint(Context ctx, LocusVersion lv,
-            Point wpt, boolean forceOverwrite, boolean loadAllGcWaypoints)
-            throws RequiredVersionMissingException {
-        // check version (available only in Free/Pro)
-        int minVersion = VersionCode.UPDATE_01.vcFree;
-        if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
-            throw new RequiredVersionMissingException(minVersion);
-        }
-
-        // generate cursor
-        Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_01,
-                LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT);
-
-        // define empty cursor
-        ContentValues cv = new ContentValues();
-        cv.put("waypoint", wpt.getAsBytes());
-        cv.put("forceOverwrite", forceOverwrite);
-        cv.put("loadAllGcWaypoints", loadAllGcWaypoints);
-        return ctx.getContentResolver().update(scheme, cv, null, null);
-    }
-
-    /**
-     * Allows to display whole detail screen of certain waypoint.
-     *
-     * @param ctx   current context
-     * @param lv    LocusVersion we call
-     * @param wptId ID of waypoints we wants to display
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
-    public static void displayWaypointScreen(Context ctx, LocusVersion lv, long wptId)
-            throws RequiredVersionMissingException {
-        displayWaypointScreen(ctx, lv, wptId, "");
-    }
-
-    /**
-     * Allows to display whole detail screen of certain waypoint.
-     *
-     * @param ctx             current context
-     * @param lv              LocusVersion we call
-     * @param wptId           ID of waypoints we wants to display
-     * @param packageName     this value is used for creating intent that
-     *                        will be called in callback (for example com.super.application)
-     * @param className       the name of the class inside of com.super.application
-     *                        that implements the component (for example com.super.application.Main)
-     * @param returnDataName  String under which data will be stored. Can be
-     *                        retrieved by String data = getIntent.getStringExtra("returnData");
-     * @param returnDataValue String under which data will be stored. Can be
-     *                        retrieved by String data = getIntent.getStringExtra("returnData");
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
-    public static void displayWaypointScreen(Context ctx, LocusVersion lv, long wptId,
-            String packageName, String className, String returnDataName, String returnDataValue)
-            throws RequiredVersionMissingException {
-        // prepare callback
-        String callback = GeoDataExtra.generateCallbackString(
-                "", packageName, className, returnDataName, returnDataValue);
-
-        // call intent
-        displayWaypointScreen(ctx, lv, wptId, callback);
-    }
-
-    /**
-     * Allows to display whole detail screen of certain waypoint.
-     *
-     * @param ctx      current context
-     * @param lv       LocusVersion we call
-     * @param wptId    ID of waypoints we wants to display
-     * @param callback generated callback (optional)
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
-    private static void displayWaypointScreen(Context ctx, LocusVersion lv, long wptId, String callback)
-            throws RequiredVersionMissingException {
-        // check version (available only in Free/Pro)
-        if (!LocusUtils.isLocusFreePro(lv, VersionCode.UPDATE_07.vcFree)) {
-            throw new RequiredVersionMissingException(VersionCode.UPDATE_07);
-        }
-
-        // call intent
-        Intent intent = new Intent(LocusConst.ACTION_DISPLAY_POINT_SCREEN);
-        intent.putExtra(LocusConst.INTENT_EXTRA_ITEM_ID, wptId);
-        if (callback != null && callback.length() > 0) {
-            intent.putExtra(Point.TAG_EXTRA_CALLBACK, callback);
-        }
-        ctx.startActivity(intent);
     }
 
     //*************************************************
@@ -932,12 +831,12 @@ public class ActionTools {
     // WMS FUNCTIONS
     //*************************************************
 
-	/*
-	  Add own WMS map
-	  ------------------------------------
-	  - this feature allow 3rd party application, add web address directly to list of WMS services in
-	  Map Manager screen / WMS tab
-	 */
+    /*
+      Add own WMS map
+      ------------------------------------
+      - this feature allow 3rd party application, add web address directly to list of WMS services in
+      Map Manager screen / WMS tab
+     */
     public static void callAddNewWmsMap(Context context, String wmsUrl)
             throws RequiredVersionMissingException, InvalidObjectException {
         // check availability and start action

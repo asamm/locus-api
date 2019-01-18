@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import locus.api.android.ActionTools;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.Storable;
@@ -144,12 +145,13 @@ public class LocusUtils {
         UPDATE_14(684, 684, 0),
         /**
          * <ul>
-         * <li>Send pack file via FileProvider</li>
+         * <li>chg: send pack file via FileProvider</li>
+         * <li>add: ActionBasic.getPointsId for search in points by area</li>
+         * <li>add: option to navigate/guide to point defined by it's ID</li>
          * </ul><br>
-         * Locus Free/Pro 3.36.0(791)<br>
+         * Locus Free/Pro 3.36.0(796)<br>
          */
-        UPDATE_15(791, 791, 0);
-
+        UPDATE_15(796, 796, 0);
 
         /**
          * Version code for a Free version.
@@ -529,7 +531,7 @@ public class LocusUtils {
      * @param intent received intent from Locus
      * @return generated Locus version
      */
-    public static LocusVersion createLocusVersion(Context ctx, Intent intent) {
+    public static @Nullable LocusVersion createLocusVersion(Context ctx, Intent intent) {
         // check parameters
         if (ctx == null || intent == null) {
             return null;

@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.4] - 2018-01-18
+### Added
+- search for visible points on the map based on coordinates & radius
+- option to start navigation/gudiding on point defined by it's ID 
+
+### Changed
+- part of `ActionTools` moved to `ActionBasics`. Kotlin improved version
+
 ## [0.3.3] - 2018-12-20
 ### Added
 - handling files over FileProvider API

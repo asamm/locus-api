@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 		BasicAdapter adapter = new BasicAdapter(this, items);
 		lv.setAdapter(adapter);
 		lv.setOnItemClickListener((parent, view, position, id) -> {
-			mCurrentSelectedItemId = items.get(position).id;
+			mCurrentSelectedItemId = items.get(position).getId();
 
 			// refresh content
 			setFragment(mCurrentSelectedItemId);

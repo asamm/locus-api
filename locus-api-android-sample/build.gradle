@@ -26,9 +26,8 @@ dependencies {
     // releaseCompile('com.asamm:locus-api-android:0.2.6')
 
     // get locus API
-    api project(':locus-api-android')
-//    debugApi project(':locus-api-android')
-//    releaseApi 'com.asamm:locus-api-android:' + API_VERSION
+    implementation project(':locus-api-android')
+//    implementation 'com.asamm:locus-api-android:' + API_VERSION
 
     // lib with some design utils
     api 'com.google.android.material:material:1.0.0'

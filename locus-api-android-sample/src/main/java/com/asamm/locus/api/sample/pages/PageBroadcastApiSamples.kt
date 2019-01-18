@@ -47,7 +47,7 @@ class PageBroadcastApiSamples : DialogFragment() {
         // prepare adapter and ListView
         val lv = ListView(activity)
         val items = getItems()
-        val adapter = BasicAdapter(activity, items)
+        val adapter = BasicAdapter(activity!!, items)
         lv.adapter = adapter
         lv.setOnItemClickListener { _, _, position, _ ->
             // check valid Locus version
