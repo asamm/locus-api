@@ -151,7 +151,14 @@ public class LocusUtils {
          * </ul><br>
          * Locus Free/Pro 3.36.0(796)<br>
          */
-        UPDATE_15(796, 796, 0);
+        UPDATE_15(796, 796, 0),
+        /**
+         * <ul>
+         * <li>add: ActionBasic.getTrackInFormat, get track exported in defined format</li>
+         * </ul><br>
+         * Locus Free/Pro 3.37.0(801)<br>
+         */
+        UPDATE_16(801, 801, 0);
 
         /**
          * Version code for a Free version.
@@ -652,10 +659,7 @@ public class LocusUtils {
         if (lv.isVersionFree() && lv.getVersionCode() >= minVersion) {
             return true;
         }
-        if (lv.isVersionPro() && lv.getVersionCode() >= minVersion) {
-            return true;
-        }
-        return true;
+        return lv.isVersionPro() && lv.getVersionCode() >= minVersion;
     }
 
     /**
@@ -705,10 +709,12 @@ public class LocusUtils {
 			// get some data here and finally return value back, more below
 		}
 	 */
+	@Deprecated // moved to `IntentHelper` class
     public static boolean isIntentGetLocation(Intent intent) {
         return isRequiredAction(intent, LocusConst.INTENT_ITEM_GET_LOCATION);
     }
 
+    @Deprecated // moved to `IntentHelper` class
     public interface OnIntentGetLocation {
         /**
          * Handle received request
@@ -724,6 +730,7 @@ public class LocusUtils {
         void onFailed();
     }
 
+    @Deprecated // moved to `IntentHelper` class
     public static void handleIntentGetLocation(Context context, Intent intent,
             OnIntentGetLocation handler) throws NullPointerException {
         // check source data
@@ -743,6 +750,7 @@ public class LocusUtils {
                 getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER));
     }
 
+    @Deprecated // moved to `IntentHelper` class
     public static boolean sendGetLocationData(Activity activity, String name, Location loc) {
         if (loc == null) {
             return false;
@@ -793,11 +801,12 @@ public class LocusUtils {
         	}
 		}
 	 */
-
+    @Deprecated // moved to `IntentHelper` class
     public static boolean isIntentPointTools(Intent intent) {
         return isRequiredAction(intent, LocusConst.INTENT_ITEM_POINT_TOOLS);
     }
 
+    @Deprecated // moved to `IntentHelper.handleIntentWithPoint` class
     public static Point handleIntentPointTools(Context ctx, Intent intent)
             throws RequiredVersionMissingException {
         long wptId = intent.getLongExtra(LocusConst.INTENT_EXTRA_ITEM_ID, -1L);
@@ -810,10 +819,12 @@ public class LocusUtils {
         }
     }
 
+    @Deprecated // moved to `IntentHelper` class
     public static boolean isIntentTrackTools(Intent intent) {
         return isRequiredAction(intent, LocusConst.INTENT_ITEM_TRACK_TOOLS);
     }
 
+    @Deprecated // moved to `IntentHelper.getTrackFromIntent` class
     public static Track handleIntentTrackTools(Context ctx, Intent intent)
             throws RequiredVersionMissingException {
         long trackId = intent.getLongExtra(LocusConst.INTENT_EXTRA_ITEM_ID, -1L);
@@ -858,6 +869,7 @@ public class LocusUtils {
      * @param intent received intent
      * @return <code>true</code> if intent is base on MAIN_FUNCTION parameter
      */
+    @Deprecated // moved to `IntentHelper` class
     public static boolean isIntentMainFunction(Intent intent) {
         return isRequiredAction(intent, LocusConst.INTENT_ITEM_MAIN_FUNCTION);
     }
@@ -869,6 +881,7 @@ public class LocusUtils {
      * @param handler handler for events
      * @throws NullPointerException exception if any required data are missing
      */
+    @Deprecated // moved to `IntentHelper` class
     public static void handleIntentMainFunction(Context ctx, Intent intent,
             OnIntentMainFunction handler) throws NullPointerException {
         handleIntentMenuItem(ctx, intent, handler, LocusConst.INTENT_ITEM_MAIN_FUNCTION);
@@ -880,6 +893,7 @@ public class LocusUtils {
      * @param intent received intent
      * @return <code>true</code> if intent is base on MAIN_FUNCTION_GC parameter
      */
+    @Deprecated // moved to `IntentHelper` class
     public static boolean isIntentMainFunctionGc(Intent intent) {
         return isRequiredAction(intent, LocusConst.INTENT_ITEM_MAIN_FUNCTION_GC);
     }
@@ -891,6 +905,7 @@ public class LocusUtils {
      * @param handler handler for events
      * @throws NullPointerException exception if any required data are missing
      */
+    @Deprecated // moved to `IntentHelper` class
     public static void handleIntentMainFunctionGc(Context ctx, Intent intent,
             OnIntentMainFunction handler) throws NullPointerException {
         handleIntentMenuItem(ctx, intent, handler, LocusConst.INTENT_ITEM_MAIN_FUNCTION_GC);
@@ -902,6 +917,7 @@ public class LocusUtils {
      * @param intent received intent
      * @return <code>true</code> if intent is base on SEARCH_LIST parameter
      */
+    @Deprecated // moved to `IntentHelper` class
     public static boolean isIntentSearchList(Intent intent) {
         return isRequiredAction(intent, LocusConst.INTENT_ITEM_SEARCH_LIST);
     }
@@ -913,11 +929,13 @@ public class LocusUtils {
      * @param handler handler for events
      * @throws NullPointerException exception if any required data are missing
      */
+    @Deprecated // moved to `IntentHelper` class
     public static void handleIntentSearchList(Context ctx, Intent intent,
             OnIntentMainFunction handler) throws NullPointerException {
         handleIntentMenuItem(ctx, intent, handler, LocusConst.INTENT_ITEM_SEARCH_LIST);
     }
 
+    @Deprecated // moved to `IntentHelper` class
     private static void handleIntentMenuItem(Context ctx, Intent intent,
             OnIntentMainFunction handler, String item)
             throws NullPointerException {
@@ -940,6 +958,7 @@ public class LocusUtils {
                 getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER));
     }
 
+    @Deprecated // moved to `IntentHelper` class
     public interface OnIntentMainFunction {
         /**
          * When intent really contain location, result is returned by this function
@@ -954,10 +973,12 @@ public class LocusUtils {
     }
 
 
+    @Deprecated // moved to `IntentHelper` class
     public static boolean isIntentPointsScreenTools(Intent intent) {
         return isRequiredAction(intent, LocusConst.INTENT_ITEM_POINTS_SCREEN_TOOLS);
     }
 
+    @Deprecated // moved to `IntentHelper` class
     public static long[] handleIntentPointsScreenTools(Intent intent) {
         long[] waypointIds = null;
         if (intent.hasExtra(LocusConst.INTENT_EXTRA_ITEMS_ID)) {
@@ -991,7 +1012,7 @@ public class LocusUtils {
 		check sample application, where this functionality is implemented
 
 	 */
-
+    @Deprecated // moved to `IntentHelper` class
     public static boolean isIntentReceiveLocation(Intent intent) {
         return isRequiredAction(intent, LocusConst.ACTION_RECEIVE_LOCATION);
     }
@@ -1007,6 +1028,7 @@ public class LocusUtils {
      * @param action action that we expect
      * @return {@code true} if intent is valid and contains required action
      */
+    @Deprecated // moved to `IntentHelper` class
     private static boolean isRequiredAction(Intent intent, String action) {
         return intent != null &&
                 intent.getAction() != null &&

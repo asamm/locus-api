@@ -459,7 +459,7 @@ object SampleCalls {
     fun startGuidanceToNearestPoint(ctx: Context, lv: LocusVersion) {
         val pointsId = ActionBasics.getPointsId(ctx, lv,
                 Location(14.5, 50.6),
-                1000.0)
+                1000)
         if (pointsId.isEmpty()) {
             Logger.logD(TAG, "startGuidanceToNearestPoint(" + ctx + "), " +
                     "no valid point in range")

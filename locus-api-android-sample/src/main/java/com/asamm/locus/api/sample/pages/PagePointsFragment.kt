@@ -50,16 +50,16 @@ class PagePointsFragment : ABasePageFragment() {
     @Throws(Exception::class)
     override fun onItemClicked(itemId: Int, activeLocus: LocusUtils.LocusVersion) {
         when (itemId) {
-            1 -> SampleCalls.callSendOnePoint(activity)
-            2 -> SampleCalls.callSendMorePoints(activity)
-            3 -> SampleCalls.callSendOnePointWithIcon(activity!!)
-            4 -> SampleCalls.callSendMorePointsWithIcons(activity)
-            5 -> SampleCalls.callSendOnePointGeocache(activity)
-            6 -> SampleCalls.callSendMorePointsGeocacheIntentMethod(activity)
-            7 -> SampleCalls.callSendMorePointsGeocacheFileMethod(activity)
-            8 -> SampleCalls.callSendOnePointWithCallbackOnDisplay(activity)
-            9 -> SampleCalls.callRequestPointIdByName(activity, activeLocus)
-            10 -> SampleCalls.callRequestDisplayPointScreen(activity, activeLocus, 3)
+            1 -> SampleCalls.callSendOnePoint(act)
+            2 -> SampleCalls.callSendMorePoints(act)
+            3 -> SampleCalls.callSendOnePointWithIcon(act)
+            4 -> SampleCalls.callSendMorePointsWithIcons(act)
+            5 -> SampleCalls.callSendOnePointGeocache(act)
+            6 -> SampleCalls.callSendMorePointsGeocacheIntentMethod(act)
+            7 -> SampleCalls.callSendMorePointsGeocacheFileMethod(act)
+            8 -> SampleCalls.callSendOnePointWithCallbackOnDisplay(act)
+            9 -> SampleCalls.callRequestPointIdByName(act, activeLocus)
+            10 -> SampleCalls.callRequestDisplayPointScreen(act, activeLocus, 3)
         }
     }
 }

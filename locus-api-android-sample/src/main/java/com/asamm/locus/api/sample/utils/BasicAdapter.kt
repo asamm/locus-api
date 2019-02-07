@@ -9,7 +9,8 @@ import android.widget.TextView
 
 import com.asamm.locus.api.sample.R
 
-class BasicAdapter(ctx: Context, items: List<BasicAdapterItem>) : ArrayAdapter<BasicAdapterItem>(ctx, 0, items) {
+class BasicAdapter(ctx: Context, items: List<BasicAdapterItem>)
+    : ArrayAdapter<BasicAdapterItem>(ctx, 0, items) {
 
     // main inflater
     private val inflater: LayoutInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater

@@ -40,7 +40,7 @@ import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
 import locus.api.utils.Logger;
 
-@SuppressWarnings({"unused", "WeakerAccess"})
+@SuppressWarnings({"unused", "WeakerAccess", "DeprecatedIsStillUsed"})
 public class ActionTools {
 
     // tag for logger
@@ -249,7 +249,7 @@ public class ActionTools {
     // POINTS HANDLING
     //*************************************************
 
-    @Deprecated // use ActionBasic.getPoint instead
+    @Deprecated // use ActionBasics.getPoint instead
     public static Point getLocusWaypoint(Context ctx, LocusVersion lv, long ptId)
             throws RequiredVersionMissingException {
         // check version
@@ -318,7 +318,7 @@ public class ActionTools {
         return result;
     }
 
-    @Deprecated // use ActionBasic.updatePoint instead
+    @Deprecated // use ActionBasics.updatePoint instead
     public static int updateLocusWaypoint(Context context, LocusVersion lv,
             Point wpt, boolean forceOverwrite)
             throws RequiredVersionMissingException {
@@ -380,6 +380,57 @@ public class ActionTools {
             intent.putExtra(Point.TAG_EXTRA_CALLBACK, callback);
         }
         ctx.startActivity(intent);
+    }
+
+    //*************************************************
+    // TRACKS HANDLING
+    //*************************************************
+
+    /**
+     * Get full track from Locus database with all possible information, like
+     * {@link GeoDataExtra} object
+     * or {@link GeoDataStyle} and others
+     *
+     * @param ctx     current context
+     * @param trackId unique ID of track in Locus database
+     * @return {@link locus.api.objects.extra.Track} or <i>null</i> in case of problem
+     * @throws RequiredVersionMissingException if Locus in required version is missing
+     */
+    @Deprecated // use ActionBasic.getTrack instead
+    public static Track getLocusTrack(Context ctx, LocusVersion lv, long trackId)
+            throws RequiredVersionMissingException {
+        // check version
+        int minVersion = VersionCode.UPDATE_10.vcFree;
+        if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
+            throw new RequiredVersionMissingException(minVersion);
+        }
+
+        // generate cursor
+        Cursor cursor;
+        Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_10,
+                LocusConst.CONTENT_PROVIDER_PATH_TRACK);
+        scheme = ContentUris.withAppendedId(scheme, trackId);
+        cursor = ctx.getContentResolver().query(scheme,
+                null, null, null, null);
+
+        // check cursor
+        if (cursor == null || !cursor.moveToFirst()) {
+            Logger.logW(TAG, "getLocusTrack(" + ctx + ", " + trackId + "), " +
+                    "'cursor' in not valid");
+            return null;
+        }
+
+        // handle result
+        try {
+            Track track = new Track();
+            track.read(cursor.getBlob(1));
+            return track;
+        } catch (Exception e) {
+            Logger.logE(TAG, "getLocusTrack(" + ctx + ", " + trackId + ")", e);
+        } finally {
+            Utils.closeQuietly(cursor);
+        }
+        return null;
     }
 
     //*************************************************
@@ -457,56 +508,6 @@ public class ActionTools {
         } else {
             throw new RequiredVersionMissingException(235);
         }
-    }
-
-    //*************************************************
-    // TRACKS HANDLING
-    //*************************************************
-
-    /**
-     * Get full track from Locus database with all possible information, like
-     * {@link GeoDataExtra} object
-     * or {@link GeoDataStyle} and others
-     *
-     * @param ctx     current context
-     * @param trackId unique ID of track in Locus database
-     * @return {@link locus.api.objects.extra.Track} or <i>null</i> in case of problem
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
-    public static Track getLocusTrack(Context ctx, LocusVersion lv, long trackId)
-            throws RequiredVersionMissingException {
-        // check version
-        int minVersion = VersionCode.UPDATE_10.vcFree;
-        if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
-            throw new RequiredVersionMissingException(minVersion);
-        }
-
-        // generate cursor
-        Cursor cursor;
-        Uri scheme = getProviderUriData(lv, VersionCode.UPDATE_10,
-                LocusConst.CONTENT_PROVIDER_PATH_TRACK);
-        scheme = ContentUris.withAppendedId(scheme, trackId);
-        cursor = ctx.getContentResolver().query(scheme,
-                null, null, null, null);
-
-        // check cursor
-        if (cursor == null || !cursor.moveToFirst()) {
-            Logger.logW(TAG, "getLocusTrack(" + ctx + ", " + trackId + "), " +
-                    "'cursor' in not valid");
-            return null;
-        }
-
-        // handle result
-        try {
-            Track track = new Track();
-            track.read(cursor.getBlob(1));
-            return track;
-        } catch (Exception e) {
-            Logger.logE(TAG, "getLocusTrack(" + ctx + ", " + trackId + ")", e);
-        } finally {
-            Utils.closeQuietly(cursor);
-        }
-        return null;
     }
 
     //*************************************************

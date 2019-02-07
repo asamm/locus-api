@@ -113,6 +113,12 @@ public final class LocusConst {
      */
     public static final String ACTION_PICK_LOCATION = "locus.api.android.ACTION_PICK_LOCATION";
 
+    /**
+     * Intent used for getting location from Locus to your application. This one, is used just to start
+     * Locus with this request.
+     */
+    public static final String ACTION_GET_TRACK_AS_FILE = "com.asamm.locus.api.GET_TRACK_AS_FILE";
+
     // ACTIONS FROM LOCUS TO API
 
     /**

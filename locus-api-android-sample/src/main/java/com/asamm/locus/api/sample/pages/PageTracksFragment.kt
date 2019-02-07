@@ -40,8 +40,8 @@ class PageTracksFragment : ABasePageFragment() {
     @Throws(Exception::class)
     override fun onItemClicked(itemId: Int, activeLocus: LocusUtils.LocusVersion) {
         when (itemId) {
-            1 -> SampleCalls.callSendOneTrack(activity)
-            2 -> SampleCalls.callSendMultipleTracks(activity)
+            1 -> SampleCalls.callSendOneTrack(activity!!)
+            2 -> SampleCalls.callSendMultipleTracks(activity!!)
             8 -> ActionTools.actionStartNavigation(activity,
                     SampleCalls.generateWaypoint(1))
             9 -> ActionTools.actionStartNavigation(activity,

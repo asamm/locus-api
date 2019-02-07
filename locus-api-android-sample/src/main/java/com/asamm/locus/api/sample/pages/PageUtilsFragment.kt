@@ -93,49 +93,49 @@ class PageUtilsFragment : ABasePageFragment() {
     override fun onItemClicked(itemId: Int, activeLocus: LocusUtils.LocusVersion) {
         // handle action
         when (itemId) {
-            -1 -> SampleCalls.callDisplayLocusMapInfo(activity)
-            1 -> SampleCalls.callSendFileToSystem(activity)
-            2 -> SampleCalls.callSendFileToLocus(activity, activeLocus)
-            3 -> SampleCalls.pickLocation(activity)
+            -1 -> SampleCalls.callDisplayLocusMapInfo(act)
+            1 -> SampleCalls.callSendFileToSystem(act)
+            2 -> SampleCalls.callSendFileToLocus(act, activeLocus)
+            3 -> SampleCalls.pickLocation(act)
             4 ->
                 // filter data so only visible will be GPX and KML files
-                ActionTools.actionPickFile(activity,
+                ActionTools.actionPickFile(act,
                         0, "Give me a FILE!!",
                         arrayOf(".gpx", ".kml"))
-            5 -> ActionTools.actionPickDir(activity, 1)
-            6 -> AlertDialog.Builder(activity)
+            5 -> ActionTools.actionPickDir(act, 1)
+            6 -> AlertDialog.Builder(act)
                     .setTitle("Locus Root directory")
-                    .setMessage("dir:" + SampleCalls.getRootDirectory(activity, activeLocus) +
+                    .setMessage("dir:" + SampleCalls.getRootDirectory(act, activeLocus) +
                             "\n\n'null' means no required version installed or different problem")
                     .setPositiveButton("Close") { _, _ -> }
                     .show()
-            7 -> ActionTools.callAddNewWmsMap(activity,
+            7 -> ActionTools.callAddNewWmsMap(act,
                     "http://mapy.geology.cz/arcgis/services/Inspire/GM500K/MapServer/WMSServer")
-            11 -> startActivity(Intent(activity, ActivityDashboard::class.java))
-            12 -> SampleCalls.showCircles(activity)
-            13 -> AlertDialog.Builder(activity).setTitle("Periodic update")
-                    .setMessage("enabled:" + SampleCalls.isPeriodicUpdateEnabled(activity, activeLocus))
+            11 -> startActivity(Intent(act, ActivityDashboard::class.java))
+            12 -> SampleCalls.showCircles(act)
+            13 -> AlertDialog.Builder(act).setTitle("Periodic update")
+                    .setMessage("enabled:" + SampleCalls.isPeriodicUpdateEnabled(act, activeLocus))
                     .setPositiveButton("Close") { _, _ -> }
                     .show()
             14 -> {
-                val count = FieldNotesHelper.getCount(activity!!, activeLocus)
-                Toast.makeText(activity,
+                val count = FieldNotesHelper.getCount(act, activeLocus)
+                Toast.makeText(act,
                         "Available field notes:$count", Toast.LENGTH_LONG).show()
             }
             15 -> {
                 // We test here if user has purchased "Add-on Field Notes Pro. Unique ID is defined on our Store
                 // so it needs to be known for you before asking.
                 val purchaseId = ActionTools.getItemPurchaseState(
-                        activity, activeLocus, 5943264947470336L)
+                        act, activeLocus, 5943264947470336L)
                 when (purchaseId) {
-                    LocusConst.PURCHASE_STATE_PURCHASED -> Toast.makeText(activity,
+                    LocusConst.PURCHASE_STATE_PURCHASED -> Toast.makeText(act,
                             "Purchase item state: purchased", Toast.LENGTH_LONG).show()
-                    LocusConst.PURCHASE_STATE_NOT_PURCHASED -> Toast.makeText(activity,
+                    LocusConst.PURCHASE_STATE_NOT_PURCHASED -> Toast.makeText(act,
                             "Purchase item state: not purchased", Toast.LENGTH_LONG).show()
                     else -> // this usually means that user profile is not loaded. Best what to do is call
                         // "displayLocusStoreItemDetail" to display item detail which also loads users
                         // profile
-                        Toast.makeText(activity,
+                        Toast.makeText(act,
                                 "Purchase item state: $purchaseId", Toast.LENGTH_LONG).show()
                 }
             }
@@ -143,32 +143,32 @@ class PageUtilsFragment : ABasePageFragment() {
                 // We display here Locus Store with certain item. In this case it is "Add-on Field Notes Pro.
                 // Unique ID is defined on our Store so it needs to be known for you before asking.
                 ActionTools.displayLocusStoreItemDetail(
-                        activity, activeLocus, 5943264947470336L)
+                        act, activeLocus, 5943264947470336L)
             17 -> {
-                val uc = ActionBasics.getUpdateContainer(activity!!, activeLocus)
+                val uc = ActionBasics.getUpdateContainer(act, activeLocus)
                 if (uc != null) {
-                    AlertDialog.Builder(activity)
+                    AlertDialog.Builder(act)
                             .setTitle("Fresh UpdateContainer")
                             .setMessage("UC: " + Utils.toString(uc))
                             .setPositiveButton("Close") { _, _ -> }
                             .show()
                 } else {
-                    Toast.makeText(activity,
+                    Toast.makeText(act,
                             "Unable to obtain UpdateContainer from $activeLocus", Toast.LENGTH_LONG).show()
                 }
             }
             18 -> {
-                val result = ActionTools.getMapPreview(activity, activeLocus,
+                val result = ActionTools.getMapPreview(act, activeLocus,
                         Location(50.0, 14.0), 12, 512, 512, false)
                 if (result == null || !result.isValid) {
-                    AlertDialog.Builder(activity)
+                    AlertDialog.Builder(act)
                             .setTitle("Unable to obtain map preview")
                             .setPositiveButton("Close") { _, _ -> }
                             .show()
                 } else {
-                    val iv = ImageView(activity)
+                    val iv = ImageView(act)
                     iv.setImageBitmap(result.image)
-                    AlertDialog.Builder(activity)
+                    AlertDialog.Builder(act)
                             .setTitle("Image loaded")
                             .setMessage("Not yet loaded tiles: " + result.numOfNotYetLoadedTiles)
                             .setView(iv)
@@ -177,21 +177,17 @@ class PageUtilsFragment : ABasePageFragment() {
             }
             19 -> {
                 @Suppress("ReplaceSingleLineLet")
-                activity?.let {
-                    it.supportFragmentManager
-                            .beginTransaction()
-                            .add(MapFragment(), "MAP_FRAGMENT")
-                            .commit()
-                }
+                act.supportFragmentManager
+                        .beginTransaction()
+                        .add(MapFragment(), "MAP_FRAGMENT")
+                        .commit()
             }
             20 -> {
                 @Suppress("ReplaceSingleLineLet")
-                activity?.let {
-                    it.supportFragmentManager
-                            .beginTransaction()
-                            .add(PageBroadcastApiSamples(), "BROADCAST_API_FRAGMENT")
-                            .commit()
-                }
+                act.supportFragmentManager
+                        .beginTransaction()
+                        .add(PageBroadcastApiSamples(), "BROADCAST_API_FRAGMENT")
+                        .commit()
             }
         }
     }

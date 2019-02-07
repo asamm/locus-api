@@ -10,8 +10,11 @@
  *
  ***************************************************************************/
 
+@file:Suppress("unused")
+
 package locus.api.android
 
+import android.app.Activity
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
@@ -29,6 +32,7 @@ import locus.api.objects.extra.GeoDataExtra
 import locus.api.objects.extra.GeoDataStyle
 import locus.api.objects.extra.Location
 import locus.api.objects.extra.Point
+import locus.api.objects.extra.Track
 import locus.api.utils.Logger
 import org.json.JSONObject
 
@@ -116,9 +120,9 @@ object ActionBasics {
     /**
      * Intent that starts navigation in Locus app based on defined target.
      *
-     * @param act       current activity
-     * @param name      name of target
-     * @param latitude  latitude of target
+     * @param ctx current context
+     * @param name name of target
+     * @param latitude latitude of target
      * @param longitude longitude of target
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
@@ -143,7 +147,7 @@ object ActionBasics {
     /**
      * Intent that starts navigation in Locus app based on defined target.
      *
-     * @param act current activity
+     * @param ctx current context
      * @param pt  point - destination
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
@@ -163,7 +167,7 @@ object ActionBasics {
     /**
      * Intent that starts navigation on already existing points in Locus app.
      *
-     * @param act current activity
+     * @param ctx current context
      * @param ptId ID of destination point
      */
     @Throws(RequiredVersionMissingException::class)
@@ -182,7 +186,7 @@ object ActionBasics {
     /**
      * Intent that starts navigation in Locus to target address.
      *
-     * @param act     current activity
+     * @param ctx current context
      * @param address target address
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
@@ -206,7 +210,7 @@ object ActionBasics {
     /**
      * Intent that starts guiding on custom location.
      *
-     * @param act current activity
+     * @param ctx current context
      * @param name optional point name
      * @param lat latitude coordinate
      * @param lon longitude coordinate
@@ -231,8 +235,8 @@ object ActionBasics {
     /**
      * Intent that starts guiding on custom point.
      *
-     * @param act current activity
-     * @param point point where to start guiding
+     * @param ctx current context
+     * @param pt point where to start guiding
      */
     @Throws(RequiredVersionMissingException::class)
     fun actionStartGuiding(ctx: Context, pt: Point) {
@@ -250,7 +254,7 @@ object ActionBasics {
     /**
      * Intent that starts guiding on already existing points in Locus app.
      *
-     * @param act current activity
+     * @param ctx current context
      * @param ptId ID of destination point
      */
     @Throws(RequiredVersionMissingException::class)
@@ -421,7 +425,7 @@ object ActionBasics {
      * @param forceOverwrite     if set to `true`, new point will completely rewrite all
      * user's data (do not use if necessary). If set to `false`, Locus will handle update based on user's
      * settings (if user have defined "keep values", it will keep it)
-     * @param loadAllGcpoints allow to force Locus to load all Geocachepoints (of course
+     * @param loadAllGcWaypoints allow to force Locus to load all Geocachepoints (of course
      * if point is Geocache and is visible on map)
      * @return number of affected points
      * @throws RequiredVersionMissingException if Locus in required version is missing
@@ -511,6 +515,85 @@ object ActionBasics {
             intent.putExtra(Point.TAG_EXTRA_CALLBACK, callback)
         }
         ctx.startActivity(intent)
+    }
+
+    //*************************************************
+    // WORK WITH TRACKS
+    //*************************************************
+
+    /**
+     * Get full track from Locus database with all possible information, like
+     * [GeoDataExtra] object
+     * or [GeoDataStyle] and others
+     *
+     * @param ctx     current context
+     * @param trackId unique ID of track in Locus database
+     * @return [locus.api.objects.extra.Track] or *null* in case of problem
+     * @throws RequiredVersionMissingException if Locus in required version is missing
+     */
+    @Throws(RequiredVersionMissingException::class)
+    fun getTrack(ctx: Context, lv: LocusUtils.LocusVersion, trackId: Long): Track? {
+        // check version
+        val minVersion = VersionCode.UPDATE_10.vcFree
+        if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
+            throw RequiredVersionMissingException(minVersion)
+        }
+
+        // generate cursor
+        var scheme = getProviderUriData(lv, VersionCode.UPDATE_10,
+                LocusConst.CONTENT_PROVIDER_PATH_TRACK)
+        scheme = ContentUris.withAppendedId(scheme, trackId)
+        val cursor = queryData(ctx, scheme)
+        if (cursor == null || !cursor.moveToFirst()) {
+            Logger.logW(TAG, "getTrack($ctx, $lv, $trackId), " +
+                    "'cursor' in not valid")
+            return null
+        }
+
+        // handle result
+        try {
+            val track = Track()
+            track.read(cursor.getBlob(1))
+            return track
+        } catch (e: Exception) {
+            Logger.logE(TAG, "getTrack($ctx, $trackId)", e)
+        } finally {
+            Utils.closeQuietly(cursor)
+        }
+        return null
+    }
+
+    /**
+     * Supported export formats.
+     */
+    enum class FileFormat {
+
+        FIT, GPX, KML, TCX
+    }
+
+    /**
+     * Get track exported into file stored in device. Final file where track will be exported receive
+     * calling activity as result under defined [requestCode].
+     *
+     * @param act that starts request
+     * @param requestCode code of request
+     * @param lv current location version we work with
+     * @param format export format
+     */
+    fun getTrackInFormat(act: Activity, requestCode: Int, lv: LocusUtils.LocusVersion,
+            trackId: Long, format: FileFormat) {
+        // check version
+        val minVersion = VersionCode.UPDATE_16.vcFree
+        if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
+            throw RequiredVersionMissingException(minVersion)
+        }
+
+        // execute request
+        act.startActivityForResult(Intent(LocusConst.ACTION_GET_TRACK_AS_FILE).apply {
+            setPackage(lv.packageName)
+            putExtra("trackId", trackId)
+            putExtra("format", format.name.toLowerCase())
+        }, requestCode)
     }
 
     //*************************************************
