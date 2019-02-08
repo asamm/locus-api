@@ -1,10 +1,17 @@
-Locus API - Core:  [ ![Download](https://api.bintray.com/packages/asammsoft/maven/locus-api/images/download.svg) ](https://bintray.com/asammsoft/maven/locus-api-core/_latestVersion)
-
-Locus API - Android:  [ ![Download](https://api.bintray.com/packages/asammsoft/maven/locus-api-android/images/download.svg) ](https://bintray.com/asammsoft/maven/locus-api-android/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/asammsoft/maven/locus-api-android/images/download.svg) ](https://bintray.com/asammsoft/maven/locus-api-android/_latestVersion)
 
 # Locus API
 
 Library for [Locus Map](http://www.locusmap.eu) application for Android devices.
+
+
+## Current version
+
+Latest stable LT version: **0.2.25**
+
+Versions 3.x are in partial rewrite, so use on own risk (& report issues if found) 
+
+## Structure
 
 Whole API is divided into two separate parts:
 

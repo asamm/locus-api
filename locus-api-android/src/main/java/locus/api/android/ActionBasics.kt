@@ -37,7 +37,8 @@ import locus.api.utils.Logger
 import org.json.JSONObject
 
 /**
- * New version of "Basic tools" optimized for quick and clear users (also thanks to Kotlin).
+ * New version of "Basic tools" optimized for quick and clear usage.
+ * Most of functions are converted from `ActionTools` class.
  */
 object ActionBasics {
 

@@ -6,7 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [0.3.4] - 2018-01-18
+## [0.3.5] - 2019-02-08
+### Added
+- requesting tracks in certain file format
+
+### Changed
+- part of LocusUtils functions converted to IntentHelper object 
+
+## [0.3.4] - 2019-01-18
 ### Added
 - search for visible points on the map based on coordinates & radius
 - option to start navigation/gudiding on point defined by it's ID 

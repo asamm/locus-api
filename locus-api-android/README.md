@@ -15,7 +15,7 @@ Add dependency to your `build.gradle` module config
 ```gradle
 dependencies {
      // get locus API
-     compile 'com.asamm:locus-api-android:0.2.3'
+     compile 'com.asamm:locus-api-android:[version]'
 }
 ```
 
