@@ -433,6 +433,28 @@ public class ActionTools {
         return null;
     }
 
+    //*************************************************
+    // LOCATION
+    //*************************************************
+
+    /**
+     * Start basic "Pick location" event.
+     *
+     * @param act current activity
+     * @throws RequiredVersionMissingException if Locus in required version is missing
+     */
+    @Deprecated // use ActionBasics.actionPickLocation insead
+    public static void actionPickLocation(Activity act)
+            throws RequiredVersionMissingException {
+        if (LocusUtils.isLocusAvailable(act, 235, 235, 0)) {
+            Intent intent = new Intent(LocusConst.ACTION_PICK_LOCATION);
+            act.startActivity(intent);
+        } else {
+            throw new RequiredVersionMissingException(235);
+        }
+    }
+
+
     // TODO
     // BELOW: PART TO REWRITE
 
@@ -485,26 +507,6 @@ public class ActionTools {
 
         // execute request
         activity.startActivityForResult(intent, requestCode);
-    }
-
-    //*************************************************
-    // LOCATION
-    //*************************************************
-
-    /**
-     * Start basic "Pick location" event.
-     *
-     * @param act current activity
-     * @throws RequiredVersionMissingException if Locus in required version is missing
-     */
-    public static void actionPickLocation(Activity act)
-            throws RequiredVersionMissingException {
-        if (LocusUtils.isLocusAvailable(act, 235, 235, 0)) {
-            Intent intent = new Intent(LocusConst.ACTION_PICK_LOCATION);
-            act.startActivity(intent);
-        } else {
-            throw new RequiredVersionMissingException(235);
-        }
     }
 
     //*************************************************

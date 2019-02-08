@@ -1055,6 +1055,7 @@ public class LocusUtils {
      * @param intent created intent container
      * @param wpt    waypoint to attach
      */
+    @Deprecated // use IntentHelper.addPointToIntent
     public static void addWaypointToIntent(Intent intent, Point wpt) {
         intent.putExtra(LocusConst.INTENT_EXTRA_POINT, wpt.getAsBytes());
     }
@@ -1065,6 +1066,7 @@ public class LocusUtils {
      * @param intent received intent
      * @return point from intent or 'null' if intent has no point attached
      */
+    @Deprecated // use IntentHelper.getPointFromIntent
     public static Point getWaypointFromIntent(Intent intent) {
         try {
             Point pt = new Point();
@@ -1083,6 +1085,7 @@ public class LocusUtils {
      * @param extraName name of 'extra' under which should be location stored in intent
      * @return location from intent or 'null' if intent has no location attached
      */
+    @Deprecated // use IntentHelper.getLocationFromIntent
     public static Location getLocationFromIntent(Intent intent, String extraName) {
         try {
             // check if intent has required extra parameter

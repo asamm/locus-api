@@ -32,113 +32,109 @@ object IntentHelper {
     private const val TAG = "ResponseHelper"
 
     //*************************************************
+    // MAIN FUNCTIONS
+    //*************************************************
+
+    /**
+     * Check if received intent is response on MAIN_FUNCTION intent.
+     *
+     * @param intent received intent
+     * @return `true` if intent is base on MAIN_FUNCTION parameter
+     */
+    fun isIntentMainFunction(intent: Intent): Boolean {
+        return isAction(intent, LocusConst.INTENT_ITEM_MAIN_FUNCTION)
+    }
+
+    /**
+     * Check if received intent is response on MAIN_FUNCTION_GC intent.
+     *
+     * @param intent received intent
+     * @return `true` if intent is base on MAIN_FUNCTION_GC parameter
+     */
+    fun isIntentMainFunctionGc(intent: Intent): Boolean {
+        return isAction(intent, LocusConst.INTENT_ITEM_MAIN_FUNCTION_GC)
+    }
+
+    /**
+     * Handle received intent from section MAIN_FUNCTION.
+     *
+     * @param intent  received intent
+     * @param handler handler for events
+     * @throws NullPointerException exception if any required data are missing
+     */
+    @Throws(NullPointerException::class)
+    fun handleIntentMainFunction(ctx: Context, intent: Intent,
+            handler: OnIntentReceived) {
+        handleIntentGeneral(ctx, intent, LocusConst.INTENT_ITEM_MAIN_FUNCTION, handler)
+    }
+
+    /**
+     * Handle received intent from section MAIN_FUNCTION_GC.
+     *
+     * @param intent  received intent
+     * @param handler handler for events
+     * @throws NullPointerException exception if any required data are missing
+     */
+    @Throws(NullPointerException::class)
+    fun handleIntentMainFunctionGc(ctx: Context, intent: Intent,
+            handler: OnIntentReceived) {
+        handleIntentGeneral(ctx, intent, LocusConst.INTENT_ITEM_MAIN_FUNCTION_GC, handler)
+    }
+
+    //*************************************************
     // GET LOCATION INTENT
     //*************************************************
 
-    interface OnIntentGetLocation {
-        /**
-         * Handle received request
-         *
-         * @param locGps       if GPS is enabled, location is included (may be null)
-         * @param locMapCenter center location of displayed map (may be null)
-         */
-        fun onReceived(locGps: Location?, locMapCenter: Location?)
+    // more info
+    // https://github.com/asamm/locus-api/wiki/App-as-location-source
 
-        /**
-         * If intent is not INTENT_GET_LOCATION intent or other problem occur
-         */
-        fun onFailed()
-    }
-
-    /*
-	   Add POI from your application
-	  -------------------------------
-	   - on places where is location needed, you may add link to your application. So for example, when
-	   you display Edit point dialog, you may see next to coordinates button "New". This is list of
-	   location sources and also place when your application appear with this method
-
-		1. register intent-filter for your activity
-
-		<intent-filter>
-			<action android:name="locus.api.android.INTENT_ITEM_GET_LOCATION" />
-			<category android:name="android.intent.category.DEFAULT" />
-		</intent-filter>
-
-		2. register intent receiver in your application
-
-		if (getIntent().getAction().equals(LocusConst.INTENT_GET_POINT)) {
-			// get some data here and finally return value back, more below
-		}
-	 */
+    /**
+     * Check if received intent is "Get location" request.
+     *
+     * In case of positive result, it is necessary to return result with valid location object.
+     * Received intent also contains user GPS and Map center location bundled.
+     *
+     * @param intent received intent.
+     */
     fun isIntentGetLocation(intent: Intent): Boolean {
         return isAction(intent, LocusConst.INTENT_ITEM_GET_LOCATION)
     }
 
+    /**
+     * Handle received intent from section SEARCH_LIST.
+     *
+     * @param intent  received intent
+     * @param handler handler for events
+     * @throws NullPointerException exception if any required data are missing
+     */
     @Throws(NullPointerException::class)
-    fun handleIntentGetLocation(context: Context, intent: Intent,
-            handler: OnIntentGetLocation) {
-        // check intent itself
-        if (!isIntentGetLocation(intent)) {
-            handler.onFailed()
-            return
-        }
-
-        // variables that may be obtain from intent
-        handler.onReceived(
-                LocusUtils.getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_GPS),
-                LocusUtils.getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER))
+    fun handleIntentGetLocation(ctx: Context, intent: Intent, handler: OnIntentReceived) {
+        handleIntentGeneral(ctx, intent, LocusConst.INTENT_ITEM_GET_LOCATION, handler)
     }
 
-    fun sendGetLocationData(activity: Activity, name: String, loc: Location) {
-        val intent = Intent()
-        // string value name - OPTIONAL
-        if (name.isNotBlank()) {
-            intent.putExtra(LocusConst.INTENT_EXTRA_NAME, name)
-        }
-        intent.putExtra(LocusConst.INTENT_EXTRA_LOCATION, loc.asBytes)
-        activity.setResult(Activity.RESULT_OK, intent)
-        activity.finish()
+    /**
+     * Return generated location "get location" request.
+     *
+     * @param act current activity
+     * @param name optional name of received location
+     * @param loc location object
+     */
+    fun sendGetLocationData(act: Activity, name: String? = null, loc: Location) {
+        act.setResult(Activity.RESULT_OK, Intent().apply {
+            if (name?.isNotBlank() == true) {
+                putExtra(LocusConst.INTENT_EXTRA_NAME, name)
+            }
+            putExtra(LocusConst.INTENT_EXTRA_LOCATION, loc.asBytes)
+        })
+        act.finish()
     }
 
     //*************************************************
     // POINT TOOLS
     //*************************************************
 
-    /*
-	   Add action under point sub-menu
-	  -------------------------------
-	   - when you tap on any point on map or in Point screen, under share bottom button, are functions for
-	   calling to some external application. Under this menu appear also your application. If you want specify
-	   action only on your points displayed in Locus, use 'setExtraCallback' function on 'Point' object instead
-	   of this. It has same functionality but allow displaying only on your 'own' points.
-
-	   1. register intent-filter for your activity
-
-		<intent-filter>
-			<action android:name="locus.api.android.INTENT_ITEM_POINT_TOOLS" />
-			<category android:name="android.intent.category.DEFAULT" />
-		</intent-filter>
-
-		- extra possibility to act only on geocache point
-		<intent-filter>
-			<action android:name="locus.api.android.INTENT_ITEM_POINT_TOOLS" />
-			<category android:name="android.intent.category.DEFAULT" />
-
-			<data android:scheme="locus" />
-			<data android:path="menion.android.locus/point_geocache" />
-		</intent-filter>
-
-	   2. register intent receiver in your application or use functions below
-
-		if (isIntentOnPointAction(intent) {
-			Waypoint wpt = LocusUtils.getWaypointFromIntent(intent);
-        	if (wpt == null) {
-        		... problem
-        	} else {
-         		... handle waypoint
-        	}
-		}
-	 */
+    // more info
+    // https://github.com/asamm/locus-api/wiki/Own-function-in-Point-screen
 
     /**
      * Check if received intent is result of "Point tools" click.
@@ -147,6 +143,22 @@ object IntentHelper {
      */
     fun isIntentPointTools(intent: Intent): Boolean {
         return isAction(intent, LocusConst.INTENT_ITEM_POINT_TOOLS)
+    }
+
+    //*************************************************
+    // POINTS TOOLS
+    //*************************************************
+
+    // more info
+    // https://github.com/asamm/locus-api/wiki/Own-function-in-Points-screen
+
+    /**
+     * Check if received intent is result of "Points tools" click.
+     *
+     * @param intent received intent
+     */
+    fun isIntentPointsTools(intent: Intent): Boolean {
+        return isAction(intent, LocusConst.INTENT_ITEM_POINTS_SCREEN_TOOLS)
     }
 
     //*************************************************
@@ -169,77 +181,8 @@ object IntentHelper {
     // SEARCH SCREEN
     //*************************************************
 
-    /*
-	   Add action under MAIN function menu or SEARCH list
-	  -------------------------------------
-	   - when you display menu->functions, your application appear here. Also you application (activity) may
-	    be added to right quick menu. Application will be called with current map center coordinates
-
-	   1. register intent-filter for your activity
-
-		<intent-filter>
-			<action android:name="locus.api.android.INTENT_ITEM_MAIN_FUNCTION" />
-			<category android:name="android.intent.category.DEFAULT" />
-		</intent-filter>
-
-		<intent-filter>
-			<action android:name="locus.api.android.INTENT_ITEM_SEARCH_LIST" />
-			<category android:name="android.intent.category.DEFAULT" />
-		</intent-filter>
-
-    2. register intent receiver in your application
-
-		if (isIntentMainFunction(LocusConst.INTENT_ITEM_MAIN_FUNCTION)) {
-			// more below ...
-		}
-	 */
-
-
-    /**
-     * Check if received intent is response on MAIN_FUNCTION intent.
-     *
-     * @param intent received intent
-     * @return `true` if intent is base on MAIN_FUNCTION parameter
-     */
-    fun isIntentMainFunction(intent: Intent): Boolean {
-        return isAction(intent, LocusConst.INTENT_ITEM_MAIN_FUNCTION)
-    }
-
-    /**
-     * Handle received intent from section MAIN_FUNCTION.
-     *
-     * @param intent  received intent
-     * @param handler handler for events
-     * @throws NullPointerException exception if any required data are missing
-     */
-    @Throws(NullPointerException::class)
-    fun handleIntentMainFunction(ctx: Context, intent: Intent,
-            handler: OnIntentMainFunction) {
-        handleIntentMenuItem(ctx, intent, handler, LocusConst.INTENT_ITEM_MAIN_FUNCTION)
-    }
-
-    /**
-     * Check if received intent is response on MAIN_FUNCTION_GC intent.
-     *
-     * @param intent received intent
-     * @return `true` if intent is base on MAIN_FUNCTION_GC parameter
-     */
-    fun isIntentMainFunctionGc(intent: Intent): Boolean {
-        return isAction(intent, LocusConst.INTENT_ITEM_MAIN_FUNCTION_GC)
-    }
-
-    /**
-     * Handle received intent from section MAIN_FUNCTION_GC.
-     *
-     * @param intent  received intent
-     * @param handler handler for events
-     * @throws NullPointerException exception if any required data are missing
-     */
-    @Throws(NullPointerException::class)
-    fun handleIntentMainFunctionGc(ctx: Context, intent: Intent,
-            handler: OnIntentMainFunction) {
-        handleIntentMenuItem(ctx, intent, handler, LocusConst.INTENT_ITEM_MAIN_FUNCTION_GC)
-    }
+    // more info
+    // https://github.com/asamm/locus-api/wiki/App-as-Search-source
 
     /**
      * Check if received intent is response on SEARCH_LIST intent.
@@ -259,16 +202,33 @@ object IntentHelper {
      * @throws NullPointerException exception if any required data are missing
      */
     @Throws(NullPointerException::class)
-    fun handleIntentSearchList(ctx: Context, intent: Intent,
-            handler: OnIntentMainFunction) {
-        handleIntentMenuItem(ctx, intent, handler, LocusConst.INTENT_ITEM_SEARCH_LIST)
+    fun handleIntentSearchList(ctx: Context, intent: Intent, handler: OnIntentReceived) {
+        handleIntentGeneral(ctx, intent, LocusConst.INTENT_ITEM_SEARCH_LIST, handler)
     }
 
+    //*************************************************
+    // PICK LOCATION
+    //*************************************************
+
+    /**
+     * Check if received intent is result of "Get location" request.
+     *
+     * @param intent received intent
+     * @return `true· if this is expected result
+     */
+    fun isIntentReceiveLocation(intent: Intent): Boolean {
+        return isAction(intent, LocusConst.ACTION_RECEIVE_LOCATION)
+    }
+
+    //*************************************************
+    // GENERAL INTENT HANDLER
+    //*************************************************
+
     @Throws(NullPointerException::class)
-    private fun handleIntentMenuItem(ctx: Context, intent: Intent,
-            handler: OnIntentMainFunction, item: String) {
+    private fun handleIntentGeneral(ctx: Context, intent: Intent, action: String,
+            handler: OnIntentReceived) {
         // check intent itself
-        if (!isAction(intent, item)) {
+        if (!isAction(intent, action)) {
             handler.onFailed()
             return
         }
@@ -276,14 +236,17 @@ object IntentHelper {
         // get version and handle received data
         LocusUtils.createLocusVersion(ctx, intent)?.let {
             handler.onReceived(it,
-                    LocusUtils.getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_GPS),
-                    LocusUtils.getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER))
+                    getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_GPS),
+                    getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER))
         } ?: {
             handler.onFailed()
         }()
     }
 
-    interface OnIntentMainFunction {
+    /**
+     * Receiver for basic intents.
+     */
+    interface OnIntentReceived {
         /**
          * When intent really contain location, result is returned by this function
          *
@@ -291,52 +254,9 @@ object IntentHelper {
          * @param locGps       if gpsEnabled is true, variable contain location, otherwise `null`
          * @param locMapCenter contain current map center location
          */
-        fun onReceived(lv: LocusUtils.LocusVersion, locGps: Location, locMapCenter: Location)
+        fun onReceived(lv: LocusUtils.LocusVersion, locGps: Location?, locMapCenter: Location?)
 
         fun onFailed()
-    }
-
-
-    fun isIntentPointsScreenTools(intent: Intent): Boolean {
-        return isAction(intent, LocusConst.INTENT_ITEM_POINTS_SCREEN_TOOLS)
-    }
-
-    fun handleIntentPointsScreenTools(intent: Intent): LongArray? {
-        var waypointIds: LongArray? = null
-        if (intent.hasExtra(LocusConst.INTENT_EXTRA_ITEMS_ID)) {
-            waypointIds = intent.getLongArrayExtra(LocusConst.INTENT_EXTRA_ITEMS_ID)
-        }
-        return waypointIds
-    }
-
-    /*
-	   Pick location from Locus
-	  -------------------------------
-	   - this feature can be used to obtain location from Locus, from same dialog (locus usually pick location).
-	   Because GetLocation dialog, used in Locus need to have already initialized whole core of Locus, this dialog
-	   cannot be called directly, but needs to be started from Main map screen. This screen have anyway flag
-	   android:launchMode="singleTask", so there is no possibility to use startActivityForResult in this way.
-
-	   Be careful with this function, because Locus will after "pick location" action, call new intent with
-	   ON_LOCATION_RECEIVE action, which will start your activity again without "singleTask" or similar flag
-
-	   Current functionality can be created by
-
-	   1. register intent-filter for your activity
-
-		<intent-filter>
-			<action android:name="locus.api.android.ACTION_RECEIVE_LOCATION" />
-			<category android:name="android.intent.category.DEFAULT" />
-		</intent-filter>
-
-		2. register intent receiver in your application
-
-		check sample application, where this functionality is implemented
-
-	 */
-
-    fun isIntentReceiveLocation(intent: Intent): Boolean {
-        return isAction(intent, LocusConst.ACTION_RECEIVE_LOCATION)
     }
 
     //*************************************************
@@ -355,7 +275,7 @@ object IntentHelper {
     }
 
     /**
-     * Get ID of item send over Intent container.
+     * Get ID of item send over intent container.
      *
      * @param intent received intent
      * @return ID of item or `-1` if no ID is defined
@@ -365,7 +285,47 @@ object IntentHelper {
     }
 
     /**
-     * Load full point from received "Point intent" > intent that contains pointId.
+     * Get list of IDs registered in intent container.
+     *
+     * @param intent received intent
+     * @return ID of items or `null` if no IDs are defined
+     */
+    fun getItemsId(intent: Intent): LongArray? {
+        if (intent.hasExtra(LocusConst.INTENT_EXTRA_ITEMS_ID)) {
+            return intent.getLongArrayExtra(LocusConst.INTENT_EXTRA_ITEMS_ID)
+        }
+        return null
+    }
+
+    /**
+     * Get location object from received intent.
+     *
+     * @param intent    received intent
+     * @param key name of 'extra' under which should be location stored in intent
+     * @return location from intent or 'null' if intent has no location attached
+     */
+    fun getLocationFromIntent(intent: Intent, key: String): Location? {
+        // check if intent has required extra parameter
+        if (!intent.hasExtra(key)) {
+            return null
+        }
+
+        // convert data to valid Location object
+        return Location().apply { read(intent.getByteArrayExtra(key)) }
+    }
+
+    /**
+     * Attach point into intent, that may be send to Locus application.
+     *
+     * @param intent created intent container
+     * @param pt    point to attach
+     */
+    fun addPointToIntent(intent: Intent, pt: Point) {
+        intent.putExtra(LocusConst.INTENT_EXTRA_POINT, pt.asBytes)
+    }
+
+    /**
+     * Load full point from received "Point intent" > intent that contains pointId or full point.
      *
      * @param ctx current context
      * @param intent received intent
@@ -373,15 +333,33 @@ object IntentHelper {
      */
     @Throws(RequiredVersionMissingException::class)
     fun getPointFromIntent(ctx: Context, intent: Intent): Point? {
-        val ptId = getItemId(intent)
-        if (ptId >= 0) {
-            LocusUtils.createLocusVersion(ctx, intent)?.let {
-                return ActionBasics.getPoint(ctx, it, ptId)
+        try {
+            // try to load point based on it's ID
+            val ptId = getItemId(intent)
+            if (ptId >= 0) {
+                LocusUtils.createLocusVersion(ctx, intent)?.let {
+                    return ActionBasics.getPoint(ctx, it, ptId)
+                }
             }
+
+            // try load full included point
+            if (intent.hasExtra(LocusConst.INTENT_EXTRA_POINT)) {
+                return Point().apply { read(intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINT)) }
+            }
+        } catch (e: Exception) {
+            Logger.logE(TAG, "getPointFromIntent($intent)", e)
         }
-        Logger.logD(TAG, "handleIntentPointTools($ctx, $intent), " +
-                "unable to obtain point $ptId")
         return null
+    }
+
+    /**
+     * Get ID of points defined in intent.
+     *
+     * @param intent received intent
+     * @return list of points ID or null if no IDs are defined
+     */
+    fun getPointsFromIntent(intent: Intent): LongArray? {
+        return getItemsId(intent)
     }
 
     /**

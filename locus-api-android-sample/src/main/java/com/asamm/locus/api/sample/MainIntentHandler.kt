@@ -6,8 +6,8 @@ import android.content.Intent
 import android.widget.Toast
 import com.asamm.locus.api.sample.utils.SampleCalls
 import locus.api.android.ActionBasics
-import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.IntentHelper
+import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.extra.GeoDataExtra
 import locus.api.objects.extra.Location
@@ -52,7 +52,7 @@ object MainIntentHandler {
             } else if (IntentHelper.isIntentSearchList(intent)) {
                 // another call on your app registered in menu. In this case in search menu
                 handleMenuSearchClick(act, intent)
-            } else if (IntentHelper.isIntentPointsScreenTools(intent)) {
+            } else if (IntentHelper.isIntentPointsTools(intent)) {
                 // you may also register application into context menu of big 'Point manager' screen.
                 // It appears at bottom menu and react on tap sends ID's of all selected points.
                 handlePointManagerMenuClick(act, intent)
@@ -75,10 +75,14 @@ object MainIntentHandler {
             } else if (IntentHelper.isIntentReceiveLocation(intent)) {
                 // at this moment we check if returned intent contains location we previously
                 // requested from Locus
-                val wpt = LocusUtils.getWaypointFromIntent(intent)
-                if (wpt != null) {
-                    AlertDialog.Builder(act).setTitle("Intent - PickLocation").setMessage("Received intent with point:\n\n" + wpt.name + "\n\nloc:" + wpt.location +
-                            "\n\ngcData:" + if (wpt.gcData == null) "sorry, but no..." else wpt.gcData.cacheID).setPositiveButton("Close") { _, _ -> }.show()
+                val pt = IntentHelper.getPointFromIntent(act, intent)
+                if (pt != null) {
+                    AlertDialog.Builder(act)
+                            .setTitle("Intent - PickLocation")
+                            .setMessage("Received intent with point:\n\n" + pt.name + "\n\nloc:" + pt.location +
+                                    "\n\ngcData:" + if (pt.gcData == null) "sorry, but no..." else pt.gcData.cacheID)
+                            .setPositiveButton("Close") { _, _ -> }
+                            .show()
                 } else {
                     Logger.logW(TAG, "request PickLocation, canceled")
                 }
@@ -90,44 +94,54 @@ object MainIntentHandler {
     }
 
     private fun handleGetLocation(act: MainActivity) {
-        AlertDialog.Builder(act).setTitle("Intent - Get location").setMessage("By pressing OK, dialog disappear and to Locus will be returned some location!").setPositiveButton("OK") { _, _ ->
-            val loc = Location()
-            loc.setLatitude(Math.random() * 85)
-            loc.setLongitude(Math.random() * 180)
-            IntentHelper.sendGetLocationData(act, "Non sence Loc ;)", loc)
-        }.show()
+        AlertDialog.Builder(act)
+                .setTitle("Intent - Get location")
+                .setMessage("By pressing OK, dialog disappear and to Locus will be returned some location!")
+                .setPositiveButton("OK") { _, _ ->
+                    IntentHelper.sendGetLocationData(act,
+                            "Non sence Loc ;)",
+                            Location().apply {
+                                latitude = Math.random() * 85
+                                longitude = Math.random() * 180
+                            })
+                }
+                .show()
     }
 
     @Throws(RequiredVersionMissingException::class)
     private fun handlePointToolsMenu(act: MainActivity, intent: Intent) {
-        val wpt = IntentHelper.getPointFromIntent(act, intent)
-        if (wpt == null) {
+        val pt = IntentHelper.getPointFromIntent(act, intent)
+        if (pt == null) {
             Toast.makeText(act, "Wrong INTENT - no point!", Toast.LENGTH_SHORT).show()
         } else {
-            AlertDialog.Builder(act).setTitle("Intent - On Point action").setMessage("Received intent with point:\n\n" + wpt.name + "\n\nloc:" + wpt.location +
-                    "\n\ngcData:" + if (wpt.gcData == null) "sorry, but no..." else wpt.gcData.cacheID).setNegativeButton("Close") { _, _ ->
-                // just do some action on required coordinates
-            }.setPositiveButton("Send updated back") { _, _ ->
-                // get Locus from intent
-                val lv = LocusUtils.createLocusVersion(act, intent)
-                if (lv == null) {
-                    Logger.logD(TAG, "checkStartIntent(), cannot obtain LocusVersion")
-                    return@setPositiveButton
-                }
+            AlertDialog.Builder(act)
+                    .setTitle("Intent - On Point action")
+                    .setMessage("Received intent with point:\n\n" + pt.name + "\n\nloc:" + pt.location +
+                            "\n\ngcData:" + if (pt.gcData == null) "sorry, but no..." else pt.gcData.cacheID).setNegativeButton("Close") { _, _ ->
+                        // just do some action on required coordinates
+                    }
+                    .setPositiveButton("Send updated back") { _, _ ->
+                        // get Locus from intent
+                        val lv = LocusUtils.createLocusVersion(act, intent)
+                        if (lv == null) {
+                            Logger.logD(TAG, "checkStartIntent(), cannot obtain LocusVersion")
+                            return@setPositiveButton
+                        }
 
-                // because current test version is registered on geocache data,
-                // I'll send as result updated geocache
-                try {
-                    // set new parameters
-                    wpt.addParameter(GeoDataExtra.PAR_DESCRIPTION, "UPDATED!")
-                    wpt.location.setLatitude(wpt.location.getLatitude() + 0.001)
-                    wpt.location.setLongitude(wpt.location.getLongitude() + 0.001)
-                    ActionBasics.updatePoint(act, lv, wpt, false)
-                    act.finish()
-                } catch (e: Exception) {
-                    Logger.logE(TAG, "isIntentPointTools(), problem with sending new waypoint back", e)
-                }
-            }.show()
+                        // because current test version is registered on geocache data,
+                        // I'll send as result updated geocache
+                        try {
+                            // set new parameters
+                            pt.addParameter(GeoDataExtra.PAR_DESCRIPTION, "UPDATED!")
+                            pt.location.setLatitude(pt.location.getLatitude() + 0.001)
+                            pt.location.setLongitude(pt.location.getLongitude() + 0.001)
+                            ActionBasics.updatePoint(act, lv, pt, false)
+                            act.finish()
+                        } catch (e: Exception) {
+                            Logger.logE(TAG, "isIntentPointTools(), problem with sending new waypoint back", e)
+                        }
+                    }
+                    .show()
         }
     }
 
@@ -170,10 +184,14 @@ object MainIntentHandler {
 
     private fun handleMainMenuClick(act: MainActivity, intent: Intent) {
         IntentHelper.handleIntentMainFunction(act, intent,
-                object : IntentHelper.OnIntentMainFunction {
+                object : IntentHelper.OnIntentReceived {
 
-                    override fun onReceived(lv: LocusUtils.LocusVersion, locGps: Location, locMapCenter: Location) {
-                        AlertDialog.Builder(act).setTitle("Intent - Main function").setMessage("GPS location:$locGps\n\nmapCenter:$locMapCenter").setPositiveButton("Close") { _, _ -> }.show()
+                    override fun onReceived(lv: LocusUtils.LocusVersion, locGps: Location?, locMapCenter: Location?) {
+                        AlertDialog.Builder(act)
+                                .setTitle("Intent - Main function")
+                                .setMessage("GPS location:$locGps\n\nmapCenter:$locMapCenter")
+                                .setPositiveButton("Close") { _, _ -> }
+                                .show()
                     }
 
                     override fun onFailed() {
@@ -184,10 +202,13 @@ object MainIntentHandler {
 
     private fun handleMenuSearchClick(act: MainActivity, intent: Intent) {
         IntentHelper.handleIntentSearchList(act, intent,
-                object : IntentHelper.OnIntentMainFunction {
+                object : IntentHelper.OnIntentReceived {
 
-                    override fun onReceived(lv: LocusUtils.LocusVersion, locGps: Location, locMapCenter: Location) {
-                        AlertDialog.Builder(act).setTitle("Intent - Search list").setMessage("GPS location:$locGps\n\nmapCenter:$locMapCenter").setPositiveButton("Close") { _, _ -> }.show()
+                    override fun onReceived(lv: LocusUtils.LocusVersion, locGps: Location?, locMapCenter: Location?) {
+                        AlertDialog.Builder(act).setTitle("Intent - Search list")
+                                .setMessage("GPS location:$locGps\n\nmapCenter:$locMapCenter")
+                                .setPositiveButton("Close") { _, _ -> }
+                                .show()
                     }
 
                     override fun onFailed() {
@@ -197,22 +218,28 @@ object MainIntentHandler {
     }
 
     private fun handlePointManagerMenuClick(act: MainActivity, intent: Intent) {
-        val waypointIds = IntentHelper.handleIntentPointsScreenTools(intent)
-        if (waypointIds == null || waypointIds.isEmpty()) {
-            AlertDialog.Builder(act).setTitle("Intent - Points screen (Tools)").setMessage("Problem with loading waypointIds").setPositiveButton("Close") { _, _ -> }.show()
+        val pointIds = IntentHelper.getPointsFromIntent(intent)
+        if (pointIds == null || pointIds.isEmpty()) {
+            AlertDialog.Builder(act)
+                    .setTitle("Intent - Points screen (Tools)")
+                    .setMessage("Problem with loading waypointIds").setPositiveButton("Close") { _, _ -> }
+                    .show()
         } else {
-            AlertDialog.Builder(act).setTitle("Intent - Points screen (Tools)").setMessage("Loaded from file, points:" + waypointIds.size).setPositiveButton("Load all now") { _, _ ->
-                // get Locus from intent
-                val lv = LocusUtils.createLocusVersion(act, intent)
-                if (lv == null) {
-                    Logger.logD(TAG, "checkStartIntent(), cannot obtain LocusVersion")
-                    return@setPositiveButton
-                }
+            AlertDialog.Builder(act)
+                    .setTitle("Intent - Points screen (Tools)")
+                    .setMessage("Loaded from file, points:" + pointIds.size)
+                    .setPositiveButton("Load all now") { _, _ ->
+                        // get Locus from intent
+                        val lv = LocusUtils.createLocusVersion(act, intent)
+                        if (lv == null) {
+                            Logger.logD(TAG, "checkStartIntent(), cannot obtain LocusVersion")
+                            return@setPositiveButton
+                        }
 
-                // finally load points
-                loadPointsFromLocus(act, lv, waypointIds)
-                act.finish()
-            }.show()
+                        // finally load points
+                        loadPointsFromLocus(act, lv, pointIds)
+                        act.finish()
+                    }.show()
         }
     }
 

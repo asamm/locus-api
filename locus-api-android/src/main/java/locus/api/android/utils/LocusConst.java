@@ -33,21 +33,6 @@ public final class LocusConst {
     //*************************************************
 
     /**
-     * Add your activity in list of "Location sources"
-     */
-    public static final String INTENT_ITEM_GET_LOCATION = "locus.api.android.INTENT_ITEM_GET_LOCATION";
-
-    /**
-     * Add your activity in sub-menu in waypoint dialog (last button > tools)
-     */
-    public static final String INTENT_ITEM_POINT_TOOLS = "locus.api.android.INTENT_ITEM_POINT_TOOLS";
-
-    /**
-     * Add your activity in sub-menu in track dialog (last button > tools)
-     */
-    public static final String INTENT_ITEM_TRACK_TOOLS = "locus.api.android.INTENT_ITEM_TRACK_TOOLS";
-
-    /**
      * This Filter add your activity into list of main functions
      */
     public static final String INTENT_ITEM_MAIN_FUNCTION = "locus.api.android.INTENT_ITEM_MAIN_FUNCTION";
@@ -59,14 +44,29 @@ public final class LocusConst {
     public static final String INTENT_ITEM_MAIN_FUNCTION_GC = "locus.api.android.INTENT_ITEM_MAIN_FUNCTION_GC";
 
     /**
-     * This Filter add your activity into list of search options in Locus "Search" function
+     * Add your activity in list of "Location sources"
      */
-    public static final String INTENT_ITEM_SEARCH_LIST = "locus.api.android.INTENT_ITEM_SEARCH_LIST";
+    public static final String INTENT_ITEM_GET_LOCATION = "locus.api.android.INTENT_ITEM_GET_LOCATION";
+
+    /**
+     * Add your activity in sub-menu in waypoint dialog (last button > tools)
+     */
+    public static final String INTENT_ITEM_POINT_TOOLS = "locus.api.android.INTENT_ITEM_POINT_TOOLS";
 
     /**
      * This Filter add your activity into list of tools in Points screen
      */
     public static final String INTENT_ITEM_POINTS_SCREEN_TOOLS = "locus.api.android.INTENT_ITEM_POINTS_SCREEN_TOOLS";
+
+    /**
+     * Add your activity in sub-menu in track dialog (last button > tools)
+     */
+    public static final String INTENT_ITEM_TRACK_TOOLS = "locus.api.android.INTENT_ITEM_TRACK_TOOLS";
+
+    /**
+     * This Filter add your activity into list of search options in Locus "Search" function
+     */
+    public static final String INTENT_ITEM_SEARCH_LIST = "locus.api.android.INTENT_ITEM_SEARCH_LIST";
 
     //*************************************************
     // BASIC TASKS

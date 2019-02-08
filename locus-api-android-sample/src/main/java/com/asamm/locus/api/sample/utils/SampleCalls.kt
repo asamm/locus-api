@@ -27,22 +27,15 @@ import android.graphics.Color
 import android.os.Environment
 import android.widget.EditText
 import android.widget.Toast
-
-import com.asamm.locus.api.sample.R
-
-import java.io.File
-import java.util.ArrayList
-import java.util.Arrays
-
 import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentActivity
+import com.asamm.locus.api.sample.R
 import locus.api.android.ActionBasics
 import locus.api.android.ActionDisplay.ExtraAction
 import locus.api.android.ActionDisplayPoints
 import locus.api.android.ActionDisplayTracks
 import locus.api.android.ActionDisplayVarious
 import locus.api.android.ActionFiles
-import locus.api.android.ActionTools
 import locus.api.android.objects.PackPoints
 import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.LocusUtils.LocusVersion
@@ -56,6 +49,8 @@ import locus.api.objects.extra.Track
 import locus.api.objects.geocaching.GeocachingData
 import locus.api.objects.geocaching.GeocachingWaypoint
 import locus.api.utils.Logger
+import java.io.File
+import java.util.*
 
 object SampleCalls {
 
@@ -502,7 +497,7 @@ object SampleCalls {
      */
     @Throws(RequiredVersionMissingException::class)
     fun pickLocation(act: Activity) {
-        ActionTools.actionPickLocation(act)
+        ActionBasics.actionPickLocation(act)
     }
 
     @Throws(Exception::class)

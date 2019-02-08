@@ -22,6 +22,7 @@ import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import locus.api.android.features.periodicUpdates.UpdateContainer
+import locus.api.android.utils.IntentHelper
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusInfo
 import locus.api.android.utils.LocusUtils
@@ -115,6 +116,27 @@ object ActionBasics {
     }
 
     //*************************************************
+    // LOCATION
+    //*************************************************
+
+    /**
+     * Start basic "Pick location" event.
+     *
+     * @param act current activity
+     * @throws RequiredVersionMissingException if Locus in required version is missing
+     */
+    @Throws(RequiredVersionMissingException::class)
+    fun actionPickLocation(act: Activity) {
+        if (!LocusUtils.isLocusAvailable(act, VersionCode.UPDATE_01)) {
+            throw RequiredVersionMissingException(VersionCode.UPDATE_01)
+        }
+
+        // call action
+        val intent = Intent(LocusConst.ACTION_PICK_LOCATION)
+        act.startActivity(intent)
+    }
+
+    //*************************************************
     // NAVIGATION
     //*************************************************
 
@@ -161,7 +183,7 @@ object ActionBasics {
 
         // call Locus
         ctx.startActivity(Intent(LocusConst.ACTION_NAVIGATION_START).apply {
-            LocusUtils.addWaypointToIntent(this, pt)
+            IntentHelper.addPointToIntent(this, pt)
         })
     }
 
@@ -248,7 +270,7 @@ object ActionBasics {
 
         // start action
         ctx.startActivity(Intent(LocusConst.ACTION_GUIDING_START).apply {
-            LocusUtils.addWaypointToIntent(this, pt)
+            IntentHelper.addPointToIntent(this, pt)
         })
     }
 
@@ -426,7 +448,7 @@ object ActionBasics {
      * @param forceOverwrite     if set to `true`, new point will completely rewrite all
      * user's data (do not use if necessary). If set to `false`, Locus will handle update based on user's
      * settings (if user have defined "keep values", it will keep it)
-     * @param loadAllGcWaypoints allow to force Locus to load all Geocachepoints (of course
+     * @param loadAllGcWaypoints allow to force Locus to load all Geocache points (of course
      * if point is Geocache and is visible on map)
      * @return number of affected points
      * @throws RequiredVersionMissingException if Locus in required version is missing
