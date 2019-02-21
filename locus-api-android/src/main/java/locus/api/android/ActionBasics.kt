@@ -51,7 +51,7 @@ object ActionBasics {
      * Get LocusInfo container with various Locus app parameters.
      *
      * @param ctx current context
-     * @param lv  required Locus version
+     * @param lv required Locus version
      * @return loaded info container or 'null' in case of problem
      */
     fun getLocusInfo(ctx: Context, lv: LocusUtils.LocusVersion): LocusInfo? {
@@ -603,7 +603,8 @@ object ActionBasics {
      * @param lv current location version we work with
      * @param format export format
      */
-    fun getTrackInFormat(act: Activity, requestCode: Int, lv: LocusUtils.LocusVersion,
+    fun getTrackInFormat(act: Activity, requestCode: Int,
+            lv: LocusUtils.LocusVersion? = LocusUtils.getActiveVersion(act),
             trackId: Long, format: FileFormat) {
         // check version
         val minVersion = VersionCode.UPDATE_16.vcFree
@@ -613,7 +614,7 @@ object ActionBasics {
 
         // execute request
         act.startActivityForResult(Intent(LocusConst.ACTION_GET_TRACK_AS_FILE).apply {
-            setPackage(lv.packageName)
+            setPackage(lv!!.packageName)
             putExtra("trackId", trackId)
             putExtra("format", format.name.toLowerCase())
         }, requestCode)

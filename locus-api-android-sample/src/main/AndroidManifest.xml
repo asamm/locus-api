@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.asamm.locus.api.sample">
 
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission
-        android:name="com.asamm.locus.permission.READ_GEOCACHING_DATA"/>
-    <uses-permission
-        android:name="com.asamm.locus.permission.WRITE_GEOCACHING_DATA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.asamm.locus.permission.READ_GEOCACHING_DATA" />
+    <uses-permission android:name="com.asamm.locus.permission.WRITE_GEOCACHING_DATA" />
 
     <application
         android:name=".MainApplication"
@@ -19,72 +16,55 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity
-            android:name=".MainActivity">
+        <activity android:name=".MainActivity">
 
             <intent-filter>
-                <action
-                    android:name="android.intent.action.MAIN"/>
-                <category
-                    android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
             <!-- MENU ITEMS -->
 
             <!-- thanks to this, app appear in list of available locations -->
             <intent-filter>
-                <action
-                    android:name="locus.api.android.INTENT_ITEM_GET_LOCATION"/>
-                <category
-                    android:name="android.intent.category.DEFAULT"/>
+                <action android:name="locus.api.android.INTENT_ITEM_GET_LOCATION" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <!-- thanks to this, app appear in sub-menu of every point -->
             <intent-filter>
-                <action
-                    android:name="locus.api.android.INTENT_ITEM_POINT_TOOLS"/>
-                <category
-                    android:name="android.intent.category.DEFAULT"/>
+                <action android:name="locus.api.android.INTENT_ITEM_POINT_TOOLS" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <!-- thanks to this, app appear in sub-menu of every track -->
             <intent-filter>
-                <action
-                    android:name="locus.api.android.INTENT_ITEM_TRACK_TOOLS"/>
-                <category
-                    android:name="android.intent.category.DEFAULT"/>
+                <action android:name="locus.api.android.INTENT_ITEM_TRACK_TOOLS" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <!-- thanks to this, app appear in function list -->
             <intent-filter>
-                <action
-                    android:name="locus.api.android.INTENT_ITEM_MAIN_FUNCTION"/>
-                <category
-                    android:name="android.intent.category.DEFAULT"/>
+                <action android:name="locus.api.android.INTENT_ITEM_MAIN_FUNCTION" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <!-- thanks to this, app appear in searching options -->
             <intent-filter>
-                <action
-                    android:name="locus.api.android.INTENT_ITEM_SEARCH_LIST"/>
-                <category
-                    android:name="android.intent.category.DEFAULT"/>
+                <action android:name="locus.api.android.INTENT_ITEM_SEARCH_LIST" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <!-- thanks to this, app appear in points screen - tools button -->
             <intent-filter>
-                <action
-                    android:name="locus.api.android.INTENT_ITEM_POINTS_SCREEN_TOOLS"/>
-                <category
-                    android:name="android.intent.category.DEFAULT"/>
+                <action android:name="locus.api.android.INTENT_ITEM_POINTS_SCREEN_TOOLS" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <!-- thanks to this, app can handle incoming locations -->
             <intent-filter>
-                <action
-                    android:name="locus.api.android.ACTION_RECEIVE_LOCATION"/>
-                <category
-                    android:name="android.intent.category.DEFAULT"/>
+                <action android:name="locus.api.android.ACTION_RECEIVE_LOCATION" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -94,17 +74,17 @@
 
             <!-- thanks to this, app appear in sub-menu of only geocache! -->
             <intent-filter>
-                <action android:name="locus.api.android.INTENT_ITEM_POINT_TOOLS"/>
+                <action android:name="locus.api.android.INTENT_ITEM_POINT_TOOLS" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.DEFAULT" />
 
                 <data
                     android:host="menion.android.locus"
                     android:path="/point_geocache"
-                    android:scheme="locus"/>
+                    android:scheme="locus" />
             </intent-filter>
         </activity>
-        <activity android:name=".ActivityDashboard"/>
+        <activity android:name=".ActivityDashboard" />
 
         <!-- receiver for handling of periodic updates -->
         <receiver
@@ -112,8 +92,7 @@
             android:enabled="false">
 
             <intent-filter>
-                <action
-                    android:name="locus.api.android.ACTION_PERIODIC_UPDATE"/>
+                <action android:name="locus.api.android.ACTION_PERIODIC_UPDATE" />
 
             </intent-filter>
         </receiver>
@@ -121,22 +100,22 @@
         <!-- receiver for handling changes in points -->
         <receiver android:name=".receivers.PointChangedReceiver">
             <intent-filter>
-                <action android:name="locus.api.android.ACTION_POINT_CHANGED"/>
+                <action android:name="locus.api.android.ACTION_POINT_CHANGED" />
             </intent-filter>
         </receiver>
 
         <!-- service that serve map tiles -->
         <service android:name=".mapServer.MapProvider">
             <intent-filter>
-                <action android:name="locus.api.android.ACTION_MAP_PROVIDER"/>
+                <action android:name="locus.api.android.ACTION_MAP_PROVIDER" />
             </intent-filter>
         </service>
 
         <provider
-            android:authorities="@string/file_provider_authority"
             android:name="androidx.core.content.FileProvider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:authorities="@string/file_provider_authority"
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />

@@ -282,7 +282,7 @@ object SampleCalls {
      */
     @Throws(RequiredVersionMissingException::class)
     fun callSendMorePointsGeocacheFileMethod(ctx: Context) {
-        val version = LocusUtils.getActiveVersion(ctx)
+        val version = LocusUtils.getActiveVersion(ctx) ?: return
 
         // get filepath
         val dir: File?
@@ -297,7 +297,7 @@ object SampleCalls {
             }
         }
 
-        val file = File(dir, "testFile.locus")
+        val file = File(dir, "testFile.lb")
 
         // prepare data
         val pw = PackPoints("test07")
@@ -311,10 +311,10 @@ object SampleCalls {
         val send = if (version.isVersionValid(LocusUtils.VersionCode.UPDATE_15)) {
             // send file via FileProvider, you don't need WRITE_EXTERNAL_STORAGE permission for this
             val uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
-            ActionDisplayPoints.sendPacksFile(ctx, data, file, uri, ExtraAction.CENTER)
+            ActionDisplayPoints.sendPacksFile(ctx, version, data, file, uri, ExtraAction.CENTER)
         } else {
             // send file old way, you need WRITE_EXTERNAL_STORAGE permission for this
-            ActionDisplayPoints.sendPacksFile(ctx, data, file.absolutePath,
+            ActionDisplayPoints.sendPacksFile(ctx, version, data, file.absolutePath,
                     ExtraAction.CENTER)
         }
         Logger.logD(TAG, "callSendMorePointsGeocacheFileMethod(), send: $send")
@@ -477,14 +477,29 @@ object SampleCalls {
     //*************************************************
 
     fun callSendFileToSystem(ctx: Context) {
-        val send = ActionFiles.importFileSystem(ctx, tempGpxFile)
+        val file = tempGpxFile
+
+        // generate Uri over FileProvider
+        val uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
+
+        // send request for "display"
+        val send = ActionFiles.importFileSystem(ctx, uri, ActionFiles.getMimeType(file))
         Logger.logD(TAG, "callSendFileToSystem(" + ctx + "), " +
                 "send:" + send)
     }
 
+    /**
+     * Send certain file directly to Locus Map application for handling.
+     */
     fun callSendFileToLocus(ctx: Context, lv: LocusVersion) {
-        val send = ActionFiles.importFileLocus(ctx, lv, tempGpxFile, false)
-        Logger.logD(TAG, "callSendFileToLocus(" + ctx + "), " +
+        val file = tempGpxFile
+
+        // generate Uri over FileProvider
+        val uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
+
+        // send request for "display"
+        val send = ActionFiles.importFileLocus(ctx, uri, ActionFiles.getMimeType(file), lv, false)
+        Logger.logD(TAG, "callSendFileToLocus($ctx, $lv), " +
                 "send:" + send)
     }
 

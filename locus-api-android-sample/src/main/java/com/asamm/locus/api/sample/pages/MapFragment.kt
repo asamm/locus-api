@@ -1,3 +1,7 @@
+/**
+ * Created by menion on 25/01/2018.
+ * This code is part of Locus project from Asamm Software, s. r. o.
+ */
 package com.asamm.locus.api.sample.pages
 
 import android.annotation.SuppressLint
@@ -21,12 +25,6 @@ import locus.api.android.utils.LocusUtils
 import locus.api.objects.extra.Location
 import locus.api.utils.Logger
 
-
-/**
- * Created by menion on 25/01/2018.
- * This code is part of Locus project from Asamm Software, s. r. o.
- */
-
 class MapFragment : DialogFragment() {
 
     // current version
@@ -48,6 +46,7 @@ class MapFragment : DialogFragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         lv = LocusUtils.getActiveVersion(context)
+                ?: throw IllegalStateException("No active Locus-based application")
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -108,7 +107,7 @@ class MapFragment : DialogFragment() {
             }
 
             override fun onFling(event1: MotionEvent, event2: MotionEvent,
-                                 velocityX: Float, velocityY: Float): Boolean {
+                    velocityX: Float, velocityY: Float): Boolean {
                 return true
             }
         })

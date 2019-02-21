@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="file_provider_authority" translatable="false">com.asamm.locus.api.sample.fileprovider</string>
+    <string name="file_provider_authority" translatable="false">com.asamm.locus.api.sample.provider</string>
 </resources>

@@ -160,25 +160,22 @@ object MainIntentHandler {
         }
 
         // display result of request
-        Logger.logD(TAG, "handleTrackToolsMenu()")
-        Logger.logD(TAG, "  wpts:")
-        for (pt in track.waypoints) {
-            Logger.logD(TAG, "    " + pt.getId() + ", " + pt.name + ", style: '" + pt.parameterStyleName + "', " + pt.styleNormal)
-        }
         AlertDialog.Builder(act)
                 .setTitle("Intent - On Track action")
                 .setMessage("Received intent with track:\n\n" + track.name + "\n\n" +
                         "desc:" + track.parameterDescription)
                 .setNeutralButton("Get as GPX") { _, _ ->
-                    ActionBasics.getTrackInFormat(act,
-                            MainActivity.RC_GET_TRACK_IN_FORMAT,
-                            LocusUtils.getActiveVersion(act),
-                            track.getId(),
-                            ActionBasics.FileFormat.GPX)
+                    try {
+                        ActionBasics.getTrackInFormat(act,
+                                MainActivity.RC_GET_TRACK_IN_FORMAT,
+                                trackId = track.getId(),
+                                format = ActionBasics.FileFormat.GPX)
+                    } catch (e: RequiredVersionMissingException) {
+                        Logger.logE(TAG, "", e)
+                        Toast.makeText(act, "Current Locus Map version is too old", Toast.LENGTH_SHORT).show()
+                    }
                 }
-                .setNegativeButton("Close") { _, _ ->
-                    // just do some action on required coordinates
-                }
+                .setNegativeButton("Close") { _, _ -> }
                 .show()
     }
 

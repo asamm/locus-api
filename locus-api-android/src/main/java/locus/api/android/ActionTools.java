@@ -443,7 +443,7 @@ public class ActionTools {
      * @param act current activity
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
-    @Deprecated // use ActionBasics.actionPickLocation insead
+    @Deprecated // use ActionBasics.actionPickLocation instead
     public static void actionPickLocation(Activity act)
             throws RequiredVersionMissingException {
         if (LocusUtils.isLocusAvailable(act, 235, 235, 0)) {
@@ -453,10 +453,6 @@ public class ActionTools {
             throw new RequiredVersionMissingException(235);
         }
     }
-
-
-    // TODO
-    // BELOW: PART TO REWRITE
 
     //*************************************************
     // FILE PICKER
@@ -470,30 +466,35 @@ public class ActionTools {
      * @param requestCode request code
      * @throws ActivityNotFoundException thrown in case of missing required Locus app
      */
+    @Deprecated // use ActionFiles.actionPickFile instead
     public static void actionPickFile(Activity activity, int requestCode)
             throws ActivityNotFoundException {
         intentPick("org.openintents.action.PICK_FILE",
                 activity, requestCode, null, null);
     }
 
+    @Deprecated // use ActionFiles.actionPickFile instead
     public static void actionPickFile(Activity activity, int requestCode,
             String title, String[] filter) throws ActivityNotFoundException {
         intentPick("org.openintents.action.PICK_FILE",
                 activity, requestCode, title, filter);
     }
 
+    @Deprecated // use ActionFiles.actionPickDir instead
     public static void actionPickDir(Activity activity, int requestCode)
             throws ActivityNotFoundException {
         intentPick("org.openintents.action.PICK_DIRECTORY",
                 activity, requestCode, null, null);
     }
 
+    @Deprecated // use ActionFiles.actionPickDir instead
     public static void actionPickDir(Activity activity, int requestCode,
             String title) throws ActivityNotFoundException {
         intentPick("org.openintents.action.PICK_DIRECTORY",
                 activity, requestCode, title, null);
     }
 
+    @Deprecated
     private static void intentPick(String action, Activity activity, int requestCode,
             String title, String[] filter) {
         // create intent
@@ -508,6 +509,9 @@ public class ActionTools {
         // execute request
         activity.startActivityForResult(intent, requestCode);
     }
+
+    // TODO
+    // BELOW: PART TO REWRITE
 
     //*************************************************
     // TRACK RECORDING

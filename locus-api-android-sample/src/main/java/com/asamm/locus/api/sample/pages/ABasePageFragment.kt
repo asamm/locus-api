@@ -60,7 +60,7 @@ abstract class ABasePageFragment : Fragment() {
                 Toast.makeText(act,
                         "Problem with action:" + item.id, Toast.LENGTH_LONG).show()
                 Logger.logE(TAG, "onItemClick(), " +
-                        "item:" + item.id + " failed")
+                        "item:" + item.id + " failed", e)
             }
         }
 

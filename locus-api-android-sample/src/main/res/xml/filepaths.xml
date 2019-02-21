@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
+    <files-path
+        name="files_path"
+        path="/" />
     <cache-path
-        name="shared"
-        path="shared/" />
+        name="cache_path"
+        path="/" />
+    <!-- File(ctx.cacheDir, "shared") -->
+    <cache-path
+        name="cache_path_shared"
+        path="/shared" />
+    <external-path
+        name="external_files"
+        path="/" />
+    <external-files-path
+        name="external_files_path"
+        path="/" />
+    <external-cache-path
+        name="external_cache_path"
+        path="/" />
 </paths>

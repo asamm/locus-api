@@ -13,7 +13,6 @@
 package com.asamm.locus.api.sample.pages
 
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ListView
@@ -27,14 +26,6 @@ import locus.api.utils.Logger
 import java.util.*
 
 class PageBroadcastApiSamples : DialogFragment() {
-
-    // current version
-    private lateinit var lv: LocusUtils.LocusVersion
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        lv = LocusUtils.getActiveVersion(context)
-    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(activity!!)

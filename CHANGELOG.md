@@ -6,17 +6,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.6] - 2019-02-21
+### Changed
+- updated Kotlin, Gradle & build tools
+- `pickFile`, `pickDir` moved to `ActionFiles.kt`
+- `ActionDisplayX` classes converted to Kotlin & minor updates
+
+### Fixed
+- sharing of files over `ActionFiles.importFileLocus`
+- permission for `ActionDisplayPoints.sendPacksFile`
+
 ## [0.3.5] - 2019-02-08
 ### Added
-- requesting tracks in certain file format
+- requesting tracks in certain file format over `ActionBasics.getTrackInFormat`
 
 ### Changed
-- part of LocusUtils functions converted to IntentHelper object 
+- part of `LocusUtils` functions converted to `IntentHelper` object 
 
 ## [0.3.4] - 2019-01-18
 ### Added
 - search for visible points on the map based on coordinates & radius
-- option to start navigation/gudiding on point defined by it's ID 
+- option to start navigation/guiding on point defined by it's ID 
 
 ### Changed
 - part of `ActionTools` moved to `ActionBasics`. Kotlin improved version

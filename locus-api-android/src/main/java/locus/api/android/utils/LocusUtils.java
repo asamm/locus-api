@@ -305,6 +305,20 @@ public class LocusUtils {
             return false;
         }
 
+        /**
+         * Get ClassName for the main application activity (usually screen with map).
+         * @return class name
+         */
+        public String getMainActivityClassName() {
+            if (isVersionFree() || isVersionPro()) {
+                return "com.asamm.locus.basic.MainActivityBasic";
+            } else if (isVersionGis()) {
+                return "com.asamm.locus.gis.core.MainActivityGis";
+            } else {
+                return "";
+            }
+        }
+
         @Override
         public @NonNull String toString() {
             return Utils.toString(this);
@@ -340,7 +354,7 @@ public class LocusUtils {
      * @param ctx current context
      * @return active version
      */
-    public static LocusVersion getActiveVersion(Context ctx) {
+    public static @Nullable LocusVersion getActiveVersion(Context ctx) {
         return getActiveVersion(ctx, VersionCode.UPDATE_01);
     }
 
@@ -353,7 +367,7 @@ public class LocusUtils {
      * @param minVersionCode minimal version code of Locus
      * @return active version
      */
-    public static LocusVersion getActiveVersion(Context ctx, int minVersionCode) {
+    public static @Nullable LocusVersion getActiveVersion(Context ctx, int minVersionCode) {
         return getActiveVersion(ctx, minVersionCode, minVersionCode, minVersionCode);
     }
 
@@ -366,7 +380,7 @@ public class LocusUtils {
      * @param vc  version code
      * @return active version
      */
-    public static LocusVersion getActiveVersion(Context ctx, VersionCode vc) {
+    public static @Nullable LocusVersion getActiveVersion(Context ctx, VersionCode vc) {
         return getActiveVersion(ctx, vc.vcFree, vc.vcPro, vc.vcGis);
     }
 
@@ -381,7 +395,7 @@ public class LocusUtils {
      * @param minLocusGis     minimal version code of Locus GIS
      * @return active version
      */
-    private static LocusVersion getActiveVersion(Context ctx,
+    private static @Nullable LocusVersion getActiveVersion(Context ctx,
             int minLocusMapFree, int minLocusMapPro, int minLocusGis) {
         // get valid Locus version for any actions
         List<LocusVersion> versions = getAvailableVersions(ctx);
@@ -508,8 +522,8 @@ public class LocusUtils {
     public static LocusVersion createLocusVersion(Context ctx, String packageName) {
         try {
             // check package name
-            if (packageName == null || packageName.length() == 0 ||
-                    !packageName.startsWith("menion.android.locus")) {
+            if (packageName == null || packageName.length() == 0
+                    || !packageName.startsWith("menion.android.locus")) {
                 return null;
             }
 
