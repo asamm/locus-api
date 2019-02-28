@@ -1,3 +1,7 @@
+/**
+ * Created by menion on 14. 7. 2014.
+ * Class is part of Locus project
+ */
 package locus.api.android.features.geocaching.fieldNotes
 
 import locus.api.objects.Storable
@@ -6,8 +10,7 @@ import locus.api.utils.DataWriterBigEndian
 import java.io.IOException
 
 /**
- * Created by menion on 14. 7. 2014.
- * Class is part of Locus project
+ * Container for images attached to geocaching logs.
  */
 class FieldNoteImage : Storable() {
 
@@ -26,6 +29,7 @@ class FieldNoteImage : Storable() {
     /**
      * Description for image
      */
+    @Deprecated(message = "Description removed in new GC API, so not needed anymore.")
     var description = ""
     /**
      * Image itself, reduced to usable size

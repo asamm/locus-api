@@ -273,33 +273,8 @@ public class GeoDataExtra extends Storable {
     public static final int PAR_OSM_NOTES_ID = 301;
     public static final int PAR_OSM_NOTES_CLOSED = 302;
 
-    // PHONES (1000 - 1099)
-    private static final int PAR_PHONE_MIN = 1000;
-    private static final int PAR_PHONE_MAX = 1099;
-
-    // EMAILS (1100 - 1199)
-    private static final int PAR_EMAIL_MIN = 1100;
-    private static final int PAR_EMAIL_MAX = 1199;
-
-    // URLS (1200 - 1299)
-    private static final int PAR_URL_MIN = 1200;
-    private static final int PAR_URL_MAX = 1299;
-
-    // PHOTOS (1300 - 1399)
-    private static final int PAR_PHOTO_MIN = 1300;
-    private static final int PAR_PHOTO_MAX = 1399;
-
-    // VIDEO (1400 - 1499)
-    private static final int PAR_VIDEO_MIN = 1400;
-    private static final int PAR_VIDEO_MAX = 1499;
-
-    // AUDIO (1500 - 1599)
-    private static final int PAR_AUDIO_MIN = 1500;
-    private static final int PAR_AUDIO_MAX = 1599;
-
-    // OTHER FILES (1800 - 1999)
-    private static final int PAR_OTHER_FILES_MIN = 1800;
-    private static final int PAR_OTHER_FILES_MAX = 1999;
+    // PHONES, EMAIL, URLS, PHOTOS, VIDEO, AUDIO, OTHER FILES (1000 - 1999)
+    // below in "Attachments" section
 
     /**
      * table for additional parameters
@@ -524,126 +499,222 @@ public class GeoDataExtra extends Storable {
         return parameters.size();
     }
 
+    //*************************************************
+    // ATTACHMENTS
+    //*************************************************
+
     // PHONE
 
+    @Deprecated // use `addAttachment`
     public boolean addPhone(String phone) {
-        return addToStorage("", phone, PAR_PHONE_MIN, PAR_PHONE_MAX);
+        return addPhone("", phone);
     }
-
+    @Deprecated // use `addAttachment`
     public boolean addPhone(String label, String phone) {
-        return addToStorage(label, phone, PAR_PHONE_MIN, PAR_PHONE_MAX);
+        return addAttachment(AttachType.PHONE, label, phone);
     }
-
+    @Deprecated // use `getAttachments`
     public List<LabelTextContainer> getPhones() {
-        return getFromStorage(PAR_PHONE_MIN, PAR_PHONE_MAX);
+        return getAttachments(AttachType.PHONE);
     }
-
+    @Deprecated // use `removeAttachment`
     public boolean removePhone(String phone) {
-        return removeFromStorage(phone, PAR_PHONE_MIN, PAR_PHONE_MAX);
+        return removeAttachment(AttachType.PHONE, phone);
     }
-
+    @Deprecated // use `removeAllAttachments`
     public void removeAllPhones() {
-        removeAllFromStorage(PAR_PHONE_MIN, PAR_PHONE_MAX);
+        removeAllAttachments(AttachType.PHONE);
     }
 
     // EMAIL
 
+    @Deprecated // use `addAttachment`
     public boolean addEmail(String email) {
-        return addToStorage("", email, PAR_EMAIL_MIN, PAR_EMAIL_MAX);
+        return addEmail("", email);
     }
-
+    @Deprecated // use `addAttachment`
     public boolean addEmail(String label, String email) {
-        return addToStorage(label, email, PAR_EMAIL_MIN, PAR_EMAIL_MAX);
+        return addAttachment(AttachType.EMAIL, label, email);
     }
-
+    @Deprecated // use `getAttachments`
     public List<LabelTextContainer> getEmails() {
-        return getFromStorage(PAR_EMAIL_MIN, PAR_EMAIL_MAX);
+        return getAttachments(AttachType.EMAIL);
     }
-
+    @Deprecated // use `removeAttachment`
     public boolean removeEmail(String email) {
-        return removeFromStorage(email, PAR_EMAIL_MIN, PAR_EMAIL_MAX);
+        return removeAttachment(AttachType.EMAIL, email);
     }
-
+    @Deprecated // use `removeAllAttachments`
     public void removeAllEmails() {
-        removeAllFromStorage(PAR_EMAIL_MIN, PAR_EMAIL_MAX);
+        removeAllAttachments(AttachType.EMAIL);
     }
 
     // URL
 
+    @Deprecated // use `addAttachment`
     public boolean addUrl(String url) {
-        return addToStorage("", url, PAR_URL_MIN, PAR_URL_MAX);
+        return addUrl("", url);
     }
-
+    @Deprecated // use `addAttachment`
     public boolean addUrl(String label, String url) {
-        return addToStorage(label, url, PAR_URL_MIN, PAR_URL_MAX);
+        return addAttachment(AttachType.URL, label, url);
     }
-
+    @Deprecated // use `getAttachments`
     public List<LabelTextContainer> getUrls() {
-        return getFromStorage(PAR_URL_MIN, PAR_URL_MAX);
+        return getAttachments(AttachType.URL);
     }
-
+    @Deprecated // use `removeAttachment`
     public boolean removeUrl(String url) {
-        return removeFromStorage(url, PAR_URL_MIN, PAR_URL_MAX);
+        return removeAttachment(AttachType.URL, url);
     }
-
+    @Deprecated // use `removeAllAttachments`
     public void removeAllUrls() {
-        removeAllFromStorage(PAR_URL_MIN, PAR_URL_MAX);
+        removeAllAttachments(AttachType.URL);
     }
 
     // PHOTO
 
+    @Deprecated // use `addAttachment`
     public boolean addPhoto(String photo) {
-        return addToStorage("", photo, PAR_PHOTO_MIN, PAR_PHOTO_MAX);
+        return addPhoto("", photo);
     }
-
+    @Deprecated // use `addAttachment`
+    public boolean addPhoto(String label, String photo) {
+        return addAttachment(AttachType.PHOTO, label, photo);
+    }
+    @Deprecated // use `getAttachments`
     public List<String> getPhotos() {
-        return convertToTexts(getFromStorage(PAR_PHOTO_MIN, PAR_PHOTO_MAX));
+        return convertToTexts(getAttachments(AttachType.PHOTO));
     }
-
+    @Deprecated // use `removeAttachment`
     public boolean removePhoto(String photo) {
-        return removeFromStorage(photo, PAR_PHOTO_MIN, PAR_PHOTO_MAX);
+        return removeAttachment(AttachType.PHOTO, photo);
     }
 
     // VIDEO
 
+    @Deprecated // use `addAttachment`
     public boolean addVideo(String video) {
-        return addToStorage("", video, PAR_VIDEO_MIN, PAR_VIDEO_MAX);
+        return addVideo("", video);
     }
-
+    @Deprecated // use `addAttachment`
+    public boolean addVideo(String label, String video) {
+        return addAttachment(AttachType.VIDEO, label, video);
+    }
+    @Deprecated // use `getAttachments`
     public List<String> getVideos() {
-        return convertToTexts(getFromStorage(PAR_VIDEO_MIN, PAR_VIDEO_MAX));
+        return convertToTexts(getAttachments(AttachType.VIDEO));
     }
-
+    @Deprecated // use `removeAttachment`
     public boolean removeVideo(String video) {
-        return removeFromStorage(video, PAR_VIDEO_MIN, PAR_VIDEO_MAX);
+        return removeAttachment(AttachType.VIDEO, video);
     }
 
     // AUDIO
 
+    @Deprecated // use `addAttachment`
     public boolean addAudio(String audio) {
-        return addToStorage("", audio, PAR_AUDIO_MIN, PAR_AUDIO_MAX);
+        return addAudio("", audio);
     }
-
+    @Deprecated // use `addAttachment`
+    public boolean addAudio(String label, String audio) {
+        return addAttachment(AttachType.AUDIO, label, audio);
+    }
+    @Deprecated // use `getAttachments`
     public List<String> getAudios() {
-        return convertToTexts(getFromStorage(PAR_AUDIO_MIN, PAR_AUDIO_MAX));
+        return convertToTexts(getAttachments(AttachType.AUDIO));
     }
-
+    @Deprecated // use `removeAttachment`
     public boolean removeAudio(String audio) {
-        return removeFromStorage(audio, PAR_AUDIO_MIN, PAR_AUDIO_MAX);
+        return removeAttachment(AttachType.AUDIO, audio);
     }
 
     // OTHER FILES
 
+    @Deprecated // use `addAttachment`
     public boolean addOtherFile(String filpath) {
-        return addToStorage("", filpath, PAR_OTHER_FILES_MIN, PAR_OTHER_FILES_MAX);
+        return addOtherFile("", filpath);
     }
-
+    @Deprecated // use `addAttachment`
+    public boolean addOtherFile(String label, String filpath) {
+        return addAttachment(AttachType.OTHER, label, filpath);
+    }
+    @Deprecated // use `getAttachments`
     public List<String> getOtherFiles() {
-        return convertToTexts(getFromStorage(PAR_OTHER_FILES_MIN, PAR_OTHER_FILES_MAX));
+        return convertToTexts(getAttachments(AttachType.OTHER));
+    }
+    @Deprecated // use `removeAttachment`
+    public boolean removeOtherFile(String filpath) {
+        return removeAttachment(AttachType.OTHER, filpath);
     }
 
-    public boolean removeOtherFile(String filpath) {
-        return removeFromStorage(filpath, PAR_OTHER_FILES_MIN, PAR_OTHER_FILES_MAX);
+    /**
+     * Type of attached object.
+     */
+    public enum AttachType {
+
+        PHONE(1000, 1099),
+        EMAIL(1100, 1199),
+        URL(1200, 1299),
+        PHOTO(1300, 1399),
+        VIDEO(1400, 1499),
+        AUDIO(1500, 1599),
+        OTHER(1800, 1999);
+
+        // minimal value in storage
+        private int min;
+        // maximal allowed value in storage
+        private int max;
+
+        /**
+         * Create new type object.
+         */
+        AttachType(int min, int max) {
+            this.min = min;
+            this.max = max;
+        }
+    }
+
+    /**
+     * Add attachment of certain type into container.
+     *
+     * @param type attachment type
+     * @param label (optional) item label
+     * @param value item value itself
+     * @return `true` if correctly added
+     */
+    public boolean addAttachment(AttachType type, String label, String value) {
+        return addToStorage(label, value, type.min, type.max);
+    }
+
+    /**
+     * Get all attachments of certain type.
+     *
+     * @param type attachment type
+     * @return list of all attachments
+     */
+    public List<LabelTextContainer> getAttachments(AttachType type) {
+        return getFromStorage(type.min, type.max);
+    }
+
+    /**
+     * Remove attachment defined by its value, from storage.
+     *
+     * @param type attachment type
+     * @param value value of attachment
+     * @return `true` if attachment was removed
+     */
+    public boolean removeAttachment(AttachType type, String value) {
+        return removeFromStorage(value, type.min, type.max);
+    }
+
+    /**
+     * Remove all attachments of certain type.
+     *
+     * @param type attachment type
+     */
+    public void removeAllAttachments(AttachType type) {
+        removeAllFromStorage(type.min, type.max);
     }
 
     // PRIVATE AND SPECIAL TOOLS

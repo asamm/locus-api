@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.7] - 2019-02-28
+### Changed
+- united adding attachments to `GeoDataExtra`
+- removed support for GcImages descriptions (deprecated in new gc.com API)
+
+### Fixed
+- detection of altitude values in `TrackStats`
+
 ## [0.3.6] - 2019-02-21
 ### Changed
 - updated Kotlin, Gradle & build tools

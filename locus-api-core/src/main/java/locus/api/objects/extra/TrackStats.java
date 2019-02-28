@@ -542,8 +542,8 @@ public class TrackStats extends Storable {
      * @return {@code true} if track has elevation values
      */
     public boolean hasElevationValues() {
-        return mAltitudeMin != Float.POSITIVE_INFINITY && mAltitudeMin != 0.0 &&
-                mAltitudeMax != Float.NEGATIVE_INFINITY && mAltitudeMax != 0.0;
+        return (mAltitudeMin != Float.POSITIVE_INFINITY && mAltitudeMin != 0.0)
+                || (mAltitudeMax != Float.NEGATIVE_INFINITY && mAltitudeMax != 0.0);
     }
 
     /**
