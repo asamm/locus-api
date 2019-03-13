@@ -6,6 +6,7 @@ package com.asamm.locus.api.sample.pages
 
 import com.asamm.locus.api.sample.utils.BasicAdapterItem
 import com.asamm.locus.api.sample.utils.SampleCalls
+import locus.api.android.ActionBasics
 import locus.api.android.ActionTools
 import locus.api.android.utils.LocusUtils
 import java.util.*
@@ -48,8 +49,8 @@ class PageTracksFragment : ABasePageFragment() {
                     "Řipská 20, Praha 2, ČR")
             20 -> // start track recording. Recording profile "Cycle" is optional parameter. If
                 // this parameter is not used, last used profile is used for recording.
-                ActionTools.actionTrackRecordStart(activity, activeLocus, "Car")
-            21 -> ActionTools.actionTrackRecordStop(activity, activeLocus, true)
+                ActionBasics.actionTrackRecordStart(activity!!, activeLocus, "Car")
+            21 -> ActionBasics.actionTrackRecordStop(activity!!, activeLocus, true)
         }
     }
 }

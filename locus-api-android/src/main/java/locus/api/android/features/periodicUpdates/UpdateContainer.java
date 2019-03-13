@@ -36,6 +36,8 @@ public class UpdateContainer extends Storable {
 
     // current location (or just container for sensors)
     protected Location locMyLocation;
+    // flag if we have valid GPS location (GPS is "fixed" and location is usable)
+    protected boolean gpsLocValid;
     // used number of satellites
     protected int gpsSatsUsed;
     // total number of satellites
@@ -163,6 +165,7 @@ public class UpdateContainer extends Storable {
         // LOCATION, GPS, BASIC VALUES
 
         locMyLocation = null;
+        gpsLocValid = false;
         gpsSatsUsed = 0;
         gpsSatsAll = 0;
         declination = 0.0f;
@@ -289,9 +292,15 @@ public class UpdateContainer extends Storable {
     }
 
     /**
+     * Get information if current {@link #getLocMyLocation()} location is valid GPS location
+     * with usable accuracy (GPS has correctly computed "fix" value).
+     */
+    public boolean isGpsLocValid() {
+        return gpsLocValid;
+    }
+
+    /**
      * Return number of used satellites for GPS fix
-     *
-     * @return number of used satellites
      */
     public int getGpsSatsUsed() {
         return gpsSatsUsed;
@@ -299,8 +308,6 @@ public class UpdateContainer extends Storable {
 
     /**
      * Method return total number of visible satellites
-     *
-     * @return number of all visible satellites
      */
     public int getGpsSatsAll() {
         return gpsSatsAll;
@@ -309,8 +316,6 @@ public class UpdateContainer extends Storable {
     /**
      * Return current declination computed from a) current GPS location, or b) last known
      * location Locus knows
-     *
-     * @return current declination (in degrees)
      */
     public float getDeclination() {
         return declination;
@@ -837,7 +842,7 @@ public class UpdateContainer extends Storable {
 
     @Override
     protected int getVersion() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -928,6 +933,11 @@ public class UpdateContainer extends Storable {
         if (version >= 3) {
             guideTargetId = dr.readLong();
         }
+
+        // V4
+        if (version >= 4) {
+            gpsLocValid = dr.readBoolean();
+        }
     }
 
     @Override
@@ -1014,6 +1024,9 @@ public class UpdateContainer extends Storable {
 
         // V3
         dw.writeLong(guideTargetId);
+
+        // V4
+        dw.writeBoolean(gpsLocValid);
     }
 
     /**

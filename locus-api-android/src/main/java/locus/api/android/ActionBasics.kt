@@ -21,7 +21,9 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
+import android.text.TextUtils
 import locus.api.android.features.periodicUpdates.UpdateContainer
+import locus.api.android.objects.TrackRecordProfileSimple
 import locus.api.android.utils.IntentHelper
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusInfo
@@ -36,6 +38,8 @@ import locus.api.objects.extra.Point
 import locus.api.objects.extra.Track
 import locus.api.utils.Logger
 import org.json.JSONObject
+import java.io.InvalidObjectException
+import java.util.ArrayList
 
 /**
  * New version of "Basic tools" optimized for quick and clear usage.
@@ -134,6 +138,192 @@ object ActionBasics {
         // call action
         val intent = Intent(LocusConst.ACTION_PICK_LOCATION)
         act.startActivity(intent)
+    }
+
+    //*************************************************
+    // TRACK RECORDING
+    //*************************************************
+
+    // Broadcast receivers do now show app chooser, so it's needed to give
+    // them correct name of application package. For this reason, is required
+    // LocusVersion object that specify which app will receive it's request
+
+    /**
+     * Main call to start track recording over API.
+     *
+     * @param ctx         current context
+     * @param lv          version of Locus used for track record
+     * @param profileName name of profile used for record (optional), otherwise last
+     * used will be used for recording
+     */
+    @Throws(RequiredVersionMissingException::class)
+    fun actionTrackRecordStart(ctx: Context, lv: LocusUtils.LocusVersion, profileName: String? = null) {
+        // create basic intent
+        val intent = actionTrackRecord(
+                LocusConst.ACTION_TRACK_RECORD_START, lv)
+
+        // set (optional) recording profile
+        if (profileName?.isNotBlank() == true) {
+            intent.putExtra(LocusConst.INTENT_EXTRA_TRACK_REC_PROFILE, profileName)
+        }
+
+        // sent intent
+        LocusUtils.sendBroadcast(ctx, intent, lv)
+    }
+
+    /**
+     * Pause currently running track recording.
+     *
+     * @param ctx current context
+     * @param lv version of Locus used for track record
+     */
+    @Throws(RequiredVersionMissingException::class)
+    fun actionTrackRecordPause(ctx: Context, lv: LocusUtils.LocusVersion) {
+        LocusUtils.sendBroadcast(ctx,
+                actionTrackRecord(LocusConst.ACTION_TRACK_RECORD_PAUSE, lv), lv)
+    }
+
+    /**
+     * Stop currently running track recording.
+     *
+     * @param ctx current context
+     * @param lv version of Locus used for track record
+     * @param autoSave `true` to automatically save recording
+     */
+    @Throws(RequiredVersionMissingException::class)
+    fun actionTrackRecordStop(ctx: Context, lv: LocusUtils.LocusVersion, autoSave: Boolean) {
+        // create intent
+        val intent = actionTrackRecord(
+                LocusConst.ACTION_TRACK_RECORD_STOP, lv)
+        intent.putExtra(LocusConst.INTENT_EXTRA_TRACK_REC_AUTO_SAVE, autoSave)
+
+        // sent intent
+        LocusUtils.sendBroadcast(ctx, intent, lv)
+    }
+
+    // ADD WAYPOINT
+
+    /**
+     * Send broadcast to Locus to add a new waypoint to current track record.
+     *
+     * @param ctx      current context
+     * @param lv       version of Locus used for track record
+     * @param wptName  optional waypoint name
+     * @param autoSave `true` to automatically save waypoint without dialog
+     */
+    @JvmOverloads
+    @Throws(RequiredVersionMissingException::class)
+    fun actionTrackRecordAddWpt(ctx: Context, lv: LocusUtils.LocusVersion,
+            wptName: String? = null, autoSave: Boolean = false) {
+        LocusUtils.sendBroadcast(ctx,
+                prepareTrackRecordAddWptIntent(lv, wptName, autoSave), lv)
+    }
+
+    /**
+     * Send broadcast to Locus to add a new waypoint to current track record.
+     *
+     * @param ctx current context
+     * @param lv version of Locus used for track record
+     * @param wptName name of waypoint (optional)
+     * @param actionAfter action that may happen after (defined in LocusConst class)
+     */
+    @Throws(RequiredVersionMissingException::class)
+    fun actionTrackRecordAddWpt(ctx: Context, lv: LocusUtils.LocusVersion,
+            wptName: String? = null, actionAfter: String) {
+        LocusUtils.sendBroadcast(ctx,
+                prepareTrackRecordAddWptIntent(lv, wptName, false).apply {
+                    // extra parameter
+                    putExtra(LocusConst.INTENT_EXTRA_TRACK_REC_ACTION_AFTER, actionAfter)
+                }, lv)
+    }
+
+    /**
+     * Prepare intent that adds waypoint to current running track recording system.
+     *
+     * @param lv version of Locus used for track record
+     * @param wptName name of waypoint (optional)
+     * @param autoSave `true` to automatically save waypoint without dialog
+     */
+    private fun prepareTrackRecordAddWptIntent(lv: LocusUtils.LocusVersion,
+            wptName: String?, autoSave: Boolean): Intent {
+        return actionTrackRecord(
+                LocusConst.ACTION_TRACK_RECORD_ADD_WPT, lv).apply {
+            // setup name
+            if (wptName?.isNotBlank() == true) {
+                putExtra(LocusConst.INTENT_EXTRA_NAME, wptName)
+            }
+
+            // setup autosave option
+            putExtra(LocusConst.INTENT_EXTRA_TRACK_REC_AUTO_SAVE, autoSave)
+        }
+    }
+
+    /**
+     * Private function that helps create basic intent that controls Locus.
+     *
+     * @param action action that should be performed
+     * @param lv     version of Locus used for track record
+     * @return created ready-to-use intent
+     */
+    @Throws(RequiredVersionMissingException::class)
+    private fun actionTrackRecord(action: String, lv: LocusUtils.LocusVersion): Intent {
+        // check version (available only in Free/Pro)
+        val minVersion = VersionCode.UPDATE_02.vcFree
+        if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
+            throw RequiredVersionMissingException(minVersion)
+        }
+
+        // generate and return intent
+        return Intent(action).apply {
+            setPackage(lv.packageName)
+        }
+    }
+
+    //*************************************************
+    // TRACK RECORDING PROFILES
+    //*************************************************
+
+    /**
+     * Get list of available track recording profiles currently defined in app.
+     *
+     * @param ctx current context
+     * @param lv  version of Locus that's asked
+     * @return array of profiles, where first item in array is profile ID, second item is profile name
+     */
+    @Throws(RequiredVersionMissingException::class)
+    fun getTrackRecordingProfiles(ctx: Context, lv: LocusUtils.LocusVersion)
+            : List<TrackRecordProfileSimple> {
+        // get scheme if valid Locus is available
+        val profiles = ArrayList<TrackRecordProfileSimple>()
+        val scheme = getProviderUriData(lv, VersionCode.UPDATE_09,
+                LocusConst.CONTENT_PROVIDER_PATH_TRACK_RECORD_PROFILE_NAMES)
+
+        // get data
+        var cursor: Cursor? = null
+        try {
+            cursor = queryData(ctx, scheme, null)
+            if (cursor == null || !cursor.moveToFirst()) {
+                return profiles
+            }
+
+            // search in cursor for valid key
+            for (i in 0 until cursor.count) {
+                cursor.moveToPosition(i)
+                val prof = TrackRecordProfileSimple(
+                        cursor.getLong(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getBlob(3))
+                profiles.add(prof)
+            }
+        } catch (e: Exception) {
+            Logger.logE(TAG, "getTrackRecordingProfiles($ctx, $lv)", e)
+        } finally {
+            Utils.closeQuietly(cursor)
+        }
+
+        // return 'unknown' state
+        return profiles
     }
 
     //*************************************************
@@ -618,6 +808,100 @@ object ActionBasics {
             putExtra("trackId", trackId)
             putExtra("format", format.name.toLowerCase())
         }, requestCode)
+    }
+
+    //*************************************************
+    // WMS FUNCTIONS
+    //*************************************************
+
+    /**
+     * Add WMS map call allow 3rd party application, add web address directly to list of WMS
+     * services in Map Manager screen / WMS tab
+     *
+     * @param context current context
+     * @param wmsUrl Url address to WMS service
+     */
+    @Throws(RequiredVersionMissingException::class, InvalidObjectException::class)
+    fun callAddNewWmsMap(context: Context, wmsUrl: String) {
+        // check availability and start action
+        if (!LocusUtils.isLocusAvailable(context, VersionCode.UPDATE_01)) {
+            throw RequiredVersionMissingException(VersionCode.UPDATE_01)
+        }
+        if (TextUtils.isEmpty(wmsUrl)) {
+            throw InvalidObjectException("WMS Url address \'$wmsUrl\', is not valid!")
+        }
+
+        // call intent with WMS url
+        val intent = Intent(LocusConst.ACTION_ADD_NEW_WMS_MAP)
+        intent.putExtra(LocusConst.INTENT_EXTRA_ADD_NEW_WMS_MAP_URL, wmsUrl)
+        context.startActivity(intent)
+    }
+
+    //*************************************************
+    // CONTENT OF LOCUS STORE
+    //*************************************************
+
+    /**
+     * Allows to check if item with known ID is already purchased by user.
+     *
+     * @param ctx current context
+     * @param lv version of Locus that's asked
+     * @param itemId know ID of item
+     * @return ItemPurchaseState state of purchase
+     */
+    @Throws(RequiredVersionMissingException::class)
+    fun getItemPurchaseState(ctx: Context, lv: LocusUtils.LocusVersion, itemId: Long): Int {
+        // get scheme if valid Locus is available
+        var scheme = getProviderUriData(lv, VersionCode.UPDATE_06,
+                LocusConst.CONTENT_PROVIDER_PATH_ITEM_PURCHASE_STATE)
+        scheme = ContentUris.withAppendedId(scheme, itemId)
+
+        // get data
+        var cursor: Cursor? = null
+        try {
+            cursor = queryData(ctx, scheme, null)
+            if (cursor?.moveToFirst() != true) {
+                return LocusConst.PURCHASE_STATE_UNKNOWN
+            }
+
+            // search for a valid key
+            for (i in 0 until cursor.count) {
+                cursor.moveToPosition(i)
+                val key = cursor.getString(0)
+                if (key == "purchaseState") {
+                    return cursor.getInt(1)
+                }
+            }
+        } catch (e: Exception) {
+            Logger.logE(TAG, "getItemPurchaseState($ctx, $lv, $itemId)", e)
+        } finally {
+            Utils.closeQuietly(cursor)
+        }
+
+        // return 'unknown' state
+        return LocusConst.PURCHASE_STATE_UNKNOWN
+    }
+
+    /**
+     * Start Locus and display certain item from Store defined by it's unique ID.
+     *
+     * @param ctx    current context
+     * @param lv     known LocusVersion
+     * @param itemId known item ID
+     * @throws RequiredVersionMissingException if Locus in required version is missing
+     */
+    @Throws(RequiredVersionMissingException::class)
+    fun displayLocusStoreItemDetail(ctx: Context, lv: LocusUtils.LocusVersion?, itemId: Long) {
+        // check if application is available
+        if (lv == null || !lv.isVersionValid(VersionCode.UPDATE_12)) {
+            Logger.logW(TAG, "displayLocusStoreItemDetail(), " + "invalid Locus version")
+            throw RequiredVersionMissingException(VersionCode.UPDATE_12)
+        }
+
+        // call Locus
+        ctx.startActivity(Intent(LocusConst.ACTION_DISPLAY_STORE_ITEM).apply {
+            putExtra(LocusConst.INTENT_EXTRA_ITEM_ID, itemId)
+        })
     }
 
     //*************************************************

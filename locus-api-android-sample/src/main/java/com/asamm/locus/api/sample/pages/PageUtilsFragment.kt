@@ -13,6 +13,7 @@ import com.asamm.locus.api.sample.BuildConfig
 import com.asamm.locus.api.sample.utils.BasicAdapterItem
 import com.asamm.locus.api.sample.utils.SampleCalls
 import locus.api.android.ActionBasics
+import locus.api.android.ActionFiles
 import locus.api.android.ActionTools
 import locus.api.android.features.geocaching.fieldNotes.FieldNotesHelper
 import locus.api.android.utils.LocusConst
@@ -99,10 +100,10 @@ class PageUtilsFragment : ABasePageFragment() {
             3 -> SampleCalls.pickLocation(act)
             4 ->
                 // filter data so only visible will be GPX and KML files
-                ActionTools.actionPickFile(act,
+                ActionFiles.actionPickFile(act,
                         0, "Give me a FILE!!",
                         arrayOf(".gpx", ".kml"))
-            5 -> ActionTools.actionPickDir(act, 1)
+            5 -> ActionFiles.actionPickDir(act, 1)
             6 -> AlertDialog.Builder(act)
                     .setTitle("Locus Root directory")
                     .setMessage("dir:" + SampleCalls.getRootDirectory(act, activeLocus) +

@@ -510,9 +510,6 @@ public class ActionTools {
         activity.startActivityForResult(intent, requestCode);
     }
 
-    // TODO
-    // BELOW: PART TO REWRITE
-
     //*************************************************
     // TRACK RECORDING
     //*************************************************
@@ -528,6 +525,7 @@ public class ActionTools {
      * @param lv  version of Locus used for track record
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
+    @Deprecated // use ActionBasics.actionTrackRecordStart instead
     public static void actionTrackRecordStart(Context ctx, LocusVersion lv)
             throws RequiredVersionMissingException {
         actionTrackRecordStart(ctx, lv, null);
@@ -542,6 +540,7 @@ public class ActionTools {
      *                    used will be used for recording
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
+    @Deprecated // use ActionBasics.actionTrackRecordStart instead
     public static void actionTrackRecordStart(Context ctx, LocusVersion lv, String profileName)
             throws RequiredVersionMissingException {
         // create basic intent
@@ -557,6 +556,7 @@ public class ActionTools {
         LocusUtils.sendBroadcast(ctx, intent, lv);
     }
 
+    @Deprecated // use ActionBasics.actionTrackRecordPause instead
     public static void actionTrackRecordPause(Context ctx, LocusVersion lv)
             throws RequiredVersionMissingException {
         // create intent
@@ -567,6 +567,7 @@ public class ActionTools {
         LocusUtils.sendBroadcast(ctx, intent, lv);
     }
 
+    @Deprecated // use ActionBasics.actionTrackRecordStop instead
     public static void actionTrackRecordStop(Context ctx, LocusVersion lv, boolean autoSave)
             throws RequiredVersionMissingException {
         // create intent
@@ -587,6 +588,7 @@ public class ActionTools {
      * @param lv  version of Locus used for track record
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
+    @Deprecated // use ActionBasics.actionTrackRecordAddWpt instead
     public static void actionTrackRecordAddWpt(Context ctx, LocusVersion lv)
             throws RequiredVersionMissingException {
         actionTrackRecordAddWpt(ctx, lv, false);
@@ -600,6 +602,7 @@ public class ActionTools {
      * @param autoSave <code>true</code> to automatically save waypoint without dialog
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
+    @Deprecated // use ActionBasics.actionTrackRecordAddWpt instead
     public static void actionTrackRecordAddWpt(Context ctx, LocusVersion lv, boolean autoSave)
             throws RequiredVersionMissingException {
         actionTrackRecordAddWpt(ctx, lv, null, autoSave);
@@ -614,6 +617,7 @@ public class ActionTools {
      * @param autoSave <code>true</code> to automatically save waypoint without dialog
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
+    @Deprecated // use ActionBasics.actionTrackRecordAddWpt instead
     public static void actionTrackRecordAddWpt(Context ctx, LocusVersion lv,
             String wptName, boolean autoSave) throws RequiredVersionMissingException {
         Intent intent = actionTrackRecord(
@@ -636,6 +640,7 @@ public class ActionTools {
      * @param actionAfter action that may happen after (defined in LocusConst class)
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
+    @Deprecated // use ActionBasics.actionTrackRecordAddWpt instead
     public static void actionTrackRecordAddWpt(Context ctx, LocusVersion lv,
             String wptName, String actionAfter) throws RequiredVersionMissingException {
         // generate basic intent
@@ -684,6 +689,7 @@ public class ActionTools {
     /**
      * Simple container for track recording profiles.
      */
+    @Deprecated // use ActionBasics.getTrackRecordingProfiles instead
     public static class TrackRecordProfileSimple extends Storable {
 
         private long mId;
@@ -796,6 +802,7 @@ public class ActionTools {
      * @return array of profiles, where first item in array is profile ID, second item is profile name
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
+    @Deprecated // use ActionBasics.getTrackRecordingProfiles instead
     public static List<TrackRecordProfileSimple> getTrackRecordingProfiles(
             Context ctx, LocusVersion lv) throws RequiredVersionMissingException {
         // get scheme if valid Locus is available
@@ -841,6 +848,7 @@ public class ActionTools {
       - this feature allow 3rd party application, add web address directly to list of WMS services in
       Map Manager screen / WMS tab
      */
+    @Deprecated // use ActionBasics.callAddNewWmsMap instead
     public static void callAddNewWmsMap(Context context, String wmsUrl)
             throws RequiredVersionMissingException, InvalidObjectException {
         // check availability and start action
@@ -870,6 +878,7 @@ public class ActionTools {
      * @return ItemPurchaseState state of purcahse
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
+    @Deprecated // use ActionBasics.getItemPurchaseState instead
     public static int getItemPurchaseState(Context ctx, LocusVersion lv, long itemId)
             throws RequiredVersionMissingException {
         // get scheme if valid Locus is available
@@ -911,6 +920,7 @@ public class ActionTools {
      * @param itemId known item ID
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
+    @Deprecated // use ActionBasics.displayLocusStoreItemDetail instead
     public static void displayLocusStoreItemDetail(Context ctx, LocusVersion lv, long itemId)
             throws RequiredVersionMissingException {
         // check if application is available
@@ -925,6 +935,10 @@ public class ActionTools {
         intent.putExtra(LocusConst.INTENT_EXTRA_ITEM_ID, itemId);
         ctx.startActivity(intent);
     }
+
+    // TODO
+    // BELOW: PART TO REWRITE
+
 
     //*************************************************
     // MAP PREVIEW
