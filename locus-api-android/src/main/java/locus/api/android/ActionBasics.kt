@@ -39,7 +39,7 @@ import locus.api.objects.extra.Track
 import locus.api.utils.Logger
 import org.json.JSONObject
 import java.io.InvalidObjectException
-import java.util.ArrayList
+import java.util.*
 
 /**
  * New version of "Basic tools" optimized for quick and clear usage.
@@ -788,14 +788,20 @@ object ActionBasics {
      * Get track exported into file stored in device. Final file where track will be exported receive
      * calling activity as result under defined [requestCode].
      *
+     * How to use it:
+     * https://github.com/asamm/locus-api/wiki/Work-with-known-track#get-track-in-the-specific-file-format
+     *
      * @param act that starts request
-     * @param requestCode code of request
      * @param lv current location version we work with
+     * @param requestCode code of request
+     * @param trackId ID of track we wants to export
      * @param format export format
+     * @param formatExtra extra format parameters
      */
-    fun getTrackInFormat(act: Activity, requestCode: Int,
+    fun getTrackInFormat(act: Activity,
             lv: LocusUtils.LocusVersion? = LocusUtils.getActiveVersion(act),
-            trackId: Long, format: FileFormat) {
+            requestCode: Int,
+            trackId: Long, format: FileFormat, formatExtra: String = "") {
         // check version
         val minVersion = VersionCode.UPDATE_16.vcFree
         if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
@@ -803,11 +809,64 @@ object ActionBasics {
         }
 
         // execute request
-        act.startActivityForResult(Intent(LocusConst.ACTION_GET_TRACK_AS_FILE).apply {
-            setPackage(lv!!.packageName)
+        act.startActivityForResult(prepareTrackInFormatIntent(
+                LocusConst.ACTION_GET_TRACK_AS_FILE_ACT,
+                lv!!, trackId, format, formatExtra), requestCode)
+    }
+
+//    /**
+//     * Get track exported into file stored in device. Final file where track will be exported receive
+//     * BroadcastReceiver defined you add-on manifest under [resultHandler] action.
+//     *
+//     * How to use it:
+//     * https://github.com/asamm/locus-api/wiki/Work-with-known-track#get-track-in-the-specific-file-format
+//     *
+//     * For now disabled due to problem with work with FileProvider over Broadcast
+//     * https://stackoverflow.com/questions/24982210/android-using-uri-permissions-with-broadcast
+//     *
+//     * @param ctx context that starts request
+//     * @param lv current location version we work with
+//     * @param resultHandler receiver action that receive result
+//     * @param resultExtra extra payload parameter that will return back to caller
+//     * @param trackId ID of track we wants to export
+//     * @param format export format
+//     * @param formatExtra extra format parameters
+//     */
+//    fun getTrackInFormat(ctx: Context,
+//            lv: LocusUtils.LocusVersion? = LocusUtils.getActiveVersion(ctx),
+//            resultHandler: String, resultExtra: String = "",
+//            trackId: Long, format: FileFormat, formatExtra: String = "") {
+//        // check version
+//        val minVersion = VersionCode.UPDATE_16.vcFree
+//        if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
+//            throw RequiredVersionMissingException(minVersion)
+//        }
+//
+//        // execute request
+//        ctx.sendBroadcast(prepareTrackInFormatIntent(
+//                LocusConst.ACTION_GET_TRACK_AS_FILE_BR,
+//                lv!!, trackId, format, formatExtra).apply {
+//            putExtra("resultHandler", resultHandler)
+//            putExtra("resultExtra", resultExtra)
+//        })
+//    }
+
+    /**
+     * Prepare intent for "get track in certain format" request.
+     *
+     * @param lv current location version we work with
+     * @param trackId ID of track we wants to export
+     * @param format export format
+     * @param formatExtra extra format parameters
+     */
+    private fun prepareTrackInFormatIntent(action: String, lv: LocusUtils.LocusVersion,
+            trackId: Long, format: FileFormat, formatExtra: String = ""): Intent {
+        return Intent(action).apply {
+            setPackage(lv.packageName)
             putExtra("trackId", trackId)
             putExtra("format", format.name.toLowerCase())
-        }, requestCode)
+            putExtra("formatExtra", formatExtra)
+        }
     }
 
     //*************************************************

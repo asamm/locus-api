@@ -86,6 +86,15 @@
         </activity>
         <activity android:name=".ActivityDashboard" />
 
+        <!-- receiver for handling of exported tracks -->
+        <receiver android:name=".receivers.OnTrackExportedReceiver">
+
+            <intent-filter>
+                <action android:name="com.asamm.api.locus.ON_TRACK_EXPORTED" />
+
+            </intent-filter>
+        </receiver>
+
         <!-- receiver for handling of periodic updates -->
         <receiver
             android:name=".receivers.PeriodicUpdateReceiver"

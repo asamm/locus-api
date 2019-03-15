@@ -3,7 +3,6 @@ package com.asamm.locus.api.sample
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
-import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.Gravity
@@ -24,11 +23,9 @@ import com.asamm.locus.api.sample.pages.PageUtilsFragment
 import com.asamm.locus.api.sample.pages.PageWelcomeFragment
 import com.asamm.locus.api.sample.utils.BasicAdapter
 import com.asamm.locus.api.sample.utils.BasicAdapterItem
+import com.asamm.locus.api.sample.utils.Utils
 import locus.api.utils.Logger
-import java.io.DataInputStream
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -263,7 +260,7 @@ class MainActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
                 try {
                     val targetFile = createTempFile(System.currentTimeMillis().toString(), "gpx")
-                    copy(data.data!!, targetFile)
+                    Utils.copy(this, data.data!!, targetFile)
                     Toast.makeText(this, "Process successful\n\nDir:" + targetFile.name +
                             ", exists:" + targetFile.exists(), Toast.LENGTH_LONG).show()
                 } catch (e: Exception) {
@@ -271,23 +268,6 @@ class MainActivity : AppCompatActivity() {
                 }
             } else {
                 Toast.makeText(this, "Process unsuccessful", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    @Throws(IOException::class)
-    fun copy(source: Uri, dst: File) {
-        DataInputStream(contentResolver.openInputStream(source)).use { inStream ->
-            FileOutputStream(dst).use { out ->
-                val buf = ByteArray(10240)
-                while (true) {
-                    val len = inStream.read(buf)
-                    if (len > 0) {
-                        out.write(buf, 0, len)
-                    } else {
-                        break
-                    }
-                }
             }
         }
     }

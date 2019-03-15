@@ -69,10 +69,8 @@ public final class LocusConst {
     public static final String INTENT_ITEM_SEARCH_LIST = "locus.api.android.INTENT_ITEM_SEARCH_LIST";
 
     //*************************************************
-    // BASIC TASKS
+    // ACTIONS (CALL OF ACTIVITY)
     //*************************************************
-
-    // ACTIONS FROM API TO LOCUS
 
     /**
      * Intent that allow to send WMS url link directly into Locus
@@ -114,10 +112,11 @@ public final class LocusConst {
     public static final String ACTION_PICK_LOCATION = "locus.api.android.ACTION_PICK_LOCATION";
 
     /**
-     * Intent used for getting location from Locus to your application. This one, is used just to start
-     * Locus with this request.
+     * Intent used for getting track in specific format from Locus app
+     *
+     * Usage: `ActionBasics.getTrackInFormat()`
      */
-    public static final String ACTION_GET_TRACK_AS_FILE = "com.asamm.locus.api.GET_TRACK_AS_FILE";
+    public static final String ACTION_GET_TRACK_AS_FILE_ACT = "com.asamm.locus.api.GET_TRACK_AS_FILE_ACT";
 
     // ACTIONS FROM LOCUS TO API
 
@@ -127,7 +126,7 @@ public final class LocusConst {
     public static final String ACTION_RECEIVE_LOCATION = "locus.api.android.ACTION_RECEIVE_LOCATION";
 
     //*************************************************
-    // BASIC DATA HANDLING
+    // ACTIONS > DATA HANDLING
     //*************************************************
 
     /**
@@ -153,7 +152,7 @@ public final class LocusConst {
     public static final String ACTION_REMOVE_DATA_SILENTLY = "locus.api.android.ACTION_REMOVE_DATA_SILENTLY";
 
     //*************************************************
-    // BROADCAST INTENTS
+    // ACTIONS (CALL OVER BROADCASTS)
     //*************************************************
 
     // TRACK RECORDING
@@ -178,12 +177,21 @@ public final class LocusConst {
      */
     public static final String ACTION_TRACK_RECORD_ADD_WPT = "locus.api.android.ACTION_TRACK_RECORD_ADD_WPT";
 
+    // VARIOUS
+
     /**
      * Refresh active listeners for periodic udpates. This task is required if you register
      * broadcast received manually in code. Then Locus needs information that another listener is
      * ready for "listening".
      */
     public static final String ACTION_REFRESH_PERIODIC_UPDATE_LISTENERS = "com.asamm.locus.ACTION_REFRESH_PERIODIC_UPDATE_LISTENERS";
+
+    /**
+     * Intent used for getting track in specific format from Locus app
+     *
+     * Usage: `ActionBasics.getTrackInFormat()`
+     */
+    public static final String ACTION_GET_TRACK_AS_FILE_BR = "com.asamm.locus.api.GET_TRACK_AS_FILE_BR";
 
     // LIVE TRACKING
 
@@ -375,6 +383,11 @@ public final class LocusConst {
      * True/False value if we wants create a log or just field note
      */
     public static final String INTENT_EXTRA_FIELD_NOTES_CREATE_LOG = "INTENT_EXTRA_FIELD_NOTES_CREATE_LOG";
+
+    /**
+     * Error message as a result of any operation.
+     */
+    public static final String INTENT_EXTRA_ERROR = "INTENT_EXTRA_ERROR";
 
     //*************************************************
     // CONTENT PROVIDER INFO

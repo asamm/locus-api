@@ -165,15 +165,34 @@ object MainIntentHandler {
                 .setMessage("Received intent with track:\n\n" + track.name + "\n\n" +
                         "desc:" + track.parameterDescription)
                 .setNeutralButton("Get as GPX") { _, _ ->
+                    // V1 > get track over activity. Result is handled in activityResult and async export
+                    // is nicely visible in progress dialog directly in Locus Map.
+                    // In this case, handled in MainActivity.onActivityResult().
                     try {
                         ActionBasics.getTrackInFormat(act,
-                                MainActivity.RC_GET_TRACK_IN_FORMAT,
+                                requestCode = MainActivity.RC_GET_TRACK_IN_FORMAT,
                                 trackId = track.getId(),
-                                format = ActionBasics.FileFormat.GPX)
+                                format = ActionBasics.FileFormat.GPX,
+                                formatExtra = "{ attachments: true }")
                     } catch (e: RequiredVersionMissingException) {
                         Logger.logE(TAG, "", e)
                         Toast.makeText(act, "Current Locus Map version is too old", Toast.LENGTH_SHORT).show()
                     }
+
+//                    // V2 > get track over broadcast. Result is handled in defined Broadcast receiver
+//                    // and async export should handled in add-on.
+//                    // In this case, handled in OnTrackExportedReceiver.
+//                    try {
+//                        ActionBasics.getTrackInFormat(act,
+//                                resultHandler = "com.asamm.api.locus.ON_TRACK_EXPORTED",
+//                                resultExtra = "extra_track_1",
+//                                trackId = track.getId(),
+//                                format = ActionBasics.FileFormat.GPX,
+//                                formatExtra = "{ attachments: true }")
+//                    } catch (e: RequiredVersionMissingException) {
+//                        Logger.logE(TAG, "", e)
+//                        Toast.makeText(act, "Current Locus Map version is too old", Toast.LENGTH_SHORT).show()
+//                    }
                 }
                 .setNegativeButton("Close") { _, _ -> }
                 .show()
