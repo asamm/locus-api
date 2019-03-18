@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.9] - 2019-03-18
+### Added
+- `UpdateContainerGuidePoint` and `UpdateContainerGuideTrack` containers in `UpdateContainer`
+- extra metadata for `NavPoint` in `UpdateContainerGuideTrack`
+
 ## [0.3.8] - 2019-03-13
 ### Added
 - `gpsLocValid` parameter in `UpdateContainer`
