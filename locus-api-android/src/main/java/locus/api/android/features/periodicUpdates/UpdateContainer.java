@@ -2,6 +2,7 @@ package locus.api.android.features.periodicUpdates;
 
 import java.io.IOException;
 
+import androidx.annotation.Nullable;
 import locus.api.objects.Storable;
 import locus.api.objects.enums.PointRteAction;
 import locus.api.objects.extra.Location;
@@ -126,6 +127,8 @@ public class UpdateContainer extends Storable {
     protected long guideNavPoint1Time;
     // action that happen on current navigation point
     protected PointRteAction guideNavPoint1Action;
+    // extra information for navigation point
+    protected String guideNavPoint1Extra;
 
     // name of next navigation target point
     protected String guideNavPoint2Name;
@@ -137,6 +140,8 @@ public class UpdateContainer extends Storable {
     protected long guideNavPoint2Time;
     // action that happen on next navigation point
     protected PointRteAction guideNavPoint2Action;
+    // extra information for navigation point
+    protected String guideNavPoint2Extra;
 
     // VARIOUS
 
@@ -213,11 +218,13 @@ public class UpdateContainer extends Storable {
         guideNavPoint1Dist = 0.0;
         guideNavPoint1Time = 0L;
         guideNavPoint1Action = PointRteAction.UNDEFINED;
+        guideNavPoint1Extra = "";
         guideNavPoint2Name = "";
         guideNavPoint2Loc = null;
         guideNavPoint2Dist = 0.0;
         guideNavPoint2Time = 0L;
         guideNavPoint2Action = PointRteAction.UNDEFINED;
+        guideNavPoint2Extra = "";
 
         // VARIOUS
 
@@ -514,6 +521,62 @@ public class UpdateContainer extends Storable {
     }
 
     /**
+     * Generate container for guiding parameters to single point. In case, this guiding is not
+     * active, result of this call is `null`.
+     *
+     * @return guiding container or `null` if this guiding is not enabled
+     */
+    public @Nullable UpdateContainerGuidePoint getContentGuidePoint() {
+        // check if guiding is enabled
+        if (guideType != GUIDE_TYPE_WAYPOINT) {
+            return null;
+        }
+
+        // return generated container
+        return new UpdateContainerGuidePoint(guideType,
+                guideTargetId, guideWptName, guideWptLoc, guideWptDist,
+                guideWptAzim, guideWptAngle, guideWptTime);
+    }
+
+    /**
+     * Generate container for guiding parameters along the track. In case, this guiding is not
+     * active, result of this call is `null`.
+     *
+     * @return guiding container or `null` if this guiding is not enabled
+     */
+    public @Nullable UpdateContainerGuideTrack getContentGuideTrack() {
+        // check if guiding is enabled
+        if (guideType != GUIDE_TYPE_TRACK_GUIDE &&
+                guideType != GUIDE_TYPE_TRACK_NAVIGATION) {
+            return null;
+        }
+
+        // generate first navigation point
+        UpdateContainerGuideTrack.NavPoint navPoint1 = null;
+        if (guideNavPoint1Loc != null) {
+            navPoint1 = new UpdateContainerGuideTrack.NavPoint(
+                    guideNavPoint1Name, guideNavPoint1Loc, guideNavPoint1Action,
+                    guideNavPoint1Dist, guideNavPoint1Time, "");
+        }
+
+        // generate second navigation point
+        UpdateContainerGuideTrack.NavPoint navPoint2 = null;
+        if (guideNavPoint2Loc != null) {
+            navPoint2 = new UpdateContainerGuideTrack.NavPoint(
+                    guideNavPoint2Name, guideNavPoint2Loc, guideNavPoint2Action,
+                    guideNavPoint2Dist, guideNavPoint2Time, "");
+        }
+
+        // return generated container
+        return new UpdateContainerGuideTrack(guideType,
+                guideTargetId, guideWptName, guideWptLoc, guideWptDist,
+                guideWptAzim, guideWptAngle, guideWptTime,
+                guideValid, guideDistFromStart, guideDistToFinish, guideTimeToFinish,
+                navPoint1, navPoint2);
+    }
+
+
+    /**
      * Get current guiding type.
      *
      * @return guiding type
@@ -527,6 +590,7 @@ public class UpdateContainer extends Storable {
      *
      * @return guiding container or 'null' if guiding is not enabled
      */
+    @Deprecated // use `getContentGuidePoint` instead
     public GuideTypeWaypoint getGuideTypeWaypoint() {
         // check if guiding is enabled
         if (guideType != GUIDE_TYPE_WAYPOINT) {
@@ -542,6 +606,7 @@ public class UpdateContainer extends Storable {
      *
      * @return guiding container or 'null' if guiding is not enabled
      */
+    @Deprecated // use `getContentGuideTrack` instead
     public GuideTypeTrack getGuideTypeTrack() {
         // check if guiding is enabled
         if (guideType != GUIDE_TYPE_TRACK_GUIDE &&
@@ -837,12 +902,11 @@ public class UpdateContainer extends Storable {
 
     //*************************************************/
     // STORABLE PART
-
     //*************************************************/
 
     @Override
     protected int getVersion() {
-        return 4;
+        return 5;
     }
 
     @Override
@@ -938,6 +1002,12 @@ public class UpdateContainer extends Storable {
         if (version >= 4) {
             gpsLocValid = dr.readBoolean();
         }
+
+        // V5
+        if (version >= 5) {
+            guideNavPoint1Extra = dr.readString();
+            guideNavPoint2Extra = dr.readString();
+        }
     }
 
     @Override
@@ -1027,6 +1097,10 @@ public class UpdateContainer extends Storable {
 
         // V4
         dw.writeBoolean(gpsLocValid);
+
+        // V5
+        dw.writeString(guideNavPoint1Extra);
+        dw.writeString(guideNavPoint2Extra);
     }
 
     /**

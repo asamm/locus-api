@@ -1,12 +1,12 @@
 package locus.api.android.features.periodicUpdates;
 
-import locus.api.android.utils.LocusUtils;
-import locus.api.objects.enums.PointRteAction;
-import locus.api.objects.extra.TrackStats;
-
 import android.content.Intent;
 
 import java.io.IOException;
+
+import locus.api.android.utils.IntentHelper;
+import locus.api.objects.enums.PointRteAction;
+import locus.api.objects.extra.TrackStats;
 
 @SuppressWarnings("WeakerAccess")
 public class PeriodicUpdatesFiller {
@@ -28,7 +28,7 @@ public class PeriodicUpdatesFiller {
         update.enabledMyLocation = i.getBooleanExtra(
                 PeriodicUpdatesConst.VAR_B_MY_LOCATION_ON, false);
         update.newMyLocation = false;
-        update.locMyLocation = LocusUtils.getLocationFromIntent(
+        update.locMyLocation = IntentHelper.INSTANCE.getLocationFromIntent(
                 i, PeriodicUpdatesConst.VAR_LOC_MY_LOCATION);
         if (update.enabledMyLocation) {
             // check if location is updated
@@ -72,7 +72,7 @@ public class PeriodicUpdatesFiller {
         update.mapVisible = i.getBooleanExtra(
                 PeriodicUpdatesConst.VAR_B_MAP_VISIBLE, false);
         update.newMapCenter = false;
-        update.locMapCenter = LocusUtils.getLocationFromIntent(
+        update.locMapCenter = IntentHelper.INSTANCE.getLocationFromIntent(
                 i, PeriodicUpdatesConst.VAR_LOC_MAP_CENTER);
         if (pu.mLastMapCenter == null || pu.mLastMapCenter.distanceTo(
                 update.locMapCenter) > pu.mLocMinDistance) {
@@ -81,9 +81,9 @@ public class PeriodicUpdatesFiller {
         }
 
         // check MAP
-        update.mapTopLeft = LocusUtils.getLocationFromIntent(
+        update.mapTopLeft = IntentHelper.INSTANCE.getLocationFromIntent(
                 i, PeriodicUpdatesConst.VAR_LOC_MAP_BBOX_TOP_LEFT);
-        update.mapBottomRight = LocusUtils.getLocationFromIntent(
+        update.mapBottomRight = IntentHelper.INSTANCE.getLocationFromIntent(
                 i, PeriodicUpdatesConst.VAR_LOC_MAP_BBOX_BOTTOM_RIGHT);
         update.mapZoomLevel = i.getIntExtra(
                 PeriodicUpdatesConst.VAR_I_MAP_ZOOM_LEVEL, 0);
@@ -154,7 +154,7 @@ public class PeriodicUpdatesFiller {
         if (update.guideType != UpdateContainer.GUIDE_TYPE_DISABLED) {
             update.guideWptName = i.getStringExtra(
                     PeriodicUpdatesConst.VAR_S_GUIDE_WPT_NAME);
-            update.guideWptLoc = LocusUtils.getLocationFromIntent(
+            update.guideWptLoc = IntentHelper.INSTANCE.getLocationFromIntent(
                     i, PeriodicUpdatesConst.VAR_LOC_GUIDE_WPT);
             update.guideWptDist = i.getDoubleExtra(
                     PeriodicUpdatesConst.VAR_D_GUIDE_WPT_DIST, 0.0);
@@ -177,7 +177,7 @@ public class PeriodicUpdatesFiller {
                     PeriodicUpdatesConst.VAR_L_GUIDE_VALID, true);
 
             // get first navigation point
-            update.guideNavPoint1Loc = LocusUtils.getLocationFromIntent(
+            update.guideNavPoint1Loc = IntentHelper.INSTANCE.getLocationFromIntent(
                     i, PeriodicUpdatesConst.VAR_LOC_GUIDE_NAV_POINT1_LOC);
             if (update.guideNavPoint1Loc != null) {
                 update.guideNavPoint1Name = i.getStringExtra(
@@ -193,7 +193,7 @@ public class PeriodicUpdatesFiller {
             }
 
             // get second navigation point
-            update.guideNavPoint2Loc = LocusUtils.getLocationFromIntent(
+            update.guideNavPoint2Loc = IntentHelper.INSTANCE.getLocationFromIntent(
                     i, PeriodicUpdatesConst.VAR_LOC_GUIDE_NAV_POINT2_LOC);
             if (update.guideNavPoint2Loc != null) {
                 update.guideNavPoint2Name = i.getStringExtra(

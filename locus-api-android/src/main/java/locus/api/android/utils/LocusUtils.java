@@ -156,9 +156,9 @@ public class LocusUtils {
          * <ul>
          * <li>add: ActionBasic.getTrackInFormat, get track exported in defined format</li>
          * </ul><br>
-         * Locus Free/Pro 3.37.0(801)<br>
+         * Locus Free/Pro 3.37.0(815)<br>
          */
-        UPDATE_16(801, 801, 0);
+        UPDATE_16(815, 815, 0);
 
         /**
          * Version code for a Free version.
@@ -820,7 +820,7 @@ public class LocusUtils {
         return isRequiredAction(intent, LocusConst.INTENT_ITEM_POINT_TOOLS);
     }
 
-    @Deprecated // moved to `IntentHelper.handleIntentWithPoint` class
+    @Deprecated // moved to `IntentHelper.getPointFromIntent` class
     public static Point handleIntentPointTools(Context ctx, Intent intent)
             throws RequiredVersionMissingException {
         long wptId = intent.getLongExtra(LocusConst.INTENT_EXTRA_ITEM_ID, -1L);

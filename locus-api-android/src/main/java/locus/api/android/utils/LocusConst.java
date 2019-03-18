@@ -116,7 +116,7 @@ public final class LocusConst {
      *
      * Usage: `ActionBasics.getTrackInFormat()`
      */
-    public static final String ACTION_GET_TRACK_AS_FILE_ACT = "com.asamm.locus.api.GET_TRACK_AS_FILE_ACT";
+    public static final String ACTION_GET_TRACK_AS_FILE = "com.asamm.locus.api.GET_TRACK_AS_FILE";
 
     // ACTIONS FROM LOCUS TO API
 

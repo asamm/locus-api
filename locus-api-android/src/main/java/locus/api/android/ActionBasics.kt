@@ -810,7 +810,7 @@ object ActionBasics {
 
         // execute request
         act.startActivityForResult(prepareTrackInFormatIntent(
-                LocusConst.ACTION_GET_TRACK_AS_FILE_ACT,
+                LocusConst.ACTION_GET_TRACK_AS_FILE,
                 lv!!, trackId, format, formatExtra), requestCode)
     }
 
