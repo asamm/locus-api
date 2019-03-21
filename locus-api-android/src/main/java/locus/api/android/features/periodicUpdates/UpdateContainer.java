@@ -556,7 +556,7 @@ public class UpdateContainer extends Storable {
         if (guideNavPoint1Loc != null) {
             navPoint1 = new UpdateContainerGuideTrack.NavPoint(
                     guideNavPoint1Name, guideNavPoint1Loc, guideNavPoint1Action,
-                    guideNavPoint1Dist, guideNavPoint1Time, "");
+                    guideNavPoint1Dist, guideNavPoint1Time, guideNavPoint1Extra);
         }
 
         // generate second navigation point
@@ -564,7 +564,7 @@ public class UpdateContainer extends Storable {
         if (guideNavPoint2Loc != null) {
             navPoint2 = new UpdateContainerGuideTrack.NavPoint(
                     guideNavPoint2Name, guideNavPoint2Loc, guideNavPoint2Action,
-                    guideNavPoint2Dist, guideNavPoint2Time, "");
+                    guideNavPoint2Dist, guideNavPoint2Time, guideNavPoint2Extra);
         }
 
         // return generated container

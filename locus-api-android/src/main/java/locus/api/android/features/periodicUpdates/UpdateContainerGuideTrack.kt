@@ -106,7 +106,7 @@ class UpdateContainerGuideTrack internal constructor(
             val time: Long,
             /**
              * Extra information related to current navigation point. Usually text represent
-             * street name of user-defined content.
+             * street name or user-defined content.
              */
             val extraInfo: String)
 }
