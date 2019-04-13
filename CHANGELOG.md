@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.11] - 2019-04-13
+### Changed
+- removed modification of geocache listings upon set
+
+### Fixed
+- problem with `ActionsBasic.getPoint()` function
+
 ## [0.3.10] - 2019-03-21
 ### Fixed
 - missing `extraInfo` in `NavPoint` containers

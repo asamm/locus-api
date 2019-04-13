@@ -173,7 +173,7 @@ class MainActivity : AppCompatActivity() {
         val lv = ListView(this)
         val adapter = BasicAdapter(this, items)
         lv.adapter = adapter
-        lv.setOnItemClickListener { parent, view, position, id ->
+        lv.setOnItemClickListener { _, _, position, _ ->
             mCurrentSelectedItemId = items[position].id
 
             // refresh content
@@ -198,10 +198,10 @@ class MainActivity : AppCompatActivity() {
         fragmentManager.beginTransaction().replace(FRAGMENT_CONTAINER_ID, getContentById(itemId)!!).commit()
 
         // set page title
-        mToolbar!!.title = getTitleById(itemId)
+        mToolbar?.title = getTitleById(itemId)
 
         // refresh toolbar
-        supportInvalidateOptionsMenu()
+        invalidateOptionsMenu()
     }
 
     /**

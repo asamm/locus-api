@@ -510,7 +510,7 @@ object ActionBasics {
                         LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT),
                 ptId)
         val cursor = queryData(ctx, scheme)
-        if (cursor == null) {
+        if (cursor == null || !cursor.moveToFirst()) {
             Logger.logD(TAG, "getPoint($ctx, $lv, $ptId), " +
                     "no such point exists")
             return null

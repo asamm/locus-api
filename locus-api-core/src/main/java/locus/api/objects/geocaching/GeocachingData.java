@@ -679,15 +679,11 @@ public class GeocachingData extends Storable {
         // fix short description
         if (shortDesc == null) {
             shortDesc = "";
-        } else if (shortDesc.length() > 0 && !shortInHtml) {
-            shortDesc = fixToHtml(shortDesc);
         }
 
         // fix long description
         if (longDesc == null) {
             longDesc = "";
-        } else if (longDesc.length() > 0 && !longInHtml) {
-            longDesc = fixToHtml(longDesc);
         }
 
         // store descriptions

@@ -83,7 +83,7 @@ class PeriodicUpdateReceiver : BroadcastReceiver() {
          * @throws RequiredVersionMissingException exception in case of invalid Locus Map app
          */
         @Throws(RequiredVersionMissingException::class)
-        fun setOnUpdateListener(ctx: Context, onUpdateListener: PeriodicUpdatesHandler.OnUpdate) {
+        fun setOnUpdateListener(ctx: Context, onUpdateListener: PeriodicUpdatesHandler.OnUpdate?) {
             // register listener
             this.onUpdateListener = onUpdateListener
 
