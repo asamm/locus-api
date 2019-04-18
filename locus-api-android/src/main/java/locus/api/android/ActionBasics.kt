@@ -959,6 +959,7 @@ object ActionBasics {
 
         // call Locus
         ctx.startActivity(Intent(LocusConst.ACTION_DISPLAY_STORE_ITEM).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             putExtra(LocusConst.INTENT_EXTRA_ITEM_ID, itemId)
         })
     }

@@ -1030,22 +1030,6 @@ public class GeocachingData extends Storable {
     // VARIOUS UTILS
     //*************************************************
 
-    /**
-     * Fix text so it display correctly in webView component.
-     *
-     * @param text text to display
-     * @return improved text
-     */
-    public static String fixToHtml(String text) {
-        try {
-            String result = text.replace("\n", "<br>");
-            result = result.replace("  ", "&nbsp;&nbsp;");
-            return result;
-        } catch (Exception e) {
-            return text;
-        }
-    }
-
     public boolean isCacheValid() {
         return mCacheID.length() > 0 && mName.length() > 0;
     }

@@ -143,7 +143,7 @@ class PageUtilsFragment : ABasePageFragment() {
             16 ->
                 // We display here Locus Store with certain item. In this case it is "Add-on Field Notes Pro.
                 // Unique ID is defined on our Store so it needs to be known for you before asking.
-                ActionTools.displayLocusStoreItemDetail(
+                ActionBasics.displayLocusStoreItemDetail(
                         act, activeLocus, 5943264947470336L)
             17 -> {
                 val uc = ActionBasics.getUpdateContainer(act, activeLocus)

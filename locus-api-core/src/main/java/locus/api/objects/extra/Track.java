@@ -54,6 +54,11 @@ public class Track extends GeoData {
     // track statistics (generated statistics of track)
     private TrackStats mStats;
 
+    // reference to Locus Store item (item ID)
+    public long storeItemId;
+    // reference to Locus Store item (version ID)
+    public long storeVersionId;
+
     // CONSTRUCTOR
 
     /**
@@ -70,24 +75,23 @@ public class Track extends GeoData {
         styleHighlight = null;
 
         // V1
-
         mUseFolderStyle = true;
 
         // V2
-
         timeCreated = System.currentTimeMillis();
 
         // V3
-
         mStats = new TrackStats();
 
         // V4
-
         setReadWriteMode(ReadWriteMode.READ_WRITE);
 
         // V5
-
         mActivityType = 0;
+
+        // V6
+        storeItemId = -1L;
+        storeVersionId = -1L;
     }
 
     //*************************************************
@@ -254,7 +258,7 @@ public class Track extends GeoData {
 
     @Override
     public int getVersion() {
-        return 5;
+        return 6;
     }
 
     @SuppressWarnings("unchecked")
@@ -307,34 +311,35 @@ public class Track extends GeoData {
         mStats.setEleTotalAbsHeight(dr.readFloat());
 
         // V1
-
         if (version >= 1) {
             mUseFolderStyle = dr.readBoolean();
         }
 
         // V2
-
         if (version >= 2) {
             timeCreated = dr.readLong();
         }
 
         // V3
-
         if (version >= 3) {
             mStats = new TrackStats();
             mStats.read(dr);
         }
 
         // V4
-
         if (version >= 4) {
             setReadWriteMode(ReadWriteMode.values()[dr.readInt()]);
         }
 
         // V5
-
         if (version >= 5) {
             mActivityType = dr.readInt();
+        }
+
+        // V6
+        if (version >= 6) {
+            storeItemId = dr.readLong();
+            storeVersionId = dr.readLong();
         }
     }
 
@@ -384,23 +389,22 @@ public class Track extends GeoData {
         dw.writeFloat(0.0f);
 
         // V1
-
         dw.writeBoolean(mUseFolderStyle);
 
         // V2
-
         dw.writeLong(timeCreated);
 
         // V3
-
         dw.writeStorable(mStats);
 
         // V4
-
         dw.writeInt(getReadWriteMode().ordinal());
 
         // V5
-
         dw.writeInt(mActivityType);
+
+        // V6
+        dw.writeLong(storeItemId);
+        dw.writeLong(storeVersionId);
     }
 }

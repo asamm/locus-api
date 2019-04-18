@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.12] - 2019-04-18
+### Changed
+- support for storing reference to Locus Store for `Track` objects
+
+### Fixed
+- start of Locus Store over API
+
 ## [0.3.11] - 2019-04-13
 ### Changed
 - removed modification of geocache listings upon set
