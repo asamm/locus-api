@@ -7,6 +7,14 @@ import locus.api.objects.extra.Location;
 import android.content.Context;
 import android.content.Intent;
 
+/**
+ * Old automatic handler for periodic updates.
+ * Do not use it now as it is slow and less flexible method how to deal with updates.
+ *
+ * Better solution is to request updates manually with existing method
+ * {@link locus.api.android.ActionBasics.getUpdateContainer()}.
+ */
+@Deprecated
 public class PeriodicUpdatesHandler {
 
     // tag for logger
@@ -101,7 +109,7 @@ public class PeriodicUpdatesHandler {
         }
 
         // prepare data container
-        UpdateContainer update = PeriodicUpdatesFiller.intentToUpdate(intent, this);
+        UpdateContainer update = PeriodicUpdatesFiller.INSTANCE.intentToUpdate(intent, this);
 
         // send update back by handler (together with LocusVersion object)
         handler.onUpdate(LocusUtils.createLocusVersion(ctx, intent), update);
