@@ -6,9 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [0.3.12] - 2019-04-18
+## [0.3.13] - 2019-04-23
 ### Changed
 - support for storing reference to Locus Store for `Track` objects
+- `PeriodicUpdates` container converted to Kotlin
+- `PeriodicUpdatesHandler` made deprecated. Requesting container directly recommended.
 
 ### Fixed
 - start of Locus Store over API
