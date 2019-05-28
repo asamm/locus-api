@@ -36,12 +36,15 @@ class PagePointsFragment : ABasePageFragment() {
                     "Display more Geocaches over local File",
                     "Second way how to send data (not just geocaches) to Locus is over a file. It is limited only by the device memory space for every app because Locus loads all data at once. Method is slower than \"intent\" only method but limits on number of points are not so strict."))
             items.add(BasicAdapterItem(8,
-                    "Display point with OnDisplay callback",
-                    "Perfect example how to handle your own points in Locus. This method enables you to be notified that user tapped on your point. You may then supply additional information and send it back to Locus before 'Point screen' appears."))
+                    "Display point with `onDisplay callback`",
+                    "Display simple point on the map. When user tap on your point, you will be notified about it. You may then supply additional information and send it back to Locus before 'Point screen' appears."))
             items.add(BasicAdapterItem(9,
+                    "Display point with custom button",
+                    "Display simple point on the map. After user display point detail, in bottom menu will be custom define action button."))
+            items.add(BasicAdapterItem(10,
                     "Request ID of a point by its name",
                     "Allows to search in Locus internal point database for point by its name. Results in a list of points (its IDs) that match requested name."))
-            items.add(BasicAdapterItem(10,
+            items.add(BasicAdapterItem(11,
                     "Display 'Point screen' of a certain point",
                     "Allows to display main 'Point screen' of a certain point defined by its ID."))
             return items
@@ -58,8 +61,9 @@ class PagePointsFragment : ABasePageFragment() {
             6 -> SampleCalls.callSendMorePointsGeocacheIntentMethod(act)
             7 -> SampleCalls.callSendMorePointsGeocacheFileMethod(act)
             8 -> SampleCalls.callSendOnePointWithCallbackOnDisplay(act)
-            9 -> SampleCalls.callRequestPointIdByName(act, activeLocus)
-            10 -> SampleCalls.callRequestDisplayPointScreen(act, activeLocus, 3)
+            9 -> SampleCalls.callSendOnePointWithExtraCallback(act)
+            10 -> SampleCalls.callRequestPointIdByName(act, activeLocus)
+            11 -> SampleCalls.callRequestDisplayPointScreen(act, activeLocus, 3)
         }
     }
 }

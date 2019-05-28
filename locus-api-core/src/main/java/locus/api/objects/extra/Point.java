@@ -134,7 +134,7 @@ public class Point extends GeoData {
         // generate final text
         StringBuilder b = new StringBuilder();
         b.append(TAG_EXTRA_CALLBACK).append(";");
-        b.append(callBack).append(";");
+        b.append(callBack);
 
         // finally insert parameter
         addParameter(GeoDataExtra.PAR_INTENT_EXTRA_CALLBACK, b.toString());

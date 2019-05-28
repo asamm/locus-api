@@ -59,6 +59,7 @@ object SampleCalls {
 
     // ID for "onDisplay" event
     const val EXTRA_ON_DISPLAY_ACTION_ID = "myOnDisplayExtraActionId"
+    const val EXTRA_CALLBACK_ID = "extraCallbackId"
 
     /**
      * Temporary file used for testing of import feature.
@@ -342,6 +343,31 @@ object SampleCalls {
         // send point
         val send = ActionDisplayPoints.sendPack(ctx, pd, ExtraAction.CENTER)
         Logger.logD(TAG, "callSendOnePointWithCallbackOnDisplay(), " +
+                "send:" + send)
+    }
+
+    /**
+     * Display single point with special "onClick" event. Such point when shown, will call back to this application.
+     * You may use this for loading extra data. So you send simple point and when show, you display extra information.
+     *
+     * @param ctx current context
+     * @throws RequiredVersionMissingException exception in case of missing required app version
+     */
+    @Throws(RequiredVersionMissingException::class)
+    fun callSendOnePointWithExtraCallback(ctx: Context) {
+        // prepare data
+        val pd = PackPoints("test3")
+        val p = generateWaypoint(0)
+        p.setExtraCallback("My button",
+                "com.asamm.locus.api.sample",
+                "com.asamm.locus.api.sample.MainActivity",
+                EXTRA_CALLBACK_ID,
+                "id01")
+        pd.addWaypoint(p)
+
+        // send point
+        val send = ActionDisplayPoints.sendPack(ctx, pd, ExtraAction.CENTER)
+        Logger.logD(TAG, "callSendOnePointWithExtraCallback(), " +
                 "send:" + send)
     }
 

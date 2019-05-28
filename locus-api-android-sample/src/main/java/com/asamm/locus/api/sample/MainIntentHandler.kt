@@ -61,17 +61,25 @@ object MainIntentHandler {
                 val value = intent.getStringExtra(SampleCalls.EXTRA_ON_DISPLAY_ACTION_ID)
 
                 // now create full point version and send it back for returned value
-                val wpt = SampleCalls.generateWaypoint(0)
-                wpt.name = "Improved version!"
-                wpt.addParameter(GeoDataExtra.PAR_DESCRIPTION,
+                val pt = SampleCalls.generateWaypoint(0)
+                pt.name = "Improved version!"
+                pt.addParameter(GeoDataExtra.PAR_DESCRIPTION,
                         "Extra description to ultra improved point!, received value:$value")
 
                 // return data
-                val retIntent = LocusUtils.prepareResultExtraOnDisplayIntent(wpt, true)
+                val retIntent = LocusUtils.prepareResultExtraOnDisplayIntent(pt, true)
                 act.setResult(Activity.RESULT_OK, retIntent)
                 act.finish()
                 // or you may set RESULT_CANCEL if you don't have improved version of Point, then locus
                 // just show current available version
+            } else if (intent.hasExtra(SampleCalls.EXTRA_CALLBACK_ID)) {
+                // handle intent from context menu of previously send point
+                val value = intent.getStringExtra(SampleCalls.EXTRA_CALLBACK_ID)
+                AlertDialog.Builder(act)
+                        .setTitle("Intent - extraCallback")
+                        .setMessage("Received intent with extra: $value")
+                        .setPositiveButton("Close") { _, _ -> }
+                        .show()
             } else if (IntentHelper.isIntentReceiveLocation(intent)) {
                 // at this moment we check if returned intent contains location we previously
                 // requested from Locus

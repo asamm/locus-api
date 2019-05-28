@@ -136,8 +136,10 @@ class MapFragment : DialogFragment() {
                 widthPx = mapView.width
                 heightPx = mapView.height
                 densityDpi = resources.displayMetrics.densityDpi
-//                rotation = 15
-//                radius = Math.sqrt((widthPx * widthPx + heightPx * heightPx) / 2.0).toInt()
+
+                // test rotation
+                rotation = 30
+                radius = Math.sqrt((widthPx * widthPx + heightPx * heightPx) / 2.0).toInt()
             }
 
             // get and display preview

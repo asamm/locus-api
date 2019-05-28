@@ -850,6 +850,6 @@ public class GeoDataExtra extends Storable {
                 packageName + ";" +
                 className + ";" +
                 returnDataName + ";" +
-                returnDataValue + ";";
+                returnDataValue;
     }
 }
