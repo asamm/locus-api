@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.14] - 2019-04-23
+### Added
+- adaptive icon in sample app `_data` directory
+
+### Fixed
+- obtain of trackable code from Trackable url
+- "extra callback" mallfunction
+
 ## [0.3.13] - 2019-04-23
 ### Changed
 - support for storing reference to Locus Store for `Track` objects
