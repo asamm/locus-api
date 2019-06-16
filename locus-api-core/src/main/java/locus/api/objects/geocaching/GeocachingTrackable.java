@@ -253,13 +253,13 @@ public class GeocachingTrackable extends Storable {
         if (mSrcDetails == null || mSrcDetails.length() == 0) {
             return "";
         }
-        if (mSrcDetails.startsWith("http://www.geocaching.com/track/details.aspx?tracker=")) {
-            return mSrcDetails.substring(
-                    "http://www.geocaching.com/track/details.aspx?tracker=".length());
+        String searchText = "://www.geocaching.com/track/details.aspx?tracker=";
+        if (mSrcDetails.indexOf(searchText) > 0) {
+            return mSrcDetails.substring(mSrcDetails.indexOf(searchText) + searchText.length());
         }
-        if (mSrcDetails.startsWith("http://coord.info/")) {
-            return mSrcDetails.substring(
-                    "http://coord.info/".length());
+        searchText = "://coord.info/";
+        if (mSrcDetails.indexOf(searchText) > 0) {
+            return mSrcDetails.substring(mSrcDetails.indexOf(searchText) + searchText.length());
         }
         return "";
     }

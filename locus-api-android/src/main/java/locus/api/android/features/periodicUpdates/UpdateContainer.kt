@@ -17,15 +17,18 @@ class UpdateContainer : Storable() {
     /**
      * Flag if exists new location received from GPS/Wi-fi.
      */
+    @Deprecated(message = "Value depends on usage of the deprecated `PeriodicUpdatesHandler` class")
     var isNewMyLocation: Boolean = false
     // is new map center available
     /**
      * Flag if user moved map to new location.
      */
+    @Deprecated(message = "Value depends on usage of the deprecated `PeriodicUpdatesHandler` class")
     var isNewMapCenter: Boolean = false
     /**
      * Flag if user zoomed map to new zoom level.
      */
+    @Deprecated(message = "Value depends on usage of the deprecated `PeriodicUpdatesHandler` class")
     var isNewZoomLevel: Boolean = false
     /**
      * Indicate if user is currently touching a map screen. It do not indicate

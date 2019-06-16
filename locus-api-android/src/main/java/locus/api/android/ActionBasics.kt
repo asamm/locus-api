@@ -94,7 +94,9 @@ object ActionBasics {
     }
 
     /**
-     * Get #UpdateContainer container with current fresh data based on users activity.
+     * Get #UpdateContainer container with current fresh data based on users activity. UpdateContainer
+     * is generated in Locus Map max. once per 500ms so higher frequency of request will sometimes
+     * return same data.
      *
      * @param ctx current context
      * @param lv  required Locus version

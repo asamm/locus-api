@@ -92,6 +92,14 @@ object ActionFiles {
      * Allows to call activity for File pick. You can use Locus picker for this purpose, but
      * check if Locus version 231 and above are installed **isLocusAvailable(context, 231)**!
      *
+     * Call use generic `org.openintents.action.PICK_FILE` call, so not just Locus Map may respond
+     * on this intent.
+     *
+     * Since Android 4.4, write access to received content is disabled, so use this method for
+     * read-only access.
+     *
+     * For read-write access, use since Android 5 available `ACTION_OPEN_DOCUMENT_TREE` feature.
+     *
      * @param activity    starting activity that also receive result
      * @param requestCode request code
      * @param title title visible in header of picker
@@ -109,6 +117,14 @@ object ActionFiles {
     /**
      * Allows to call activity for Directory pick. You can use Locus picker for this purpose, but
      * check if Locus version 231 and above are installed **isLocusAvailable(context, 231)**!
+     *
+     * Call use generic `org.openintents.action.PICK_DIRECTORY` call, so not just Locus Map may
+     * respond on this intent.
+     *
+     * Since Android 4.4, write access to received content is disabled, so use this method for
+     * read-only access.
+     *
+     * For read-write access, use since Android 5 available `ACTION_OPEN_DOCUMENT_TREE` feature.
      *
      * @param activity    starting activity that also receive result
      * @param requestCode request code
