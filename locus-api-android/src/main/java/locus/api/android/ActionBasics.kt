@@ -559,7 +559,7 @@ object ActionBasics {
         // generate cursor
         val scheme = getProviderUriData(lv, VersionCode.UPDATE_03,
                 LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT)
-        val cursor = queryData(ctx, scheme, "nearest")
+        val cursor = queryData(ctx, scheme, "getWaypointId", arrayOf(ptName))
         if (cursor == null) {
             Logger.logD(TAG, "getPointId($ctx, $lv, $ptName), " +
                     "point with such name does not exists in database")
@@ -567,8 +567,8 @@ object ActionBasics {
         }
 
         // handle result
+        val result = LongArray(cursor.count)
         try {
-            val result = LongArray(cursor.count)
             for (i in 0 until result.size) {
                 cursor.moveToPosition(i)
                 result[i] = cursor.getLong(0)
@@ -578,7 +578,7 @@ object ActionBasics {
         } finally {
             Utils.closeQuietly(cursor)
         }
-        return LongArray(0)
+        return result
     }
 
     /**
@@ -618,8 +618,8 @@ object ActionBasics {
         }
 
         // handle result
+        val result = LongArray(cursor.count)
         try {
-            val result = LongArray(cursor.count)
             for (i in 0 until result.size) {
                 cursor.moveToPosition(i)
                 result[i] = cursor.getLong(0)
@@ -629,7 +629,7 @@ object ActionBasics {
         } finally {
             Utils.closeQuietly(cursor)
         }
-        return LongArray(0)
+        return result
     }
 
     /**
