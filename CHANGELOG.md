@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.15] - 2019-07-16
+### Added
+- track source definition over GeoDataExtra
+
+### Changed
+- few classes converted to Kotlin
+
 ## [0.3.14] - 2019-04-23
 ### Added
 - adaptive icon in sample app `_data` directory
