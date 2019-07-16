@@ -82,7 +82,7 @@ class TrackRecordProfileSimple() : Storable() {
         dw.writeLong(id)
         dw.writeString(name)
         dw.writeString(desc)
-        val imgSize = if (icon != null) icon!!.size else 0
+        val imgSize = icon?.size ?: 0
         dw.writeInt(imgSize)
         if (imgSize > 0) {
             dw.write(icon!!)

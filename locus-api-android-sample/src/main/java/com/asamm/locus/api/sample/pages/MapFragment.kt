@@ -129,8 +129,8 @@ class MapFragment : DialogFragment() {
 
             // prepare parameters
             val params = MapPreviewParams().apply {
-                locCenter = Location(50.0, 14.0)
-                zoom = 12
+                locCenter = Location(52.35, 1.5)
+                zoom = 14
                 offsetX = mapOffsetX
                 offsetY = mapOffsetY
                 widthPx = mapView.width
@@ -138,8 +138,8 @@ class MapFragment : DialogFragment() {
                 densityDpi = resources.displayMetrics.densityDpi
 
                 // test rotation
-                rotation = 30
-                radius = Math.sqrt((widthPx * widthPx + heightPx * heightPx) / 2.0).toInt()
+                //rotation = 30
+                //radius = Math.sqrt((widthPx * widthPx + heightPx * heightPx) / 2.0).toInt()
             }
 
             // get and display preview
