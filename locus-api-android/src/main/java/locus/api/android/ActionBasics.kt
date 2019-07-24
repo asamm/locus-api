@@ -303,7 +303,7 @@ object ActionBasics {
         // get data
         var cursor: Cursor? = null
         try {
-            cursor = queryData(ctx, scheme, null)
+            cursor = queryData(ctx, scheme)
             if (cursor == null || !cursor.moveToFirst()) {
                 return profiles
             }
@@ -559,7 +559,8 @@ object ActionBasics {
         // generate cursor
         val scheme = getProviderUriData(lv, VersionCode.UPDATE_03,
                 LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT)
-        val cursor = queryData(ctx, scheme, "nearest")
+        val cursor = queryData(ctx, scheme,
+                "getWaypointId", arrayOf(ptName))
         if (cursor == null) {
             Logger.logD(TAG, "getPointId($ctx, $lv, $ptName), " +
                     "point with such name does not exists in database")
@@ -573,6 +574,7 @@ object ActionBasics {
                 cursor.moveToPosition(i)
                 result[i] = cursor.getLong(0)
             }
+            return result
         } catch (e: Exception) {
             Logger.logE(TAG, "getPointId($ctx, $lv, $ptName)", e)
         } finally {
@@ -589,7 +591,7 @@ object ActionBasics {
      * @param lv current active version
      * @param loc base center location
      * @param limit (max) number of points. Value is internally limited to 100 points max.
-     * @param maxRadius max distance from defined based location
+     * @param maxRadius max distance from defined based location (in meters)
      * @return list of found points
      */
     fun getPointsId(ctx: Context, lv: LocusUtils.LocusVersion, loc: Location,
@@ -624,6 +626,7 @@ object ActionBasics {
                 cursor.moveToPosition(i)
                 result[i] = cursor.getLong(0)
             }
+            return result
         } catch (e: Exception) {
             Logger.logE(TAG, "getPointsId($ctx, $lv, $loc, $limit, $maxRadius)", e)
         } finally {
@@ -767,9 +770,9 @@ object ActionBasics {
 
         // handle result
         try {
-            val track = Track()
-            track.read(cursor.getBlob(1))
-            return track
+            return Track().apply {
+                read(cursor.getBlob(1))
+            }
         } catch (e: Exception) {
             Logger.logE(TAG, "getTrack($ctx, $trackId)", e)
         } finally {

@@ -148,7 +148,7 @@ object SampleCalls {
     fun callSendOnePoint(ctx: Context) {
         // generate pack
         val pw = PackPoints("callSendOnePoint")
-        pw.addWaypoint(generateWaypoint(0))
+        pw.addPoint(generateWaypoint(0))
 
         // send data
         val send = ActionDisplayPoints.sendPack(ctx, pw, ExtraAction.IMPORT)
@@ -168,7 +168,7 @@ object SampleCalls {
         // generate pack with points
         val pw = PackPoints("callSendMorePoints")
         for (i in 0..999) {
-            pw.addWaypoint(generateWaypoint(i))
+            pw.addPoint(generateWaypoint(i))
         }
 
         // send data
@@ -189,7 +189,7 @@ object SampleCalls {
         val pw = PackPoints("callSendOnePointWithIcon")
         pw.bitmap = BitmapFactory.decodeResource(
                 ctx.resources, R.drawable.ic_launcher)
-        pw.addWaypoint(generateWaypoint(0))
+        pw.addPoint(generateWaypoint(0))
 
         // send data
         val send = ActionDisplayPoints.sendPack(ctx, pw, ExtraAction.CENTER)
@@ -215,7 +215,7 @@ object SampleCalls {
         es1.setIconStyle("http://www.googlemapsmarkers.com/v1/009900/", 1.0f)
         pd1.extraStyle = es1
         for (i in 0..99) {
-            pd1.addWaypoint(generateWaypoint(i))
+            pd1.addPoint(generateWaypoint(i))
         }
         data.add(pd1)
 
@@ -225,7 +225,7 @@ object SampleCalls {
         es2.setIconStyle("http://www.googlemapsmarkers.com/v1/990000/", 1.0f)
         pd2.extraStyle = es2
         for (i in 0..99) {
-            pd2.addWaypoint(generateWaypoint(i))
+            pd2.addPoint(generateWaypoint(i))
         }
         data.add(pd2)
 
@@ -245,7 +245,7 @@ object SampleCalls {
     fun callSendOnePointGeocache(ctx: Context) {
         // prepare geocache
         val pd = PackPoints("callSendOnePointGeocache")
-        pd.addWaypoint(generateGeocache(0))
+        pd.addPoint(generateGeocache(0))
 
         // send data
         val send = ActionDisplayPoints.sendPack(ctx, pd, ExtraAction.CENTER)
@@ -265,7 +265,7 @@ object SampleCalls {
         // prepare geocaches
         val pw = PackPoints("test6")
         for (i in 0..99) {
-            pw.addWaypoint(generateGeocache(i))
+            pw.addPoint(generateGeocache(i))
         }
 
         // send data
@@ -303,7 +303,7 @@ object SampleCalls {
         // prepare data
         val pw = PackPoints("test07")
         for (i in 0..999) {
-            pw.addWaypoint(generateGeocache(i))
+            pw.addPoint(generateGeocache(i))
         }
         val data = ArrayList<PackPoints>()
         data.add(pw)
@@ -338,7 +338,7 @@ object SampleCalls {
                 "com.asamm.locus.api.sample.MainActivity",
                 EXTRA_ON_DISPLAY_ACTION_ID,
                 "id01")
-        pd.addWaypoint(p)
+        pd.addPoint(p)
 
         // send point
         val send = ActionDisplayPoints.sendPack(ctx, pd, ExtraAction.CENTER)
@@ -363,7 +363,7 @@ object SampleCalls {
                 "com.asamm.locus.api.sample.MainActivity",
                 EXTRA_CALLBACK_ID,
                 "id01")
-        pd.addWaypoint(p)
+        pd.addPoint(p)
 
         // send point
         val send = ActionDisplayPoints.sendPack(ctx, pd, ExtraAction.CENTER)
@@ -487,7 +487,7 @@ object SampleCalls {
         } else {
             // search for specific point
             for (pointId in pointsId) {
-                val pt = ActionBasics.getPoint(ctx, lv, pointId);
+                val pt = ActionBasics.getPoint(ctx, lv, pointId)
                 if (pt?.name?.equals("It is my point") == true) {
                     ActionBasics.actionStartGuiding(ctx, pt.getId())
                     return

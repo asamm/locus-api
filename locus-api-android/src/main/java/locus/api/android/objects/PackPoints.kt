@@ -54,19 +54,31 @@ class PackPoints() : Storable() {
     /**
      * List of all points stored in this object.
      */
-    private var points: MutableList<Point> = ArrayList()
+    private val points: MutableList<Point> = ArrayList()
 
-    constructor(uniqueName: String) : this() {
-        this.name = uniqueName
-    }
-
+    /**
+     * Add single point into pack.
+     *
+     * @param pt point to add
+     */
     fun addPoint(pt: Point) {
         this.points.add(pt)
     }
 
-    @Deprecated (message = "Use `addPoint` instead")
-    fun addWaypoint(wpt: Point) {
-        this.points.add(wpt)
+    /**
+     * Get all points from current pack.
+     */
+    fun getPoints(): Array<Point> {
+        return points.toTypedArray()
+    }
+
+    /**
+     * Create new pack with defined name.
+     *
+     * @param uniqueName name of pack
+     */
+    constructor(uniqueName: String) : this() {
+        this.name = uniqueName
     }
 
     //*************************************************
@@ -84,7 +96,8 @@ class PackPoints() : Storable() {
             extraStyle = GeoDataStyle().apply { read(dr) }
         }
         bitmap = UtilsBitmap.readBitmap(dr)
-        points = dr.readListStorable(Point::class.java)
+        points.clear()
+        points.addAll(dr.readListStorable(Point::class.java))
     }
 
     @Throws(IOException::class)

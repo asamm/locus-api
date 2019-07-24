@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.3.17] - 2019-07-24
+### Changed
+- minor update in PackPoints class construction
+
+### Fixed
+- `getPointsId` call, fix #23
+- compile problem with Sample app
+
 ## [0.3.15] - 2019-07-16
 ### Added
 - track source definition over GeoDataExtra

@@ -49,11 +49,11 @@ object ActionDisplayPoints {
      * @throws RequiredVersionMissingException exception in case of missing required app version
      */
     @Throws(RequiredVersionMissingException::class)
-    fun sendPack(ctx: Context, data: PackPoints, extraAction: ActionDisplay.ExtraAction): Boolean {
+    fun sendPack(ctx: Context, data: PackPoints, extraAction: ExtraAction): Boolean {
         return sendPack(LocusConst.ACTION_DISPLAY_DATA,
                 ctx, data,
-                extraAction == ActionDisplay.ExtraAction.IMPORT,
-                extraAction == ActionDisplay.ExtraAction.CENTER)
+                extraAction == ExtraAction.IMPORT,
+                extraAction == ExtraAction.CENTER)
     }
 
     /**
@@ -112,10 +112,10 @@ object ActionDisplayPoints {
     </PackPoints> */
     @Throws(RequiredVersionMissingException::class)
     fun sendPacks(ctx: Context, data: List<PackPoints>,
-            extraAction: ActionDisplay.ExtraAction): Boolean {
+            extraAction: ExtraAction): Boolean {
         return sendPacks(LocusConst.ACTION_DISPLAY_DATA,
-                ctx, data, extraAction == ActionDisplay.ExtraAction.IMPORT,
-                extraAction == ActionDisplay.ExtraAction.CENTER)
+                ctx, data, extraAction == ExtraAction.IMPORT,
+                extraAction == ExtraAction.CENTER)
     }
 
     @Throws(RequiredVersionMissingException::class)
@@ -182,11 +182,11 @@ object ActionDisplayPoints {
      */
     @Throws(RequiredVersionMissingException::class)
     fun sendPacksFile(ctx: Context, lv: LocusUtils.LocusVersion,
-            data: List<PackPoints>, file: File, fileUri: Uri, extraAction: ActionDisplay.ExtraAction): Boolean {
+            data: List<PackPoints>, file: File, fileUri: Uri, extraAction: ExtraAction): Boolean {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA,
                 ctx, lv, data, file, fileUri,
-                extraAction == ActionDisplay.ExtraAction.IMPORT,
-                extraAction == ActionDisplay.ExtraAction.CENTER)
+                extraAction == ExtraAction.IMPORT,
+                extraAction == ExtraAction.CENTER)
     }
 
     /**
@@ -304,7 +304,7 @@ object ActionDisplayPoints {
             dos.flush()
             return true
         } catch (e: Exception) {
-            Logger.logE(locus.api.android.TAG, "sendDataWriteOnCard(" + file.absolutePath + ", " + data + ")", e)
+            Logger.logE(TAG, "sendDataWriteOnCard(" + file.absolutePath + ", " + data + ")", e)
             return false
         } finally {
             Utils.closeStream(dos)
@@ -336,7 +336,7 @@ object ActionDisplayPoints {
             dis = DataInputStream(ctx.contentResolver.openInputStream(fileUri))
             return Storable.readList(PackPoints::class.java, dis)
         } catch (e: Exception) {
-            Logger.logE(locus.api.android.TAG, "readDataFromUri($fileUri)", e)
+            Logger.logE(TAG, "readDataFromUri($fileUri)", e)
         } finally {
             Utils.closeStream(dis)
         }
@@ -355,7 +355,7 @@ object ActionDisplayPoints {
             dis = DataInputStream(FileInputStream(file))
             return Storable.readList(PackPoints::class.java, dis)
         } catch (e: Exception) {
-            Logger.logE(locus.api.android.TAG, "readDataFromPath($filepath)", e)
+            Logger.logE(TAG, "readDataFromPath($filepath)", e)
         } finally {
             Utils.closeStream(dis)
         }
