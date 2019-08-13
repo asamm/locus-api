@@ -182,7 +182,7 @@ object ActionDisplayPoints {
      */
     @Throws(RequiredVersionMissingException::class)
     fun sendPacksFile(ctx: Context, lv: LocusUtils.LocusVersion,
-            data: List<PackPoints>, file: File, fileUri: Uri, extraAction: ExtraAction): Boolean {
+            data: List<PackPoints>, file: File, fileUri: Uri?, extraAction: ExtraAction): Boolean {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA,
                 ctx, lv, data, file, fileUri,
                 extraAction == ExtraAction.IMPORT,
@@ -238,7 +238,7 @@ object ActionDisplayPoints {
      */
     @Throws(RequiredVersionMissingException::class)
     fun sendPacksFileSilent(ctx: Context, lv: LocusUtils.LocusVersion,
-            data: List<PackPoints>, file: File, fileUri: Uri, centerOnData: Boolean): Boolean {
+            data: List<PackPoints>, file: File, fileUri: Uri?, centerOnData: Boolean): Boolean {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA_SILENTLY,
                 ctx, lv, data, file, fileUri,
                 false, centerOnData)
