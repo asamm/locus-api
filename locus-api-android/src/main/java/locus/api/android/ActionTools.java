@@ -28,11 +28,10 @@ import locus.api.android.utils.LocusInfo;
 import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.LocusUtils.LocusVersion;
 import locus.api.android.utils.LocusUtils.VersionCode;
-import locus.api.android.utils.Utils;
+import locus.api.android.utils.UtilsAnd;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.Storable;
 import locus.api.objects.extra.GeoDataExtra;
-import locus.api.objects.extra.GeoDataStyle;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Point;
 import locus.api.objects.extra.Track;
@@ -92,9 +91,9 @@ public class ActionTools {
             // return info container
             return LocusInfo.create(cursor);
         } catch (Exception e) {
-            Logger.logE(TAG, "getLocusInfo(" + ctx + ", " + lv + ")", e);
+            Logger.INSTANCE.logE(TAG, "getLocusInfo(" + ctx + ", " + lv + ")", e);
         } finally {
-            Utils.closeQuietly(cursor);
+            UtilsAnd.INSTANCE.closeQuietly(cursor);
         }
         return null;
     }
@@ -116,7 +115,7 @@ public class ActionTools {
                 return li;
             }
         } catch (Exception e) {
-            Logger.logE(TAG, "getDataLocusInfo(" + ctx + ", " + lv + ")", e);
+            Logger.INSTANCE.logE(TAG, "getDataLocusInfo(" + ctx + ", " + lv + ")", e);
         }
         return null;
     }
@@ -138,7 +137,7 @@ public class ActionTools {
                 return uc;
             }
         } catch (Exception e) {
-            Logger.logE(TAG, "getDataUpdateContainer(" + ctx + ", " + lv + ")", e);
+            Logger.INSTANCE.logE(TAG, "getDataUpdateContainer(" + ctx + ", " + lv + ")", e);
         }
         return null;
     }
@@ -268,7 +267,7 @@ public class ActionTools {
 
         // check cursor
         if (cursor == null || !cursor.moveToFirst()) {
-            Logger.logW(TAG, "getLocusWaypoint(" + ctx + ", " + ptId + "), " +
+            Logger.INSTANCE.logW(TAG, "getLocusWaypoint(" + ctx + ", " + ptId + "), " +
                     "'cursor' in not valid");
             return null;
         }
@@ -279,9 +278,9 @@ public class ActionTools {
             pt.read(cursor.getBlob(1));
             return pt;
         } catch (Exception e) {
-            Logger.logE(TAG, "getLocusWaypoint(" + ctx + ", " + ptId + ")", e);
+            Logger.INSTANCE.logE(TAG, "getLocusWaypoint(" + ctx + ", " + ptId + ")", e);
         } finally {
-            Utils.closeQuietly(cursor);
+            UtilsAnd.INSTANCE.closeQuietly(cursor);
         }
         return null;
     }
@@ -311,9 +310,9 @@ public class ActionTools {
                 result[i] = cursor.getLong(0);
             }
         } catch (Exception e) {
-            Logger.logE(TAG, "getLocusWaypointId(" + ctx + ", " + ptName + ")", e);
+            Logger.INSTANCE.logE(TAG, "getLocusWaypointId(" + ctx + ", " + ptName + ")", e);
         } finally {
-            Utils.closeQuietly(cursor);
+            UtilsAnd.INSTANCE.closeQuietly(cursor);
         }
         return result;
     }
@@ -358,7 +357,7 @@ public class ActionTools {
             String packageName, String className, String returnDataName, String returnDataValue)
             throws RequiredVersionMissingException {
         // prepare callback
-        String callback = GeoDataExtra.generateCallbackString(
+        String callback = GeoDataExtra.Companion.generateCallbackString(
                 "", packageName, className, returnDataName, returnDataValue);
 
         // call intent
@@ -389,7 +388,6 @@ public class ActionTools {
     /**
      * Get full track from Locus database with all possible information, like
      * {@link GeoDataExtra} object
-     * or {@link GeoDataStyle} and others
      *
      * @param ctx     current context
      * @param trackId unique ID of track in Locus database
@@ -415,7 +413,7 @@ public class ActionTools {
 
         // check cursor
         if (cursor == null || !cursor.moveToFirst()) {
-            Logger.logW(TAG, "getLocusTrack(" + ctx + ", " + trackId + "), " +
+            Logger.INSTANCE.logW(TAG, "getLocusTrack(" + ctx + ", " + trackId + "), " +
                     "'cursor' in not valid");
             return null;
         }
@@ -426,9 +424,9 @@ public class ActionTools {
             track.read(cursor.getBlob(1));
             return track;
         } catch (Exception e) {
-            Logger.logE(TAG, "getLocusTrack(" + ctx + ", " + trackId + ")", e);
+            Logger.INSTANCE.logE(TAG, "getLocusTrack(" + ctx + ", " + trackId + ")", e);
         } finally {
-            Utils.closeQuietly(cursor);
+            UtilsAnd.INSTANCE.closeQuietly(cursor);
         }
         return null;
     }
@@ -829,9 +827,9 @@ public class ActionTools {
                 profiles.add(prof);
             }
         } catch (Exception e) {
-            Logger.logE(TAG, "getItemPurchaseState(" + ctx + ", " + lv + ")", e);
+            Logger.INSTANCE.logE(TAG, "getItemPurchaseState(" + ctx + ", " + lv + ")", e);
         } finally {
-            Utils.closeQuietly(cursor);
+            UtilsAnd.INSTANCE.closeQuietly(cursor);
         }
 
         // return 'unknown' state
@@ -903,9 +901,9 @@ public class ActionTools {
                 }
             }
         } catch (Exception e) {
-            Logger.logE(TAG, "getItemPurchaseState(" + ctx + ", " + lv + ")", e);
+            Logger.INSTANCE.logE(TAG, "getItemPurchaseState(" + ctx + ", " + lv + ")", e);
         } finally {
-            Utils.closeQuietly(cursor);
+            UtilsAnd.INSTANCE.closeQuietly(cursor);
         }
 
         // return 'unknown' state
@@ -925,7 +923,7 @@ public class ActionTools {
             throws RequiredVersionMissingException {
         // check if application is available
         if (lv == null || !lv.isVersionValid(VersionCode.UPDATE_12)) {
-            Logger.logW(TAG, "displayLocusStoreItemDetail(), " +
+            Logger.INSTANCE.logW(TAG, "displayLocusStoreItemDetail(), " +
                     "invalid Locus version");
             throw new RequiredVersionMissingException(VersionCode.UPDATE_12);
         }
@@ -1087,10 +1085,10 @@ public class ActionTools {
             // return result
             return new BitmapLoadResult(img, notYetLoadedTiles);
         } catch (Exception e) {
-            Logger.logE(TAG, "getMapPreview()", e);
+            Logger.INSTANCE.logE(TAG, "getMapPreview()", e);
             return new BitmapLoadResult(null, 0);
         } finally {
-            Utils.closeQuietly(cursor);
+            UtilsAnd.INSTANCE.closeQuietly(cursor);
         }
     }
 
@@ -1108,7 +1106,7 @@ public class ActionTools {
      */
     public static void enablePeriodicUpdatesReceiver(Context ctx, LocusVersion lv,
             Class<? extends BroadcastReceiver> receiver) throws RequiredVersionMissingException {
-        Logger.logD(TAG, "enableReceiver(" + ctx + ")");
+        Logger.INSTANCE.logD(TAG, "enableReceiver(" + ctx + ")");
         PackageManager pm = ctx.getPackageManager();
         pm.setComponentEnabledSetting(
                 new ComponentName(ctx, receiver),
@@ -1129,7 +1127,7 @@ public class ActionTools {
      */
     public static void disablePeriodicUpdatesReceiver(Context ctx, LocusVersion lv,
             Class<? extends BroadcastReceiver> receiver) throws RequiredVersionMissingException {
-        Logger.logD(TAG, "disableReceiver(" + ctx + ")");
+        Logger.INSTANCE.logD(TAG, "disableReceiver(" + ctx + ")");
         PackageManager pm = ctx.getPackageManager();
         pm.setComponentEnabledSetting(
                 new ComponentName(ctx, receiver),
@@ -1178,7 +1176,7 @@ public class ActionTools {
         Cursor cursor = ctx.getContentResolver().query(uri,
                 null, selection, null, null);
         if (cursor == null || cursor.getCount() == 0) {
-            Logger.logE(TAG, "queryData(" + ctx + ", " + uri + "), " +
+            Logger.INSTANCE.logE(TAG, "queryData(" + ctx + ", " + uri + "), " +
                     "invalid or empty cursor received");
             return null;
         }
@@ -1215,11 +1213,11 @@ public class ActionTools {
                 return cursor.getBlob(1);
             }
         } finally {
-            Utils.closeQuietly(cursor);
+            UtilsAnd.INSTANCE.closeQuietly(cursor);
         }
 
         // no data loaded
-        Logger.logW(TAG, "queryData(" + ctx + ", " + uri + ", " + keyName + "), " +
+        Logger.INSTANCE.logW(TAG, "queryData(" + ctx + ", " + uri + ", " + keyName + "), " +
                 "received data does not contains required key");
         return null;
     }
@@ -1271,14 +1269,14 @@ public class ActionTools {
         // check URI parts ( should not happen, just check )
         if (provider == null || provider.length() == 0 ||
                 path == null || path.length() == 0) {
-            Logger.logW(TAG, "getProviderUri(), " +
+            Logger.INSTANCE.logW(TAG, "getProviderUri(), " +
                     "invalid 'authority' or 'path'parameters");
             throw new RequiredVersionMissingException(requiredVc);
         }
 
         // check if application is available
         if (lv == null || requiredVc == null || !lv.isVersionValid(requiredVc)) {
-            Logger.logW(TAG, "getProviderUri(), " +
+            Logger.INSTANCE.logW(TAG, "getProviderUri(), " +
                     "invalid Locus version");
             throw new RequiredVersionMissingException(requiredVc);
         }
@@ -1292,7 +1290,7 @@ public class ActionTools {
         } else if (lv.isVersionGis()) {
             sb.append("content://menion.android.locus.gis");
         } else {
-            Logger.logW(TAG, "getProviderUri(), " +
+            Logger.INSTANCE.logW(TAG, "getProviderUri(), " +
                     "unknown Locus version:" + lv);
             throw new RequiredVersionMissingException(requiredVc);
         }

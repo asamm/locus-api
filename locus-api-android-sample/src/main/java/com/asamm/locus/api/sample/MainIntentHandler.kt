@@ -88,7 +88,7 @@ object MainIntentHandler {
                     AlertDialog.Builder(act)
                             .setTitle("Intent - PickLocation")
                             .setMessage("Received intent with point:\n\n" + pt.name + "\n\nloc:" + pt.location +
-                                    "\n\ngcData:" + if (pt.gcData == null) "sorry, but no..." else pt.gcData.cacheID)
+                                    "\n\ngcData:" + if (pt.gcData == null) "sorry, but no..." else pt.gcData!!.cacheID)
                             .setPositiveButton("Close") { _, _ -> }
                             .show()
                 } else {
@@ -125,7 +125,7 @@ object MainIntentHandler {
             AlertDialog.Builder(act)
                     .setTitle("Intent - On Point action")
                     .setMessage("Received intent with point:\n\n" + pt.name + "\n\nloc:" + pt.location +
-                            "\n\ngcData:" + if (pt.gcData == null) "sorry, but no..." else pt.gcData.cacheID).setNegativeButton("Close") { _, _ ->
+                            "\n\ngcData:" + if (pt.gcData == null) "sorry, but no..." else pt.gcData!!.cacheID).setNegativeButton("Close") { _, _ ->
                         // just do some action on required coordinates
                     }
                     .setPositiveButton("Send updated back") { _, _ ->
@@ -141,8 +141,8 @@ object MainIntentHandler {
                         try {
                             // set new parameters
                             pt.addParameter(GeoDataExtra.PAR_DESCRIPTION, "UPDATED!")
-                            pt.location.setLatitude(pt.location.getLatitude() + 0.001)
-                            pt.location.setLongitude(pt.location.getLongitude() + 0.001)
+                            pt.location.latitude = pt.location.latitude + 0.001
+                            pt.location.longitude = pt.location.longitude + 0.001
                             ActionBasics.updatePoint(act, lv, pt, false)
                             act.finish()
                         } catch (e: Exception) {
@@ -179,7 +179,7 @@ object MainIntentHandler {
                     try {
                         ActionBasics.getTrackInFormat(act,
                                 requestCode = MainActivity.RC_GET_TRACK_IN_FORMAT,
-                                trackId = track.getId(),
+                                trackId = track.id,
                                 format = ActionBasics.FileFormat.GPX,
                                 formatExtra = "{ attachments: true }")
                     } catch (e: RequiredVersionMissingException) {
@@ -277,11 +277,11 @@ object MainIntentHandler {
             try {
                 val pt = ActionBasics.getPoint(act, lv, wptId)
                 if (pt != null) {
-                    Logger.logD(TAG, "loadPointsFromLocus(), wptId:" + wptId + ", vs:" + pt.getId())
+                    Logger.logD(TAG, "loadPointsFromLocus(), wptId:" + wptId + ", vs:" + pt.id)
                     // do some modifications
                     pt.addParameter(GeoDataExtra.PAR_DESCRIPTION, "UPDATED!")
-                    pt.location.setLatitude(pt.location.getLatitude() + 0.001)
-                    pt.location.setLongitude(pt.location.getLongitude() + 0.001)
+                    pt.location.latitude = pt.location.latitude + 0.001
+                    pt.location.longitude = pt.location.longitude + 0.001
 
                     // update waypoint in Locus database
                     if (ActionBasics.updatePoint(act, lv, pt, false) == 1) {

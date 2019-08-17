@@ -321,7 +321,7 @@ public class LocusUtils {
 
         @Override
         public @NonNull String toString() {
-            return Utils.toString(this);
+            return Utils.INSTANCE.toString(this);
         }
 
         // STORABLE PART
@@ -332,7 +332,7 @@ public class LocusUtils {
         }
 
         @Override
-        protected void readObject(int version, DataReaderBigEndian dr) throws IOException {
+        protected void readObject(int version, DataReaderBigEndian dr) {
             mPackageName = dr.readString();
             mVersionName = dr.readString();
             mVersionCode = dr.readInt();
@@ -451,7 +451,7 @@ public class LocusUtils {
                     return lv;
                 }
             } catch (RequiredVersionMissingException e) {
-                Logger.logE(TAG, "prepareActiveLocus()", e);
+                Logger.INSTANCE.logE(TAG, "prepareActiveLocus()", e);
             }
         }
 
@@ -537,7 +537,7 @@ public class LocusUtils {
             // finally add item to list
             return new LocusVersion(packageName, info.versionName, info.versionCode);
         } catch (Exception e) {
-            Logger.logE(TAG, "getLocusVersion(" + ctx + ", " + packageName + ")", e);
+            Logger.INSTANCE.logE(TAG, "getLocusVersion(" + ctx + ", " + packageName + ")", e);
             return null;
         }
     }
@@ -584,7 +584,7 @@ public class LocusUtils {
 
         // older versions of Locus do not send package name in it's intents.
         // So we return closest valid Locus version (Pro/Free)
-        Logger.logW(TAG, "getLocusVersion(" + ctx + "), " +
+        Logger.INSTANCE.logW(TAG, "getLocusVersion(" + ctx + "), " +
                 "Warning: old version of Locus: Correct package name is not known!");
         List<LocusVersion> versions = getAvailableVersions(ctx);
         for (int i = 0, m = versions.size(); i < m; i++) {
@@ -1087,7 +1087,7 @@ public class LocusUtils {
             pt.read(intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINT));
             return pt;
         } catch (Exception e) {
-            Logger.logE(TAG, "getWaypointFromIntent(" + intent + ")", e);
+            Logger.INSTANCE.logE(TAG, "getWaypointFromIntent(" + intent + ")", e);
             return null;
         }
     }
@@ -1112,7 +1112,7 @@ public class LocusUtils {
             loc.read(intent.getByteArrayExtra(extraName));
             return loc;
         } catch (Exception e) {
-            Logger.logE(TAG, "getLocationFromIntent(" + intent + ")", e);
+            Logger.INSTANCE.logE(TAG, "getLocationFromIntent(" + intent + ")", e);
             return null;
         }
     }
@@ -1177,7 +1177,7 @@ public class LocusUtils {
         if (oldLoc.hasAccuracy()) {
             loc.setAccuracy(oldLoc.getAccuracy());
         }
-        if (oldLoc.hasAltitude()) {
+        if (oldLoc.getHasAltitude()) {
             loc.setAltitude(oldLoc.getAltitude());
         }
         if (oldLoc.hasBearing()) {

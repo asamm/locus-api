@@ -55,7 +55,6 @@ internal object PeriodicUpdatesConst {
     const val VAR_F_REC_ALT_MAX = "1206"
     const val VAR_F_REC_ALT_DOWNHILL = "1207"
     const val VAR_F_REC_ALT_UPHILL = "1208"
-    const val VAR_F_REC_ALT_CUMULATIVE = "1209"
     const val VAR_L_REC_TIME = "1210"
     const val VAR_L_REC_TIME_MOVE = "1211"
     const val VAR_F_REC_SPEED_AVG = "1212"

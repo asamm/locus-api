@@ -18,7 +18,6 @@ import locus.api.android.ActionTools
 import locus.api.android.features.geocaching.fieldNotes.FieldNotesHelper
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
-import locus.api.android.utils.Utils
 import locus.api.objects.extra.Location
 import java.util.*
 
@@ -150,7 +149,7 @@ class PageUtilsFragment : ABasePageFragment() {
                 if (uc != null) {
                     AlertDialog.Builder(act)
                             .setTitle("Fresh UpdateContainer")
-                            .setMessage("UC: " + Utils.toString(uc))
+                            .setMessage("UC: $uc")
                             .setPositiveButton("Close") { _, _ -> }
                             .show()
                 } else {

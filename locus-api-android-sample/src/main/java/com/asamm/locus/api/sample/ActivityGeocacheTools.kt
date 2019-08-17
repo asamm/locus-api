@@ -50,7 +50,7 @@ class ActivityGeocacheTools : FragmentActivity() {
                             .setTitle("Intent - On Point action")
                             .setMessage("Received intent with point:\n\n" + pt.name + "\n\n" +
                                     "loc:" + pt.location + "\n\n" +
-                                    "gcData:" + if (pt.gcData == null) "sorry, but no..." else pt.gcData.cacheID)
+                                    "gcData:" + if (pt.gcData == null) "sorry, but no..." else pt.gcData!!.cacheID)
                             .setNegativeButton("Close") { _, _ ->
                                 // just do some action on required coordinates
                             }
@@ -59,8 +59,8 @@ class ActivityGeocacheTools : FragmentActivity() {
                                 // I'll send as result updated geocache
                                 try {
                                     pt.addParameter(GeoDataExtra.PAR_DESCRIPTION, "UPDATED!")
-                                    pt.location.setLatitude(pt.location.getLatitude() + 0.001)
-                                    pt.location.setLongitude(pt.location.getLongitude() + 0.001)
+                                    pt.location.latitude = pt.location.latitude + 0.001
+                                    pt.location.longitude = pt.location.longitude + 0.001
                                     ActionBasics.updatePoint(this@ActivityGeocacheTools, lv, pt, false)
                                     finish()
                                 } catch (e: Exception) {

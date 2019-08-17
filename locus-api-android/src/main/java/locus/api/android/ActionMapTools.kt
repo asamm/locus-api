@@ -1,3 +1,7 @@
+/**
+ * Created by menion on 22/01/2018.
+ * This code is part of Locus project from Asamm Software, s. r. o.
+ */
 package locus.api.android
 
 import android.content.Context
@@ -6,7 +10,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
-import locus.api.android.utils.Utils
+import locus.api.android.utils.UtilsAnd
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.Storable
 import locus.api.objects.extra.Location
@@ -15,64 +19,56 @@ import locus.api.utils.DataWriterBigEndian
 import locus.api.utils.Logger
 import java.io.IOException
 
-/**
- * Created by menion on 22/01/2018.
- * This code is part of Locus project from Asamm Software, s. r. o.
- */
+object ActionMapTools {
 
-// tag for logger
-const val TAG = "ActionMapTools"
+    // tag for logger
+    const val TAG = "ActionMapTools"
 
-class ActionMapTools {
+    /**
+     * Generate map preview for a defined [params]. This method returns container with loaded data as well
+     * as number if incorrectly loaded map tiles (useful for repeated request with same [params]).
+     */
+    @JvmStatic
+    @Throws(RequiredVersionMissingException::class)
+    fun getMapPreview(ctx: Context, lv: LocusUtils.LocusVersion, params: MapPreviewParams): MapPreviewResult? {
 
-    companion object {
+        // get scheme if valid Locus is available
+        val scheme = ActionTools.getProviderUri(lv,
+                LocusUtils.VersionCode.UPDATE_14,
+                LocusConst.CONTENT_PROVIDER_AUTHORITY_MAP_TOOLS,
+                LocusConst.CONTENT_PROVIDER_PATH_MAP_PREVIEW)
 
-        /**
-         * Generate map preview for a defined [params]. This method returns container with loaded data as well
-         * as number if incorrectly loaded map tiles (useful for repeated request with same [params]).
-         */
-        @JvmStatic
-        @Throws(RequiredVersionMissingException::class)
-        fun getMapPreview(ctx: Context, lv: LocusUtils.LocusVersion, params: MapPreviewParams): MapPreviewResult? {
+        // prepare base query with parameters
+        val sbQuery = params.generateQuery()
 
-            // get scheme if valid Locus is available
-            val scheme = ActionTools.getProviderUri(lv,
-                    LocusUtils.VersionCode.UPDATE_14,
-                    LocusConst.CONTENT_PROVIDER_AUTHORITY_MAP_TOOLS,
-                    LocusConst.CONTENT_PROVIDER_PATH_MAP_PREVIEW)
-
-            // prepare base query with parameters
-            val sbQuery = params.generateQuery()
-
-            // get data
-            var cursor: Cursor? = null
-            try {
-                cursor = ActionTools.queryData(ctx, scheme, sbQuery)
-                if (cursor == null || !cursor.moveToFirst()) {
-                    return null
-                }
-
-                // load data
-                var img: ByteArray? = null
-                var notYetLoadedTiles = 0
-                for (i in 0 until cursor.count) {
-                    cursor.moveToPosition(i)
-                    val key = String(cursor.getBlob(0))
-                    if (key == LocusConst.VALUE_MAP_PREVIEW) {
-                        img = cursor.getBlob(1)
-                    } else if (key == LocusConst.VALUE_MAP_PREVIEW_MISSING_TILES) {
-                        notYetLoadedTiles = cursor.getInt(1)
-                    }
-                }
-
-                // return result
-                return MapPreviewResult(img, notYetLoadedTiles)
-            } catch (e: Exception) {
-                Logger.logE(TAG, "getMapPreview()", e)
-                return MapPreviewResult(null, 0)
-            } finally {
-                Utils.closeQuietly(cursor)
+        // get data
+        var cursor: Cursor? = null
+        try {
+            cursor = ActionTools.queryData(ctx, scheme, sbQuery)
+            if (cursor == null || !cursor.moveToFirst()) {
+                return null
             }
+
+            // load data
+            var img: ByteArray? = null
+            var notYetLoadedTiles = 0
+            for (i in 0 until cursor.count) {
+                cursor.moveToPosition(i)
+                val key = String(cursor.getBlob(0))
+                if (key == LocusConst.VALUE_MAP_PREVIEW) {
+                    img = cursor.getBlob(1)
+                } else if (key == LocusConst.VALUE_MAP_PREVIEW_MISSING_TILES) {
+                    notYetLoadedTiles = cursor.getInt(1)
+                }
+            }
+
+            // return result
+            return MapPreviewResult(img, notYetLoadedTiles)
+        } catch (e: Exception) {
+            Logger.logE(TAG, "getMapPreview()", e)
+            return MapPreviewResult(null, 0)
+        } finally {
+            UtilsAnd.closeQuietly(cursor)
         }
     }
 }

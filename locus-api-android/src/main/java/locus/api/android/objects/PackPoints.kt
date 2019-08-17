@@ -20,16 +20,14 @@
 package locus.api.android.objects
 
 import android.graphics.Bitmap
-
 import locus.api.android.utils.UtilsBitmap
 import locus.api.objects.Storable
-import locus.api.objects.extra.GeoDataStyle
 import locus.api.objects.extra.Point
+import locus.api.objects.styles.GeoDataStyle
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
-
 import java.io.IOException
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Empty constructor used for [Storable]. Do not use directly!

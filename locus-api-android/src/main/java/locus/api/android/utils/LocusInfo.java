@@ -3,6 +3,8 @@ package locus.api.android.utils;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 
+import androidx.annotation.NonNull;
+
 import java.io.IOException;
 
 import locus.api.objects.Storable;
@@ -608,9 +610,10 @@ public class LocusInfo extends Storable {
         mUnitsFormatWeight = format;
     }
 
+    @NonNull
     @Override
     public String toString() {
-        return Utils.toString(this);
+        return Utils.INSTANCE.toString(this);
     }
 
     //*************************************************
@@ -847,7 +850,7 @@ public class LocusInfo extends Storable {
     }
 
     @Override
-    protected void readObject(int version, DataReaderBigEndian dr) throws IOException {
+    protected void readObject(int version, @NonNull DataReaderBigEndian dr) {
         mPackageName = dr.readString();
         mIsRunning = dr.readBoolean();
 
@@ -894,7 +897,7 @@ public class LocusInfo extends Storable {
     }
 
     @Override
-    protected void writeObject(DataWriterBigEndian dw) throws IOException {
+    protected void writeObject(@NonNull DataWriterBigEndian dw) throws IOException {
         dw.writeString(mPackageName);
         dw.writeBoolean(mIsRunning);
 

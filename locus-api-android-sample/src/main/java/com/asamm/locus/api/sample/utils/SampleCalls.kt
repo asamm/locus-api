@@ -42,12 +42,12 @@ import locus.api.android.utils.LocusUtils.LocusVersion
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.extra.Circle
 import locus.api.objects.extra.GeoDataExtra
-import locus.api.objects.extra.GeoDataStyle
 import locus.api.objects.extra.Location
 import locus.api.objects.extra.Point
 import locus.api.objects.extra.Track
 import locus.api.objects.geocaching.GeocachingData
 import locus.api.objects.geocaching.GeocachingWaypoint
+import locus.api.objects.styles.GeoDataStyle
 import locus.api.utils.Logger
 import java.io.File
 import java.util.*
@@ -489,7 +489,7 @@ object SampleCalls {
             for (pointId in pointsId) {
                 val pt = ActionBasics.getPoint(ctx, lv, pointId)
                 if (pt?.name?.equals("It is my point") == true) {
-                    ActionBasics.actionStartGuiding(ctx, pt.getId())
+                    ActionBasics.actionStartGuiding(ctx, pt.id)
                     return
                 }
             }
@@ -548,30 +548,30 @@ object SampleCalls {
         val c0 = Circle(Location(50.15, 15.0), 10000000f, true)
         c0.styleNormal = GeoDataStyle()
 
-        c0.styleNormal.setPolyStyle(Color.argb(50, Color.red(Color.RED),
+        c0.styleNormal!!.setPolyStyle(Color.argb(50, Color.red(Color.RED),
                 Color.green(Color.RED), Color.blue(Color.RED)))
         circles.add(c0)
 
         val c1 = Circle(Location(50.0, 15.0), 1000f, false)
         c1.styleNormal = GeoDataStyle()
-        c1.styleNormal.setLineStyle(Color.BLUE, 2f)
+        c1.styleNormal!!.setLineStyle(Color.BLUE, 2f)
         circles.add(c1)
 
         val c2 = Circle(Location(50.1, 15.0), 1500f, false)
         c2.styleNormal = GeoDataStyle()
-        c2.styleNormal.setLineStyle(Color.RED, 3f)
+        c2.styleNormal!!.setLineStyle(Color.RED, 3f)
         circles.add(c2)
 
         val c3 = Circle(Location(50.2, 15.0), 2000f, false)
         c3.styleNormal = GeoDataStyle()
-        c3.styleNormal.setLineStyle(Color.GREEN, 4f)
-        c3.styleNormal.setPolyStyle(Color.LTGRAY)
+        c3.styleNormal!!.setLineStyle(Color.GREEN, 4f)
+        c3.styleNormal!!.setPolyStyle(Color.LTGRAY)
         circles.add(c3)
 
         val c4 = Circle(Location(50.3, 15.0), 1500f, false)
         c4.styleNormal = GeoDataStyle()
-        c4.styleNormal.setLineStyle(Color.MAGENTA, 0f)
-        c4.styleNormal.setPolyStyle(
+        c4.styleNormal!!.setLineStyle(Color.MAGENTA, 0f)
+        c4.styleNormal!!.setPolyStyle(
                 Color.argb(100, Color.red(Color.MAGENTA),
                         Color.green(Color.MAGENTA), Color.blue(Color.MAGENTA)))
         circles.add(c4)
@@ -595,8 +595,8 @@ object SampleCalls {
     fun generateWaypoint(id: Int): Point {
         // create one simple point with location
         val loc = Location()
-        loc.setLatitude(Math.random() + 50.0)
-        loc.setLongitude(Math.random() + 14.0)
+        loc.latitude = Math.random() + 50.0
+        loc.longitude = Math.random() + 14.0
         return Point("Testing point - $id", loc)
     }
 
@@ -671,8 +671,8 @@ object SampleCalls {
             lat += (Math.random() - 0.5) * 0.01
             lon += Math.random() * 0.001
             val loc = Location()
-            loc.setLatitude(lat)
-            loc.setLongitude(lon)
+            loc.latitude = lat
+            loc.longitude = lon
             locs.add(loc)
         }
         track.points = locs

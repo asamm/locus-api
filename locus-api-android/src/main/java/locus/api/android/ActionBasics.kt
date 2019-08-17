@@ -29,10 +29,9 @@ import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusInfo
 import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.LocusUtils.VersionCode
-import locus.api.android.utils.Utils
+import locus.api.android.utils.UtilsAnd
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.extra.GeoDataExtra
-import locus.api.objects.extra.GeoDataStyle
 import locus.api.objects.extra.Location
 import locus.api.objects.extra.Point
 import locus.api.objects.extra.Track
@@ -46,6 +45,9 @@ import java.util.*
  * Most of functions are converted from `ActionTools` class.
  */
 object ActionBasics {
+
+    // tag for logger
+    private const val TAG = "ActionBasics"
 
     //*************************************************
     // CORE TOOLS
@@ -88,7 +90,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getLocusInfo($ctx, $lv)", e)
         } finally {
-            Utils.closeQuietly(cursor)
+            UtilsAnd.closeQuietly(cursor)
         }
         return null
     }
@@ -255,7 +257,7 @@ object ActionBasics {
                 putExtra(LocusConst.INTENT_EXTRA_NAME, wptName)
             }
 
-            // setup autosave option
+            // setup auto-save option
             putExtra(LocusConst.INTENT_EXTRA_TRACK_REC_AUTO_SAVE, autoSave)
         }
     }
@@ -321,7 +323,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getTrackRecordingProfiles($ctx, $lv)", e)
         } finally {
-            Utils.closeQuietly(cursor)
+            UtilsAnd.closeQuietly(cursor)
         }
 
         // return 'unknown' state
@@ -524,7 +526,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getPoint($ctx, $ptId)", e)
         } finally {
-            Utils.closeQuietly(cursor)
+            UtilsAnd.closeQuietly(cursor)
         }
         return null
     }
@@ -578,7 +580,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getPointId($ctx, $lv, $ptName)", e)
         } finally {
-            Utils.closeQuietly(cursor)
+            UtilsAnd.closeQuietly(cursor)
         }
         return LongArray(0)
     }
@@ -630,7 +632,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getPointsId($ctx, $lv, $loc, $limit, $maxRadius)", e)
         } finally {
-            Utils.closeQuietly(cursor)
+            UtilsAnd.closeQuietly(cursor)
         }
         return LongArray(0)
     }
@@ -776,7 +778,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getTrack($ctx, $trackId)", e)
         } finally {
-            Utils.closeQuietly(cursor)
+            UtilsAnd.closeQuietly(cursor)
         }
         return null
     }
@@ -939,7 +941,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getItemPurchaseState($ctx, $lv, $itemId)", e)
         } finally {
-            Utils.closeQuietly(cursor)
+            UtilsAnd.closeQuietly(cursor)
         }
 
         // return 'unknown' state
@@ -1014,7 +1016,7 @@ object ActionBasics {
                 return cursor.getBlob(1)
             }
         } finally {
-            Utils.closeQuietly(cursor)
+            UtilsAnd.closeQuietly(cursor)
         }
 
         // no data loaded

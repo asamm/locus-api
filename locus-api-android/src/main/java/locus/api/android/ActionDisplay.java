@@ -38,7 +38,7 @@ public class ActionDisplay {
 
         // check intent firstly
         if (!hasData(intent)) {
-            Logger.logW(TAG, "Intent 'null' or not contain any data");
+            Logger.INSTANCE.logW(TAG, "Intent 'null' or not contain any data");
             return false;
         }
 
@@ -84,7 +84,7 @@ public class ActionDisplay {
 
         // check intent firstly
         if (itemsId == null || itemsId.length == 0) {
-            Logger.logW(TAG, "Intent 'null' or not contain any data");
+            Logger.INSTANCE.logW(TAG, "Intent 'null' or not contain any data");
             return false;
         }
 

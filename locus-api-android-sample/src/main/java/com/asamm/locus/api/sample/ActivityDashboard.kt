@@ -3,20 +3,17 @@ package com.asamm.locus.api.sample
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.TextView
-
+import androidx.fragment.app.FragmentActivity
 import com.asamm.locus.api.sample.receivers.PeriodicUpdateReceiver
 import com.asamm.locus.api.sample.utils.SampleCalls
-
-import java.text.SimpleDateFormat
-import java.util.Date
-
-import androidx.fragment.app.FragmentActivity
 import locus.api.android.features.periodicUpdates.PeriodicUpdatesHandler
 import locus.api.android.features.periodicUpdates.UpdateContainer
 import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.LocusUtils.LocusVersion
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.utils.Logger
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ActivityDashboard : FragmentActivity() {
 
@@ -108,8 +105,8 @@ class ActivityDashboard : FragmentActivity() {
         // refresh content
         tvInfo!!.text = "Fresh data received at ${SimpleDateFormat.getTimeInstance().format(Date())}\n" +
                 "App: ${activeVersion.versionName}, battery:${data.deviceBatteryValue}"
-        tv01!!.text = data.locMyLocation.getLatitude().toString()
-        tv02!!.text = data.locMyLocation.getLongitude().toString()
+        tv01!!.text = data.locMyLocation.latitude.toString()
+        tv02!!.text = data.locMyLocation.longitude.toString()
         tv03!!.text = data.gpsSatsUsed.toString()
         tv04!!.text = data.gpsSatsAll.toString()
         tv05!!.text = data.isMapVisible.toString()

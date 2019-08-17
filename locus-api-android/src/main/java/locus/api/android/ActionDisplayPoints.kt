@@ -30,9 +30,10 @@ import java.io.FileOutputStream
 import java.util.*
 import locus.api.android.ActionDisplay.ExtraAction
 
-
-@Suppress("unused")
 object ActionDisplayPoints {
+
+    // tag for logger
+    private const val TAG = "ActionDisplayPoints"
 
     //*************************************************
     // ONE PACK_POINT OVER INTENT

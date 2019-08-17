@@ -9,9 +9,10 @@ import android.net.Uri
 import locus.api.android.ActionTools
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
-import locus.api.android.utils.Utils
+import locus.api.android.utils.UtilsAnd
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.geocaching.GeocachingLog
+import locus.api.utils.Utils
 import java.util.*
 
 /**
@@ -94,7 +95,7 @@ class FieldNotesHelper private constructor() {
                     c.count
                 }
             } finally {
-                Utils.closeQuietly(c)
+                UtilsAnd.closeQuietly(c)
             }
         }
 
@@ -136,7 +137,7 @@ class FieldNotesHelper private constructor() {
                 // return field note
                 return fn
             } finally {
-                Utils.closeQuietly(c)
+                UtilsAnd.closeQuietly(c)
             }
         }
 
@@ -174,7 +175,7 @@ class FieldNotesHelper private constructor() {
                 }
                 return logs
             } finally {
-                Utils.closeQuietly(c)
+                UtilsAnd.closeQuietly(c)
             }
         }
 
@@ -204,7 +205,7 @@ class FieldNotesHelper private constructor() {
                 }
                 return null
             } finally {
-                Utils.closeQuietly(c)
+                UtilsAnd.closeQuietly(c)
             }
         }
 
@@ -265,7 +266,7 @@ class FieldNotesHelper private constructor() {
             val newRow = ctx.contentResolver.insert(getUriLogsTable(lv), cv) ?: return false
 
             // set new ID to field note
-            gcFn.id = Utils.parseLong(newRow.lastPathSegment)
+            gcFn.id = Utils.parseLong(newRow.lastPathSegment ?: "")
 
             // insert extra data
             storeAllImages(ctx, lv, gcFn)
@@ -342,7 +343,7 @@ class FieldNotesHelper private constructor() {
                     null
                 } else createImages(c)[0]
             } finally {
-                Utils.closeQuietly(c)
+                UtilsAnd.closeQuietly(c)
             }
         }
 
@@ -373,7 +374,7 @@ class FieldNotesHelper private constructor() {
                     }
                 }
             } finally {
-                Utils.closeQuietly(c)
+                UtilsAnd.closeQuietly(c)
             }
         }
 
@@ -443,7 +444,7 @@ class FieldNotesHelper private constructor() {
                     ColTrackableLogs.CACHE_CODE + "=?",
                     arrayOf(cacheCode), null)?.apply {
                 items.addAll(createItems(this))
-                Utils.closeQuietly(this)
+                UtilsAnd.closeQuietly(this)
             }
 
             // return container
@@ -462,7 +463,7 @@ class FieldNotesHelper private constructor() {
                     ColTrackableLogs.LOGGED + "=?",
                     arrayOf("0"), null)?.apply {
                 items.addAll(createItems(this))
-                Utils.closeQuietly(this)
+                UtilsAnd.closeQuietly(this)
             }
 
             // return container

@@ -18,13 +18,10 @@ import java.util.*
  */
 class MapProvider : MapTileService() {
 
-    override fun getMapConfigs(): List<MapConfigLayer> {
-        Logger.logD("MapProvider", "getMapConfiguration()")
-        return generateMapConfig()
-    }
+    override val mapConfigs: List<MapConfigLayer>?
+        get() = generateMapConfig()
 
-    override fun getMapTile(request: MapTileRequest): MapTileResponse {
-        Logger.logD("MapProvider", "getMapTile($request)")
+    override fun getMapTile(request: MapTileRequest): MapTileResponse? {
         return loadMapTile(request)
     }
 
@@ -77,33 +74,33 @@ class MapProvider : MapTileService() {
         val fileName = "tile_" + request.tileX + "_" +
                 request.tileY + "_" + request.tileZoom + ".jpg"
         val tileData = loadMapTile(fileName)
-        if (tileData == null || tileData.size == 0) {
+        if (tileData == null || tileData.isEmpty()) {
             resp.resultCode = MapTileResponse.CODE_NOT_EXISTS
             return resp
         }
 
         // convert to bitmap
         val img = BitmapFactory.decodeByteArray(tileData, 0, tileData.size)
-        if (img == null) {
+        return if (img == null) {
             resp.resultCode = MapTileResponse.CODE_INTERNAL_ERROR
-            return resp
+            resp
         } else {
             resp.resultCode = MapTileResponse.CODE_VALID
             resp.image = img
-            return resp
+            resp
         }
     }
 
     private fun loadMapTile(name: String): ByteArray? {
         var input: InputStream? = null
-        try {
+        return try {
             input = assets.open("map_tiles/$name")
-            return ByteArrayOutputStream()
+            ByteArrayOutputStream()
                     .apply { input.copyTo(this) }
                     .toByteArray()
         } catch (e: Exception) {
             Logger.logE(TAG, "loadMapTile($name), not exists", e)
-            return null
+            null
         } finally {
             Utils.closeStream(input)
         }

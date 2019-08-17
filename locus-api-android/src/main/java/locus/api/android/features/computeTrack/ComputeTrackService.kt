@@ -42,7 +42,7 @@ abstract class ComputeTrackService : Service() {
                 // get track parameters from container
                 val containerData = trackParams.data
                 val params = ComputeTrackParameters()
-                params.read(containerData)
+                params.read(containerData!!)
 
                 // get active running Locus
                 val lv = LocusUtils.getActiveVersion(this@ComputeTrackService)

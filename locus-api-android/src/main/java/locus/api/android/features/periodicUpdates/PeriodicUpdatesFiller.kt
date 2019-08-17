@@ -79,7 +79,7 @@ object PeriodicUpdatesFiller {
         update.locMapCenter = IntentHelper.getLocationFromIntent(
                 i, PeriodicUpdatesConst.VAR_LOC_MAP_CENTER)
         if (pu.mLastMapCenter == null || pu.mLastMapCenter.distanceTo(
-                        update.locMapCenter) > pu.mLocMinDistance) {
+                        update.locMapCenter!!) > pu.mLocMinDistance) {
             pu.mLastMapCenter = update.locMapCenter
             update.isNewMapCenter = true
         }
@@ -136,8 +136,6 @@ object PeriodicUpdatesFiller {
                         PeriodicUpdatesConst.VAR_F_REC_ALT_DOWNHILL, 0.0f)
                 update.trackRecStats!!.elePositiveHeight = i.getFloatExtra(
                         PeriodicUpdatesConst.VAR_F_REC_ALT_UPHILL, 0.0f)
-                update.trackRecStats!!.eleTotalAbsHeight = i.getFloatExtra(
-                        PeriodicUpdatesConst.VAR_F_REC_ALT_CUMULATIVE, 0.0f)
                 update.trackRecStats!!.totalTime = i.getLongExtra(
                         PeriodicUpdatesConst.VAR_L_REC_TIME, 0L)
                 update.trackRecStats!!.totalTimeMove = i.getLongExtra(
@@ -344,8 +342,6 @@ object PeriodicUpdatesFiller {
                     cont.trackRecStats!!.eleNegativeHeight)
             i.putExtra(PeriodicUpdatesConst.VAR_F_REC_ALT_UPHILL,
                     cont.trackRecStats!!.elePositiveHeight)
-            i.putExtra(PeriodicUpdatesConst.VAR_F_REC_ALT_CUMULATIVE,
-                    cont.trackRecStats!!.eleTotalAbsHeight)
             i.putExtra(PeriodicUpdatesConst.VAR_L_REC_TIME,
                     cont.trackRecStats!!.totalTime)
             i.putExtra(PeriodicUpdatesConst.VAR_L_REC_TIME_MOVE,

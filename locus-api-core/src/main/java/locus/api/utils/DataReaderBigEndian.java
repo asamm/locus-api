@@ -1,6 +1,7 @@
 package locus.api.utils;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ public class DataReaderBigEndian {
 
     // tag for logger
     private static final String TAG = "DataReaderBigEndian";
+    // UTF-8 charset
+    private static final Charset UTF8 = Charset.forName("UTF-8");
 
     // current position in buffer
     private int mPosition;
@@ -115,14 +118,14 @@ public class DataReaderBigEndian {
         return Double.longBitsToDouble(readLong());
     }
 
-    public String readString() throws IOException {
+    public String readString() {
         int textLength = readInt();
         if (textLength == 0) {
             return "";
         } else {
             checkPosition(textLength);
             return new String(mBuffer,
-                    mPosition - textLength, textLength, "UTF-8");
+                    mPosition - textLength, textLength, UTF8);
         }
     }
 
@@ -132,14 +135,14 @@ public class DataReaderBigEndian {
      * <code>dos.writeUTF(String text);</code>
      */
     @Deprecated
-    public String readStringDis() throws IOException {
+    public String readStringDis() {
         int textLength = readShort();
         if (textLength == 0) {
             return "";
         } else {
             checkPosition(textLength);
             return new String(mBuffer,
-                    mPosition - textLength, textLength, "UTF-8");
+                    mPosition - textLength, textLength, UTF8);
         }
     }
 
@@ -152,12 +155,12 @@ public class DataReaderBigEndian {
      */
     public <E extends Storable> E readStorable(Class<E> claz)
             throws InstantiationException, IllegalAccessException, IOException {
-        return Storable.read(claz, this);
+        return Storable.Companion.read(claz, this);
     }
 
     // LIST TOOLS
 
-    public List<String> readListString() throws IOException {
+    public List<String> readListString() {
         // prepare container
         List<String> objs = new ArrayList<>();
 
@@ -193,9 +196,9 @@ public class DataReaderBigEndian {
                 item.read(this);
                 objs.add(item);
             } catch (InstantiationException e) {
-                Logger.logE(TAG, "readList(" + claz + ")", e);
+                Logger.INSTANCE.logE(TAG, "readList(" + claz + ")", e);
             } catch (IllegalAccessException e) {
-                Logger.logE(TAG, "readList(" + claz + ")", e);
+                Logger.INSTANCE.logE(TAG, "readList(" + claz + ")", e);
             }
         }
         return objs;
