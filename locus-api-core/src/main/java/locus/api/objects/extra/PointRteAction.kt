@@ -5,6 +5,7 @@
 package locus.api.objects.extra
 
 /**
+ * Possible actions for Route navigation point.
  *
  * @param id id of item
  */
@@ -197,22 +198,20 @@ enum class PointRteAction constructor(
          * @return turn instruction
          */
         fun getActionByText(text: String?): PointRteAction {
-            var textNew = text
             // check text
-            if (textNew == null || textNew.length == 0) {
+            if (text == null || text.isEmpty()) {
                 return UNDEFINED
             }
 
             // test actions
             for (action in VALUES) {
-                if (textNew.equals(action.textId, ignoreCase = true)) {
+                if (text.equals(action.textId, ignoreCase = true)) {
                     return action
                 }
             }
 
             // test on some special cases
-            textNew = textNew.toLowerCase().trim { it <= ' ' }
-            return when (textNew) {
+            return when (text.toLowerCase().trim { it <= ' ' }) {
                 "turn-left" -> LEFT
                 "turn-right" -> RIGHT
                 else -> UNDEFINED
@@ -240,13 +239,13 @@ enum class PointRteAction constructor(
         // ACTION FOR NAVIGATION ANGLES
 
         // maximum value for straight angle
-        private val ANGLE_NO_MAX = 30
+        private const val ANGLE_NO_MAX = 30
         // maximum value for slight angle turn
-        private val ANGLE_SLIGHT_MAX = 45
+        private const val ANGLE_SLIGHT_MAX = 45
         // maximum value for normal angle turn
-        private val ANGLE_REGULAR_MAX = 120
+        private const val ANGLE_REGULAR_MAX = 120
         // maximum value for hard angle turn
-        private val ANGLE_HARD_MAX = 170
+        private const val ANGLE_HARD_MAX = 170
 
         /**
          * Get angle for certain angle.

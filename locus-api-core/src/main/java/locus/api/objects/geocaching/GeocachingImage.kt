@@ -19,7 +19,7 @@ class GeocachingImage : Storable() {
     /**
      * Defined description for image
      */
-    private var description: String = ""
+    var description: String = ""
     /**
      * URL to thumbnail of image. Usable for a quick overview.
      */

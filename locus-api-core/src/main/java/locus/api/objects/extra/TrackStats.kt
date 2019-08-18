@@ -10,7 +10,7 @@ import locus.api.utils.DataWriterBigEndian
 import java.io.IOException
 
 /**
- * Precise statistics for [Track] class.
+ * Precise statistics for the [locus.api.objects.geoData.Track] class.
  */
 class TrackStats : Storable() {
 

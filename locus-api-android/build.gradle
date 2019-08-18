@@ -82,58 +82,60 @@ uploadArchives {
 
 // generate publication in Maven format
 // https://docs.gradle.org/current/dsl/org.gradle.api.publish.maven.MavenPublication.html
-publishing {
-    publications {
-        Production(MavenPublication) {
-            // define sources
-            //artifact("${project.buildDir}/outputs/aar/${project.name}-release.aar")
-            artifact(bundleReleaseAar)
-            artifact createSourceJar
-            artifact createJavadocJar
+project.afterEvaluate {
+    publishing {
+        publications {
+            Production(MavenPublication) {
+                // define sources
+                //artifact("${project.buildDir}/outputs/aar/${project.name}-release.aar")
+                artifact bundleReleaseAar
+                artifact createSourceJar
+                artifact createJavadocJar
 
-            // set parameters
-            groupId 'com.asamm'
-            artifactId 'locus-api-android'
-            //noinspection GroovyAssignabilityCheck
-            version API_VERSION
+                // set parameters
+                groupId 'com.asamm'
+                artifactId 'locus-api-android'
+                //noinspection GroovyAssignabilityCheck
+                version API_VERSION
 
-            // improve generated POM file
-            pom.withXml {
-                asNode().appendNode(
-                        'name', 'Locus API - Android')
-                asNode().appendNode(
-                        'description', 'Library for Android "Locus Map" application')
-                asNode().appendNode(
-                        'url', 'https://github.com/asamm/locus-api-android')
-                asNode().appendNode(
-                        'inceptionYear', '2017')
+                // improve generated POM file
+                pom.withXml {
+                    asNode().appendNode(
+                            'name', 'Locus API - Android')
+                    asNode().appendNode(
+                            'description', 'Library for Android "Locus Map" application')
+                    asNode().appendNode(
+                            'url', 'https://github.com/asamm/locus-api-android')
+                    asNode().appendNode(
+                            'inceptionYear', '2017')
 
-                // add license
-                def nodeLicenses = asNode().appendNode('licenses')
-                def nodeLicense = nodeLicenses.appendNode('license')
-                nodeLicense.appendNode('name', 'GNU Lesser General Public License v3.0')
-                nodeLicense.appendNode('url', 'https://api.github.com/licenses/lgpl-3.0')
-                nodeLicense.appendNode('distribution', 'repo')
+                    // add license
+                    def nodeLicenses = asNode().appendNode('licenses')
+                    def nodeLicense = nodeLicenses.appendNode('license')
+                    nodeLicense.appendNode('name', 'GNU Lesser General Public License v3.0')
+                    nodeLicense.appendNode('url', 'https://api.github.com/licenses/lgpl-3.0')
+                    nodeLicense.appendNode('distribution', 'repo')
 
-                // add "scm"
-                def nodeScm = asNode().appendNode('scm')
-                nodeScm.appendNode('connection', 'git://github.com/asamm/locus-api-android.git')
-                nodeScm.appendNode('url', 'git://github.com/asamm/locus-api-android.git')
+                    // add "scm"
+                    def nodeScm = asNode().appendNode('scm')
+                    nodeScm.appendNode('connection', 'git://github.com/asamm/locus-api-android.git')
+                    nodeScm.appendNode('url', 'git://github.com/asamm/locus-api-android.git')
 
-                // add "developer info"
-                def nodeDevelopers = asNode().appendNode('developers')
-                def nodeDeveloper = nodeDevelopers.appendNode('developer')
-                nodeDeveloper.appendNode('name', 'Asamm software, s. r. o.')
+                    // add "developer info"
+                    def nodeDevelopers = asNode().appendNode('developers')
+                    def nodeDeveloper = nodeDevelopers.appendNode('developer')
+                    nodeDeveloper.appendNode('name', 'Asamm software, s. r. o.')
 
-                // iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
-                def dependencies = asNode().appendNode('dependencies')
-                configurations.api.allDependencies.each {
-                    // Ensure dependencies such as fileTree are not included.
-                    if (it.name != 'unspecified') {
-                        def dependencyNode = dependencies.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
+                    // iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
+                    def dependencies = asNode().appendNode('dependencies')
+                    configurations.api.allDependencies.each {
+                        // Ensure dependencies such as fileTree are not included.
+                        if (it.name != 'unspecified') {
+                            def dependencyNode = dependencies.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+                            dependencyNode.appendNode('artifactId', it.name)
+                            dependencyNode.appendNode('version', it.version)
+                        }
                     }
                 }
             }

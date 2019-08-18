@@ -121,7 +121,7 @@ class LocusInfo : Storable() {
      *
      * @return generated cursor
      */
-    protected fun create(): Cursor {
+    fun create(): Cursor {
         // add ROOT directory
         val c = MatrixCursor(
                 arrayOf("key", "value"))

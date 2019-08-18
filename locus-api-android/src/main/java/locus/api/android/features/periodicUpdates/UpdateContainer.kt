@@ -15,22 +15,6 @@ class UpdateContainer : Storable() {
     //*************************************************
 
     /**
-     * Flag if exists new location received from GPS/Wi-fi.
-     */
-    @Deprecated(message = "Value depends on usage of the deprecated `PeriodicUpdatesHandler` class")
-    var isNewMyLocation: Boolean = false
-    // is new map center available
-    /**
-     * Flag if user moved map to new location.
-     */
-    @Deprecated(message = "Value depends on usage of the deprecated `PeriodicUpdatesHandler` class")
-    var isNewMapCenter: Boolean = false
-    /**
-     * Flag if user zoomed map to new zoom level.
-     */
-    @Deprecated(message = "Value depends on usage of the deprecated `PeriodicUpdatesHandler` class")
-    var isNewZoomLevel: Boolean = false
-    /**
      * Indicate if user is currently touching a map screen. It do not indicate
      * which specific action is doing, only that something is happening.
      */
@@ -409,9 +393,9 @@ class UpdateContainer : Storable() {
 
         // STATE CUSTOM VARIABLES
 
-        isNewMyLocation = dr.readBoolean()
-        isNewMapCenter = dr.readBoolean()
-        isNewZoomLevel = dr.readBoolean()
+        dr.readBoolean() // isNewMyLocation
+        dr.readBoolean() // isNewMapCenter
+        dr.readBoolean() // isNewZoomLevel
         isUserTouching = dr.readBoolean()
         isEnabledMyLocation = dr.readBoolean()
 
@@ -510,9 +494,9 @@ class UpdateContainer : Storable() {
 
         // STATE CUSTOM VARIABLES
 
-        dw.writeBoolean(isNewMyLocation)
-        dw.writeBoolean(isNewMapCenter)
-        dw.writeBoolean(isNewZoomLevel)
+        dw.writeBoolean(false) // isNewMyLocation
+        dw.writeBoolean(false) // isNewMapCenter
+        dw.writeBoolean(false) // isNewZoomLevel
         dw.writeBoolean(isUserTouching)
         dw.writeBoolean(isEnabledMyLocation)
 

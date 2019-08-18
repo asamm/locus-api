@@ -202,7 +202,7 @@ class LocationCompute(private val loc: Location) {
         // FAST STATIC COMPUTE
         //*************************************************
 
-        private const val AVERAGE_RADIUS_OF_EARTH = 6371000.0
+        const val AVERAGE_RADIUS_OF_EARTH = 6371000.0
 
         /**
          * Temporary variable for fast location computes. Use in case, you

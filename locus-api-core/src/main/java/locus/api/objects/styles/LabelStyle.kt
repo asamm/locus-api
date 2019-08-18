@@ -29,7 +29,7 @@ class LabelStyle : Storable() {
     /**
      * Scale defined for a label.
      */
-    private var mScale: Float = 1.0f
+    var scale: Float = 1.0f
         set(value) {
             field = if (value < 0.0f) {
                 0.0f
@@ -49,12 +49,12 @@ class LabelStyle : Storable() {
     @Throws(IOException::class)
     override fun readObject(version: Int, dr: DataReaderBigEndian) {
         color = dr.readInt()
-        mScale = dr.readFloat()
+        scale = dr.readFloat()
     }
 
     @Throws(IOException::class)
     override fun writeObject(dw: DataWriterBigEndian) {
         dw.writeInt(color)
-        dw.writeFloat(mScale)
+        dw.writeFloat(scale)
     }
 }

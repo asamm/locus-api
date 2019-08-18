@@ -67,7 +67,7 @@ class GeocachingLog : Storable() {
     /**
      * List of attached images.
      */
-    private var mImages: MutableList<GeocachingImage> = arrayListOf()
+    private var _images: MutableList<GeocachingImage> = arrayListOf()
     /**
      * Longitude coordinate to this log. Value is in WGS84 format.
      */
@@ -83,7 +83,7 @@ class GeocachingLog : Storable() {
      * Iterator over already attached images.
      */
     val images: Iterator<GeocachingImage>
-        get() = mImages.iterator()
+        get() = _images.iterator()
 
     /**
      * Add image to current list of images attached to this log.
@@ -91,7 +91,7 @@ class GeocachingLog : Storable() {
      * @param image image to add
      */
     fun addImage(image: GeocachingImage) {
-        this.mImages.add(image)
+        this._images.add(image)
     }
 
     //*************************************************
@@ -113,7 +113,7 @@ class GeocachingLog : Storable() {
 
         // V1
         if (version >= 1) {
-            mImages = dr.readListStorable(GeocachingImage::class.java)
+            _images = dr.readListStorable(GeocachingImage::class.java)
         }
 
         // V2
@@ -134,7 +134,7 @@ class GeocachingLog : Storable() {
         dw.writeString(logText)
 
         // V1
-        dw.writeListStorable(mImages)
+        dw.writeListStorable(_images)
 
         // V2
         dw.writeLong(findersId)

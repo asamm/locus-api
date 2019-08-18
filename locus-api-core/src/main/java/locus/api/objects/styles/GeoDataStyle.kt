@@ -44,21 +44,19 @@ class GeoDataStyle() : Storable() {
     /**
      * Style for popup balloons.
      */
-    internal var balloonStyle: BalloonStyle? = null
+    var balloonStyle: BalloonStyle? = null
     /**
      * Style for icons.
      */
     var iconStyle: IconStyle? = null
-        internal set
     /**
      * Style of label.
      */
     var labelStyle: LabelStyle? = null
-        internal set
     /**
      * Style of lists.
      */
-    internal var listStyle: ListStyle? = null
+    var listStyle: ListStyle? = null
     /**
      * Style for line and polygons.
      */

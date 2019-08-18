@@ -1,43 +1,44 @@
 package locus.api.objects.geoData
 
 import locus.api.objects.extra.Location
-import java.io.IOException
-import java.io.InvalidObjectException
-
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
+import java.io.IOException
 
 class Circle() : GeoData() {
 
-    // center location
-    var location: Location? = null
+    /**
+     * Center location.
+     */
+    var location: Location = Location()
         private set
-    // radius of circle
+    /**
+     * Radius of circle (in m).
+     */
     var radius: Float = 0.0f
-        private set
-    // draw as precise geodetic circle
+        private set(value) {
+            field = if (value < 0.0f) {
+                0.0f
+            } else {
+                value
+            }
+        }
+    /**
+     * Flag if circle should be draw as precise geodetic circle. This will highly improve
+     * circle precision for bigger radius (100+ metres), but may affect rendering performance.
+     */
     var isDrawPrecise: Boolean = false
 
-    @Throws(IOException::class)
-    constructor(loc: Location, radius: Float, drawPrecise: Boolean) : this() {
+    constructor(loc: Location, radius: Float, drawPrecise: Boolean)
+            : this() {
         this.location = loc
         this.radius = radius
         this.isDrawPrecise = drawPrecise
-        checkData()
     }
 
-    @Throws(InvalidObjectException::class)
-    private fun checkData() {
-        if (location == null) {
-            throw InvalidObjectException("Location cannot be 'null'")
-        }
-        // store radius
-        if (radius <= 0.0f) {
-            throw InvalidObjectException("radius have to be bigger then 0")
-        }
-    }
-
+    //*************************************************
     // STORABLE PART
+    //*************************************************
 
     override fun getVersion(): Int {
         return 1
@@ -45,13 +46,13 @@ class Circle() : GeoData() {
 
     @Throws(IOException::class)
     override fun readObject(version: Int, dr: DataReaderBigEndian) {
+        // GeoData
         id = dr.readLong()
         name = dr.readString()
         readExtraData(dr)
         readStyles(dr)
 
-        // PRIVATE PART
-
+        // private
         location = dr.readStorable(Location::class.java)
         radius = dr.readFloat()
         isDrawPrecise = dr.readBoolean()
@@ -64,14 +65,14 @@ class Circle() : GeoData() {
 
     @Throws(IOException::class)
     override fun writeObject(dw: DataWriterBigEndian) {
+        // GeoData
         dw.writeLong(id)
         dw.writeString(name)
         writeExtraData(dw)
         writeStyles(dw)
 
-        // PRIVATE PART
-
-        location!!.write(dw)
+        // private
+        location.write(dw)
         dw.writeFloat(radius)
         dw.writeBoolean(isDrawPrecise)
 

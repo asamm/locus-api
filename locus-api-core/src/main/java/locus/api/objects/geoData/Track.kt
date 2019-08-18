@@ -71,6 +71,15 @@ class Track : GeoData() {
         get() = points.size
 
     /**
+     * Get point on certain index.
+     *
+     * @param point index
+     */
+    fun getPoint(index: Int) : Location {
+        return points[index]
+    }
+
+    /**
      * Set custom track statistics to current track.
      */
     fun setStats(data: ByteArray) {

@@ -89,27 +89,27 @@ class Location() : Storable() {
     var hasAltitude: Boolean = false
 
     /**
-     * Altitude of this fix. If [hasAltitude] is false, 0.0f is returned (in m).
+     * Altitude value of the location (in m). If [hasAltitude] is false, 0.0f is returned.
      */
     var altitude: Double
         get() = if (hasAltitude) {
-            mAltitude
+            _altitude
         } else 0.0
         set(altitude) {
-            this.mAltitude = altitude
+            this._altitude = altitude
             this.hasAltitude = true
         }
 
     /**
-     * Altitude value (in m).
+     * Backing field for altitude value (in m).
      */
-    private var mAltitude: Double = 0.0
+    private var _altitude: Double = 0.0
 
     /**
      * Clears the altitude of this fix. Following this call, hasAltitude() will return false.
      */
     fun removeAltitude() {
-        this.mAltitude = 0.0
+        this._altitude = 0.0
         this.hasAltitude = false
     }
 
@@ -298,7 +298,7 @@ class Location() : Storable() {
         latitude = loc.latitude
         longitude = loc.longitude
         hasAltitude = loc.hasAltitude
-        mAltitude = loc.mAltitude
+        _altitude = loc._altitude
 
         // set extra basic data
         if (loc.extraBasic != null && loc.extraBasic!!.hasData()) {
@@ -337,7 +337,7 @@ class Location() : Storable() {
         latitude = dr.readDouble()
         longitude = dr.readDouble()
         hasAltitude = dr.readBoolean()
-        mAltitude = dr.readDouble()
+        _altitude = dr.readDouble()
 
         // red basic data
         if (dr.readBoolean()) {
@@ -385,7 +385,7 @@ class Location() : Storable() {
         dw.writeDouble(latitude)
         dw.writeDouble(longitude)
         dw.writeBoolean(hasAltitude)
-        dw.writeDouble(mAltitude)
+        dw.writeDouble(altitude)
 
         // write basic data
         extraBasic
@@ -598,18 +598,16 @@ class Location() : Storable() {
             if (extraSensor == null) {
                 extraSensor = ExtraSensor()
             }
-            extraSensor!!.hr = heartRate
             extraSensor!!.hasHr = true
+            extraSensor!!.hr = heartRate
         }
 
     /**
      * Returns true if the provider is able to report Heart rate information, false otherwise.
      * The default implementation returns false.
-     *
-     * @return `true` if location has HRM sensor data
      */
     fun hasSensorHeartRate(): Boolean {
-        return extraSensor != null && extraSensor!!.hasHr
+        return extraSensor?.hasHr == true
     }
 
     /**
@@ -617,15 +615,11 @@ class Location() : Storable() {
      * will return false.
      */
     fun removeSensorHeartRate() {
-        // check container
-        if (extraSensor == null) {
-            return
+        extraSensor?.let {
+            it.hasHr = false
+            it.hr = 0
+            checkExtraSensor()
         }
-
-        // remove parameter
-        extraSensor!!.hr = 0
-        extraSensor!!.hasHr = false
-        checkExtraSensor()
     }
 
     // CADENCE
@@ -641,33 +635,27 @@ class Location() : Storable() {
             if (extraSensor == null) {
                 extraSensor = ExtraSensor()
             }
-            extraSensor!!.cadence = cadence
             extraSensor!!.hasCadence = true
+            extraSensor!!.cadence = cadence
         }
 
     /**
      * Returns true if the provider is able to report cadence information, false otherwise.
      * The default implementation returns false.
-     *
-     * @return `true` if location has defined cadence value
      */
     fun hasSensorCadence(): Boolean {
-        return extraSensor != null && extraSensor!!.hasCadence
+        return extraSensor?.hasCadence == true
     }
 
     /**
      * Clears the cadence of this fix.  Following this call, hasCadence() will return false.
      */
     fun removeSensorCadence() {
-        // check container
-        if (extraSensor == null) {
-            return
+        extraSensor?.let {
+            it.hasCadence = false
+            it.cadence = 0
+            checkExtraSensor()
         }
-
-        // reove parameter
-        extraSensor!!.cadence = 0
-        extraSensor!!.hasCadence = false
-        checkExtraSensor()
     }
 
     // SPEED
@@ -683,15 +671,13 @@ class Location() : Storable() {
             if (extraSensor == null) {
                 extraSensor = ExtraSensor()
             }
-            extraSensor!!.speed = speed
             extraSensor!!.hasSpeed = true
+            extraSensor!!.speed = speed
         }
 
     /**
      * Returns true if the provider is able to report speed value, false otherwise.
      * The default implementation returns false.
-     *
-     * @return `true` if location has defined sensor speed
      */
     fun hasSensorSpeed(): Boolean {
         return extraSensor?.hasSpeed == true
@@ -701,15 +687,11 @@ class Location() : Storable() {
      * Clears the speed of this fix.  Following this call, hasSensorSpeed() will return false.
      */
     fun removeSensorSpeed() {
-        // check container
-        if (extraSensor == null) {
-            return
+        extraSensor?.let {
+            it.hasSpeed = false
+            it.speed = 0.0f
+            checkExtraSensor()
         }
-
-        // remove parameter
-        extraSensor!!.speed = 0.0f
-        extraSensor!!.hasSpeed = false
-        checkExtraSensor()
     }
 
     // POWER
@@ -727,18 +709,16 @@ class Location() : Storable() {
             if (extraSensor == null) {
                 extraSensor = ExtraSensor()
             }
-            extraSensor!!.power = power
             extraSensor!!.hasPower = true
+            extraSensor!!.power = power
         }
 
     /**
      * Returns true if the provider is able to report power value, false otherwise.
      * The default implementation returns false.
-     *
-     * @return `true` is location has defined power value
      */
     fun hasSensorPower(): Boolean {
-        return extraSensor != null && extraSensor!!.hasPower
+        return extraSensor?.hasPower == true
     }
 
     /**
@@ -746,15 +726,11 @@ class Location() : Storable() {
      * will return false.
      */
     fun removeSensorPower() {
-        // check container
-        if (extraSensor == null) {
-            return
+        extraSensor?.let {
+            it.hasPower = false
+            it.power = 0.0f
+            checkExtraSensor()
         }
-
-        // remove parameter
-        extraSensor!!.power = 0.0f
-        extraSensor!!.hasPower = false
-        checkExtraSensor()
     }
 
     // STRIDES
@@ -770,33 +746,27 @@ class Location() : Storable() {
             if (extraSensor == null) {
                 extraSensor = ExtraSensor()
             }
-            extraSensor!!.strides = strides
             extraSensor!!.hasStrides = true
+            extraSensor!!.strides = strides
         }
 
     /**
      * Returns true if the provider is able to report strides value, false otherwise.
      * The default implementation returns false.
-     *
-     * @return `true` if location has stride parameter
      */
     fun hasSensorStrides(): Boolean {
-        return extraSensor != null && extraSensor!!.hasStrides
+        return extraSensor?.hasStrides == true
     }
 
     /**
      * Clears the num of strides. Following this call, hasSensorStrides() will return false.
      */
     fun removeSensorStrides() {
-        // check container
-        if (extraSensor == null) {
-            return
+        extraSensor?.let {
+            it.hasStrides = false
+            it.strides = 0
+            checkExtraSensor()
         }
-
-        // remove parameter
-        extraSensor!!.strides = 0
-        extraSensor!!.hasStrides = false
-        checkExtraSensor()
     }
 
     // TEMPERATURE
@@ -812,18 +782,16 @@ class Location() : Storable() {
             if (extraSensor == null) {
                 extraSensor = ExtraSensor()
             }
-            extraSensor!!.temperature = temperature
             extraSensor!!.hasTemperature = true
+            extraSensor!!.temperature = temperature
         }
 
     /**
      * Returns true if the provider is able to report temperature value, false otherwise.
      * The default implementation returns false.
-     *
-     * @return `true` is sensor has temperature
      */
     fun hasSensorTemperature(): Boolean {
-        return extraSensor != null && extraSensor!!.hasTemperature
+        return extraSensor?.hasTemperature == true
     }
 
     /**
@@ -831,21 +799,17 @@ class Location() : Storable() {
      * will return false.
      */
     fun removeSensorTemperature() {
-        // check container
-        if (extraSensor == null) {
-            return
+        extraSensor?.let {
+            it.hasTemperature = false
+            it.temperature = 0.0f
+            checkExtraSensor()
         }
-
-        // remove parameter
-        extraSensor!!.temperature = 0.0f
-        extraSensor!!.hasTemperature = false
-        checkExtraSensor()
     }
 
     // TOOLS
 
     private fun checkExtraSensor() {
-        if (!extraSensor!!.hasData()) {
+        if (extraSensor?.hasData() != true) {
             extraSensor = null
         }
     }
@@ -863,11 +827,11 @@ class Location() : Storable() {
 
     override fun toString(): String {
         return "Location [" +
-                "tag: " + provider + ", " +
-                "time: " + time + ", " +
-                "lon: " + longitude + ", " +
-                "lat: " + latitude + ", " +
-                "alt: " + mAltitude + "]"
+                "tag: $provider, " +
+                "time: $time, " +
+                "lon: $longitude, " +
+                "lat: $latitude, " +
+                "alt: $altitude]"
     }
 
     /**

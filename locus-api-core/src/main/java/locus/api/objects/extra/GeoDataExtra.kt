@@ -203,8 +203,7 @@ class GeoDataExtra : Storable() {
      * @return parameter value
      */
     fun getParameterNotNull(key: Int): String {
-        val par = getParameter(key)
-        return par ?: ""
+        return getParameter(key) ?: ""
     }
 
     fun hasParameter(key: Int): Boolean {
@@ -215,6 +214,78 @@ class GeoDataExtra : Storable() {
         val value = getParameter(key)
         parameters.remove(key)
         return value
+    }
+
+    /**
+     * Iterate over all parameters and test if any match condition defined by [contains] method.
+     */
+    fun searchInParameters(contains: (String) -> Boolean): Boolean {
+        // iterate over all data
+        for (i in 0 until parameters.size()) {
+            val value = parameters.valueAt(i)
+            if (value == null || value.isEmpty()) {
+                continue
+            }
+
+            // perform test
+            if (contains(Utils.doBytesToString(value))) {
+                return true
+            }
+        }
+        return false
+    }
+
+    /**
+     * Copy data from other GeoDataExtra container to current object.
+     *
+     * @param dataNew    new data
+     * @param ignoreList list of ID's we wants to ignore during copy task
+     */
+    fun copyFrom(dataNew: GeoDataExtra, ignoreList: IntArray?) {
+        // iterate over all data
+        for (i in 0 until dataNew.parameters.size()) {
+            val key = dataNew.parameters.keyAt(i)
+            var ignore = false
+            if (ignoreList != null) {
+                for (anIgnoreList in ignoreList) {
+                    if (anIgnoreList == key) {
+                        ignore = true
+                        break
+                    }
+                }
+            }
+
+            // skip ignored or special
+            if (ignore || key in 1000..1999) {
+                continue
+            }
+
+            val value = dataNew.parameters.valueAt(i)
+            parameters.put(key, value)
+        }
+
+        // add special containers
+        for (phone in dataNew.phones) {
+            addAttachment(AttachType.PHONE, phone.label, phone.text)
+        }
+        for (email in dataNew.emails) {
+            addAttachment(AttachType.EMAIL, email.label, email.text)
+        }
+        for (url in dataNew.urls) {
+            addAttachment(AttachType.URL, url.label, url.text)
+        }
+        for (photo in dataNew.photos) {
+            addAttachment(AttachType.PHOTO, value = photo)
+        }
+        for (video in dataNew.videos) {
+            addAttachment(AttachType.VIDEO, value = video)
+        }
+        for (audio in dataNew.audios) {
+            addAttachment(AttachType.AUDIO, value = audio)
+        }
+        for (file in dataNew.otherFiles) {
+            addAttachment(AttachType.OTHER, value = file)
+        }
     }
 
     //*************************************************
@@ -316,7 +387,7 @@ class GeoDataExtra : Storable() {
      * @param value item value itself
      * @return `true` if correctly added
      */
-    fun addAttachment(type: AttachType, label: String?, value: String): Boolean {
+    fun addAttachment(type: AttachType, label: String? = "", value: String): Boolean {
         return addToStorage(label, value, type.min, type.max)
     }
 
