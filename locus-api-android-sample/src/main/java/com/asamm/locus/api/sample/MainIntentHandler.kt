@@ -6,6 +6,7 @@ import android.content.Intent
 import android.widget.Toast
 import com.asamm.locus.api.sample.utils.SampleCalls
 import locus.api.android.ActionBasics
+import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.IntentHelper
 import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
@@ -107,7 +108,7 @@ object MainIntentHandler {
                 .setMessage("By pressing OK, dialog disappear and to Locus will be returned some location!")
                 .setPositiveButton("OK") { _, _ ->
                     IntentHelper.sendGetLocationData(act,
-                            "Non sence Loc ;)",
+                            "Non-sense Loc ;)",
                             Location().apply {
                                 latitude = Math.random() * 85
                                 longitude = Math.random() * 180
@@ -210,7 +211,7 @@ object MainIntentHandler {
         IntentHelper.handleIntentMainFunction(act, intent,
                 object : IntentHelper.OnIntentReceived {
 
-                    override fun onReceived(lv: LocusUtils.LocusVersion, locGps: Location?, locMapCenter: Location?) {
+                    override fun onReceived(lv: LocusVersion, locGps: Location?, locMapCenter: Location?) {
                         AlertDialog.Builder(act)
                                 .setTitle("Intent - Main function")
                                 .setMessage("GPS location:$locGps\n\nmapCenter:$locMapCenter")
@@ -228,7 +229,7 @@ object MainIntentHandler {
         IntentHelper.handleIntentSearchList(act, intent,
                 object : IntentHelper.OnIntentReceived {
 
-                    override fun onReceived(lv: LocusUtils.LocusVersion, locGps: Location?, locMapCenter: Location?) {
+                    override fun onReceived(lv: LocusVersion, locGps: Location?, locMapCenter: Location?) {
                         AlertDialog.Builder(act).setTitle("Intent - Search list")
                                 .setMessage("GPS location:$locGps\n\nmapCenter:$locMapCenter")
                                 .setPositiveButton("Close") { _, _ -> }
@@ -267,7 +268,7 @@ object MainIntentHandler {
         }
     }
 
-    private fun loadPointsFromLocus(act: MainActivity, lv: LocusUtils.LocusVersion, ptsIds: LongArray?) {
+    private fun loadPointsFromLocus(act: MainActivity, lv: LocusVersion, ptsIds: LongArray?) {
         if (ptsIds == null || ptsIds.isEmpty()) {
             Toast.makeText(act, "No points to load", Toast.LENGTH_SHORT).show()
             return

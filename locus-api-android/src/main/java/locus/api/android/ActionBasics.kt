@@ -23,12 +23,13 @@ import android.database.Cursor
 import android.net.Uri
 import android.text.TextUtils
 import locus.api.android.features.periodicUpdates.UpdateContainer
+import locus.api.android.objects.LocusInfo
+import locus.api.android.objects.LocusVersion
 import locus.api.android.objects.TrackRecordProfileSimple
+import locus.api.android.objects.VersionCode
 import locus.api.android.utils.IntentHelper
 import locus.api.android.utils.LocusConst
-import locus.api.android.utils.LocusInfo
 import locus.api.android.utils.LocusUtils
-import locus.api.android.utils.LocusUtils.VersionCode
 import locus.api.android.utils.closeQuietly
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.extra.GeoDataExtra
@@ -60,7 +61,7 @@ object ActionBasics {
      * @param lv required Locus version
      * @return loaded info container or 'null' in case of problem
      */
-    fun getLocusInfo(ctx: Context, lv: LocusUtils.LocusVersion): LocusInfo? {
+    fun getLocusInfo(ctx: Context, lv: LocusVersion): LocusInfo? {
         var cursor: Cursor? = null
         try {
             when {
@@ -106,7 +107,7 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    fun getUpdateContainer(ctx: Context, lv: LocusUtils.LocusVersion): UpdateContainer? {
+    fun getUpdateContainer(ctx: Context, lv: LocusVersion): UpdateContainer? {
         // get scheme if valid Locus is available
         val scheme = getProviderUriData(lv, VersionCode.UPDATE_13,
                 LocusConst.CONTENT_PROVIDER_PATH_DATA + "/" + LocusConst.VALUE_UPDATE_CONTAINER)
@@ -161,7 +162,7 @@ object ActionBasics {
      * used will be used for recording
      */
     @Throws(RequiredVersionMissingException::class)
-    fun actionTrackRecordStart(ctx: Context, lv: LocusUtils.LocusVersion, profileName: String? = null) {
+    fun actionTrackRecordStart(ctx: Context, lv: LocusVersion, profileName: String? = null) {
         // create basic intent
         val intent = actionTrackRecord(
                 LocusConst.ACTION_TRACK_RECORD_START, lv)
@@ -182,7 +183,7 @@ object ActionBasics {
      * @param lv version of Locus used for track record
      */
     @Throws(RequiredVersionMissingException::class)
-    fun actionTrackRecordPause(ctx: Context, lv: LocusUtils.LocusVersion) {
+    fun actionTrackRecordPause(ctx: Context, lv: LocusVersion) {
         LocusUtils.sendBroadcast(ctx,
                 actionTrackRecord(LocusConst.ACTION_TRACK_RECORD_PAUSE, lv), lv)
     }
@@ -195,7 +196,7 @@ object ActionBasics {
      * @param autoSave `true` to automatically save recording
      */
     @Throws(RequiredVersionMissingException::class)
-    fun actionTrackRecordStop(ctx: Context, lv: LocusUtils.LocusVersion, autoSave: Boolean) {
+    fun actionTrackRecordStop(ctx: Context, lv: LocusVersion, autoSave: Boolean) {
         // create intent
         val intent = actionTrackRecord(
                 LocusConst.ACTION_TRACK_RECORD_STOP, lv)
@@ -217,7 +218,7 @@ object ActionBasics {
      */
     @JvmOverloads
     @Throws(RequiredVersionMissingException::class)
-    fun actionTrackRecordAddWpt(ctx: Context, lv: LocusUtils.LocusVersion,
+    fun actionTrackRecordAddWpt(ctx: Context, lv: LocusVersion,
             wptName: String? = null, autoSave: Boolean = false) {
         LocusUtils.sendBroadcast(ctx,
                 prepareTrackRecordAddWptIntent(lv, wptName, autoSave), lv)
@@ -232,7 +233,7 @@ object ActionBasics {
      * @param actionAfter action that may happen after (defined in LocusConst class)
      */
     @Throws(RequiredVersionMissingException::class)
-    fun actionTrackRecordAddWpt(ctx: Context, lv: LocusUtils.LocusVersion,
+    fun actionTrackRecordAddWpt(ctx: Context, lv: LocusVersion,
             wptName: String? = null, actionAfter: String) {
         LocusUtils.sendBroadcast(ctx,
                 prepareTrackRecordAddWptIntent(lv, wptName, false).apply {
@@ -248,7 +249,7 @@ object ActionBasics {
      * @param wptName name of waypoint (optional)
      * @param autoSave `true` to automatically save waypoint without dialog
      */
-    private fun prepareTrackRecordAddWptIntent(lv: LocusUtils.LocusVersion,
+    private fun prepareTrackRecordAddWptIntent(lv: LocusVersion,
             wptName: String?, autoSave: Boolean): Intent {
         return actionTrackRecord(
                 LocusConst.ACTION_TRACK_RECORD_ADD_WPT, lv).apply {
@@ -270,7 +271,7 @@ object ActionBasics {
      * @return created ready-to-use intent
      */
     @Throws(RequiredVersionMissingException::class)
-    private fun actionTrackRecord(action: String, lv: LocusUtils.LocusVersion): Intent {
+    private fun actionTrackRecord(action: String, lv: LocusVersion): Intent {
         // check version (available only in Free/Pro)
         val minVersion = VersionCode.UPDATE_02.vcFree
         if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
@@ -295,7 +296,7 @@ object ActionBasics {
      * @return array of profiles, where first item in array is profile ID, second item is profile name
      */
     @Throws(RequiredVersionMissingException::class)
-    fun getTrackRecordingProfiles(ctx: Context, lv: LocusUtils.LocusVersion)
+    fun getTrackRecordingProfiles(ctx: Context, lv: LocusVersion)
             : List<TrackRecordProfileSimple> {
         // get scheme if valid Locus is available
         val profiles = ArrayList<TrackRecordProfileSimple>()
@@ -500,7 +501,7 @@ object ActionBasics {
      * @return [Point] or `null` in case of problem
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
-    fun getPoint(ctx: Context, lv: LocusUtils.LocusVersion, ptId: Long): Point? {
+    fun getPoint(ctx: Context, lv: LocusVersion, ptId: Long): Point? {
         // check version
         val minVersion = VersionCode.UPDATE_01.vcFree
         if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
@@ -551,7 +552,7 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    fun getPointsId(ctx: Context, lv: LocusUtils.LocusVersion, ptName: String): LongArray {
+    fun getPointsId(ctx: Context, lv: LocusVersion, ptName: String): LongArray {
         // check version (available only in Free/Pro)
         val minVersion = VersionCode.UPDATE_03.vcFree
         if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
@@ -596,7 +597,7 @@ object ActionBasics {
      * @param maxRadius max distance from defined based location (in meters)
      * @return list of found points
      */
-    fun getPointsId(ctx: Context, lv: LocusUtils.LocusVersion, loc: Location,
+    fun getPointsId(ctx: Context, lv: LocusVersion, loc: Location,
             limit: Int = 1, maxRadius: Double = Double.MAX_VALUE): LongArray {
         // check version (available only in Free/Pro)
         val minVersion = VersionCode.UPDATE_15.vcFree
@@ -651,7 +652,7 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    fun updatePoint(ctx: Context, lv: LocusUtils.LocusVersion,
+    fun updatePoint(ctx: Context, lv: LocusVersion,
             pt: Point, forceOverwrite: Boolean, loadAllGcWaypoints: Boolean = false): Int {
         // check version (available only in Free/Pro)
         val minVersion = VersionCode.UPDATE_01.vcFree
@@ -681,7 +682,7 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    fun displayPointScreen(ctx: Context, lv: LocusUtils.LocusVersion, ptId: Long) {
+    fun displayPointScreen(ctx: Context, lv: LocusVersion, ptId: Long) {
         displayPointScreen(ctx, lv, ptId, "")
     }
 
@@ -702,7 +703,7 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    fun displayPointScreen(ctx: Context, lv: LocusUtils.LocusVersion, ptId: Long,
+    fun displayPointScreen(ctx: Context, lv: LocusVersion, ptId: Long,
             packageName: String, className: String, returnDataName: String, returnDataValue: String) {
         // prepare callback
         val callback = GeoDataExtra.generateCallbackString(
@@ -722,7 +723,7 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    private fun displayPointScreen(ctx: Context, lv: LocusUtils.LocusVersion, ptId: Long, callback: String?) {
+    private fun displayPointScreen(ctx: Context, lv: LocusVersion, ptId: Long, callback: String?) {
         // check version (available only in Free/Pro)
         if (!LocusUtils.isLocusFreePro(lv, VersionCode.UPDATE_07.vcFree)) {
             throw RequiredVersionMissingException(VersionCode.UPDATE_07)
@@ -751,7 +752,7 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    fun getTrack(ctx: Context, lv: LocusUtils.LocusVersion, trackId: Long): Track? {
+    fun getTrack(ctx: Context, lv: LocusVersion, trackId: Long): Track? {
         // check version
         val minVersion = VersionCode.UPDATE_10.vcFree
         if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
@@ -805,7 +806,7 @@ object ActionBasics {
      * @param formatExtra extra format parameters
      */
     fun getTrackInFormat(act: Activity,
-            lv: LocusUtils.LocusVersion? = LocusUtils.getActiveVersion(act),
+            lv: LocusVersion? = LocusUtils.getActiveVersion(act),
             requestCode: Int,
             trackId: Long, format: FileFormat, formatExtra: String = "") {
         // check version
@@ -839,7 +840,7 @@ object ActionBasics {
 //     * @param formatExtra extra format parameters
 //     */
 //    fun getTrackInFormat(ctx: Context,
-//            lv: LocusUtils.LocusVersion? = LocusUtils.getActiveVersion(ctx),
+//            lv: LocusVersion? = LocusUtils.getActiveVersion(ctx),
 //            resultHandler: String, resultExtra: String = "",
 //            trackId: Long, format: FileFormat, formatExtra: String = "") {
 //        // check version
@@ -865,7 +866,7 @@ object ActionBasics {
      * @param format export format
      * @param formatExtra extra format parameters
      */
-    private fun prepareTrackInFormatIntent(action: String, lv: LocusUtils.LocusVersion,
+    private fun prepareTrackInFormatIntent(action: String, lv: LocusVersion,
             trackId: Long, format: FileFormat, formatExtra: String = ""): Intent {
         return Intent(action).apply {
             setPackage(lv.packageName)
@@ -915,7 +916,7 @@ object ActionBasics {
      * @return ItemPurchaseState state of purchase
      */
     @Throws(RequiredVersionMissingException::class)
-    fun getItemPurchaseState(ctx: Context, lv: LocusUtils.LocusVersion, itemId: Long): Int {
+    fun getItemPurchaseState(ctx: Context, lv: LocusVersion, itemId: Long): Int {
         // get scheme if valid Locus is available
         var scheme = getProviderUriData(lv, VersionCode.UPDATE_06,
                 LocusConst.CONTENT_PROVIDER_PATH_ITEM_PURCHASE_STATE)
@@ -956,7 +957,7 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    fun displayLocusStoreItemDetail(ctx: Context, lv: LocusUtils.LocusVersion?, itemId: Long) {
+    fun displayLocusStoreItemDetail(ctx: Context, lv: LocusVersion?, itemId: Long) {
         // check if application is available
         if (lv == null || !lv.isVersionValid(VersionCode.UPDATE_12)) {
             Logger.logW(TAG, "displayLocusStoreItemDetail(), " + "invalid Locus version")
@@ -1034,7 +1035,7 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    private fun getProviderUriData(lv: LocusUtils.LocusVersion, requiredVc: VersionCode, path: String): Uri {
+    private fun getProviderUriData(lv: LocusVersion, requiredVc: VersionCode, path: String): Uri {
         return getProviderUri(lv, requiredVc,
                 LocusConst.CONTENT_PROVIDER_AUTHORITY_DATA,
                 path)
@@ -1050,7 +1051,7 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    fun getProviderUrlGeocaching(lv: LocusUtils.LocusVersion, requiredVc: VersionCode, path: String): Uri {
+    fun getProviderUrlGeocaching(lv: LocusVersion, requiredVc: VersionCode, path: String): Uri {
         return getProviderUri(lv, requiredVc,
                 LocusConst.CONTENT_PROVIDER_AUTHORITY_GEOCACHING,
                 path)
@@ -1067,7 +1068,7 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    fun getProviderUri(lv: LocusUtils.LocusVersion, requiredVc: VersionCode,
+    fun getProviderUri(lv: LocusVersion, requiredVc: VersionCode,
             provider: String, path: String): Uri {
         // check URI parts ( should not happen, just check )
         if (provider.isEmpty() || path.isEmpty()) {

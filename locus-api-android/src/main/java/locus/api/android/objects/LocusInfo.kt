@@ -1,4 +1,4 @@
-package locus.api.android.utils
+package locus.api.android.objects
 
 import android.database.Cursor
 import android.database.MatrixCursor

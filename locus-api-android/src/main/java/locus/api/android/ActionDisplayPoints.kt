@@ -15,9 +15,10 @@ package locus.api.android
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import locus.api.android.objects.LocusVersion
 import locus.api.android.objects.PackPoints
+import locus.api.android.objects.VersionCode
 import locus.api.android.utils.LocusConst
-import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.Storable
 import locus.api.utils.Logger
@@ -156,7 +157,7 @@ object ActionDisplayPoints {
     @Deprecated("Use {@link #sendPacksFile(Context, List, File, Uri, ExtraAction)} which doesn't\n" +
             "      require permission for disk access")
     @Throws(RequiredVersionMissingException::class)
-    fun sendPacksFile(ctx: Context, lv: LocusUtils.LocusVersion,
+    fun sendPacksFile(ctx: Context, lv: LocusVersion,
             data: List<PackPoints>, filepath: String, extraAction: ActionDisplayVarious.ExtraAction): Boolean {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA,
                 ctx, lv, data, File(filepath), null,
@@ -181,7 +182,7 @@ object ActionDisplayPoints {
      * @return `true` if data were correctly send, otherwise `false`
      */
     @Throws(RequiredVersionMissingException::class)
-    fun sendPacksFile(ctx: Context, lv: LocusUtils.LocusVersion,
+    fun sendPacksFile(ctx: Context, lv: LocusVersion,
             data: List<PackPoints>, file: File, fileUri: Uri, extraAction: ActionDisplayVarious.ExtraAction): Boolean {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA,
                 ctx, lv, data, file, fileUri,
@@ -213,7 +214,7 @@ object ActionDisplayPoints {
     @Deprecated("Use {@link #sendPacksFileSilent(Context, List, File, Uri, boolean)} which\n" +
             "      doesn't require permission for disk access")
     @Throws(RequiredVersionMissingException::class)
-    fun sendPacksFileSilent(ctx: Context, lv: LocusUtils.LocusVersion,
+    fun sendPacksFileSilent(ctx: Context, lv: LocusVersion,
             data: List<PackPoints>, filepath: String, centerOnData: Boolean): Boolean {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA_SILENTLY,
                 ctx, lv, data, File(filepath), null,
@@ -237,7 +238,7 @@ object ActionDisplayPoints {
      * @return `true` if data were correctly send, otherwise `false`
      */
     @Throws(RequiredVersionMissingException::class)
-    fun sendPacksFileSilent(ctx: Context, lv: LocusUtils.LocusVersion,
+    fun sendPacksFileSilent(ctx: Context, lv: LocusVersion,
             data: List<PackPoints>, file: File, fileUri: Uri, centerOnData: Boolean): Boolean {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA_SILENTLY,
                 ctx, lv, data, file, fileUri,
@@ -257,7 +258,7 @@ object ActionDisplayPoints {
      * @return `true` if request was correctly send
      */
     @Throws(RequiredVersionMissingException::class)
-    private fun sendPacksFile(action: String, ctx: Context, lv: LocusUtils.LocusVersion,
+    private fun sendPacksFile(action: String, ctx: Context, lv: LocusVersion,
             data: List<PackPoints>, file: File, fileUri: Uri?,
             callImport: Boolean, centerOnData: Boolean): Boolean {
         return if (sendDataWriteOnCard(data, file)) {
@@ -271,7 +272,7 @@ object ActionDisplayPoints {
                 ctx.grantUriPermission(lv.packageName, fileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
                 // send request
-                ActionDisplayVarious.sendData(action, ctx, intent, callImport, centerOnData, LocusUtils.VersionCode.UPDATE_15)
+                ActionDisplayVarious.sendData(action, ctx, intent, callImport, centerOnData, VersionCode.UPDATE_15)
             } else {
                 // set path and send request
                 intent.putExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH, file.absolutePath)

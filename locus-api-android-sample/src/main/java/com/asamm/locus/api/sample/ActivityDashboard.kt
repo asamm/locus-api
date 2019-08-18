@@ -9,8 +9,8 @@ import androidx.fragment.app.FragmentActivity
 import com.asamm.locus.api.sample.utils.SampleCalls
 import locus.api.android.ActionBasics
 import locus.api.android.features.periodicUpdates.UpdateContainer
+import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.LocusUtils
-import locus.api.android.utils.LocusUtils.LocusVersion
 import locus.api.utils.Logger
 import java.text.SimpleDateFormat
 import java.util.*
@@ -94,7 +94,7 @@ class ActivityDashboard : FragmentActivity() {
 
             }.start()
         } finally {
-            handler.postDelayed(refresh, refreshInterval);
+            handler.postDelayed(refresh, refreshInterval)
         }
     }
 

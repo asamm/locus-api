@@ -5,13 +5,11 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-
-import java.io.File
-
+import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
-import locus.api.android.utils.LocusUtils.LocusVersion
 import locus.api.utils.Logger
+import java.io.File
 
 @Suppress("unused")
 object ActionFiles {
@@ -28,7 +26,7 @@ object ActionFiles {
      * be offered to user.
      *
      * @param ctx current context
-     * @param file file we wants to share
+     * @param fileUri file we wants to share
      */
     fun importFileSystem(ctx: Context, fileUri: Uri, type: String): Boolean {
         // send Intent

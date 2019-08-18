@@ -6,7 +6,7 @@ package com.asamm.locus.api.sample.pages
 
 import com.asamm.locus.api.sample.utils.BasicAdapterItem
 import com.asamm.locus.api.sample.utils.SampleCalls
-import locus.api.android.utils.LocusUtils
+import locus.api.android.objects.LocusVersion
 import java.util.*
 
 class PagePointsFragment : ABasePageFragment() {
@@ -51,7 +51,7 @@ class PagePointsFragment : ABasePageFragment() {
         }
 
     @Throws(Exception::class)
-    override fun onItemClicked(itemId: Int, activeLocus: LocusUtils.LocusVersion) {
+    override fun onItemClicked(itemId: Int, activeLocus: LocusVersion) {
         when (itemId) {
             1 -> SampleCalls.callSendOnePoint(act)
             2 -> SampleCalls.callSendMorePoints(act)

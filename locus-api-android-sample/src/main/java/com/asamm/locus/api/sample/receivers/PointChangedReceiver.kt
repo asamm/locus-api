@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import locus.api.android.ActionBasics
+import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
-import locus.api.android.utils.LocusUtils.LocusVersion
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.utils.Logger
 

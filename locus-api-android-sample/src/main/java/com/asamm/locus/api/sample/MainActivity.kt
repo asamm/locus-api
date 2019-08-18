@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onDrawerClosed(drawerView: View) {
                 // refresh action bar
-                supportInvalidateOptionsMenu()
+                invalidateOptionsMenu()
             }
         })
 

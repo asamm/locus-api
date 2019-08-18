@@ -19,7 +19,7 @@
 
 package locus.api.android.utils.exceptions
 
-import locus.api.android.utils.LocusUtils.VersionCode
+import locus.api.android.objects.VersionCode
 
 class RequiredVersionMissingException : Exception {
 

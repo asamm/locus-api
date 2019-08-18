@@ -7,6 +7,7 @@ package locus.api.android.features.computeTrack
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import locus.api.android.objects.LocusVersion
 
 import locus.api.android.objects.ParcelableContainer
 import locus.api.android.utils.LocusUtils
@@ -109,7 +110,7 @@ abstract class ComputeTrackService : Service() {
      * @param params parameters requested by Locus for a new track.
      * @return computed track with all defined parameters.
      */
-    abstract fun computeTrack(lv: LocusUtils.LocusVersion?, params: ComputeTrackParameters): Track?
+    abstract fun computeTrack(lv: LocusVersion?, params: ComputeTrackParameters): Track?
 
     companion object {
 

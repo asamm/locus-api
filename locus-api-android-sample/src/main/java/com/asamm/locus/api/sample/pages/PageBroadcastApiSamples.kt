@@ -21,6 +21,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.asamm.locus.api.sample.utils.BasicAdapter
 import com.asamm.locus.api.sample.utils.BasicAdapterItem
+import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.LocusUtils
 import locus.api.utils.Logger
 import java.util.*
@@ -42,7 +43,7 @@ class PageBroadcastApiSamples : DialogFragment() {
         lv.adapter = adapter
         lv.setOnItemClickListener { _, _, position, _ ->
             // check valid Locus version
-            val activeLocus = LocusUtils.getActiveVersion(activity)
+            val activeLocus = LocusUtils.getActiveVersion(activity!!)
             if (activeLocus == null) {
                 Toast.makeText(activity,
                         "Locus is not installed", Toast.LENGTH_LONG).show()
@@ -77,7 +78,7 @@ class PageBroadcastApiSamples : DialogFragment() {
         return items
     }
 
-    private fun onItemClicked(itemId: Int, activeLocus: LocusUtils.LocusVersion) {
+    private fun onItemClicked(itemId: Int, activeLocus: LocusVersion) {
         when (itemId) {
             1 -> activity?.sendBroadcast(Intent("com.asamm.locus.ACTION_TASK").apply {
                 setPackage(activeLocus.packageName)

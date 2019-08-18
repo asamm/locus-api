@@ -8,8 +8,9 @@ import android.content.Context
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import locus.api.android.objects.LocusVersion
+import locus.api.android.objects.VersionCode
 import locus.api.android.utils.LocusConst
-import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.closeQuietly
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.Storable
@@ -30,11 +31,11 @@ object ActionMapTools {
      */
     @JvmStatic
     @Throws(RequiredVersionMissingException::class)
-    fun getMapPreview(ctx: Context, lv: LocusUtils.LocusVersion, params: MapPreviewParams): MapPreviewResult? {
+    fun getMapPreview(ctx: Context, lv: LocusVersion, params: MapPreviewParams): MapPreviewResult? {
 
         // get scheme if valid Locus is available
         val scheme = ActionBasics.getProviderUri(lv,
-                LocusUtils.VersionCode.UPDATE_14,
+                VersionCode.UPDATE_14,
                 LocusConst.CONTENT_PROVIDER_AUTHORITY_MAP_TOOLS,
                 LocusConst.CONTENT_PROVIDER_PATH_MAP_PREVIEW)
 

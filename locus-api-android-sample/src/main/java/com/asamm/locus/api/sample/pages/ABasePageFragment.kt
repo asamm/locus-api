@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import com.asamm.locus.api.sample.MainActivity
 import com.asamm.locus.api.sample.utils.BasicAdapter
 import com.asamm.locus.api.sample.utils.BasicAdapterItem
+import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.LocusUtils
 import locus.api.utils.Logger
 
@@ -75,7 +76,7 @@ abstract class ABasePageFragment : Fragment() {
      * @throws Exception various exceptions
      */
     @Throws(Exception::class)
-    protected abstract fun onItemClicked(itemId: Int, activeLocus: LocusUtils.LocusVersion)
+    protected abstract fun onItemClicked(itemId: Int, activeLocus: LocusVersion)
 
     companion object {
 

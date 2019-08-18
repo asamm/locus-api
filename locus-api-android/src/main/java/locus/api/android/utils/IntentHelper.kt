@@ -16,6 +16,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import locus.api.android.ActionBasics
+import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.extra.Location
 import locus.api.objects.geoData.Point
@@ -254,7 +255,7 @@ object IntentHelper {
          * @param locGps       if gpsEnabled is true, variable contain location, otherwise `null`
          * @param locMapCenter contain current map center location
          */
-        fun onReceived(lv: LocusUtils.LocusVersion, locGps: Location?, locMapCenter: Location?)
+        fun onReceived(lv: LocusVersion, locGps: Location?, locMapCenter: Location?)
 
         fun onFailed()
     }
@@ -270,7 +271,7 @@ object IntentHelper {
      * @param action action that we expect
      * @return `true` if intent is valid and contains required action
      */
-    private fun isAction(intent: Intent, action: String): Boolean {
+    fun isAction(intent: Intent, action: String): Boolean {
         return intent.action?.equals(action) == true
     }
 

@@ -35,9 +35,10 @@ import locus.api.android.ActionDisplayPoints
 import locus.api.android.ActionDisplayTracks
 import locus.api.android.ActionDisplayVarious
 import locus.api.android.ActionFiles
+import locus.api.android.objects.LocusVersion
 import locus.api.android.objects.PackPoints
+import locus.api.android.objects.VersionCode
 import locus.api.android.utils.LocusUtils
-import locus.api.android.utils.LocusUtils.LocusVersion
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.extra.GeoDataExtra
 import locus.api.objects.extra.Location
@@ -286,7 +287,7 @@ object SampleCalls {
 
         // get filepath
         val dir: File?
-        if (version.isVersionValid(LocusUtils.VersionCode.UPDATE_15)) {
+        if (version.isVersionValid(VersionCode.UPDATE_15)) {
             dir = File(ctx.cacheDir, "shared")
             dir.mkdirs()
         } else {
@@ -308,7 +309,7 @@ object SampleCalls {
         data.add(pw)
 
         // send data
-        val send = if (version.isVersionValid(LocusUtils.VersionCode.UPDATE_15)) {
+        val send = if (version.isVersionValid(VersionCode.UPDATE_15)) {
             // send file via FileProvider, you don't need WRITE_EXTERNAL_STORAGE permission for this
             val uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
             ActionDisplayPoints.sendPacksFile(ctx, version, data, file, uri, ActionDisplayVarious.ExtraAction.CENTER)

@@ -3,12 +3,12 @@ package locus.api.android
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
+import locus.api.android.objects.LocusVersion
 import locus.api.android.objects.PackPoints
+import locus.api.android.objects.VersionCode
 
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
-import locus.api.android.utils.LocusUtils.LocusVersion
-import locus.api.android.utils.LocusUtils.VersionCode
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.Storable
 import locus.api.objects.geoData.Circle

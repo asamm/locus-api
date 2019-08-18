@@ -21,6 +21,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import locus.api.android.ActionMapTools
 import locus.api.android.MapPreviewParams
+import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.LocusUtils
 import locus.api.objects.extra.Location
 import locus.api.utils.Logger
@@ -28,7 +29,7 @@ import locus.api.utils.Logger
 class MapFragment : DialogFragment() {
 
     // current version
-    private lateinit var lv: LocusUtils.LocusVersion
+    private lateinit var lv: LocusVersion
     // base map view drawer
     private lateinit var mapView: MapView
     // detector for gestures
@@ -43,9 +44,9 @@ class MapFragment : DialogFragment() {
     // total applied map offset in Y dimension
     private var mapOffsetY = 0
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        lv = LocusUtils.getActiveVersion(context)
+    override fun onAttach(ctx: Context) {
+        super.onAttach(ctx)
+        lv = LocusUtils.getActiveVersion(ctx)
                 ?: throw IllegalStateException("No active Locus-based application")
     }
 

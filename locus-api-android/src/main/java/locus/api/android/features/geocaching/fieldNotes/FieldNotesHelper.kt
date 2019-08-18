@@ -7,10 +7,13 @@ import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import locus.api.android.ActionBasics
+import locus.api.android.objects.LocusVersion
+import locus.api.android.objects.VersionCode
 import locus.api.android.utils.LocusConst
-import locus.api.android.utils.LocusUtils
+import locus.api.android.utils.closeQuietly
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.geocaching.GeocachingLog
+import locus.api.utils.Utils
 import java.util.*
 
 /**
@@ -81,7 +84,7 @@ class FieldNotesHelper private constructor() {
          * @return number of existing field notes
          */
         @Throws(RequiredVersionMissingException::class)
-        fun getCount(ctx: Context, lv: LocusUtils.LocusVersion): Int {
+        fun getCount(ctx: Context, lv: LocusVersion): Int {
             // execute request
             var c: Cursor? = null
             try {
@@ -93,7 +96,7 @@ class FieldNotesHelper private constructor() {
                     c.count
                 }
             } finally {
-                Utils.closeQuietly(c)
+                c?.closeQuietly()
             }
         }
 
@@ -104,7 +107,7 @@ class FieldNotesHelper private constructor() {
          * @return List of all field notes
          */
         @Throws(RequiredVersionMissingException::class)
-        fun getAll(ctx: Context, lv: LocusUtils.LocusVersion): MutableList<FieldNote> {
+        fun getAll(ctx: Context, lv: LocusVersion): MutableList<FieldNote> {
             return get(ctx, lv, "")
         }
 
@@ -113,7 +116,7 @@ class FieldNotesHelper private constructor() {
          * ID parameters).
          */
         @Throws(RequiredVersionMissingException::class)
-        fun get(ctx: Context, lv: LocusUtils.LocusVersion, id: Long): FieldNote? {
+        fun get(ctx: Context, lv: LocusVersion, id: Long): FieldNote? {
             // get parameters for query
             var cpUri = getUriLogsTable(lv)
             cpUri = ContentUris.withAppendedId(cpUri, id)
@@ -135,7 +138,7 @@ class FieldNotesHelper private constructor() {
                 // return field note
                 return fn
             } finally {
-                Utils.closeQuietly(c)
+                c?.closeQuietly()
             }
         }
 
@@ -147,7 +150,7 @@ class FieldNotesHelper private constructor() {
          * @return list of all field notes for certain cache
          */
         @Throws(RequiredVersionMissingException::class)
-        fun get(ctx: Context, lv: LocusUtils.LocusVersion, cacheCode: String?): MutableList<FieldNote> {
+        fun get(ctx: Context, lv: LocusVersion, cacheCode: String?): MutableList<FieldNote> {
             // execute request
             var c: Cursor? = null
             try {
@@ -173,7 +176,7 @@ class FieldNotesHelper private constructor() {
                 }
                 return logs
             } finally {
-                Utils.closeQuietly(c)
+                c?.closeQuietly()
             }
         }
 
@@ -181,7 +184,7 @@ class FieldNotesHelper private constructor() {
          * Get last logged "found" field note from database. Returned field not will also
          * contain all images and logged items.
          */
-        fun getLastFoundLog(ctx: Context, lv: LocusUtils.LocusVersion): FieldNote? {
+        fun getLastFoundLog(ctx: Context, lv: LocusVersion): FieldNote? {
             // execute request
             var c: Cursor? = null
             try {
@@ -203,7 +206,7 @@ class FieldNotesHelper private constructor() {
                 }
                 return null
             } finally {
-                Utils.closeQuietly(c)
+                c?.closeQuietly()
             }
         }
 
@@ -217,7 +220,7 @@ class FieldNotesHelper private constructor() {
          * @return `true` if deleted successfully, otherwise `false`
          */
         @Throws(RequiredVersionMissingException::class)
-        fun delete(ctx: Context, lv: LocusUtils.LocusVersion, fieldNoteId: Long): Boolean {
+        fun delete(ctx: Context, lv: LocusVersion, fieldNoteId: Long): Boolean {
             // execute request
             val res = ctx.contentResolver.delete(getUriLogsTable(lv),
                     ColFieldNote.ID + "=?",
@@ -238,7 +241,7 @@ class FieldNotesHelper private constructor() {
          * @return number of deleted field notes
          */
         @Throws(RequiredVersionMissingException::class)
-        fun deleteAll(ctx: Context, lv: LocusUtils.LocusVersion): Int {
+        fun deleteAll(ctx: Context, lv: LocusVersion): Int {
             // execute request (logs and also images)
             val count = ctx.contentResolver.delete(getUriLogsTable(lv), null, null)
             deleteImagesAll(ctx, lv)
@@ -255,7 +258,7 @@ class FieldNotesHelper private constructor() {
          * @return `true` if insert was successful, otherwise false
          */
         @Throws(RequiredVersionMissingException::class)
-        fun insert(ctx: Context, lv: LocusUtils.LocusVersion,
+        fun insert(ctx: Context, lv: LocusVersion,
                 gcFn: FieldNote): Boolean {
             // createLogs data container
             val cv = createContentValues(gcFn)
@@ -283,7 +286,7 @@ class FieldNotesHelper private constructor() {
          * @return `true` if update was successful, otherwise false
          */
         @Throws(RequiredVersionMissingException::class)
-        fun update(ctx: Context, lv: LocusUtils.LocusVersion, gcFn: FieldNote): Boolean {
+        fun update(ctx: Context, lv: LocusVersion, gcFn: FieldNote): Boolean {
             // createLogs data container
             val cv = createContentValues(gcFn)
 
@@ -300,7 +303,7 @@ class FieldNotesHelper private constructor() {
         }
 
         @Throws(RequiredVersionMissingException::class)
-        fun update(ctx: Context, lv: LocusUtils.LocusVersion,
+        fun update(ctx: Context, lv: LocusVersion,
                 fn: FieldNote, cv: ContentValues): Boolean {
             // execute request
             val newRow = ctx.contentResolver.update(getUriLogsTable(lv), cv,
@@ -314,7 +317,7 @@ class FieldNotesHelper private constructor() {
         /**************************************************/
 
         @Throws(RequiredVersionMissingException::class)
-        private fun storeAllImages(ctx: Context, lv: LocusUtils.LocusVersion, fn: FieldNote) {
+        private fun storeAllImages(ctx: Context, lv: LocusVersion, fn: FieldNote) {
             for (image in fn.images) {
                 image.fieldNoteId = fn.id
 
@@ -330,7 +333,7 @@ class FieldNotesHelper private constructor() {
         // GET
 
         @Throws(RequiredVersionMissingException::class)
-        fun getImage(ctx: Context, lv: LocusUtils.LocusVersion, imgId: Long): FieldNoteImage? {
+        fun getImage(ctx: Context, lv: LocusVersion, imgId: Long): FieldNoteImage? {
             // execute request
             var c: Cursor? = null
             try {
@@ -341,7 +344,7 @@ class FieldNotesHelper private constructor() {
                     null
                 } else createImages(c)[0]
             } finally {
-                Utils.closeQuietly(c)
+                c?.closeQuietly()
             }
         }
 
@@ -355,7 +358,7 @@ class FieldNotesHelper private constructor() {
          * @throws RequiredVersionMissingException
          */
         @Throws(RequiredVersionMissingException::class)
-        private fun getImages(ctx: Context, lv: LocusUtils.LocusVersion, fn: FieldNote) {
+        private fun getImages(ctx: Context, lv: LocusVersion, fn: FieldNote) {
             var c: Cursor? = null
             try {
                 // perform request based on 'cacheCode'
@@ -372,14 +375,14 @@ class FieldNotesHelper private constructor() {
                     }
                 }
             } finally {
-                Utils.closeQuietly(c)
+                c?.closeQuietly()
             }
         }
 
         // DELETE
 
         @Throws(RequiredVersionMissingException::class)
-        private fun deleteImages(ctx: Context, lv: LocusUtils.LocusVersion, fieldNoteId: Long) {
+        private fun deleteImages(ctx: Context, lv: LocusVersion, fieldNoteId: Long) {
             ctx.contentResolver.delete(
                     getUriImagesTable(lv),
                     ColFieldNoteImage.FIELD_NOTE_ID + "=?",
@@ -387,7 +390,7 @@ class FieldNotesHelper private constructor() {
         }
 
         @Throws(RequiredVersionMissingException::class)
-        private fun deleteImagesAll(ctx: Context, lv: LocusUtils.LocusVersion) {
+        private fun deleteImagesAll(ctx: Context, lv: LocusVersion) {
             ctx.contentResolver.delete(
                     getUriImagesTable(lv), null, null)
         }
@@ -395,7 +398,7 @@ class FieldNotesHelper private constructor() {
         // UPDATE
 
         @Throws(RequiredVersionMissingException::class)
-        fun updateImage(ctx: Context, lv: LocusUtils.LocusVersion, img: FieldNoteImage): Boolean {
+        fun updateImage(ctx: Context, lv: LocusVersion, img: FieldNoteImage): Boolean {
             return ctx.contentResolver.update(
                     getUriImagesTable(lv),
                     createContentValues(img, false),
@@ -406,7 +409,7 @@ class FieldNotesHelper private constructor() {
         // INSERT
 
         @Throws(RequiredVersionMissingException::class)
-        private fun insertImage(ctx: Context, lv: LocusUtils.LocusVersion, img: FieldNoteImage): Boolean {
+        private fun insertImage(ctx: Context, lv: LocusVersion, img: FieldNoteImage): Boolean {
             return ctx.contentResolver.insert(
                     getUriImagesTable(lv),
                     createContentValues(img, true)) != null
@@ -417,7 +420,7 @@ class FieldNotesHelper private constructor() {
         /**************************************************/
 
 //        @Throws(RequiredVersionMissingException::class)
-//        private fun storeAllItems(ctx: Context, lv: LocusUtils.LocusVersion, items: List<TrackableLog>) {
+//        private fun storeAllItems(ctx: Context, lv: LocusVersion, items: List<TrackableLog>) {
 //            // update all items
 //            for (item in items) {
 //                if (item.id >= 0) {
@@ -434,7 +437,7 @@ class FieldNotesHelper private constructor() {
          * Get all existing trackable logs for defined cache by it's [cacheCode].
          */
         @Throws(RequiredVersionMissingException::class)
-        fun getTrackableLogs(ctx: Context, lv: LocusUtils.LocusVersion, cacheCode: String)
+        fun getTrackableLogs(ctx: Context, lv: LocusVersion, cacheCode: String)
                 : MutableList<TrackableLog> {
             val items = arrayListOf<TrackableLog>()
             ctx.contentResolver.query(getUriTrackablesLogsTable(lv),
@@ -442,7 +445,7 @@ class FieldNotesHelper private constructor() {
                     ColTrackableLogs.CACHE_CODE + "=?",
                     arrayOf(cacheCode), null)?.apply {
                 items.addAll(createItems(this))
-                Utils.closeQuietly(this)
+                closeQuietly()
             }
 
             // return container
@@ -453,7 +456,7 @@ class FieldNotesHelper private constructor() {
          * Get all existing trackable logs that was not yet correctly logged.
          */
         @Throws(RequiredVersionMissingException::class)
-        fun getTrackablesLogsNotLogged(ctx: Context, lv: LocusUtils.LocusVersion)
+        fun getTrackablesLogsNotLogged(ctx: Context, lv: LocusVersion)
                 : MutableList<TrackableLog> {
             val items = arrayListOf<TrackableLog>()
             ctx.contentResolver.query(getUriTrackablesLogsTable(lv),
@@ -461,7 +464,7 @@ class FieldNotesHelper private constructor() {
                     ColTrackableLogs.LOGGED + "=?",
                     arrayOf("0"), null)?.apply {
                 items.addAll(createItems(this))
-                Utils.closeQuietly(this)
+                closeQuietly()
             }
 
             // return container
@@ -471,7 +474,7 @@ class FieldNotesHelper private constructor() {
         // INSERT
 
         @Throws(RequiredVersionMissingException::class)
-        fun insertTrackableLog(ctx: Context, lv: LocusUtils.LocusVersion, item: TrackableLog): Boolean {
+        fun insertTrackableLog(ctx: Context, lv: LocusVersion, item: TrackableLog): Boolean {
             return ctx.contentResolver.insert(
                     getUriTrackablesLogsTable(lv),
                     createContentValues(item)) != null
@@ -480,7 +483,7 @@ class FieldNotesHelper private constructor() {
         // UPDATE
 
         @Throws(RequiredVersionMissingException::class)
-        fun updateTrackableLog(ctx: Context, lv: LocusUtils.LocusVersion, item: TrackableLog): Boolean {
+        fun updateTrackableLog(ctx: Context, lv: LocusVersion, item: TrackableLog): Boolean {
             return ctx.contentResolver.update(
                     getUriTrackablesLogsTable(lv), createContentValues(item),
                     ColTrackableLogs.ID + "=?",
@@ -490,7 +493,7 @@ class FieldNotesHelper private constructor() {
         // DELETE
 
         @Throws(RequiredVersionMissingException::class)
-        fun deleteTrackableLog(ctx: Context, lv: LocusUtils.LocusVersion, itemId: Long): Boolean {
+        fun deleteTrackableLog(ctx: Context, lv: LocusVersion, itemId: Long): Boolean {
             return ctx.contentResolver.delete(getUriTrackablesLogsTable(lv),
                     "${ColTrackableLogs.ID}=?",
                     arrayOf(itemId.toString())) == 1
@@ -504,27 +507,27 @@ class FieldNotesHelper private constructor() {
          * Create valid Uri to base logs provider.
          */
         @Throws(RequiredVersionMissingException::class)
-        private fun getUriLogsTable(lv: LocusUtils.LocusVersion): Uri {
+        private fun getUriLogsTable(lv: LocusVersion): Uri {
             return ActionBasics.getProviderUrlGeocaching(lv,
-                    LocusUtils.VersionCode.UPDATE_05, PATH_FIELD_NOTES)
+                    VersionCode.UPDATE_05, PATH_FIELD_NOTES)
         }
 
         /**
          * Create valid Uri to provider of images.
          */
         @Throws(RequiredVersionMissingException::class)
-        private fun getUriImagesTable(lv: LocusUtils.LocusVersion): Uri {
+        private fun getUriImagesTable(lv: LocusVersion): Uri {
             return ActionBasics.getProviderUrlGeocaching(lv,
-                    LocusUtils.VersionCode.UPDATE_05, PATH_FIELD_NOTE_IMAGES)
+                    VersionCode.UPDATE_05, PATH_FIELD_NOTE_IMAGES)
         }
 
         /**
          * Create valid Uri to provider of items.
          */
         @Throws(RequiredVersionMissingException::class)
-        private fun getUriTrackablesLogsTable(lv: LocusUtils.LocusVersion): Uri {
+        private fun getUriTrackablesLogsTable(lv: LocusVersion): Uri {
             return ActionBasics.getProviderUrlGeocaching(lv,
-                    LocusUtils.VersionCode.UPDATE_05, PATH_TRACKABLE_LOGS)
+                    VersionCode.UPDATE_05, PATH_TRACKABLE_LOGS)
         }
 
         // CREATE CONTENT VALUES
@@ -748,7 +751,7 @@ class FieldNotesHelper private constructor() {
          * @throws RequiredVersionMissingException error in case, LocusVersion is not valid
          */
         @Throws(RequiredVersionMissingException::class)
-        fun logOnline(ctx: Context?, lv: LocusUtils.LocusVersion?,
+        fun logOnline(ctx: Context?, lv: LocusVersion?,
                 ids: LongArray?, createLog: Boolean) {
             // check parameters
             if (ctx == null || lv == null || ids == null || ids.isEmpty()) {
@@ -757,8 +760,8 @@ class FieldNotesHelper private constructor() {
             }
 
             // check version
-            if (!lv.isVersionValid(LocusUtils.VersionCode.UPDATE_05)) {
-                throw RequiredVersionMissingException(LocusUtils.VersionCode.UPDATE_05)
+            if (!lv.isVersionValid(VersionCode.UPDATE_05)) {
+                throw RequiredVersionMissingException(VersionCode.UPDATE_05)
             }
 
             // execute request

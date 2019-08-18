@@ -14,8 +14,8 @@ import com.asamm.locus.api.sample.utils.SampleCalls
 import locus.api.android.ActionBasics
 import locus.api.android.ActionFiles
 import locus.api.android.features.geocaching.fieldNotes.FieldNotesHelper
+import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.LocusConst
-import locus.api.android.utils.LocusUtils
 import java.util.*
 
 class PageUtilsFragment : ABasePageFragment() {
@@ -84,7 +84,7 @@ class PageUtilsFragment : ABasePageFragment() {
         }
 
     @Throws(Exception::class)
-    override fun onItemClicked(itemId: Int, activeLocus: LocusUtils.LocusVersion) {
+    override fun onItemClicked(itemId: Int, activeLocus: LocusVersion) {
         // handle action
         when (itemId) {
             -1 -> SampleCalls.callDisplayLocusMapInfo(act)
