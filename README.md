@@ -4,12 +4,11 @@
 
 Library for [Locus Map](http://www.locusmap.eu) application for Android devices.
 
-
 ## Current version
 
 Latest stable LT version: **0.2.25**
 
-Versions 3.x are in partial rewrite, so use on own risk (& report issues if found) 
+Versions 0.9.x are in rewrite-mode, so use on own risk (& report issues if found) 
 
 ## Structure
 

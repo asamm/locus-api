@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.9.0] - 2019-08-18
+### Changed
+- major conversion of most of Locus API (core) code into Kotlin
+- modifications in API in Locus API Android
+- removed `PeriodicUpdates` system, `UpdateContainer` now needs to be fetched manually (see Dashboard sample)
+- major cleanup: removed most of deprecated code 
+
 ## [0.3.17] - 2019-07-24
 ### Changed
 - minor update in PackPoints class construction
