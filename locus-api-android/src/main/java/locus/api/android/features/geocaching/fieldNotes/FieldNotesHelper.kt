@@ -6,13 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
-import locus.api.android.ActionTools
+import locus.api.android.ActionBasics
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
-import locus.api.android.utils.UtilsAnd
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.geocaching.GeocachingLog
-import locus.api.utils.Utils
 import java.util.*
 
 /**
@@ -95,7 +93,7 @@ class FieldNotesHelper private constructor() {
                     c.count
                 }
             } finally {
-                UtilsAnd.closeQuietly(c)
+                Utils.closeQuietly(c)
             }
         }
 
@@ -137,7 +135,7 @@ class FieldNotesHelper private constructor() {
                 // return field note
                 return fn
             } finally {
-                UtilsAnd.closeQuietly(c)
+                Utils.closeQuietly(c)
             }
         }
 
@@ -175,7 +173,7 @@ class FieldNotesHelper private constructor() {
                 }
                 return logs
             } finally {
-                UtilsAnd.closeQuietly(c)
+                Utils.closeQuietly(c)
             }
         }
 
@@ -205,7 +203,7 @@ class FieldNotesHelper private constructor() {
                 }
                 return null
             } finally {
-                UtilsAnd.closeQuietly(c)
+                Utils.closeQuietly(c)
             }
         }
 
@@ -258,7 +256,7 @@ class FieldNotesHelper private constructor() {
          */
         @Throws(RequiredVersionMissingException::class)
         fun insert(ctx: Context, lv: LocusUtils.LocusVersion,
-                   gcFn: FieldNote): Boolean {
+                gcFn: FieldNote): Boolean {
             // createLogs data container
             val cv = createContentValues(gcFn)
 
@@ -303,7 +301,7 @@ class FieldNotesHelper private constructor() {
 
         @Throws(RequiredVersionMissingException::class)
         fun update(ctx: Context, lv: LocusUtils.LocusVersion,
-                   fn: FieldNote, cv: ContentValues): Boolean {
+                fn: FieldNote, cv: ContentValues): Boolean {
             // execute request
             val newRow = ctx.contentResolver.update(getUriLogsTable(lv), cv,
                     ColFieldNote.ID + "=?",
@@ -343,7 +341,7 @@ class FieldNotesHelper private constructor() {
                     null
                 } else createImages(c)[0]
             } finally {
-                UtilsAnd.closeQuietly(c)
+                Utils.closeQuietly(c)
             }
         }
 
@@ -374,7 +372,7 @@ class FieldNotesHelper private constructor() {
                     }
                 }
             } finally {
-                UtilsAnd.closeQuietly(c)
+                Utils.closeQuietly(c)
             }
         }
 
@@ -444,7 +442,7 @@ class FieldNotesHelper private constructor() {
                     ColTrackableLogs.CACHE_CODE + "=?",
                     arrayOf(cacheCode), null)?.apply {
                 items.addAll(createItems(this))
-                UtilsAnd.closeQuietly(this)
+                Utils.closeQuietly(this)
             }
 
             // return container
@@ -463,7 +461,7 @@ class FieldNotesHelper private constructor() {
                     ColTrackableLogs.LOGGED + "=?",
                     arrayOf("0"), null)?.apply {
                 items.addAll(createItems(this))
-                UtilsAnd.closeQuietly(this)
+                Utils.closeQuietly(this)
             }
 
             // return container
@@ -507,7 +505,7 @@ class FieldNotesHelper private constructor() {
          */
         @Throws(RequiredVersionMissingException::class)
         private fun getUriLogsTable(lv: LocusUtils.LocusVersion): Uri {
-            return ActionTools.getProviderUrlGeocaching(lv,
+            return ActionBasics.getProviderUrlGeocaching(lv,
                     LocusUtils.VersionCode.UPDATE_05, PATH_FIELD_NOTES)
         }
 
@@ -516,7 +514,7 @@ class FieldNotesHelper private constructor() {
          */
         @Throws(RequiredVersionMissingException::class)
         private fun getUriImagesTable(lv: LocusUtils.LocusVersion): Uri {
-            return ActionTools.getProviderUrlGeocaching(lv,
+            return ActionBasics.getProviderUrlGeocaching(lv,
                     LocusUtils.VersionCode.UPDATE_05, PATH_FIELD_NOTE_IMAGES)
         }
 
@@ -525,7 +523,7 @@ class FieldNotesHelper private constructor() {
          */
         @Throws(RequiredVersionMissingException::class)
         private fun getUriTrackablesLogsTable(lv: LocusUtils.LocusVersion): Uri {
-            return ActionTools.getProviderUrlGeocaching(lv,
+            return ActionBasics.getProviderUrlGeocaching(lv,
                     LocusUtils.VersionCode.UPDATE_05, PATH_TRACKABLE_LOGS)
         }
 
@@ -751,7 +749,7 @@ class FieldNotesHelper private constructor() {
          */
         @Throws(RequiredVersionMissingException::class)
         fun logOnline(ctx: Context?, lv: LocusUtils.LocusVersion?,
-                      ids: LongArray?, createLog: Boolean) {
+                ids: LongArray?, createLog: Boolean) {
             // check parameters
             if (ctx == null || lv == null || ids == null || ids.isEmpty()) {
                 throw IllegalArgumentException("logOnline(" + ctx + ", " + lv + ", " + ids + "), " +

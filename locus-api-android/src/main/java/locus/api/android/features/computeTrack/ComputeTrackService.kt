@@ -11,7 +11,7 @@ import android.os.IBinder
 import locus.api.android.objects.ParcelableContainer
 import locus.api.android.utils.LocusUtils
 import locus.api.objects.extra.GeoDataExtra
-import locus.api.objects.extra.Track
+import locus.api.objects.geoData.Track
 import locus.api.utils.Logger
 
 /**

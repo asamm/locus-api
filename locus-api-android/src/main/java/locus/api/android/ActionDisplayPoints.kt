@@ -28,7 +28,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.*
-import locus.api.android.ActionDisplay.ExtraAction
 
 object ActionDisplayPoints {
 
@@ -50,11 +49,11 @@ object ActionDisplayPoints {
      * @throws RequiredVersionMissingException exception in case of missing required app version
      */
     @Throws(RequiredVersionMissingException::class)
-    fun sendPack(ctx: Context, data: PackPoints, extraAction: ExtraAction): Boolean {
+    fun sendPack(ctx: Context, data: PackPoints, extraAction: ActionDisplayVarious.ExtraAction): Boolean {
         return sendPack(LocusConst.ACTION_DISPLAY_DATA,
                 ctx, data,
-                extraAction == ExtraAction.IMPORT,
-                extraAction == ExtraAction.CENTER)
+                extraAction == ActionDisplayVarious.ExtraAction.IMPORT,
+                extraAction == ActionDisplayVarious.ExtraAction.CENTER)
     }
 
     /**
@@ -91,7 +90,7 @@ object ActionDisplayPoints {
     @Throws(RequiredVersionMissingException::class)
     private fun sendPack(action: String, ctx: Context,
             data: PackPoints, callImport: Boolean, centerOnData: Boolean): Boolean {
-        return ActionDisplay.sendData(action, ctx,
+        return ActionDisplayVarious.sendData(action, ctx,
                 Intent().apply {
                     putExtra(LocusConst.INTENT_EXTRA_POINTS_DATA, data.asBytes)
                 },
@@ -113,10 +112,10 @@ object ActionDisplayPoints {
     </PackPoints> */
     @Throws(RequiredVersionMissingException::class)
     fun sendPacks(ctx: Context, data: List<PackPoints>,
-            extraAction: ExtraAction): Boolean {
+            extraAction: ActionDisplayVarious.ExtraAction): Boolean {
         return sendPacks(LocusConst.ACTION_DISPLAY_DATA,
-                ctx, data, extraAction == ExtraAction.IMPORT,
-                extraAction == ExtraAction.CENTER)
+                ctx, data, extraAction == ActionDisplayVarious.ExtraAction.IMPORT,
+                extraAction == ActionDisplayVarious.ExtraAction.CENTER)
     }
 
     @Throws(RequiredVersionMissingException::class)
@@ -128,7 +127,7 @@ object ActionDisplayPoints {
     @Throws(RequiredVersionMissingException::class)
     private fun sendPacks(action: String, ctx: Context,
             data: List<PackPoints>, callImport: Boolean, centerOnData: Boolean): Boolean {
-        return ActionDisplay.sendData(action, ctx,
+        return ActionDisplayVarious.sendData(action, ctx,
                 Intent().apply {
                     putExtra(LocusConst.INTENT_EXTRA_POINTS_DATA_ARRAY, Storable.getAsBytes(data))
                 },
@@ -158,11 +157,11 @@ object ActionDisplayPoints {
             "      require permission for disk access")
     @Throws(RequiredVersionMissingException::class)
     fun sendPacksFile(ctx: Context, lv: LocusUtils.LocusVersion,
-            data: List<PackPoints>, filepath: String, extraAction: ExtraAction): Boolean {
+            data: List<PackPoints>, filepath: String, extraAction: ActionDisplayVarious.ExtraAction): Boolean {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA,
                 ctx, lv, data, File(filepath), null,
-                extraAction == ExtraAction.IMPORT,
-                extraAction == ExtraAction.CENTER)
+                extraAction == ActionDisplayVarious.ExtraAction.IMPORT,
+                extraAction == ActionDisplayVarious.ExtraAction.CENTER)
     }
 
     /**
@@ -183,11 +182,11 @@ object ActionDisplayPoints {
      */
     @Throws(RequiredVersionMissingException::class)
     fun sendPacksFile(ctx: Context, lv: LocusUtils.LocusVersion,
-            data: List<PackPoints>, file: File, fileUri: Uri, extraAction: ExtraAction): Boolean {
+            data: List<PackPoints>, file: File, fileUri: Uri, extraAction: ActionDisplayVarious.ExtraAction): Boolean {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA,
                 ctx, lv, data, file, fileUri,
-                extraAction == ExtraAction.IMPORT,
-                extraAction == ExtraAction.CENTER)
+                extraAction == ActionDisplayVarious.ExtraAction.IMPORT,
+                extraAction == ActionDisplayVarious.ExtraAction.CENTER)
     }
 
     /**
@@ -272,11 +271,11 @@ object ActionDisplayPoints {
                 ctx.grantUriPermission(lv.packageName, fileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
                 // send request
-                ActionDisplay.sendData(action, ctx, intent, callImport, centerOnData, LocusUtils.VersionCode.UPDATE_15)
+                ActionDisplayVarious.sendData(action, ctx, intent, callImport, centerOnData, LocusUtils.VersionCode.UPDATE_15)
             } else {
                 // set path and send request
                 intent.putExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH, file.absolutePath)
-                ActionDisplay.sendData(action, ctx, intent, callImport, centerOnData)
+                ActionDisplayVarious.sendData(action, ctx, intent, callImport, centerOnData)
             }
         } else {
             false

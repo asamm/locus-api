@@ -191,9 +191,7 @@ class MapFragment : DialogFragment() {
             // draw empty view
             if (img == null) {
                 c.drawText("Loading map ...",
-                        (c.width / 2).toFloat(),
-                        (c.height / 2).toFloat(),
-                        paintText)
+                        width / 2.0f, height / 2.0f, paintText)
                 return
             }
 

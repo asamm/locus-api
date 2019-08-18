@@ -29,12 +29,12 @@ import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusInfo
 import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.LocusUtils.VersionCode
-import locus.api.android.utils.UtilsAnd
+import locus.api.android.utils.closeQuietly
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.extra.GeoDataExtra
 import locus.api.objects.extra.Location
-import locus.api.objects.extra.Point
-import locus.api.objects.extra.Track
+import locus.api.objects.geoData.Point
+import locus.api.objects.geoData.Track
 import locus.api.utils.Logger
 import org.json.JSONObject
 import java.io.InvalidObjectException
@@ -90,7 +90,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getLocusInfo($ctx, $lv)", e)
         } finally {
-            UtilsAnd.closeQuietly(cursor)
+            cursor?.closeQuietly()
         }
         return null
     }
@@ -323,7 +323,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getTrackRecordingProfiles($ctx, $lv)", e)
         } finally {
-            UtilsAnd.closeQuietly(cursor)
+            cursor?.closeQuietly()
         }
 
         // return 'unknown' state
@@ -526,7 +526,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getPoint($ctx, $ptId)", e)
         } finally {
-            UtilsAnd.closeQuietly(cursor)
+            cursor.closeQuietly()
         }
         return null
     }
@@ -580,7 +580,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getPointId($ctx, $lv, $ptName)", e)
         } finally {
-            UtilsAnd.closeQuietly(cursor)
+            cursor.closeQuietly()
         }
         return LongArray(0)
     }
@@ -632,7 +632,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getPointsId($ctx, $lv, $loc, $limit, $maxRadius)", e)
         } finally {
-            UtilsAnd.closeQuietly(cursor)
+            cursor.closeQuietly()
         }
         return LongArray(0)
     }
@@ -743,8 +743,7 @@ object ActionBasics {
 
     /**
      * Get full track from Locus database with all possible information, like
-     * [GeoDataExtra] object
-     * or [GeoDataStyle] and others
+     * [GeoDataExtra] object or [GeoDataStyle] and others
      *
      * @param ctx     current context
      * @param trackId unique ID of track in Locus database
@@ -778,7 +777,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getTrack($ctx, $trackId)", e)
         } finally {
-            UtilsAnd.closeQuietly(cursor)
+            cursor.closeQuietly()
         }
         return null
     }
@@ -941,7 +940,7 @@ object ActionBasics {
         } catch (e: Exception) {
             Logger.logE(TAG, "getItemPurchaseState($ctx, $lv, $itemId)", e)
         } finally {
-            UtilsAnd.closeQuietly(cursor)
+            cursor?.closeQuietly()
         }
 
         // return 'unknown' state
@@ -982,7 +981,7 @@ object ActionBasics {
      * @param uri Uri to load data from
      * @return valid cursor with data or 'null' in case of empty or invalid cursor
      */
-    private fun queryData(ctx: Context, uri: Uri, selection: String? = null, args: Array<String>? = null): Cursor? {
+    fun queryData(ctx: Context, uri: Uri, selection: String? = null, args: Array<String>? = null): Cursor? {
         // generate cursor
         val cursor = ctx.contentResolver.query(uri, null, selection, args, null)
         if (cursor == null || cursor.count == 0) {
@@ -1016,7 +1015,7 @@ object ActionBasics {
                 return cursor.getBlob(1)
             }
         } finally {
-            UtilsAnd.closeQuietly(cursor)
+            cursor?.closeQuietly()
         }
 
         // no data loaded
@@ -1051,7 +1050,7 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    private fun getProviderUrlGeocaching(lv: LocusUtils.LocusVersion, requiredVc: VersionCode, path: String): Uri {
+    fun getProviderUrlGeocaching(lv: LocusUtils.LocusVersion, requiredVc: VersionCode, path: String): Uri {
         return getProviderUri(lv, requiredVc,
                 LocusConst.CONTENT_PROVIDER_AUTHORITY_GEOCACHING,
                 path)
@@ -1068,7 +1067,7 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    private fun getProviderUri(lv: LocusUtils.LocusVersion, requiredVc: VersionCode,
+    fun getProviderUri(lv: LocusUtils.LocusVersion, requiredVc: VersionCode,
             provider: String, path: String): Uri {
         // check URI parts ( should not happen, just check )
         if (provider.isEmpty() || path.isEmpty()) {

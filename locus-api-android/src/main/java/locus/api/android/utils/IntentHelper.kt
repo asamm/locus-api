@@ -18,8 +18,8 @@ import android.content.Intent
 import locus.api.android.ActionBasics
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.extra.Location
-import locus.api.objects.extra.Point
-import locus.api.objects.extra.Track
+import locus.api.objects.geoData.Point
+import locus.api.objects.geoData.Track
 import locus.api.utils.Logger
 
 /**

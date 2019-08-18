@@ -2,7 +2,7 @@
  * Created by menion on 15/10/2016.
  * This code is part of Locus project from Asamm Software, s. r. o.
  */
-package locus.api.objects.enums
+package locus.api.objects.extra
 
 /**
  *

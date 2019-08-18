@@ -22,7 +22,7 @@ package locus.api.android.objects
 import android.graphics.Bitmap
 import locus.api.android.utils.UtilsBitmap
 import locus.api.objects.Storable
-import locus.api.objects.extra.Point
+import locus.api.objects.geoData.Point
 import locus.api.objects.styles.GeoDataStyle
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian

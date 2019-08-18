@@ -6,7 +6,6 @@ package com.asamm.locus.api.sample.pages
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.widget.ImageView
 import android.widget.Toast
 import com.asamm.locus.api.sample.ActivityDashboard
 import com.asamm.locus.api.sample.BuildConfig
@@ -14,11 +13,9 @@ import com.asamm.locus.api.sample.utils.BasicAdapterItem
 import com.asamm.locus.api.sample.utils.SampleCalls
 import locus.api.android.ActionBasics
 import locus.api.android.ActionFiles
-import locus.api.android.ActionTools
 import locus.api.android.features.geocaching.fieldNotes.FieldNotesHelper
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
-import locus.api.objects.extra.Location
 import java.util.*
 
 class PageUtilsFragment : ABasePageFragment() {
@@ -71,11 +68,8 @@ class PageUtilsFragment : ABasePageFragment() {
             items.add(BasicAdapterItem(16,
                     "Display detail of Store item",
                     "Display detail of a certain Locus Store item (with known ID)"))
-            items.add(BasicAdapterItem(18,
-                    "Take a 'screenshot (deprecated)'",
-                    "Take a bitmap screenshot of certain place in app"))
             items.add(BasicAdapterItem(19,
-                    "Take a 'screenshot (new)'",
+                    "Take a 'screenshot'",
                     "Take a bitmap screenshot of certain place in app"))
             items.add(BasicAdapterItem(20,
                     "New 'Action tasks' API",
@@ -109,7 +103,7 @@ class PageUtilsFragment : ABasePageFragment() {
                             "\n\n'null' means no required version installed or different problem")
                     .setPositiveButton("Close") { _, _ -> }
                     .show()
-            7 -> ActionTools.callAddNewWmsMap(act,
+            7 -> ActionBasics.callAddNewWmsMap(act,
                     "http://mapy.geology.cz/arcgis/services/Inspire/GM500K/MapServer/WMSServer")
             11 -> startActivity(Intent(act, ActivityDashboard::class.java))
             12 -> SampleCalls.showCircles(act)
@@ -125,7 +119,7 @@ class PageUtilsFragment : ABasePageFragment() {
             15 -> {
                 // We test here if user has purchased "Add-on Field Notes Pro. Unique ID is defined on our Store
                 // so it needs to be known for you before asking.
-                val purchaseId = ActionTools.getItemPurchaseState(
+                val purchaseId = ActionBasics.getItemPurchaseState(
                         act, activeLocus, 5943264947470336L)
                 when (purchaseId) {
                     LocusConst.PURCHASE_STATE_PURCHASED -> Toast.makeText(act,
@@ -155,24 +149,6 @@ class PageUtilsFragment : ABasePageFragment() {
                 } else {
                     Toast.makeText(act,
                             "Unable to obtain UpdateContainer from $activeLocus", Toast.LENGTH_LONG).show()
-                }
-            }
-            18 -> {
-                val result = ActionTools.getMapPreview(act, activeLocus,
-                        Location(50.0, 14.0), 12, 512, 512, false)
-                if (result == null || !result.isValid) {
-                    AlertDialog.Builder(act)
-                            .setTitle("Unable to obtain map preview")
-                            .setPositiveButton("Close") { _, _ -> }
-                            .show()
-                } else {
-                    val iv = ImageView(act)
-                    iv.setImageBitmap(result.image)
-                    AlertDialog.Builder(act)
-                            .setTitle("Image loaded")
-                            .setMessage("Not yet loaded tiles: " + result.numOfNotYetLoadedTiles)
-                            .setView(iv)
-                            .setPositiveButton("Close") { _, _ -> }.show()
                 }
             }
             19 -> {

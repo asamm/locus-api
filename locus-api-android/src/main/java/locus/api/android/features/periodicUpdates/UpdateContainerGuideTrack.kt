@@ -12,7 +12,7 @@
 
 package locus.api.android.features.periodicUpdates
 
-import locus.api.objects.enums.PointRteAction
+import locus.api.objects.extra.PointRteAction
 import locus.api.objects.extra.Location
 
 /**

@@ -2,41 +2,45 @@ package com.asamm.locus.api.sample
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
-import com.asamm.locus.api.sample.receivers.PeriodicUpdateReceiver
 import com.asamm.locus.api.sample.utils.SampleCalls
-import locus.api.android.features.periodicUpdates.PeriodicUpdatesHandler
+import locus.api.android.ActionBasics
 import locus.api.android.features.periodicUpdates.UpdateContainer
 import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.LocusUtils.LocusVersion
-import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.utils.Logger
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
+/**
+ * Sample activity that display method, how to periodically fetch base data from Locus Map
+ * and display it, in this case, for example as simple dashboard.
+ */
 class ActivityDashboard : FragmentActivity() {
 
-    // text containers
-    private var tvInfo: TextView? = null
-    private var tv01: TextView? = null
-    private var tv02: TextView? = null
-    private var tv03: TextView? = null
-    private var tv04: TextView? = null
-    private var tv05: TextView? = null
-    private var tv06: TextView? = null
-    private var tv07: TextView? = null
-    private var tv08: TextView? = null
-
-    // handler for updates
-    private val updateHandler = object : PeriodicUpdatesHandler.OnUpdate {
-
-        override fun onUpdate(locusVersion: LocusVersion, update: UpdateContainer) {
-            handleUpdate(update)
-        }
-
-        override fun onIncorrectData() {}
+    // refresh handler
+    private val handler: Handler = Handler(Looper.getMainLooper())
+    // refresh interval (in ms)
+    private val refreshInterval = TimeUnit.SECONDS.toMillis(1)
+    // refresh task itself
+    private val refresh: (() -> Unit) = {
+        refreshContent()
     }
+
+    // text containers
+    private lateinit var tvInfo: TextView
+    private lateinit var tv01: TextView
+    private lateinit var tv02: TextView
+    private lateinit var tv03: TextView
+    private lateinit var tv04: TextView
+    private lateinit var tv05: TextView
+    private lateinit var tv06: TextView
+    private lateinit var tv07: TextView
+    private lateinit var tv08: TextView
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,62 +61,83 @@ class ActivityDashboard : FragmentActivity() {
     public override fun onStart() {
         super.onStart()
 
-        // register update handler
-        try {
-            PeriodicUpdateReceiver.setOnUpdateListener(this, updateHandler)
-        } catch (e: RequiredVersionMissingException) {
-            Logger.logE(TAG, "onStart()", e)
-        }
-
-        // set info text
-        handleUpdate(null)
+        // start refresh
+        handler.post(refresh)
     }
 
     public override fun onStop() {
         super.onStop()
 
-        // clear reference to prevent memory leaks
-        try {
-            PeriodicUpdateReceiver.setOnUpdateListener(this, null)
-        } catch (e: RequiredVersionMissingException) {
-            Logger.logE(TAG, "onStop()", e)
-        }
+        // stop refresh flow
+        handler.removeCallbacks(refresh)
+    }
 
+    /**
+     * Perform refresh and request another update after defined interval.
+     */
+    private fun refreshContent() {
+        try {
+            Thread {
+                LocusUtils.getActiveVersion(this)?.let { lv ->
+                    ActionBasics.getUpdateContainer(this, lv)?.let { uc ->
+                        handleUpdate(lv, uc)
+                    } ?: {
+                        handleUpdate(lv, null)
+                        Logger.logW(TAG, "refreshContent(), " +
+                                "unable to obtain `UpdateContainer`")
+                    }()
+                } ?: {
+                    handleUpdate(null, null)
+                    Logger.logW(TAG, "refreshContent(), " +
+                            "unable to obtain `ActiveVersion`")
+                }()
+
+            }.start()
+        } finally {
+            handler.postDelayed(refresh, refreshInterval);
+        }
     }
 
     /**
      * Handle fresh data.
-     * @param data received data
+     *
+     * @param lv current Locus version
+     * @param uc received container
      */
     @SuppressLint("SetTextI18n")
-    private fun handleUpdate(data: UpdateContainer?) {
-        // check if data exists
-        val activeVersion = LocusUtils.getActiveVersion(this)!!
-        if (data == null) {
+    private fun handleUpdate(lv: LocusVersion?, uc: UpdateContainer?) {
+        handler.post {
+            // check if uc exists
+            if (lv == null || uc == null) {
+                // prepare text info
+                val sb = StringBuilder()
+                sb.append("UpdateContainer not valid\n\n")
+                sb.append("- active version: ")
+                        .append(lv?.versionName).append(" | ").append(lv?.versionCode)
+                        .append("\n")
+                sb.append("- Locus Map is running: ")
+                        .append(if (lv?.let { SampleCalls.isRunning(this, it) } == true) "running" else "stopped")
+                        .append("\n")
+                sb.append("- periodic updates: ")
+                        .append(if (lv?.let { SampleCalls.isPeriodicUpdateEnabled(this, it) } == true) "enabled" else "disabled")
+                        .append("\n")
 
-            // prepare text info
-            val sb = StringBuilder()
-            sb.append("UpdateContainer not valid\n\n")
-            sb.append("- active version: ").append(activeVersion.versionName).append(" | ").append(activeVersion.versionCode).append("\n")
-            sb.append("- Locus Map is running: ").append(if (SampleCalls.isRunning(this, activeVersion)) "running" else "stopped").append("\n")
-            sb.append("- periodic updates: ").append(if (SampleCalls.isPeriodicUpdateEnabled(this, activeVersion)) "enabled" else "disabled").append("\n")
-
-            // set text to field
-            tvInfo!!.text = sb
-            return
+                // set text to field
+                tvInfo.text = sb
+            } else {
+                // refresh content
+                tvInfo.text = "Fresh uc received at ${SimpleDateFormat.getTimeInstance().format(Date())}\n" +
+                        "App: ${lv.versionName}, battery:${uc.deviceBatteryValue}"
+                tv01.text = uc.locMyLocation.latitude.toString()
+                tv02.text = uc.locMyLocation.longitude.toString()
+                tv03.text = uc.gpsSatsUsed.toString()
+                tv04.text = uc.gpsSatsAll.toString()
+                tv05.text = uc.isMapVisible.toString()
+                tv06.text = uc.locMyLocation.accuracy.toString()
+                tv07.text = uc.locMyLocation.bearing.toString()
+                tv08.text = uc.locMyLocation.speed.toString()
+            }
         }
-
-        // refresh content
-        tvInfo!!.text = "Fresh data received at ${SimpleDateFormat.getTimeInstance().format(Date())}\n" +
-                "App: ${activeVersion.versionName}, battery:${data.deviceBatteryValue}"
-        tv01!!.text = data.locMyLocation.latitude.toString()
-        tv02!!.text = data.locMyLocation.longitude.toString()
-        tv03!!.text = data.gpsSatsUsed.toString()
-        tv04!!.text = data.gpsSatsAll.toString()
-        tv05!!.text = data.isMapVisible.toString()
-        tv06!!.text = data.locMyLocation.accuracy.toString()
-        tv07!!.text = data.locMyLocation.bearing.toString()
-        tv08!!.text = data.locMyLocation.speed.toString()
     }
 
     companion object {

@@ -5,7 +5,7 @@ import android.content.Intent
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.Storable
-import locus.api.objects.extra.Track
+import locus.api.objects.geoData.Track
 import locus.api.utils.Logger
 
 @Suppress("unused")
@@ -17,10 +17,12 @@ object ActionDisplayTracks {
     // SEND ONE SINGLE TRACK
 
     @Throws(RequiredVersionMissingException::class)
-    fun sendTrack(ctx: Context, track: Track, extraAction: ActionDisplay.ExtraAction, startNavigation: Boolean = false): Boolean {
+    fun sendTrack(ctx: Context, track: Track,
+            extraAction: ActionDisplayVarious.ExtraAction,
+            startNavigation: Boolean = false): Boolean {
         return sendTrack(LocusConst.ACTION_DISPLAY_DATA,
-                ctx, track, extraAction == ActionDisplay.ExtraAction.IMPORT,
-                extraAction == ActionDisplay.ExtraAction.CENTER, startNavigation)
+                ctx, track, extraAction == ActionDisplayVarious.ExtraAction.IMPORT,
+                extraAction == ActionDisplayVarious.ExtraAction.CENTER, startNavigation)
     }
 
     @Throws(RequiredVersionMissingException::class)
@@ -44,16 +46,17 @@ object ActionDisplayTracks {
         val intent = Intent()
         intent.putExtra(LocusConst.INTENT_EXTRA_TRACKS_SINGLE, track.asBytes)
         intent.putExtra(LocusConst.INTENT_EXTRA_START_NAVIGATION, startNavigation)
-        return ActionDisplay.sendData(action, ctx, intent, callImport, centerOnData)
+        return ActionDisplayVarious.sendData(action, ctx, intent, callImport, centerOnData)
     }
 
     // SEND TRACK PACK (MORE THEN ONE)
 
     @Throws(RequiredVersionMissingException::class)
-    fun sendTracks(ctx: Context, tracks: List<Track>, extraAction: ActionDisplay.ExtraAction): Boolean {
+    fun sendTracks(ctx: Context, tracks: List<Track>,
+            extraAction: ActionDisplayVarious.ExtraAction): Boolean {
         return sendTracks(LocusConst.ACTION_DISPLAY_DATA,
-                ctx, tracks, extraAction == ActionDisplay.ExtraAction.IMPORT,
-                extraAction == ActionDisplay.ExtraAction.CENTER)
+                ctx, tracks, extraAction == ActionDisplayVarious.ExtraAction.IMPORT,
+                extraAction == ActionDisplayVarious.ExtraAction.CENTER)
     }
 
     @Throws(RequiredVersionMissingException::class)
@@ -74,6 +77,6 @@ object ActionDisplayTracks {
         val intent = Intent()
         intent.putExtra(LocusConst.INTENT_EXTRA_TRACKS_MULTI,
                 Storable.getAsBytes(tracks))
-        return ActionDisplay.sendData(action, ctx, intent, callImport, centerOnData)
+        return ActionDisplayVarious.sendData(action, ctx, intent, callImport, centerOnData)
     }
 }

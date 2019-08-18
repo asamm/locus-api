@@ -1,4 +1,4 @@
-package locus.api.objects.utils
+package locus.api.utils
 
 import locus.api.objects.extra.Location
 

@@ -21,7 +21,7 @@
 package locus.api.objects.extra
 
 import locus.api.objects.Storable
-import locus.api.objects.utils.LocationCompute
+import locus.api.utils.LocationCompute
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
 import locus.api.utils.Logger

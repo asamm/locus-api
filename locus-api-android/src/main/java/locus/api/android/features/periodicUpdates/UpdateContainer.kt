@@ -2,7 +2,7 @@ package locus.api.android.features.periodicUpdates
 
 import java.io.IOException
 import locus.api.objects.Storable
-import locus.api.objects.enums.PointRteAction
+import locus.api.objects.extra.PointRteAction
 import locus.api.objects.extra.Location
 import locus.api.objects.extra.TrackStats
 import locus.api.utils.DataReaderBigEndian

@@ -18,9 +18,10 @@
  * <http://www.gnu.org/licenses/lgpl.html/>.
  */
 
-package locus.api.objects.extra
+package locus.api.objects.geoData
 
-import locus.api.objects.GeoData
+import locus.api.objects.extra.Location
+import locus.api.objects.extra.TrackStats
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
 import locus.api.utils.Logger

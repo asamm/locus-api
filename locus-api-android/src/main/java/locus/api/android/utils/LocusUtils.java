@@ -15,12 +15,13 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import locus.api.android.ActionTools;
+
+import locus.api.android.ActionBasics;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.Storable;
 import locus.api.objects.extra.Location;
-import locus.api.objects.extra.Track;
-import locus.api.objects.extra.Point;
+import locus.api.objects.geoData.Track;
+import locus.api.objects.geoData.Point;
 import locus.api.utils.DataReaderBigEndian;
 import locus.api.utils.DataWriterBigEndian;
 import locus.api.utils.Logger;
@@ -407,51 +408,47 @@ public class LocusUtils {
         LocusVersion backupVersion = null;
         long backupLastActive = 0L;
         for (int i = 0, m = versions.size(); i < m; i++) {
-            try {
-                // get and test version
-                LocusVersion lv = versions.get(i);
-                if (lv.isVersionFree()) {
-                    if (minLocusMapFree <= 0 ||
-                            lv.getVersionCode() < minLocusMapFree) {
-                        continue;
-                    }
-                } else if (lv.isVersionPro()) {
-                    if (minLocusMapPro <= 0 ||
-                            lv.getVersionCode() < minLocusMapPro) {
-                        continue;
-                    }
-                } else if (lv.isVersionGis()) {
-                    if (minLocusGis <= 0 ||
-                            lv.getVersionCode() < minLocusGis) {
-                        continue;
-                    }
-                } else {
-                    // unknown version
+            // get and test version
+            LocusVersion lv = versions.get(i);
+            if (lv.isVersionFree()) {
+                if (minLocusMapFree <= 0 ||
+                        lv.getVersionCode() < minLocusMapFree) {
                     continue;
                 }
-
-
-                // get LocusInfo container
-                LocusInfo li = ActionTools.getLocusInfo(ctx, lv);
-
-                // check if Locus runs and if so, set it as active version
-                if (li == null) {
+            } else if (lv.isVersionPro()) {
+                if (minLocusMapPro <= 0 ||
+                        lv.getVersionCode() < minLocusMapPro) {
                     continue;
                 }
-
-                // backup valid version
-                if (backupVersion == null ||
-                        li.getLastActive() >= backupLastActive) {
-                    backupVersion = lv;
-                    backupLastActive = li.getLastActive();
+            } else if (lv.isVersionGis()) {
+                if (minLocusGis <= 0 ||
+                        lv.getVersionCode() < minLocusGis) {
+                    continue;
                 }
+            } else {
+                // unknown version
+                continue;
+            }
 
-                // check if is running
-                if (li.isRunning()) {
-                    return lv;
-                }
-            } catch (RequiredVersionMissingException e) {
-                Logger.INSTANCE.logE(TAG, "prepareActiveLocus()", e);
+
+            // get LocusInfo container
+            LocusInfo li = ActionBasics.INSTANCE.getLocusInfo(ctx, lv);
+
+            // check if Locus runs and if so, set it as active version
+            if (li == null) {
+                continue;
+            }
+
+            // backup valid version
+            if (backupVersion == null ||
+                    li.getLastActive() >= backupLastActive) {
+                backupVersion = lv;
+                backupLastActive = li.getLastActive();
+            }
+
+            // check if is running
+            if (li.isRunning()) {
+                return lv;
             }
         }
 
@@ -827,7 +824,7 @@ public class LocusUtils {
         if (wptId < 0) {
             return null;
         } else {
-            return ActionTools.getLocusWaypoint(ctx,
+            return ActionBasics.INSTANCE.getPoint(ctx,
                     createLocusVersion(ctx, intent),
                     wptId);
         }
@@ -845,7 +842,7 @@ public class LocusUtils {
         if (trackId < 0) {
             return null;
         } else {
-            return ActionTools.getLocusTrack(ctx,
+            return ActionBasics.INSTANCE.getTrack(ctx,
                     createLocusVersion(ctx, intent),
                     trackId);
         }

@@ -10,7 +10,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
-import locus.api.android.utils.UtilsAnd
+import locus.api.android.utils.closeQuietly
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.Storable
 import locus.api.objects.extra.Location
@@ -33,7 +33,7 @@ object ActionMapTools {
     fun getMapPreview(ctx: Context, lv: LocusUtils.LocusVersion, params: MapPreviewParams): MapPreviewResult? {
 
         // get scheme if valid Locus is available
-        val scheme = ActionTools.getProviderUri(lv,
+        val scheme = ActionBasics.getProviderUri(lv,
                 LocusUtils.VersionCode.UPDATE_14,
                 LocusConst.CONTENT_PROVIDER_AUTHORITY_MAP_TOOLS,
                 LocusConst.CONTENT_PROVIDER_PATH_MAP_PREVIEW)
@@ -44,7 +44,7 @@ object ActionMapTools {
         // get data
         var cursor: Cursor? = null
         try {
-            cursor = ActionTools.queryData(ctx, scheme, sbQuery)
+            cursor = ActionBasics.queryData(ctx, scheme, sbQuery)
             if (cursor == null || !cursor.moveToFirst()) {
                 return null
             }
@@ -68,7 +68,7 @@ object ActionMapTools {
             Logger.logE(TAG, "getMapPreview()", e)
             return MapPreviewResult(null, 0)
         } finally {
-            UtilsAnd.closeQuietly(cursor)
+            cursor?.closeQuietly()
         }
     }
 }

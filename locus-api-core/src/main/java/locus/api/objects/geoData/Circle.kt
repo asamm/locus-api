@@ -1,9 +1,9 @@
-package locus.api.objects.extra
+package locus.api.objects.geoData
 
+import locus.api.objects.extra.Location
 import java.io.IOException
 import java.io.InvalidObjectException
 
-import locus.api.objects.GeoData
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
 

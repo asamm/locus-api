@@ -95,17 +95,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- receiver for handling of periodic updates -->
-        <receiver
-            android:name=".receivers.PeriodicUpdateReceiver"
-            android:enabled="false">
-
-            <intent-filter>
-                <action android:name="locus.api.android.ACTION_PERIODIC_UPDATE" />
-
-            </intent-filter>
-        </receiver>
-
         <!-- receiver for handling changes in points -->
         <receiver android:name=".receivers.PointChangedReceiver">
             <intent-filter>

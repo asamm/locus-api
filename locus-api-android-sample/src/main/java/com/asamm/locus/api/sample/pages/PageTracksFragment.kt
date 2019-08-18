@@ -7,7 +7,6 @@ package com.asamm.locus.api.sample.pages
 import com.asamm.locus.api.sample.utils.BasicAdapterItem
 import com.asamm.locus.api.sample.utils.SampleCalls
 import locus.api.android.ActionBasics
-import locus.api.android.ActionTools
 import locus.api.android.utils.LocusUtils
 import java.util.*
 
@@ -43,9 +42,9 @@ class PageTracksFragment : ABasePageFragment() {
         when (itemId) {
             1 -> SampleCalls.callSendOneTrack(activity!!)
             2 -> SampleCalls.callSendMultipleTracks(activity!!)
-            8 -> ActionTools.actionStartNavigation(activity,
+            8 -> ActionBasics.actionStartNavigation(activity!!,
                     SampleCalls.generateWaypoint(1))
-            9 -> ActionTools.actionStartNavigation(activity,
+            9 -> ActionBasics.actionStartNavigation(activity!!,
                     "Řipská 20, Praha 2, ČR")
             20 -> // start track recording. Recording profile "Cycle" is optional parameter. If
                 // this parameter is not used, last used profile is used for recording.

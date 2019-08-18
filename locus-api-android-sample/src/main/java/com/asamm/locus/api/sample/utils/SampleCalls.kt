@@ -31,7 +31,6 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentActivity
 import com.asamm.locus.api.sample.R
 import locus.api.android.ActionBasics
-import locus.api.android.ActionDisplay.ExtraAction
 import locus.api.android.ActionDisplayPoints
 import locus.api.android.ActionDisplayTracks
 import locus.api.android.ActionDisplayVarious
@@ -40,11 +39,11 @@ import locus.api.android.objects.PackPoints
 import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.LocusUtils.LocusVersion
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
-import locus.api.objects.extra.Circle
 import locus.api.objects.extra.GeoDataExtra
 import locus.api.objects.extra.Location
-import locus.api.objects.extra.Point
-import locus.api.objects.extra.Track
+import locus.api.objects.geoData.Circle
+import locus.api.objects.geoData.Point
+import locus.api.objects.geoData.Track
 import locus.api.objects.geocaching.GeocachingData
 import locus.api.objects.geocaching.GeocachingWaypoint
 import locus.api.objects.styles.GeoDataStyle
@@ -95,7 +94,7 @@ object SampleCalls {
 
     fun getRootDirectory(ctx: Context, lv: LocusVersion): String? {
         return try {
-            ActionBasics.getLocusInfo(ctx, lv)!!.rootDirectory
+            ActionBasics.getLocusInfo(ctx, lv)!!.rootDir
         } catch (e: RequiredVersionMissingException) {
             e.printStackTrace()
             null
@@ -151,7 +150,7 @@ object SampleCalls {
         pw.addPoint(generateWaypoint(0))
 
         // send data
-        val send = ActionDisplayPoints.sendPack(ctx, pw, ExtraAction.IMPORT)
+        val send = ActionDisplayPoints.sendPack(ctx, pw, ActionDisplayVarious.ExtraAction.IMPORT)
         Logger.logD(TAG, "callSendOnePoint(), " +
                 "send:" + send)
     }
@@ -172,7 +171,7 @@ object SampleCalls {
         }
 
         // send data
-        val send = ActionDisplayPoints.sendPack(ctx, pw, ExtraAction.IMPORT)
+        val send = ActionDisplayPoints.sendPack(ctx, pw, ActionDisplayVarious.ExtraAction.IMPORT)
         Logger.logD(TAG, "callSendMorePoints(), " +
                 "send:" + send)
     }
@@ -192,7 +191,7 @@ object SampleCalls {
         pw.addPoint(generateWaypoint(0))
 
         // send data
-        val send = ActionDisplayPoints.sendPack(ctx, pw, ExtraAction.CENTER)
+        val send = ActionDisplayPoints.sendPack(ctx, pw, ActionDisplayVarious.ExtraAction.CENTER)
         Logger.logD(TAG, "callSendOnePointWithIcon(), " +
                 "send:" + send)
     }
@@ -230,7 +229,7 @@ object SampleCalls {
         data.add(pd2)
 
         // send data
-        val send = ActionDisplayPoints.sendPacks(ctx, data, ExtraAction.CENTER)
+        val send = ActionDisplayPoints.sendPacks(ctx, data, ActionDisplayVarious.ExtraAction.CENTER)
         Logger.logD(TAG, "callSendMorePointsWithIcons(), " +
                 "send:" + send)
     }
@@ -248,7 +247,7 @@ object SampleCalls {
         pd.addPoint(generateGeocache(0))
 
         // send data
-        val send = ActionDisplayPoints.sendPack(ctx, pd, ExtraAction.CENTER)
+        val send = ActionDisplayPoints.sendPack(ctx, pd, ActionDisplayVarious.ExtraAction.CENTER)
         Logger.logD(TAG, "callSendOnePointGeocache(), " +
                 "send:" + send)
     }
@@ -269,7 +268,7 @@ object SampleCalls {
         }
 
         // send data
-        val send = ActionDisplayPoints.sendPack(ctx, pw, ExtraAction.CENTER)
+        val send = ActionDisplayPoints.sendPack(ctx, pw, ActionDisplayVarious.ExtraAction.CENTER)
         Logger.logD(TAG, "callSendMorePointsGeocacheIntentMethod(), " +
                 "send:" + send)
     }
@@ -312,11 +311,11 @@ object SampleCalls {
         val send = if (version.isVersionValid(LocusUtils.VersionCode.UPDATE_15)) {
             // send file via FileProvider, you don't need WRITE_EXTERNAL_STORAGE permission for this
             val uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
-            ActionDisplayPoints.sendPacksFile(ctx, version, data, file, uri, ExtraAction.CENTER)
+            ActionDisplayPoints.sendPacksFile(ctx, version, data, file, uri, ActionDisplayVarious.ExtraAction.CENTER)
         } else {
             // send file old way, you need WRITE_EXTERNAL_STORAGE permission for this
             ActionDisplayPoints.sendPacksFile(ctx, version, data, file.absolutePath,
-                    ExtraAction.CENTER)
+                    ActionDisplayVarious.ExtraAction.CENTER)
         }
         Logger.logD(TAG, "callSendMorePointsGeocacheFileMethod(), send: $send")
     }
@@ -341,7 +340,7 @@ object SampleCalls {
         pd.addPoint(p)
 
         // send point
-        val send = ActionDisplayPoints.sendPack(ctx, pd, ExtraAction.CENTER)
+        val send = ActionDisplayPoints.sendPack(ctx, pd, ActionDisplayVarious.ExtraAction.CENTER)
         Logger.logD(TAG, "callSendOnePointWithCallbackOnDisplay(), " +
                 "send:" + send)
     }
@@ -366,7 +365,7 @@ object SampleCalls {
         pd.addPoint(p)
 
         // send point
-        val send = ActionDisplayPoints.sendPack(ctx, pd, ExtraAction.CENTER)
+        val send = ActionDisplayPoints.sendPack(ctx, pd, ActionDisplayVarious.ExtraAction.CENTER)
         Logger.logD(TAG, "callSendOnePointWithExtraCallback(), " +
                 "send:" + send)
     }
@@ -443,7 +442,7 @@ object SampleCalls {
         val track = generateTrack(50.0, 15.0)
 
         // send data
-        val send = ActionDisplayTracks.sendTrack(ctx, track, ExtraAction.CENTER)
+        val send = ActionDisplayTracks.sendTrack(ctx, track, ActionDisplayVarious.ExtraAction.CENTER)
         Logger.logD(TAG, "callSendOneTrack(), " +
                 "send:" + send)
     }
@@ -463,7 +462,7 @@ object SampleCalls {
         }
 
         // send data
-        val send = ActionDisplayTracks.sendTracks(ctx, tracks, ExtraAction.CENTER)
+        val send = ActionDisplayTracks.sendTracks(ctx, tracks, ActionDisplayVarious.ExtraAction.CENTER)
         Logger.logD(TAG, "callSendMultipleTracks(" + ctx + "), " +
                 "send:" + send)
     }

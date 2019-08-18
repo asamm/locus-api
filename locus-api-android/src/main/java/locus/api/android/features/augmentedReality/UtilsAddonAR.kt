@@ -3,13 +3,13 @@ package locus.api.android.features.augmentedReality
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import locus.api.android.ActionDisplay
+import locus.api.android.ActionDisplayVarious
 import locus.api.android.objects.PackPoints
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
 import locus.api.objects.Storable
 import locus.api.objects.extra.Location
-import locus.api.objects.extra.Track
+import locus.api.objects.geoData.Track
 import locus.api.utils.Logger
 import java.security.NoSuchAlgorithmException
 
@@ -82,7 +82,7 @@ object UtilsAddonAR {
         intent.putExtra(EXTRA_GUIDING_ID, guidedWptId)
 
         // check intent firstly
-        if (!ActionDisplay.hasData(intent)) {
+        if (!ActionDisplayVarious.hasData(intent)) {
             Logger.logW(TAG, "Intent 'null' or not contain any data")
             return false
         }
