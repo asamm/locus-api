@@ -140,36 +140,19 @@ object ActionDisplayPoints {
     //*************************************************
 
     /**
-     * Allows to send data to Locus, by storing a serialized version of data into a file. This
+     *
+     * Allow to send data to Locus, by storing a serialized version of data into a file. This
      * method can have advantage over a cursor in simplicity of implementation and also that
      * the file size is not limited as in the cursor method.
      *
-     * Be careful about the size of data. This method can cause OutOfMemory error on Locus side
-     * if data are too big, because all needs to be loaded at once before process.
+     * Method support two systems.
+     * 1. The old one (deprecated) that save data to file directly and share absolute path to it. In
+     * this case, add-on have to have WRITE permission for the [file] and file have to on place
+     * where Locus Map may access. In this case, leave [fileUri] blank.
      *
-     * @param ctx     existing [Context]
-     * @param data        data to send
-     * @param filepath    path where data should be stored
-     * @param extraAction extra action that should happen after Locus reads data
-     * @return `true` if data were correctly send, otherwise `false`
-     * @throws RequiredVersionMissingException exception in case of missing required app version
-     */
-    @Deprecated("Use {@link #sendPacksFile(Context, List, File, Uri, ExtraAction)} which doesn't\n" +
-            "      require permission for disk access")
-    @Throws(RequiredVersionMissingException::class)
-    fun sendPacksFile(ctx: Context, lv: LocusVersion,
-            data: List<PackPoints>, filepath: String, extraAction: ActionDisplayVarious.ExtraAction): Boolean {
-        return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA,
-                ctx, lv, data, File(filepath), null,
-                extraAction == ActionDisplayVarious.ExtraAction.IMPORT,
-                extraAction == ActionDisplayVarious.ExtraAction.CENTER)
-    }
-
-    /**
-     *
-     * Allow to send data to Locus, by storing a serialized version of data into a file This
-     * method can have advantage over a cursor in simplicity of implementation and also that
-     * the file size is not limited as in the cursor method.
+     * 2. New method over FileProvider system. Point [file] on your cache directory and set
+     * generated Uri. More about this modern method in `SampleCalls.callSendMorePointsGeocacheFileMethod`
+     * method where is working example.
      *
      * Be careful about the size of data. This method can cause OutOfMemory error on Locus side
      * if data are too big, because all needs to be loaded at once before process.
@@ -177,13 +160,14 @@ object ActionDisplayPoints {
      * @param ctx existing [Context]
      * @param data data to send
      * @param file path where data should be stored
-     * @param fileUri uri from `FileProvider`, which represents filepath
+     * @param fileUri uri from `FileProvider`, which represents filepath (optional)
      * @param extraAction extra action that should happen after Locus reads data
      * @return `true` if data were correctly send, otherwise `false`
      */
     @Throws(RequiredVersionMissingException::class)
-    fun sendPacksFile(ctx: Context, lv: LocusVersion,
-            data: List<PackPoints>, file: File, fileUri: Uri, extraAction: ActionDisplayVarious.ExtraAction): Boolean {
+    fun sendPacksFile(ctx: Context, lv: LocusVersion, data: List<PackPoints>,
+            file: File, fileUri: Uri? = null,
+            extraAction: ActionDisplayVarious.ExtraAction = ActionDisplayVarious.ExtraAction.CENTER): Boolean {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA,
                 ctx, lv, data, file, fileUri,
                 extraAction == ActionDisplayVarious.ExtraAction.IMPORT,
@@ -196,36 +180,14 @@ object ActionDisplayPoints {
      * version of data into a file. This method can have advantage over a cursor in simplicity of
      * implementation and also that the file size is not limited as in the cursor method.
      *
+     * Method support two systems.
+     * 1. The old one (deprecated) that save data to file directly and share absolute path to it. In
+     * this case, add-on have to have WRITE permission for the [file] and file have to on place
+     * where Locus Map may access. In this case, leave [fileUri] blank.
      *
-     * On the second case, ~~needs permission for disk access~~ (not needed in a latest
-     * Android) and should be slower due to an IO operations.
-     *
-     *
-     * Be careful about the size of data. This method can cause OutOfMemory error on Locus side
-     * if data are too big, because all needs to be loaded at once before process.
-     *
-     * @param ctx      existing [Context]
-     * @param data         data to send
-     * @param filepath     path where data should be stored
-     * @param centerOnData `true` to center on data
-     * @return `true` if data were correctly send, otherwise `false`
-     * @throws RequiredVersionMissingException exception in case of missing required app version
-     */
-    @Deprecated("Use {@link #sendPacksFileSilent(Context, List, File, Uri, boolean)} which\n" +
-            "      doesn't require permission for disk access")
-    @Throws(RequiredVersionMissingException::class)
-    fun sendPacksFileSilent(ctx: Context, lv: LocusVersion,
-            data: List<PackPoints>, filepath: String, centerOnData: Boolean): Boolean {
-        return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA_SILENTLY,
-                ctx, lv, data, File(filepath), null,
-                false, centerOnData)
-    }
-
-    /**
-     *
-     * Allows to send data to Locus silently without user interaction, by storing a serialized
-     * version of data into a file. This method can have advantage over a cursor in simplicity of
-     * implementation and also that the file size is not limited as in the cursor method.
+     * 2. New method over FileProvider system. Point [file] on your cache directory and set
+     * generated Uri. More about this modern method in `SampleCalls.callSendMorePointsGeocacheFileMethod`
+     * method where is working example.
      *
      * Be careful about the size of data. This method can cause OutOfMemory error on Locus side
      * if data are too big, because all needs to be loaded at once before process.
@@ -238,8 +200,9 @@ object ActionDisplayPoints {
      * @return `true` if data were correctly send, otherwise `false`
      */
     @Throws(RequiredVersionMissingException::class)
-    fun sendPacksFileSilent(ctx: Context, lv: LocusVersion,
-            data: List<PackPoints>, file: File, fileUri: Uri, centerOnData: Boolean): Boolean {
+    fun sendPacksFileSilent(ctx: Context, lv: LocusVersion, data: List<PackPoints>,
+            file: File, fileUri: Uri? = null,
+            centerOnData: Boolean = false): Boolean {
         return sendPacksFile(LocusConst.ACTION_DISPLAY_DATA_SILENTLY,
                 ctx, lv, data, file, fileUri,
                 false, centerOnData)

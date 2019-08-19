@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     // ID of currently selected item
     private var mCurrentSelectedItemId: Int = 0
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // set content

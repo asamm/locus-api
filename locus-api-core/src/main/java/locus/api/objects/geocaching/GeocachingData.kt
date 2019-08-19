@@ -60,7 +60,7 @@ class GeocachingData : Storable() {
             if (value.isBlank()) {
                 return
             }
-            field = cacheID
+            field = value
             val testCode = value.trim { it <= ' ' }.toUpperCase()
             this.source = when {
                 testCode.startsWith("GC") -> CACHE_SOURCE_GEOCACHING_COM
@@ -348,12 +348,6 @@ class GeocachingData : Storable() {
     fun setType(type: String) {
         this.type = getTypeAsInt(type)
     }
-
-
-
-
-
-
 
     //*************************************************
     // STORABLE PART
@@ -678,11 +672,11 @@ class GeocachingData : Storable() {
          * @return `true` if cache is event type
          */
         fun isEventCache(type: Int): Boolean {
-            return type == CACHE_TYPE_EVENT ||
-                    type == CACHE_TYPE_MEGA_EVENT ||
-                    type == CACHE_TYPE_GIGA_EVENT ||
-                    type == CACHE_TYPE_GPS_ADVENTURE ||
-                    type == CACHE_TYPE_CACHE_IN_TRASH_OUT
+            return type == CACHE_TYPE_EVENT
+                    || type == CACHE_TYPE_MEGA_EVENT
+                    || type == CACHE_TYPE_GIGA_EVENT
+                    || type == CACHE_TYPE_GPS_ADVENTURE
+                    || type == CACHE_TYPE_CACHE_IN_TRASH_OUT
         }
     }
 }

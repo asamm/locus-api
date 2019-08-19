@@ -178,7 +178,7 @@ class GeoDataExtra : Storable() {
      * @param key key ID
      * @return raw parameters data
      */
-    fun getParameterRaw(key: Int): ByteArray {
+    fun getParameterRaw(key: Int): ByteArray? {
         return parameters.get(key)
     }
 
@@ -206,10 +206,21 @@ class GeoDataExtra : Storable() {
         return getParameter(key) ?: ""
     }
 
+    /**
+     * Check if certain parameter exists in container.
+     *
+     * @param key parameter key
+     */
     fun hasParameter(key: Int): Boolean {
-        return parameters.get(key) != null
+        return getParameterRaw(key) != null
     }
 
+    /**
+     * Remove certain parameter from the container.
+     *
+     * @param key parameter key
+     * @return parameter value or `null` if does not exists
+     */
     fun removeParameter(key: Int): String? {
         val value = getParameter(key)
         parameters.remove(key)

@@ -312,11 +312,10 @@ object SampleCalls {
         val send = if (version.isVersionValid(VersionCode.UPDATE_15)) {
             // send file via FileProvider, you don't need WRITE_EXTERNAL_STORAGE permission for this
             val uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
-            ActionDisplayPoints.sendPacksFile(ctx, version, data, file, uri, ActionDisplayVarious.ExtraAction.CENTER)
+            ActionDisplayPoints.sendPacksFile(ctx, version, data, file, uri)
         } else {
             // send file old way, you need WRITE_EXTERNAL_STORAGE permission for this
-            ActionDisplayPoints.sendPacksFile(ctx, version, data, file.absolutePath,
-                    ActionDisplayVarious.ExtraAction.CENTER)
+            ActionDisplayPoints.sendPacksFile(ctx, version, data, file)
         }
         Logger.logD(TAG, "callSendMorePointsGeocacheFileMethod(), send: $send")
     }
@@ -419,7 +418,7 @@ object SampleCalls {
     @Throws(RequiredVersionMissingException::class)
     fun callRequestDisplayPointScreen(ctx: Context, activeLocus: LocusVersion,
             pointId: Long) {
-        // call special intent with rquest to return back
+        // call special intent with request to return back
         ActionBasics.displayPointScreen(ctx, activeLocus, pointId,
                 "com.asamm.locus.api.sample",
                 "com.asamm.locus.api.sample.MainActivity",

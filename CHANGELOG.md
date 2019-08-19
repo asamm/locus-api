@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.9.2] - 2019-08-19
+### Changed
+united function that share points over file
+
+### Fixed
+geocaching cacheID
+obtain of parameters from GeoDataExtra
+
 ## [0.9.0] - 2019-08-18
 ### Changed
 - major conversion of most of Locus API (core) code into Kotlin
