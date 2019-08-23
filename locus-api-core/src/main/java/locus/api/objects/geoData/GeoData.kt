@@ -237,7 +237,13 @@ abstract class GeoData : Storable() {
         }
     }
 
-    fun addParameter(paramId: Int, param: String): Boolean {
+    /**
+     * Add single parameter defined by it's ID into `extraData` container.
+     *
+     * @param paramId ID of parameter
+     * @param param text value of parameter
+     */
+    fun addParameter(paramId: Int, param: String?): Boolean {
         // check extra data
         val created = createExtraData()
 
@@ -245,6 +251,12 @@ abstract class GeoData : Storable() {
         return afterItemAdded(extraData!!.addParameter(paramId, param), created)
     }
 
+    /**
+     * Add single parameter defined by it's ID into `extraData` container.
+     *
+     * @param paramId ID of parameter
+     * @param param value of parameter
+     */
     fun addParameter(paramId: Int, param: ByteArray): Boolean {
         // check extra data
         val created = createExtraData()
@@ -253,6 +265,12 @@ abstract class GeoData : Storable() {
         return afterItemAdded(extraData!!.addParameter(paramId, param), created)
     }
 
+    /**
+     * Add single parameter defined by it's ID into `extraData` container.
+     *
+     * @param paramId ID of parameter
+     * @param param value of parameter
+     */
     fun addParameter(paramId: Int, value: Int): Boolean {
         // check extra data
         val created = createExtraData()
@@ -261,6 +279,12 @@ abstract class GeoData : Storable() {
         return afterItemAdded(extraData!!.addParameter(paramId, Integer.toString(value)), created)
     }
 
+    /**
+     * Add single parameter defined by it's ID into `extraData` container.
+     *
+     * @param paramId ID of parameter
+     * @param param value of parameter
+     */
     fun addParameter(paramId: Int, param: Byte): Boolean {
         // check extra data
         val created = createExtraData()

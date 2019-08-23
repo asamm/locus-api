@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.9.3] - 2019-08-22
+### Fixed
+minor Nullability issues
+
 ## [0.9.2] - 2019-08-19
 ### Changed
 united function that share points over file

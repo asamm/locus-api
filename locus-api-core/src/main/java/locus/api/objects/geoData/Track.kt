@@ -70,10 +70,14 @@ class Track : GeoData() {
     val pointsCount: Int
         get() = points.size
 
+    //*************************************************
+    // HELPERS
+    //*************************************************
+
     /**
      * Get point on certain index.
      *
-     * @param point index
+     * @param index point index
      */
     fun getPoint(index: Int) : Location {
         return points[index]
@@ -93,37 +97,36 @@ class Track : GeoData() {
 
     // CUSTOM HANDLING
 
-    var breaksData: ByteArray
-        get() {
-            val dw: DataWriterBigEndian
-            try {
-                dw = DataWriterBigEndian()
-                for (i in breaks.indices) {
-                    dw.writeInt(breaks[i])
-                }
-                return dw.toByteArray()
-            } catch (e: Exception) {
-                Logger.logE(TAG, "getBreaksData()", e)
+    /**
+     * Get track breaks serialized in byte array.
+     */
+    fun getBreaksAsData() : ByteArray {
+        return DataWriterBigEndian().apply {
+            for (i in breaks.indices) {
+                writeInt(breaks[i])
             }
+        }.toByteArray()
+    }
 
-            return ByteArray(0)
+    /**
+     * Set track breaks from previously serialized byte array.
+     */
+    fun setBreaksFromData(data: ByteArray) {
+        breaks.clear()
+        if (data.isEmpty()) {
+            return
         }
-        set(value) {
+
+        try {
+            val dr = DataReaderBigEndian(data)
+            while (dr.available() > 0) {
+                breaks.add(dr.readInt())
+            }
+        } catch (e: Exception) {
+            Logger.logE(TAG, "setBreaksFromData($data)", e)
             breaks.clear()
-            if (value.isEmpty()) {
-                return
-            }
-
-            try {
-                val dr = DataReaderBigEndian(value)
-                while (dr.available() > 0) {
-                    breaks.add(dr.readInt())
-                }
-            } catch (e: Exception) {
-                Logger.logE(TAG, "setBreaksData()", e)
-                breaks.clear()
-            }
         }
+    }
 
     //*************************************************
     // STORABLE PART
@@ -144,7 +147,7 @@ class Track : GeoData() {
         // read breaks
         val breaksSize = dr.readInt()
         if (breaksSize > 0) {
-            breaksData = dr.readBytes(breaksSize)
+            setBreaksFromData(dr.readBytes(breaksSize))
         }
 
         // read waypoints
@@ -223,9 +226,11 @@ class Track : GeoData() {
         dw.writeListStorable(points)
 
         // write breaks
-        dw.writeInt(breaksData.size)
-        if (breaksData.isNotEmpty()) {
-            dw.write(breaksData)
+        getBreaksAsData().let {
+            dw.writeInt(it.size)
+            if (it.isNotEmpty()) {
+                dw.write(it)
+            }
         }
 
         // write waypoints
