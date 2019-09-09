@@ -4,12 +4,12 @@
  */
 package locus.api.objects.styles
 
-import java.io.IOException
-import java.util.Hashtable
-
 import locus.api.objects.Storable
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
+import java.io.IOException
+import java.util.*
+
 
 class LineStyle : Storable() {
 

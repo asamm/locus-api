@@ -22,10 +22,14 @@ package locus.api.objects.styles
 
 import locus.api.objects.Storable
 import locus.api.objects.extra.KmlVec2
+import locus.api.objects.styles.deprecated.LineStyleOld
+import locus.api.objects.styles.deprecated.OldStyleHelper
+import locus.api.objects.styles.deprecated.PolyStyleOld
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
 import locus.api.utils.Logger
 import java.io.IOException
+
 
 /**
  * Create new instance of style container.
@@ -183,7 +187,9 @@ class GeoDataStyle() : Storable() {
             return
         }
 
-        // balloon style
+        // read styles
+        var lineStyleOld: LineStyleOld? = null
+        var polyStyleOld: PolyStyleOld? = null
         try {
             if (dr.readBoolean()) {
                 balloonStyle = read(BalloonStyle::class.java, dr)
@@ -195,19 +201,20 @@ class GeoDataStyle() : Storable() {
                 labelStyle = read(LabelStyle::class.java, dr)
             }
             if (dr.readBoolean()) {
-                // old "Line style"
-                readUnknownObject(dr)
+                lineStyleOld = read(LineStyleOld::class.java, dr)
             }
             if (dr.readBoolean()) {
                 listStyle = read(ListStyle::class.java, dr)
             }
             if (dr.readBoolean()) {
-                // old "Poly style"
-                readUnknownObject(dr)
+                polyStyleOld = read(PolyStyleOld::class.java, dr)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
+        // convert old style to new system
+        lineStyle = OldStyleHelper.convertToNewLineStyle(lineStyleOld, polyStyleOld)
 
         // V2
         if (version >= 2) {

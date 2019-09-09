@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.9.4] - 2019-09-09
+### Fixed
+restored internal support for old deprecated LineStyleOld and PolyStyleOld classes
+
 ## [0.9.3] - 2019-08-22
 ### Fixed
 minor Nullability issues
