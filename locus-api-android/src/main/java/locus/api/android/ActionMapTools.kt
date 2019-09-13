@@ -93,11 +93,15 @@ class MapPreviewParams {
     var heightPx: Int = 0
     // density in DPI of device that send request (set '0' to let app default)
     var densityDpi = 0
+    // flag if rotation is required
+    var rotate = false
     // required rotation of final screenshot [°]. Needs to be used together with [radius]
     var rotation = 0
-    // radius parameter of device [px] used for rotation. Usually it is "diagonal" of screen, so
-    // biggest possible radius of map that may be visible on screen
-    var radius = 0
+
+    // flag if user location, accuracy circle and other user-related stuff should be drawn
+    var extraUser = true
+    // flag if shading of the map is allowed
+    var extraShading = true
 
     /**
      * Generate required query for a preview request.
@@ -111,8 +115,10 @@ class MapPreviewParams {
                 "width=$widthPx," +
                 "height=$heightPx," +
                 "densityDpi=$densityDpi," +
+                "rotate=$rotate," +
                 "rotation=$rotation," +
-                "radius=$radius"
+                "extraUser=$extraUser," +
+                "extraShading=$extraShading"
     }
 }
 
