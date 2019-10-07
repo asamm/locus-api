@@ -33,7 +33,8 @@ internal object OldStyleHelper {
                 lsNew.drawSymbol = true
                 lsNew.symbol = LineStyle.Symbol.valueOf(ls.lineType.name)
             }
-            lsNew.coloring = LineStyle.Coloring.valueOf(ls.colorStyle.name)
+            lsNew.coloring = LineStyle.Coloring.values().find { it.name == ls.colorStyle.name }
+                    ?: lsNew.coloring
             lsNew.width = ls.width
             lsNew.units = LineStyle.Units.valueOf(ls.units.name)
             lsNew.drawOutline = ls.drawOutline
