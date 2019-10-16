@@ -28,8 +28,8 @@ class IconStyle : Storable() {
     var scale: Float = 1.0f
         set(value) {
             if (value != 0.0f) {
-                field = scale
-                this.scaleCurrent = scale
+                field = value
+                this.scaleCurrent = value
             }
         }
     var heading: Float = 0.0f
