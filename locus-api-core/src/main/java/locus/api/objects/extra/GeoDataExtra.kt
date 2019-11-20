@@ -31,11 +31,23 @@ import locus.api.utils.Logger
 import locus.api.utils.SparseArrayCompat
 import locus.api.utils.Utils
 
+/**
+ * Container with meta-data for GeoData objects.
+ */
 class GeoDataExtra : Storable() {
 
+    /**
+     * Container for text links and attachments.
+     */
     class LabelTextContainer {
 
+        /**
+         * Visible text label.
+         */
         val label: String
+        /**
+         * Text/value itself.
+         */
         val text: String
 
         val asText: String
@@ -481,6 +493,7 @@ class GeoDataExtra : Storable() {
 
         for (key in rangeFrom..rangeTo) {
             val value = getParameter(key)
+            @Suppress("ControlFlowWithEmptyBody")
             if (value == null) {
                 // no item
             } else if (value.endsWith(item)) {
@@ -499,8 +512,8 @@ class GeoDataExtra : Storable() {
 
     private fun convertToTexts(data: List<LabelTextContainer>): List<String> {
         val result = ArrayList<String>()
-        for (i in 0 until data.size) {
-            result.add(data[i].text)
+        for (element in data) {
+            result.add(element.text)
         }
         return result
     }
@@ -630,8 +643,10 @@ class GeoDataExtra : Storable() {
         // PRIVATE REFERENCES (0 - 29)
         //*************************************************
 
+        /**
+         * Object source.
+         */
         const val PAR_SOURCE = 0
-
         /**
          * Private parameter for handling of styles.
          * Use getter/setter directly in GeoData object
@@ -661,8 +676,21 @@ class GeoDataExtra : Storable() {
          * Google places details.
          */
         const val PAR_GOOGLE_PLACES_DETAILS = 17
-
+        /**
+         * Container for item flags.
+         */
+        const val PAR_FLAGS = 18
+        /**
+         * Extra parameters from Locus Store, mostly with custom provider data.
+         */
+        const val PAR_STORE_EXTRA = 19
+        /**
+         * Extra callback parameter used directly by API.
+         */
         const val PAR_INTENT_EXTRA_CALLBACK = 20
+        /**
+         * Extra OnDisplay parameter used directly by API.
+         */
         const val PAR_INTENT_EXTRA_ON_DISPLAY = 21
 
         //*************************************************
@@ -696,23 +724,35 @@ class GeoDataExtra : Storable() {
 
         // LOCATION PARAMETERS (50 - 59)
 
-        // street name
+        /**
+         * Address value - street name.
+         */
         const val PAR_ADDRESS_STREET = 50
-        // city name
+        /**
+         * Address value - city name.
+         */
         const val PAR_ADDRESS_CITY = 51
-        // name of region
+        /**
+         * Address value - name of region.
+         */
         const val PAR_ADDRESS_REGION = 52
-        // PSČ, post code number
+        /**
+         * Address value - PSČ, post code number.
+         */
         const val PAR_ADDRESS_POST_CODE = 53
-        // name of country
+        /**
+         * Address value - name of country.
+         */
         const val PAR_ADDRESS_COUNTRY = 54
 
+        //*********************************************
         // ROUTE PARAMETERS (100 - 199)
+        //*********************************************
 
         // PARAMETERS FOR NAVIGATION POINTS (WAYPOINT)
 
         /**
-         * Index to point list
+         * Index to the point list.
          * <br></br>
          * Locus internal variable, **DO NOT SET**
          */
@@ -724,11 +764,11 @@ class GeoDataExtra : Storable() {
          */
         const val PAR_RTE_DISTANCE_F = 101
         /**
-         * time (in sec) from current navPoint to next (integer)
+         * Time (in sec) from current navPoint to next (integer).
          */
         const val PAR_RTE_TIME_I = 102
         /**
-         * speed (in m/s) from current navPoint to next (float)
+         * Speed (in m/s) from current navPoint to next (float).
          */
         const val PAR_RTE_SPEED_F = 103
         /**
@@ -740,33 +780,44 @@ class GeoDataExtra : Storable() {
          */
         const val PAR_RTE_TURN_COST = 104
         /**
-         * String representation of next street label
+         * String representation of next street label.
          */
         const val PAR_RTE_STREET = 109
         /**
-         * used to determine which type of action should be taken in order to stay on route
+         * Used to determine which type of action should be taken in order to stay on route.
          */
         const val PAR_RTE_POINT_ACTION = 110
 
-        // PARAMETERS FOR NAVIGATION ROUTE (TRACK)
+        // PARAMETERS FOR NAVIGATION ROUTE
 
         /**
-         * type of route (car_fast, car_short, cyclo, foot)
+         * Type of route (car_fast, car_short, cyclo, foot).
          */
         const val PAR_RTE_COMPUTE_TYPE = 120
         /**
          * Roundabout is usually defined from two points. First on enter correctly
          * defined by ACTION 27 - 34, second on exit simply defined by exit angle.
-         * In case of usage only exit point, it's need to set this flag
+         * In case of usage only exit point, it's need to set this flag.
          */
         const val PAR_RTE_SIMPLE_ROUNDABOUTS = 121
         /**
          * Configuration of (route) plan as defined in route planner.
          */
         const val PAR_RTE_PLAN_DEFINITION = 122
+        /**
+         * Container for max. speeds for the trackpoints.
+         */
+        const val PAR_RTE_MAX_SPEEDS = 123
 
         // OSM BUGS (300 - 309)
+
+        /**
+         * OpenStreetMap bug/notes ID.
+         */
         const val PAR_OSM_NOTES_ID = 301
+        /**
+         * OpenStreetMap bug/notes flag about it's state.
+         */
         const val PAR_OSM_NOTES_CLOSED = 302
 
         //*************************************************

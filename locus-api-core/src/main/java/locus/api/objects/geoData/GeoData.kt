@@ -610,6 +610,14 @@ abstract class GeoData : Storable() {
     }
 
     /**
+     * Get all attached keys for tags.
+     */
+    fun getTagsKeys(): Array<String> {
+        return tags?.keys?.toTypedArray()
+                ?: emptyArray()
+    }
+
+    /**
      * Set new tag/object defined by key.
      *
      * @param key key that define object
