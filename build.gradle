@@ -28,8 +28,8 @@ subprojects {
                 name = "GitHubPackages"
                 url = uri("https://maven.pkg.github.com/asamm/locus-api")
                 credentials {
-                    username = System.getenv("GITHUB_USER")
-                    password = System.getenv("GITHUB_PERSONAL_ACCESS_TOKEN")
+                    username = System.getenv("GH_USER")
+                    password = System.getenv("GH_PERSONAL_ACCESS_TOKEN")
                 }
             }
             maven {
