@@ -5,6 +5,11 @@ on:
     tags:
       - '*'
 
+env:
+  GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GITHUB_PERSONAL_ACCESS_TOKEN }}
+  ANDROID_SIGN_DEBUG: ${{ secrets.ANDROID_SIGN_DEBUG }}
+  ANDROID_SIGN_RELEASE: ${{ secrets.ANDROID_SIGN_RELEASE }}
+
 jobs:
   build:
     name: Release API
@@ -23,10 +28,7 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Publish locus-api-core
-        env:
-          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ secrets.GITHUB_PERSONAL_ACCESS_TOKEN }}
-
+      - name: Publish `locus-api-core`
         # The GITHUB_REF tag comes in the format 'refs/tags/xxx'.
         # So if we split on '/' and take the 3rd value, we can get the release name.
         run: |
@@ -35,10 +37,7 @@ jobs:
           echo "Github username: ${GITHUB_ACTOR}"
           ./gradlew -PAPI_VERSION=${NEW_VERSION} locus-api-core:publishReleasePublicationToGitHubPackagesRepository
 
-      - name: Publish locus-api-android
-        env:
-          GH_PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-
+      - name: Publish `locus-api-android`
         # The GITHUB_REF tag comes in the format 'refs/tags/xxx'.
         # So if we split on '/' and take the 3rd value, we can get the release name.
         run: |
