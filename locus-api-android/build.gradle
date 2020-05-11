@@ -35,11 +35,6 @@ dependencies {
     api 'androidx.annotation:annotation:1.1.0'
 
     // use in case of direct handling over Locus Core project
-    // debugApi and releaseApi is not correctly stored in maven POM!
-//    api project(':locus-api-core')
-    // use in case of publishing to Maven. 'api' needs to be set in artifact as well
-//    api 'com.asamm:locus-api-core:' + API_VERSION
-
     debugApi project(':locus-api-core')
     // use in case of publishing to Maven. 'api' needs to be set in artifact as well
     releaseApi 'com.asamm:locus-api-core:' + API_VERSION
