@@ -198,7 +198,7 @@ class FieldNotesHelper private constructor() {
                         ColFieldNote.ID + " DESC LIMIT 1")
 
                 // handle result
-                if (c.moveToNext()) {
+                if (c?.moveToNext() == true) {
                     val logs = createLogs(c)
                     if (logs.isNotEmpty()) {
                         return logs[0]
