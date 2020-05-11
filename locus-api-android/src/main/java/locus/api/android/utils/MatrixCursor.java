@@ -216,10 +216,6 @@ public class MatrixCursor extends AbstractCursor {
 
         /**
          * Sets the next column value in this row.
-         *
-         * @return this builder to support chaining
-         * @throws CursorIndexOutOfBoundsException if you try to add too many
-         *                                         values
          */
         public RowBuilder add(Object columnValue) {
             if (index == endIndex) {
@@ -234,8 +230,6 @@ public class MatrixCursor extends AbstractCursor {
         /**
          * Offer value for possible inclusion if this cursor defines the given
          * column. Columns not defined by the cursor are silently ignored.
-         *
-         * @return this builder to support chaining
          */
         public RowBuilder add(String columnName, Object value) {
             for (int i = 0; i < columnNames.length; i++) {
@@ -314,7 +308,6 @@ public class MatrixCursor extends AbstractCursor {
 
     /**
      * Returns data type of the given object's value.
-     * <p>
      * Returned values are
      * <ul>
      * <li>{@link Cursor#FIELD_TYPE_NULL}</li>
@@ -323,7 +316,6 @@ public class MatrixCursor extends AbstractCursor {
      * <li>{@link Cursor#FIELD_TYPE_STRING}</li>
      * <li>{@link Cursor#FIELD_TYPE_BLOB}</li>
      * </ul>
-     * </p>
      */
     @Override
     public int getType(int column) {

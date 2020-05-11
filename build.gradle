@@ -1,18 +1,11 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
     repositories {
-        // basic repositories
         google()
         jcenter()
-        mavenCentral()
     }
     dependencies {
         // Android build
         classpath 'com.android.tools.build:gradle:' + ANDROID_PLUGIN_GRADLE
-
-        // Bintray support
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
 
         // Kotlin
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:' + KOTLIN_VERSION
@@ -22,18 +15,29 @@ buildscript {
 // define global parameters
 allprojects {
     repositories {
-        // local maven
-        mavenLocal()
-
-        // basic repositories
         google()
         jcenter()
-        mavenCentral()
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+subprojects {
+    apply plugin: "maven-publish"
+    publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/asamm/locus-api")
+                credentials {
+                    username = System.getenv("GITHUB_USER")
+                    password = System.getenv("GITHUB_PERSONAL_ACCESS_TOKEN")
+                }
+            }
+            maven {
+                name = 'CustomMavenRepo'
+                url = "file://${buildDir}/repo"
+            }
+        }
+    }
 }
 
 configure([

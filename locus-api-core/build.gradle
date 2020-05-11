@@ -1,9 +1,6 @@
 // apply plugins
 apply plugin: 'java'
 apply plugin: "kotlin"
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: "com.jfrog.bintray"
 
 // set Java 8 compatibility
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -36,26 +33,12 @@ task createJavadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-// maven parameters
-group = 'com.asamm'
-version = API_VERSION
-
-// upload archives to local maven
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: mavenLocal().getUrl())
-        }
-    }
-}
-
 // generate publication in Maven format
 // https://docs.gradle.org/current/dsl/org.gradle.api.publish.maven.MavenPublication.html
 publishing {
     publications {
-        pubLibLocusApiCore(MavenPublication) {
-
-            groupId group
+        Release(MavenPublication) {
+            groupId 'com.asamm'
             artifactId 'locus-api-core'
             //noinspection GroovyAssignabilityCheck
             version API_VERSION
@@ -93,36 +76,6 @@ publishing {
                 def nodeDeveloper = nodeDevelopers.appendNode('developer')
                 nodeDeveloper.appendNode('name', 'Asamm software, s. r. o.')
             }
-        }
-    }
-}
-
-// upload library to BinTray
-// https://github.com/bintray/gradle-bintray-plugin
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['pubLibLocusApiCore']
-    publish = true
-    override = true
-
-    pkg {
-        repo = 'maven'
-        name = 'locus-api-core'
-        licenses = ['LGPL-3.0']
-        vcsUrl = 'https://github.com/asamm/locus-api.git'
-
-        // optional Github repository
-        githubRepo = 'asamm/locus-api'
-        // optional Github readme file
-        githubReleaseNotesFile = 'README.md'
-
-        //noinspection GroovyAssignabilityCheck
-        version {
-            name = API_VERSION
-            desc = 'Locus API - Core, version ' + API_VERSION
-            released  = new Date()
-            vcsTag = API_VERSION
         }
     }
 }

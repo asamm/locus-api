@@ -1,8 +1,5 @@
 // apply plugins
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: "com.jfrog.bintray"
 apply plugin: "kotlin-android"
 
 // Android basics
@@ -39,9 +36,13 @@ dependencies {
 
     // use in case of direct handling over Locus Core project
     // debugApi and releaseApi is not correctly stored in maven POM!
-    api project(':locus-api-core')
+//    api project(':locus-api-core')
     // use in case of publishing to Maven. 'api' needs to be set in artifact as well
 //    api 'com.asamm:locus-api-core:' + API_VERSION
+
+    debugApi project(':locus-api-core')
+    // use in case of publishing to Maven. 'api' needs to be set in artifact as well
+    releaseApi 'com.asamm:locus-api-core:' + API_VERSION
 }
 
 task createSourceJar(type: Jar) {
@@ -67,25 +68,12 @@ task createJavadocJar(type: Jar, dependsOn: androidJavadocs) {
     from androidJavadocs.destinationDir
 }
 
-// maven parameters
-group = 'com.asamm'
-version = API_VERSION
-
-// upload archives to local maven
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: mavenLocal().getUrl())
-        }
-    }
-}
-
 // generate publication in Maven format
 // https://docs.gradle.org/current/dsl/org.gradle.api.publish.maven.MavenPublication.html
 project.afterEvaluate {
     publishing {
         publications {
-            Production(MavenPublication) {
+            Release(MavenPublication) {
                 // define sources
                 //artifact("${project.buildDir}/outputs/aar/${project.name}-release.aar")
                 artifact bundleReleaseAar
@@ -128,7 +116,7 @@ project.afterEvaluate {
 
                     // iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
                     def dependencies = asNode().appendNode('dependencies')
-                    configurations.api.allDependencies.each {
+                    configurations.releaseApi.allDependencies.each {
                         // Ensure dependencies such as fileTree are not included.
                         if (it.name != 'unspecified') {
                             def dependencyNode = dependencies.appendNode('dependency')
@@ -139,36 +127,6 @@ project.afterEvaluate {
                     }
                 }
             }
-        }
-    }
-}
-
-// upload library to BinTray
-// https://github.com/bintray/gradle-bintray-plugin
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['Production']
-    publish = true
-    override = true
-
-    pkg {
-        repo = 'maven'
-        name = 'locus-api-android'
-        licenses = ['LGPL-3.0']
-        vcsUrl = 'https://github.com/asamm/locus-api.git'
-
-        // optional Github repository
-        githubRepo = 'asamm/locus-api'
-        // optional Github readme file
-        githubReleaseNotesFile = 'README.md'
-
-        //noinspection GroovyAssignabilityCheck
-        version {
-            name = API_VERSION
-            desc = 'Locus API - Android, version ' + API_VERSION
-            released  = new Date()
-            vcsTag = API_VERSION
         }
     }
 }
