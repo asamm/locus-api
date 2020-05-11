@@ -721,6 +721,11 @@ class GeoDataExtra : Storable() {
          * `BOOLEAN` Flag to include item in POI alert feature. If missing, "true" used as default.
          */
         const val PAR_POI_ALERT_INCLUDE = 35
+        /**
+         * "STRING", separated 2-letter language codes (ISO 639-1) by pipe "|", that define language of
+         * the content. Mainly related to text "name", "description" and "comment" values.
+         */
+        const val PAR_LANGUAGE = 36
 
         // LOCATION PARAMETERS (50 - 59)
 

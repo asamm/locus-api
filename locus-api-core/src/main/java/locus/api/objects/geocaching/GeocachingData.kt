@@ -20,17 +20,17 @@
 
 package locus.api.objects.geocaching
 
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.util.zip.GZIPInputStream
-import java.util.zip.GZIPOutputStream
-
 import locus.api.objects.Storable
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
 import locus.api.utils.Logger
 import locus.api.utils.Utils
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.util.*
+import java.util.zip.GZIPInputStream
+import java.util.zip.GZIPOutputStream
 
 /**
  * Container for main Geocaching data
@@ -61,7 +61,7 @@ class GeocachingData : Storable() {
                 return
             }
             field = value
-            val testCode = value.trim { it <= ' ' }.toUpperCase()
+            val testCode = value.trim { it <= ' ' }.toUpperCase(Locale.ROOT)
             this.source = when {
                 testCode.startsWith("GC") -> CACHE_SOURCE_GEOCACHING_COM
                 testCode.startsWith("OB") -> CACHE_SOURCE_OPENCACHING_NL
@@ -349,6 +349,39 @@ class GeocachingData : Storable() {
         this.type = getTypeAsInt(type)
     }
 
+    fun sortTrackables() {
+        // check content
+        if (trackables.size <= 1) {
+            return
+        }
+
+        // sort by name
+        trackables.sortBy { it.name }
+    }
+
+    /**
+     * Check if owner, country, state or description contains certain defined text.
+     *
+     * @param text text that we search
+     */
+    fun containsInData(text: String): Boolean {
+        // base texts
+        if (owner.contains(text, ignoreCase = true)) {
+            return true
+        }
+        if (country.contains(text, ignoreCase = true)) {
+            return true
+        }
+        if (state.contains(text, ignoreCase = true)) {
+            return true
+        }
+
+        // check descriptions
+        val desc = descriptions
+        return desc[0].contains(text, ignoreCase = true)
+                || desc[1].contains(text, ignoreCase = true)
+    }
+
     //*************************************************
     // STORABLE PART
     //*************************************************
@@ -479,65 +512,119 @@ class GeocachingData : Storable() {
         dw.writeInt(source)
     }
 
-    fun sortTrackables() {
-        // check content
-        if (trackables.size <= 1) {
-            return
-        }
-
-        // finally sort
-        trackables.sortBy { it.name }
-    }
-
-    /**
-     * Check if owner, country, state or description contains certain defined text.
-     *
-     * @param text text that we search
-     * @return `true` if text is in this cache
-     */
-    fun containsInData(text: String): Boolean {
-        if (owner.toLowerCase().contains(text)) {
-            return true
-        }
-        if (country.toLowerCase().contains(text)) {
-            return true
-        }
-        if (state.toLowerCase().contains(text)) {
-            return true
-        }
-
-        // check descriptions
-        val desc = descriptions
-        return desc[0].toLowerCase().contains(text) || desc[1].toLowerCase().contains(text)
-    }
-
     companion object {
 
         // tag for logger
         private const val TAG = "GeocachingData"
 
+        // GEOCACHE TYPES
+        // https://api.groundspeak.com/documentation#geocache-types
+
+        /**
+         * Traditional cache, API Id: 2
+         */
         const val CACHE_TYPE_TRADITIONAL = 0
+        /**
+         * Multi-cache, API Id: 3
+         */
         const val CACHE_TYPE_MULTI = 1
+        /**
+         * Mystery/Unknown cache, API Id: 8
+         */
         const val CACHE_TYPE_MYSTERY = 2
+        /**
+         * Virtual cache, API Id: 4
+         */
         const val CACHE_TYPE_VIRTUAL = 3
+        /**
+         * Earthcache, API Id: 137
+         */
         const val CACHE_TYPE_EARTH = 4
+        /**
+         * Project A.P.E., API Id: 9
+         */
         const val CACHE_TYPE_PROJECT_APE = 5
+        /**
+         * Letterbox Hybrid cache, API Id: 5
+         */
         const val CACHE_TYPE_LETTERBOX = 6
+        /**
+         * Wherigo, API Id: 1858
+         */
         const val CACHE_TYPE_WHERIGO = 7
+        /**
+         * Event cache, API Id: 6
+         */
         const val CACHE_TYPE_EVENT = 8
+        /**
+         * Mega-event, API Id: 453
+         */
         const val CACHE_TYPE_MEGA_EVENT = 9
+        /**
+         * Cache In Trash Out Event, API Id: 13
+         */
         const val CACHE_TYPE_CACHE_IN_TRASH_OUT = 10
+        /**
+         * GPS Adventures Exhibit, API Id: 1304
+         */
         const val CACHE_TYPE_GPS_ADVENTURE = 11
+        /**
+         * Webcam, API Id: 11
+         */
         const val CACHE_TYPE_WEBCAM = 12
+        /**
+         * Locationless (Reverse) Cache, API Id: 12
+         */
         const val CACHE_TYPE_LOCATIONLESS = 13
+        /**
+         * Benchmark, not published over API
+         */
         const val CACHE_TYPE_BENCHMARK = 14
+        /**
+         * Maze Exhibit, not published over API
+         */
         const val CACHE_TYPE_MAZE_EXHIBIT = 15
+        /**
+         * Waymark, not published over API
+         */
         const val CACHE_TYPE_WAYMARK = 16
+        @Deprecated(message = "No longer user cache type/name",
+                replaceWith = ReplaceWith("CACHE_TYPE_GC_HQ"))
         const val CACHE_TYPE_GROUNDSPEAK = 17
+        /**
+         * Geocaching HQ, API Id: 3773
+         * Previously "Groundspeak"
+         */
+        const val CACHE_TYPE_GC_HQ = 17
+        @Deprecated(message = "No longer user cache type/name",
+                replaceWith = ReplaceWith("CACHE_TYPE_COMMUNITY_CELEBRATION"))
         const val CACHE_TYPE_LF_EVENT = 18
+        /**
+         * Community Celebration Event, API Id: 3653
+         * Previously "Lost And Found Event"
+         */
+        const val CACHE_TYPE_COMMUNITY_CELEBRATION = 18
+        @Deprecated(message = "No longer user cache type/name",
+                replaceWith = ReplaceWith("CACHE_TYPE_GC_HQ_CELEBRATION"))
         const val CACHE_TYPE_LF_CELEBRATION = 19
+        /**
+         * Geocaching HQ Celebration, API Id: 3774
+         * Previously "Lost And Found Celebration"
+         */
+        const val CACHE_TYPE_GC_HQ_CELEBRATION = 19
+        /**
+         * Giga-event, API Id: 7005
+         */
         const val CACHE_TYPE_GIGA_EVENT = 20
+        /**
+         * Lab cache, not published over API
+         */
         const val CACHE_TYPE_LAB_CACHE = 21
+        /**
+         * Geocaching HQ Block Party, API Id: 4738
+         */
+        const val CACHE_TYPE_GC_HQ_BLOCK_PARTY = 22
+
 
         const val CACHE_TYPE_UNDEFINED = 100
 
@@ -583,9 +670,9 @@ class GeocachingData : Storable() {
                 CACHE_TYPE_BENCHMARK -> return "Benchmark"
                 CACHE_TYPE_MAZE_EXHIBIT -> return "Maze Exhibit"
                 CACHE_TYPE_WAYMARK -> return "Waymark"
-                CACHE_TYPE_GROUNDSPEAK -> return "Groundspeak"
-                CACHE_TYPE_LF_EVENT -> return "L&F Event"
-                CACHE_TYPE_LF_CELEBRATION -> return "L&F Celebration"
+                CACHE_TYPE_COMMUNITY_CELEBRATION -> return "L&F Event"
+                CACHE_TYPE_GC_HQ -> return "Groundspeak"
+                CACHE_TYPE_GC_HQ_CELEBRATION -> return "L&F Celebration"
                 CACHE_TYPE_GIGA_EVENT -> return "Giga-Event Cache"
                 CACHE_TYPE_LAB_CACHE -> return "Lab Cache"
                 else -> return "Geocache"
@@ -636,7 +723,7 @@ class GeocachingData : Storable() {
                 CACHE_TYPE_CACHE_IN_TRASH_OUT
             } else if (typeNew.equals("EarthCache", ignoreCase = true)) {
                 CACHE_TYPE_EARTH
-            } else if (typeNew.toLowerCase().startsWith("gps adventures")) {
+            } else if (typeNew.toLowerCase(Locale.ROOT).startsWith("gps adventures")) {
                 CACHE_TYPE_GPS_ADVENTURE
             } else if (typeNew.equals("Virtual Cache", ignoreCase = true)) {
                 CACHE_TYPE_VIRTUAL
@@ -651,11 +738,11 @@ class GeocachingData : Storable() {
             } else if (typeNew.equals("Waymark", ignoreCase = true)) {
                 CACHE_TYPE_WAYMARK
             } else if (typeNew.equals("Groundspeak", ignoreCase = true)) {
-                CACHE_TYPE_GROUNDSPEAK
+                CACHE_TYPE_GC_HQ
             } else if (typeNew.equals("L&F Event", ignoreCase = true)) {
-                CACHE_TYPE_LF_EVENT
+                CACHE_TYPE_COMMUNITY_CELEBRATION
             } else if (typeNew.equals("L&F Celebration", ignoreCase = true)) {
-                CACHE_TYPE_LF_CELEBRATION
+                CACHE_TYPE_GC_HQ_CELEBRATION
             } else if (typeNew.equals("Giga-Event Cache", ignoreCase = true)) {
                 CACHE_TYPE_GIGA_EVENT
             } else if (typeNew.equals("Lab Cache", ignoreCase = true)) {
