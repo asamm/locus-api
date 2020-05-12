@@ -2,6 +2,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
     dependencies {
         // Android build
@@ -18,8 +19,13 @@ buildscript {
 // define global parameters
 allprojects {
     repositories {
+        // local maven
+        mavenLocal()
+
+        // basic repositories
         google()
         jcenter()
+        mavenCentral()
     }
 }
 
