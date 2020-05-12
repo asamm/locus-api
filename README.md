@@ -1,4 +1,5 @@
 [ ![Download](https://api.bintray.com/packages/asammsoft/maven/locus-api-android/images/download.svg) ](https://bintray.com/asammsoft/maven/locus-api-android/_latestVersion)
+![Release](https://github.com/asamm/locus-api/workflows/Release/badge.svg)
 
 # Locus API
 
