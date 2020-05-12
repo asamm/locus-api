@@ -31,11 +31,11 @@ jobs:
 
       # Public Locus API
       - name: Publish `locus-api-core`
-        run: ./gradlew locus-api-core:bintrayUpload
+        run: ./gradlew :locus-api-core:clean :locus-api-core:publishToMavenLocal :locus-api-core:bintrayUpload
 
       # Publish Locus API - Android
       - name: Publish `locus-api-android`
-        run: ./gradlew locus-api-android:bintrayUpload
+        run: ./gradlew :locus-api-android:clean :locus-api-android:build :locus-api-android:bintrayUpload --info
 
 #      - name: Publish `locus-api-core`
 #        # The GITHUB_REF tag comes in the format 'refs/tags/xxx'.
