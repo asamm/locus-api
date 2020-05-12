@@ -7,6 +7,9 @@ buildscript {
         // Android build
         classpath 'com.android.tools.build:gradle:' + ANDROID_PLUGIN_GRADLE
 
+        // Bintray support
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
+
         // Kotlin
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:' + KOTLIN_VERSION
     }
@@ -20,25 +23,28 @@ allprojects {
     }
 }
 
-subprojects {
-    apply plugin: "maven-publish"
-    publishing {
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/asamm/locus-api")
-                credentials {
-                    username = System.getenv("GH_USER")
-                    password = System.getenv("GH_PERSONAL_ACCESS_TOKEN")
-                }
-            }
-            maven {
-                name = 'CustomMavenRepo'
-                url = "file://${buildDir}/repo"
-            }
-        }
-    }
-}
+// Support for GitHub packages
+// currently disabled as GP does not allow auth-less access to public packages (for now 05/2020)
+// https://github.community/t5/GitHub-API-Development-and/Download-from-Github-Package-Registry-without-authentication/td-p/35255
+//subprojects {
+//    apply plugin: "maven-publish"
+//    publishing {
+//        repositories {
+//            maven {
+//                name = "GitHubPackages"
+//                url = uri("https://maven.pkg.github.com/asamm/locus-api")
+//                credentials {
+//                    username = System.getenv("GH_USER")
+//                    password = System.getenv("GH_PERSONAL_ACCESS_TOKEN")
+//                }
+//            }
+//            maven {
+//                name = 'CustomMavenRepo'
+//                url = "file://${buildDir}/repo"
+//            }
+//        }
+//    }
+//}
 
 configure([
         project(":locus-api-android-sample")]) {

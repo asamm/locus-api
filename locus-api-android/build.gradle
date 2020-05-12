@@ -1,6 +1,9 @@
 // apply plugins
 apply plugin: 'com.android.library'
 apply plugin: "kotlin-android"
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: "com.jfrog.bintray"
 
 // Android basics
 android {
@@ -122,6 +125,36 @@ project.afterEvaluate {
                     }
                 }
             }
+        }
+    }
+}
+
+// upload library to BinTray
+// https://github.com/bintray/gradle-bintray-plugin
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['Release']
+    publish = true
+    override = true
+
+    pkg {
+        repo = 'maven'
+        name = 'locus-api-android'
+        licenses = ['LGPL-3.0']
+        vcsUrl = 'https://github.com/asamm/locus-api.git'
+
+        // optional Github repository
+        githubRepo = 'asamm/locus-api'
+        // optional Github readme file
+        githubReleaseNotesFile = 'README.md'
+
+        //noinspection GroovyAssignabilityCheck
+        version {
+            name = API_VERSION
+            desc = 'Locus API - Android, version ' + API_VERSION
+            released  = new Date()
+            vcsTag = API_VERSION
         }
     }
 }
