@@ -339,7 +339,8 @@ abstract class GeoData : Storable() {
      * @param email email to add
      * @param label (optional) label visible in the app
      */
-    fun addParameterEmail(email: String, label: String? = ""): Boolean {
+    @JvmOverloads
+    fun addParameterEmail(email: String, label: String? = null): Boolean {
         return addParameter {
             addAttachment(GeoDataExtra.AttachType.EMAIL, label, email)
         }
@@ -351,7 +352,8 @@ abstract class GeoData : Storable() {
      * @param phone email to add
      * @param label (optional) label visible in the app
      */
-    fun addParameterPhone(phone: String, label: String? = ""): Boolean {
+    @JvmOverloads
+    fun addParameterPhone(phone: String, label: String? = null): Boolean {
         return addParameter {
             addAttachment(GeoDataExtra.AttachType.PHONE, label, phone)
         }
@@ -363,7 +365,8 @@ abstract class GeoData : Storable() {
      * @param url email to add
      * @param label (optional) label visible in the app
      */
-    fun addParameterUrl(url: String, label: String? = ""): Boolean {
+    @JvmOverloads
+    fun addParameterUrl(url: String, label: String? = null): Boolean {
         return addParameter {
             addAttachment(GeoDataExtra.AttachType.URL, label, url)
         }
@@ -377,7 +380,7 @@ abstract class GeoData : Storable() {
      */
     fun addAttachmentAudio(uri: String): Boolean {
         return addParameter {
-            addAttachment(GeoDataExtra.AttachType.AUDIO, "", uri)
+            addAttachment(GeoDataExtra.AttachType.AUDIO, null, uri)
         }
     }
 
@@ -389,7 +392,7 @@ abstract class GeoData : Storable() {
      */
     fun addAttachmentPhoto(uri: String): Boolean {
         return addParameter {
-            addAttachment(GeoDataExtra.AttachType.PHOTO, "", uri)
+            addAttachment(GeoDataExtra.AttachType.PHOTO, null, uri)
         }
     }
 
@@ -401,7 +404,7 @@ abstract class GeoData : Storable() {
      */
     fun addAttachmentVideo(uri: String): Boolean {
         return addParameter {
-            addAttachment(GeoDataExtra.AttachType.VIDEO, "", uri)
+            addAttachment(GeoDataExtra.AttachType.VIDEO, null, uri)
         }
     }
 
@@ -413,7 +416,7 @@ abstract class GeoData : Storable() {
      */
     fun addAttachmentOther(uri: String): Boolean {
         return addParameter {
-            addAttachment(GeoDataExtra.AttachType.OTHER, "", uri)
+            addAttachment(GeoDataExtra.AttachType.OTHER, null, uri)
         }
     }
 
