@@ -25,9 +25,7 @@ import locus.api.objects.extra.TrackStats
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
 import locus.api.utils.Logger
-
 import java.io.IOException
-import java.util.Arrays
 
 class Track : GeoData() {
 
@@ -35,24 +33,29 @@ class Track : GeoData() {
      * Locations of this track
      */
     var points: MutableList<Location> = arrayListOf()
+
     /**
      * List containing all track break points. Break point is defined as index of point, after
      * which follow break in track. So break point "1" means, that after second point (point with
      * index 1) follow a break.
      */
     var breaks: MutableList<Int> = arrayListOf()
+
     /**
      * Extra points (also may include routing data)
      */
     var waypoints: MutableList<Point> = arrayListOf()
+
     /**
      * Flag that indicate whether to use parent folder style if exists.
      */
     var isUseFolderStyle: Boolean = true
+
     /**
      * Type of activity
      */
     var activityType: Int = 0
+
     /**
      * Track statistics (generated statistics of track)
      */
@@ -62,24 +65,25 @@ class Track : GeoData() {
      * Reference to Locus Store item (item ID).
      */
     var storeItemId: Long = -1L
+
     /**
      * Reference to Locus Store item (version ID)
      */
     var storeVersionId: Long = -1L
 
-    val pointsCount: Int
-        get() = points.size
-
     //*************************************************
     // HELPERS
     //*************************************************
+
+    val pointsCount: Int
+        get() = points.size
 
     /**
      * Get point on certain index.
      *
      * @param index point index
      */
-    fun getPoint(index: Int) : Location {
+    fun getPoint(index: Int): Location {
         return points[index]
     }
 
@@ -90,7 +94,7 @@ class Track : GeoData() {
         stats = try {
             TrackStats().apply { read(data) }
         } catch (e: Exception) {
-            Logger.logE(TAG, "setStats(" + Arrays.toString(data) + ")", e)
+            Logger.logE(TAG, "setStats(" + data.contentToString() + ")", e)
             TrackStats()
         }
     }
@@ -100,7 +104,7 @@ class Track : GeoData() {
     /**
      * Get track breaks serialized in byte array.
      */
-    fun getBreaksAsData() : ByteArray {
+    fun getBreaksAsData(): ByteArray {
         return DataWriterBigEndian().apply {
             for (i in breaks.indices) {
                 writeInt(breaks[i])
@@ -133,7 +137,7 @@ class Track : GeoData() {
     //*************************************************
 
     public override fun getVersion(): Int {
-        return 6
+        return 7
     }
 
     @Throws(IOException::class)
@@ -215,6 +219,11 @@ class Track : GeoData() {
             storeItemId = dr.readLong()
             storeVersionId = dr.readLong()
         }
+
+        // V7
+        if (version >= 7) {
+            timeUpdated = dr.readLong()
+        }
     }
 
     @Throws(IOException::class)
@@ -281,6 +290,9 @@ class Track : GeoData() {
         // V6
         dw.writeLong(storeItemId)
         dw.writeLong(storeVersionId)
+
+        // V7
+        dw.writeLong(timeUpdated)
     }
 
     companion object {

@@ -34,6 +34,7 @@ class Point() : GeoData() {
      * Location of current point.
      */
     var location: Location = Location()
+
     /**
      * Additional geoCaching data
      */
@@ -170,7 +171,7 @@ class Point() : GeoData() {
     //*************************************************
 
     override fun getVersion(): Int {
-        return 2
+        return 3
     }
 
     @Throws(IOException::class)
@@ -195,6 +196,11 @@ class Point() : GeoData() {
         if (version >= 2) {
             readWriteMode = ReadWriteMode.values()[dr.readInt()]
         }
+
+        // V3
+        if (version >= 3) {
+            timeUpdated = dr.readLong()
+        }
     }
 
     @Throws(IOException::class)
@@ -215,6 +221,9 @@ class Point() : GeoData() {
 
         // V2
         dw.writeInt(readWriteMode.ordinal)
+
+        // V3
+        dw.writeLong(timeUpdated)
     }
 
     @Throws(IOException::class)
@@ -234,6 +243,7 @@ class Point() : GeoData() {
 
         // callback parameter
         const val TAG_EXTRA_CALLBACK = "TAG_EXTRA_CALLBACK"
+
         // extra on-display parameter
         const val TAG_EXTRA_ON_DISPLAY = "TAG_EXTRA_ON_DISPLAY"
 

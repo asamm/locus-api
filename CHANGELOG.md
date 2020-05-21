@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.11] - 2020-05-21
+### Added
+- `timeUpdated` parameter to `GeoData` object
+### Changed
+- simplified work with `GeoData` parameters
+
 ## [0.9.10] - 2020-05-12
 ### Added
 - language parameter to `ExtraData`, to specify language of the content

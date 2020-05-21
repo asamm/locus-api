@@ -21,8 +21,8 @@
 package locus.api.objects.geoData
 
 import locus.api.objects.Storable
-import locus.api.objects.extra.PointRteAction
 import locus.api.objects.extra.GeoDataExtra
+import locus.api.objects.extra.PointRteAction
 import locus.api.objects.styles.GeoDataStyle
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
@@ -44,6 +44,7 @@ abstract class GeoData : Storable() {
          * Items is in read-only state
          */
         READ_ONLY,
+
         /**
          * Item is in read-write state
          */
@@ -56,30 +57,42 @@ abstract class GeoData : Storable() {
      * Unique ID of this object.
      */
     var id: Long = -1L
+
     /**
      * Name of object, have to be unique
      */
     var name: String = ""
+
     /**
      * Time the data was created (ms).
      */
     var timeCreated: Long = System.currentTimeMillis()
+
+    /**
+     * Time the data was updated for the last time (ms).
+     */
+    var timeUpdated: Long = timeCreated
+
     /**
      * Extra data with parameters.
      */
     var extraData: GeoDataExtra? = null
+
     /**
      * Style for normal state.
      */
     var styleNormal: GeoDataStyle? = null
+
     /**
      * Style for highlight state.
      */
     var styleHighlight: GeoDataStyle? = null
+
     /**
      * Current item state.
      */
     private var state: Byte = 0
+
     /**
      * Define read-write mode of item.
      */
@@ -92,6 +105,7 @@ abstract class GeoData : Storable() {
      */
     var tag: Any? = null
     private var tags: Hashtable<String, Any>? = null
+
     /**
      * Temporary variable for sorting.
      */
@@ -193,39 +207,25 @@ abstract class GeoData : Storable() {
             extraData = null
         }
 
-    //*************************************************
-    // EXTRA DATA - PARAMETERS
-    //*************************************************
-
     /**
-     * Check if container has any extra data parameters.
-     */
-    fun hasExtraData(): Boolean {
-        return extraData != null
-    }
-
-    /**
-     * Check if extra data exists and if not, create it.
+     * Add parameter into attached [extraData] container.
+     * In case, container does not exists, it is created and also validated after "add" operation.
      *
-     * @return `true` if container was created
+     * @param addEvent event that fill [extraData] container
+     * @return `true` in case, parameter was correctly added
      */
-    private fun createExtraData(): Boolean {
-        return if (extraData == null) {
+    private fun addParameter(addEvent: GeoDataExtra.() -> Boolean): Boolean {
+        // check extra data and create if does not exists
+        val created = if (extraData == null) {
             extraData = GeoDataExtra()
             true
         } else {
             false
         }
-    }
 
-    /**
-     * Do some post-process work after item is added to container.
-     *
-     * @param added   `true` if item was added
-     * @param created `true` if extra data were created before
-     * @return `true` if all went well and item is stored
-     */
-    private fun afterItemAdded(added: Boolean, created: Boolean): Boolean {
+        // add parameter
+        val added = addEvent(extraData!!)
+
         // add parameter and return result
         return if (added) {
             true
@@ -237,6 +237,10 @@ abstract class GeoData : Storable() {
         }
     }
 
+    //*************************************************
+    // EXTRA DATA - PARAMETERS
+    //*************************************************
+
     /**
      * Add single parameter defined by it's ID into `extraData` container.
      *
@@ -244,11 +248,9 @@ abstract class GeoData : Storable() {
      * @param param text value of parameter
      */
     fun addParameter(paramId: Int, param: String?): Boolean {
-        // check extra data
-        val created = createExtraData()
-
-        // add parameter and return result
-        return afterItemAdded(extraData!!.addParameter(paramId, param), created)
+        return addParameter {
+            addParameter(paramId, param)
+        }
     }
 
     /**
@@ -258,25 +260,21 @@ abstract class GeoData : Storable() {
      * @param param value of parameter
      */
     fun addParameter(paramId: Int, param: ByteArray): Boolean {
-        // check extra data
-        val created = createExtraData()
-
-        // add parameter and return result
-        return afterItemAdded(extraData!!.addParameter(paramId, param), created)
+        return addParameter {
+            addParameter(paramId, param)
+        }
     }
 
     /**
      * Add single parameter defined by it's ID into `extraData` container.
      *
      * @param paramId ID of parameter
-     * @param param value of parameter
+     * @param value value of parameter
      */
     fun addParameter(paramId: Int, value: Int): Boolean {
-        // check extra data
-        val created = createExtraData()
-
-        // add parameter and return result
-        return afterItemAdded(extraData!!.addParameter(paramId, Integer.toString(value)), created)
+        return addParameter {
+            addParameter(paramId, value.toString())
+        }
     }
 
     /**
@@ -286,11 +284,9 @@ abstract class GeoData : Storable() {
      * @param param value of parameter
      */
     fun addParameter(paramId: Int, param: Byte): Boolean {
-        // check extra data
-        val created = createExtraData()
-
-        // add parameter and return result
-        return afterItemAdded(extraData!!.addParameter(paramId, param), created)
+        return addParameter {
+            addParameter(paramId, param)
+        }
     }
 
     /**
@@ -303,6 +299,12 @@ abstract class GeoData : Storable() {
         return extraData?.getParameter(paramId)
     }
 
+    /**
+     * Get parameter in raw original format.
+     *
+     * @param paramId ID of parameter
+     * @return parameter value in byte[] or `null` if no such parameter is stored
+     */
     fun getParameterRaw(paramId: Int): ByteArray? {
         return extraData?.getParameterRaw(paramId)
     }
@@ -317,6 +319,12 @@ abstract class GeoData : Storable() {
         return extraData?.hasParameter(paramId) ?: false
     }
 
+    /**
+     * Remove parameter from storage.
+     *
+     * @param paramId ID of parameter
+     * @return parameter value
+     */
     fun removeParameter(paramId: Int): String? {
         return extraData?.removeParameter(paramId)
     }
@@ -329,54 +337,37 @@ abstract class GeoData : Storable() {
      * Add "email" to current object.
      *
      * @param email email to add
+     * @param label (optional) label visible in the app
      */
-    fun addEmail(email: String) {
-        addEmail(null, email)
+    fun addParameterEmail(email: String, label: String? = ""): Boolean {
+        return addParameter {
+            addAttachment(GeoDataExtra.AttachType.EMAIL, label, email)
+        }
     }
 
     /**
-     * Add "email" to current object.
+     * Add "phone" to current object.
      *
-     * @param label label visible in app
-     * @param email email to add
+     * @param phone email to add
+     * @param label (optional) label visible in the app
      */
-    fun addEmail(label: String?, email: String) {
-        // check extra data
-        val created = createExtraData()
-
-        // add parameter
-        afterItemAdded(extraData!!.addAttachment(GeoDataExtra.AttachType.EMAIL, label, email), created)
+    fun addParameterPhone(phone: String, label: String? = ""): Boolean {
+        return addParameter {
+            addAttachment(GeoDataExtra.AttachType.PHONE, label, phone)
+        }
     }
 
-    // PARAMETER 'PHONE'
-
-    fun addPhone(phone: String) {
-        addPhone(null, phone)
+    /**
+     * Add "url" to current object.
+     *
+     * @param url email to add
+     * @param label (optional) label visible in the app
+     */
+    fun addParameterUrl(url: String, label: String? = ""): Boolean {
+        return addParameter {
+            addAttachment(GeoDataExtra.AttachType.URL, label, url)
+        }
     }
-
-    fun addPhone(label: String?, phone: String) {
-        // check extra data
-        val created = createExtraData()
-
-        // add parameter
-        afterItemAdded(extraData!!.addAttachment(GeoDataExtra.AttachType.PHONE, label, phone), created)
-    }
-
-    // PARAMETER 'URL'
-
-    fun addUrl(url: String) {
-        addUrl(null, url)
-    }
-
-    fun addUrl(label: String?, url: String) {
-        // check extra data
-        val created = createExtraData()
-
-        // add parameter
-        afterItemAdded(extraData!!.addAttachment(GeoDataExtra.AttachType.URL, label, url), created)
-    }
-
-    // PARAMETER 'AUDIO' ATTACHMENT
 
     /**
      * Add audio to current object.
@@ -385,14 +376,10 @@ abstract class GeoData : Storable() {
      * @return `true` if audio was correctly added
      */
     fun addAttachmentAudio(uri: String): Boolean {
-        // check extra data
-        val created = createExtraData()
-
-        // add parameter and return result
-        return afterItemAdded(extraData!!.addAttachment(GeoDataExtra.AttachType.AUDIO, "", uri), created)
+        return addParameter {
+            addAttachment(GeoDataExtra.AttachType.AUDIO, "", uri)
+        }
     }
-
-    // PARAMETER 'PHOTO' ATTACHMENT
 
     /**
      * Add photo to current object.
@@ -401,14 +388,10 @@ abstract class GeoData : Storable() {
      * @return `true` if photo was correctly added
      */
     fun addAttachmentPhoto(uri: String): Boolean {
-        // check extra data
-        val created = createExtraData()
-
-        // add parameter and return result
-        return afterItemAdded(extraData!!.addAttachment(GeoDataExtra.AttachType.PHOTO, "", uri), created)
+        return addParameter {
+            addAttachment(GeoDataExtra.AttachType.PHOTO, "", uri)
+        }
     }
-
-    // PARAMETER 'VIDEO' ATTACHMENT
 
     /**
      * Add video to current object.
@@ -417,27 +400,57 @@ abstract class GeoData : Storable() {
      * @return `true` if video was correctly added
      */
     fun addAttachmentVideo(uri: String): Boolean {
-        // check extra data
-        val created = createExtraData()
-
-        // add parameter and return result
-        return afterItemAdded(extraData!!.addAttachment(GeoDataExtra.AttachType.VIDEO, "", uri), created)
+        return addParameter {
+            addAttachment(GeoDataExtra.AttachType.VIDEO, "", uri)
+        }
     }
 
-    // PARAMETER 'OTHER' ATTACHMENT
-
     /**
-     * Add video to current object.
+     * Add other content to current object.
      *
      * @param uri uri to add
-     * @return `true` if video was correctly added
+     * @return `true` if object was correctly added
      */
     fun addAttachmentOther(uri: String): Boolean {
-        // check extra data
-        val created = createExtraData()
+        return addParameter {
+            addAttachment(GeoDataExtra.AttachType.OTHER, "", uri)
+        }
+    }
 
-        // add parameter and return result
-        return afterItemAdded(extraData!!.addAttachment(GeoDataExtra.AttachType.OTHER, "", uri), created)
+    @Deprecated(message = "",
+            replaceWith = ReplaceWith("addParameterEmail(email, \"\")"))
+    fun addEmail(email: String) {
+        addEmail(null, email)
+    }
+
+    @Deprecated(message = "",
+            replaceWith = ReplaceWith("addParameterEmail(email, label)"))
+    fun addEmail(label: String?, email: String) {
+        addParameterEmail(email, label)
+    }
+
+    @Deprecated(message = "",
+            replaceWith = ReplaceWith("addParameterPhone(phone, \"\")"))
+    fun addPhone(phone: String) {
+        addPhone(null, phone)
+    }
+
+    @Deprecated(message = "",
+            replaceWith = ReplaceWith("addParameterPhone(phone, label)"))
+    fun addPhone(label: String?, phone: String) {
+        addParameterPhone(phone, label)
+    }
+
+    @Deprecated(message = "",
+            replaceWith = ReplaceWith("addParameterUrl(url, \"\")"))
+    fun addUrl(url: String) {
+        addUrl(null, url)
+    }
+
+    @Deprecated(message = "",
+            replaceWith = ReplaceWith("addParameterUrl(url, label)"))
+    fun addUrl(label: String?, url: String) {
+        addParameterUrl(url, label)
     }
 
     //*************************************************

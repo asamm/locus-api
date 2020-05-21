@@ -12,6 +12,7 @@ class Circle() : GeoData() {
      */
     var location: Location = Location()
         private set
+
     /**
      * Radius of circle (in m).
      */
@@ -23,6 +24,7 @@ class Circle() : GeoData() {
                 value
             }
         }
+
     /**
      * Flag if circle should be draw as precise geodetic circle. This will highly improve
      * circle precision for bigger radius (100+ metres), but may affect rendering performance.
@@ -41,7 +43,7 @@ class Circle() : GeoData() {
     //*************************************************
 
     override fun getVersion(): Int {
-        return 1
+        return 2
     }
 
     @Throws(IOException::class)
@@ -61,6 +63,11 @@ class Circle() : GeoData() {
         if (version >= 1) {
             timeCreated = dr.readLong()
         }
+
+        // V2
+        if (version >= 2) {
+            timeUpdated = dr.readLong()
+        }
     }
 
     @Throws(IOException::class)
@@ -78,5 +85,8 @@ class Circle() : GeoData() {
 
         // V1
         dw.writeLong(timeCreated)
+
+        // V2
+        dw.writeLong(timeUpdated)
     }
 }
