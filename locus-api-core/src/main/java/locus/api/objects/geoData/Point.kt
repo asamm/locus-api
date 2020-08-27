@@ -171,7 +171,7 @@ class Point() : GeoData() {
     //*************************************************
 
     override fun getVersion(): Int {
-        return 3
+        return 4
     }
 
     @Throws(IOException::class)
@@ -201,6 +201,12 @@ class Point() : GeoData() {
         if (version >= 3) {
             timeUpdated = dr.readLong()
         }
+
+        // V4
+        if (version >= 4) {
+            privacy = Privacy.values().find { it.name == dr.readString() }
+                    ?: privacy
+        }
     }
 
     @Throws(IOException::class)
@@ -224,6 +230,9 @@ class Point() : GeoData() {
 
         // V3
         dw.writeLong(timeUpdated)
+
+        // V4
+        dw.writeString(privacy.name)
     }
 
     @Throws(IOException::class)

@@ -137,7 +137,7 @@ class Track : GeoData() {
     //*************************************************
 
     public override fun getVersion(): Int {
-        return 7
+        return 8
     }
 
     @Throws(IOException::class)
@@ -224,6 +224,12 @@ class Track : GeoData() {
         if (version >= 7) {
             timeUpdated = dr.readLong()
         }
+
+        // V8
+        if (version >= 8) {
+            privacy = Privacy.values().find { it.name == dr.readString() }
+                    ?: privacy
+        }
     }
 
     @Throws(IOException::class)
@@ -293,6 +299,9 @@ class Track : GeoData() {
 
         // V7
         dw.writeLong(timeUpdated)
+
+        // V8
+        dw.writeString(privacy.name)
     }
 
     companion object {

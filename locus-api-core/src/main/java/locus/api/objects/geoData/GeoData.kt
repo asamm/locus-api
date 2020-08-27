@@ -51,6 +51,22 @@ abstract class GeoData : Storable() {
         READ_WRITE
     }
 
+    /**
+     * Privacy settings for certain item.
+     */
+    enum class Privacy {
+
+        /**
+         * Item is private only.
+         */
+        PRIVATE,
+
+        /**
+         * Item is public to audience.
+         */
+        PUBLIC
+    }
+
     // STORABLE PARAMETERS
 
     /**
@@ -92,6 +108,11 @@ abstract class GeoData : Storable() {
      * Current item state.
      */
     private var state: Byte = 0
+
+    /**
+     * Define item privacy mode.
+     */
+    var privacy = Privacy.PRIVATE
 
     /**
      * Define read-write mode of item.
