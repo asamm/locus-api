@@ -204,7 +204,8 @@ class Point() : GeoData() {
 
         // V4
         if (version >= 4) {
-            privacy = Privacy.values().find { it.name == dr.readString() }
+            val privacyValue = dr.readString()
+            privacy = Privacy.values().find { it.name == privacyValue }
                     ?: privacy
         }
     }

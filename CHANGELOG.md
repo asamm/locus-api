@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [0.9.14] - 2020-08-27
+## [0.9.15] - 2020-08-27
 ### Added
 - support for "privacy" settings for `GeoData`
 - storage for special surface & way types for routes in `GeoDataExtra` class

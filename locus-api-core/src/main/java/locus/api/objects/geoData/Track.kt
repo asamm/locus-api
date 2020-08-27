@@ -227,7 +227,8 @@ class Track : GeoData() {
 
         // V8
         if (version >= 8) {
-            privacy = Privacy.values().find { it.name == dr.readString() }
+            val privacyValue = dr.readString()
+            privacy = Privacy.values().find { it.name == privacyValue }
                     ?: privacy
         }
     }

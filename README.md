@@ -1,3 +1,6 @@
+[ ![Download](https://api.bintray.com/packages/asammsoft/maven/locus-api-android/images/download.svg) ](https://bintray.com/asammsoft/maven/locus-api-android/_latestVersion)
+![Release](https://github.com/asamm/locus-api/workflows/Release/badge.svg)
+
 <p align="center">
     <a href="#current-version">Current version</a> | 
     <a href="#structure">Structure</a> | 
@@ -6,16 +9,13 @@
     <a href="#quick-start">Quick start</a>
 </p>
 
-[ ![Download](https://api.bintray.com/packages/asammsoft/maven/locus-api-android/images/download.svg) ](https://bintray.com/asammsoft/maven/locus-api-android/_latestVersion)
-![Release](https://github.com/asamm/locus-api/workflows/Release/badge.svg)
-
 # Locus API
 
 Library for [Locus Map](http://www.locusmap.eu) application for Android devices.
 
 ## Current version
 
-Latest stable LT version: **0.9.14**
+Latest stable LT version: **0.9.15**
 
 How to **update to new 0.9.x** version? More about it [here](https://github.com/asamm/locus-api/wiki/Update-to-version-0.9.0).
 
