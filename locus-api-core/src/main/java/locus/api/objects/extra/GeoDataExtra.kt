@@ -706,9 +706,9 @@ class GeoDataExtra : Storable() {
         const val PAR_GOOGLE_PLACES_DETAILS = 17
 
         /**
-         * Container for item flags.
+         * Container for online POI ID value.
          */
-        const val PAR_FLAGS = 18
+        const val PAR_DB_POI_ONLINE_ID = 18
 
         /**
          * Extra parameters from Locus Store, mostly with custom provider data.
