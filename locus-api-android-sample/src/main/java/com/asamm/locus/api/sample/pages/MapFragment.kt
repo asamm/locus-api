@@ -197,7 +197,7 @@ class MapFragment : DialogFragment() {
             }
 
             // draw map
-            c.drawBitmap(img, -1.0f * offsetX, -1.0f * offsetY, null)
+            c.drawBitmap(img!!, -1.0f * offsetX, -1.0f * offsetY, null)
         }
     }
 }
