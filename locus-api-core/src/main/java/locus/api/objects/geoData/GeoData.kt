@@ -630,7 +630,7 @@ abstract class GeoData : Storable() {
      * Set new tag/object under base key.
      */
     fun setTag(value: Any?) {
-        setTag(value = value)
+        setTag(key = TAG_KEY_DEFAULT, value = value)
     }
 
     /**
