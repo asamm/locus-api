@@ -42,6 +42,35 @@ class Track : GeoData() {
     var breaks: MutableList<Int> = arrayListOf()
 
     /**
+     * Serialized (binary) version of breaks.
+     */
+    var breaksBinary: ByteArray
+        get() {
+            return DataWriterBigEndian().apply {
+                for (i in breaks.indices) {
+                    writeInt(breaks[i])
+                }
+            }.toByteArray()
+        }
+        set(value) {
+            breaks.clear()
+            if (value.isEmpty()) {
+                return
+            }
+
+            try {
+                val dr = DataReaderBigEndian(value)
+                while (dr.available() > 0) {
+                    breaks.add(dr.readInt())
+                }
+            } catch (e: Exception) {
+                Logger.logE(TAG, "setBreaksFromData($value)", e)
+                breaks.clear()
+            }
+        }
+
+
+    /**
      * Extra points (also may include routing data)
      */
     var waypoints: MutableList<Point> = arrayListOf()
@@ -99,39 +128,6 @@ class Track : GeoData() {
         }
     }
 
-    // CUSTOM HANDLING
-
-    /**
-     * Get track breaks serialized in byte array.
-     */
-    fun getBreaksAsData(): ByteArray {
-        return DataWriterBigEndian().apply {
-            for (i in breaks.indices) {
-                writeInt(breaks[i])
-            }
-        }.toByteArray()
-    }
-
-    /**
-     * Set track breaks from previously serialized byte array.
-     */
-    fun setBreaksFromData(data: ByteArray) {
-        breaks.clear()
-        if (data.isEmpty()) {
-            return
-        }
-
-        try {
-            val dr = DataReaderBigEndian(data)
-            while (dr.available() > 0) {
-                breaks.add(dr.readInt())
-            }
-        } catch (e: Exception) {
-            Logger.logE(TAG, "setBreaksFromData($data)", e)
-            breaks.clear()
-        }
-    }
-
     //*************************************************
     // STORABLE PART
     //*************************************************
@@ -151,7 +147,7 @@ class Track : GeoData() {
         // read breaks
         val breaksSize = dr.readInt()
         if (breaksSize > 0) {
-            setBreaksFromData(dr.readBytes(breaksSize))
+            breaksBinary = dr.readBytes(breaksSize)
         }
 
         // read waypoints
@@ -206,7 +202,7 @@ class Track : GeoData() {
 
         // V4
         if (version >= 4) {
-            readWriteMode = ReadWriteMode.values()[dr.readInt()]
+            protected = dr.readInt() == 0
         }
 
         // V5
@@ -242,7 +238,7 @@ class Track : GeoData() {
         dw.writeListStorable(points)
 
         // write breaks
-        getBreaksAsData().let {
+        breaksBinary.let {
             dw.writeInt(it.size)
             if (it.isNotEmpty()) {
                 dw.write(it)
@@ -289,7 +285,7 @@ class Track : GeoData() {
         dw.writeStorable(stats)
 
         // V4
-        dw.writeInt(readWriteMode.ordinal)
+        dw.writeInt(if (protected) 0 else 1)
 
         // V5
         dw.writeInt(activityType)

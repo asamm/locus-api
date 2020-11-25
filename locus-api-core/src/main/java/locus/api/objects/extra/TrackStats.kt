@@ -8,6 +8,9 @@ import locus.api.objects.Storable
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
 import java.io.IOException
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Precise statistics for the [locus.api.objects.geoData.Track] class.
@@ -49,7 +52,7 @@ class TrackStats : Storable() {
         this.totalLengthMove += add
     }
 
-    fun getTrackLength(onlyWithMove: Boolean): Float {
+    fun getLength(onlyWithMove: Boolean): Float {
         return if (onlyWithMove) {
             totalLengthMove
         } else {
@@ -57,38 +60,55 @@ class TrackStats : Storable() {
         }
     }
 
+    @Deprecated(
+            message = "Use 'getLength' instead",
+            replaceWith = ReplaceWith("getLength(onlyWithMove)"))
+    fun getTrackLength(onlyWithMove: Boolean): Float {
+        return getLength(onlyWithMove)
+    }
+
     // TOTAL TIME
 
     /**
-     * Total time of route (in s).
+     * Total time of route (in ms).
      */
     var totalTime: Long = 0L
         set(value) {
-            field = Math.abs(value)
+            field = abs(value)
         }
 
     fun addTotalTime(add: Long) {
-        this.totalTime += Math.abs(add)
+        this.totalTime += abs(add)
     }
 
     /**
-     * Total track time with speed (in s).
+     * Total track time with speed (in ms).
      */
     var totalTimeMove: Long = 0L
         set(value) {
-            field = Math.abs(value)
+            field = abs(value)
         }
 
     fun addTotalTimeMove(add: Long) {
-        this.totalTimeMove += Math.abs(add)
+        this.totalTimeMove += abs(add)
     }
 
-    fun getTrackTime(onlyWithMove: Boolean): Long {
+    /**
+     * Get duration of the track
+     */
+    fun getTime(onlyWithMove: Boolean): Long {
         return if (onlyWithMove) {
             totalTimeMove
         } else {
             totalTime
         }
+    }
+
+    @Deprecated(
+            message = "Use 'getTime' instead",
+            replaceWith = ReplaceWith("getTime(onlyWithMove)"))
+    fun getTrackTime(onlyWithMove: Boolean): Long {
+        return getTime(onlyWithMove)
     }
 
     // SPEED
@@ -105,9 +125,9 @@ class TrackStats : Storable() {
      * @return average speed in m/s
      */
     fun getSpeedAverage(onlyWithMove: Boolean): Float {
-        val trackTime = getTrackTime(onlyWithMove) / 1000.0f
-        return if (trackTime > 0) {
-            getTrackLength(onlyWithMove) / trackTime
+        val time = getTime(onlyWithMove) / 1000.0f
+        return if (time > 0) {
+            getLength(onlyWithMove) / time
         } else {
             0.0f
         }
@@ -116,12 +136,12 @@ class TrackStats : Storable() {
     // ELEVATION & CHANGES
 
     /**
-     * Maximum altitude on track (in m).
+     * Maximum altitude on the track (in m).
      */
     var altitudeMax: Float = 0.0f
 
     /**
-     * Minimum altitude on track (in m).
+     * Minimum altitude on the track (in m).
      */
     var altitudeMin: Float = 0.0f
 
@@ -189,7 +209,7 @@ class TrackStats : Storable() {
     }
 
     /**
-     * Check if track has some elevation values.
+     * Check if the track has some elevation values.
      */
     fun hasElevationValues(): Boolean {
         return (altitudeMin != Float.POSITIVE_INFINITY && altitudeMin != 0.0f)
@@ -209,21 +229,31 @@ class TrackStats : Storable() {
     private var heartRateTime: Long = 0L
 
     /**
-     * Maximum HRM value.
-     */
-    var hrmMax: Int = 0
-        private set
-
-    /**
      * Average value of heart rate.
      */
-    val hrmAverage: Int
+    val heartRateAverage: Int
         get() = if (heartRateBeats > 0 && heartRateTime > 0L) {
             val minutes = heartRateTime / (60.0 * 1000.0)
             (heartRateBeats / minutes).toInt()
         } else {
             0
         }
+
+    @Deprecated(
+            message = "Use 'heartRateAverage' instead",
+            replaceWith = ReplaceWith("heartRateAverage"))
+    val hrmAverage: Int = heartRateAverage
+
+    /**
+     * Maximum HRM value.
+     */
+    var heartRateMax: Int = 0
+        private set
+
+    @Deprecated(
+            message = "Use 'heartRateMax' instead",
+            replaceWith = ReplaceWith("heartRateMax"))
+    val hrmMax = heartRateMax
 
     /**
      * Add measured heart rate values.
@@ -240,7 +270,7 @@ class TrackStats : Storable() {
         heartRateTime += measureTime
 
         // compute max. heart rate
-        hrmMax = Math.max(hrmMax, hrmMeasured)
+        heartRateMax = max(heartRateMax, hrmMeasured)
     }
 
     // CADENCE
@@ -254,11 +284,6 @@ class TrackStats : Storable() {
      * Time during which were cadence measured.
      */
     private var cadenceTime: Long = 0
-    /**
-     * Maximum cadence value.
-     */
-    var cadenceMax: Int = 0
-        private set
 
     /**
      * Get average value of cadence.
@@ -272,6 +297,12 @@ class TrackStats : Storable() {
         } else {
             0
         }
+
+    /**
+     * Maximum cadence value.
+     */
+    var cadenceMax: Int = 0
+        private set
 
     /**
      * Add measured cadence values.
@@ -288,7 +319,7 @@ class TrackStats : Storable() {
         cadenceTime += measureTime
 
         // compute max. heart rate
-        cadenceMax = Math.max(cadenceMax, revMeasured)
+        cadenceMax = max(cadenceMax, revMeasured)
     }
 
     // ENERGY
@@ -325,7 +356,7 @@ class TrackStats : Storable() {
     }
 
     /**
-     * Reset all parameters of track statistics.
+     * Reset all parameters of the track statistics.
      */
     fun resetStatistics() {
         // basic statistics variables
@@ -336,7 +367,7 @@ class TrackStats : Storable() {
         speedMax = 0.0f
         heartRateBeats = 0.0
         heartRateTime = 0L
-        hrmMax = 0
+        heartRateMax = 0
         cadenceNumber = 0.0
         cadenceTime = 0L
         cadenceMax = 0
@@ -370,15 +401,15 @@ class TrackStats : Storable() {
      */
     fun appendStatistics(stats: TrackStats) {
         this.numOfPoints += stats.numOfPoints
-        this.startTime = Math.min(startTime, stats.startTime)
-        this.stopTime = Math.max(stopTime, stats.stopTime)
+        this.startTime = min(startTime, stats.startTime)
+        this.stopTime = max(stopTime, stats.stopTime)
         this.totalLength += stats.totalLength
         this.totalLengthMove += stats.totalLengthMove
         this.totalTime += stats.totalTime
         this.totalTimeMove += stats.totalTimeMove
-        this.speedMax = Math.max(speedMax, stats.speedMax)
-        this.altitudeMax = Math.max(altitudeMax, stats.altitudeMax)
-        this.altitudeMin = Math.min(altitudeMin, stats.altitudeMin)
+        this.speedMax = max(speedMax, stats.speedMax)
+        this.altitudeMax = max(altitudeMax, stats.altitudeMax)
+        this.altitudeMin = min(altitudeMin, stats.altitudeMin)
 
         this.eleNeutralDistance += stats.eleNeutralDistance
         this.eleNeutralHeight += stats.eleNeutralHeight
@@ -389,18 +420,18 @@ class TrackStats : Storable() {
 
         this.heartRateBeats += stats.heartRateBeats
         this.heartRateTime += stats.heartRateTime
-        this.hrmMax = Math.max(this.hrmMax, stats.hrmMax)
+        this.heartRateMax = max(this.heartRateMax, stats.heartRateMax)
 
         this.cadenceNumber += stats.cadenceNumber
         this.cadenceTime += stats.cadenceTime
-        this.cadenceMax = Math.max(this.cadenceMax, stats.cadenceMax)
+        this.cadenceMax = max(this.cadenceMax, stats.cadenceMax)
 
         this.energy += stats.energy
         this.numOfStrides += stats.numOfStrides
     }
 
     //*************************************************
-    // STORABLE PART
+    // STORABLE
     //*************************************************
 
     override fun getVersion(): Int {
@@ -438,7 +469,7 @@ class TrackStats : Storable() {
         if (version >= 1) {
             heartRateBeats = dr.readInt().toDouble()
             heartRateTime = dr.readLong()
-            hrmMax = dr.readInt()
+            heartRateMax = dr.readInt()
             energy = dr.readInt()
         }
 
@@ -486,7 +517,7 @@ class TrackStats : Storable() {
         // V1
         dw.writeInt(heartRateBeats.toInt())
         dw.writeLong(heartRateTime)
-        dw.writeInt(hrmMax)
+        dw.writeInt(heartRateMax)
         dw.writeInt(energy)
 
         // V2

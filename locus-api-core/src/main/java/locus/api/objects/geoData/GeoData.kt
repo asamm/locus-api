@@ -36,22 +36,6 @@ import kotlin.experimental.or
 abstract class GeoData : Storable() {
 
     /**
-     * Define state of item (read-only/writable)
-     */
-    enum class ReadWriteMode {
-
-        /**
-         * Items is in read-only state
-         */
-        READ_ONLY,
-
-        /**
-         * Item is in read-write state
-         */
-        READ_WRITE
-    }
-
-    /**
      * Privacy settings for certain item.
      */
     enum class Privacy {
@@ -115,22 +99,17 @@ abstract class GeoData : Storable() {
     var privacy = Privacy.PRIVATE
 
     /**
-     * Define read-write mode of item.
+     * Define read-write mode of item. Protected item should not be exported from the Locus World
+     * or shared publicly to any place out of Locus scope.
      */
-    var readWriteMode = ReadWriteMode.READ_WRITE
+    var protected = false
 
     // TEMPORARY PARAMETERS
 
     /**
      * Additional temporary storage object. Object is not serialized!
      */
-    var tag: Any? = null
     private var tags: Hashtable<String, Any>? = null
-
-    /**
-     * Temporary variable for sorting.
-     */
-    var dist: Int = 0
 
     //*************************************************
     // STATE
@@ -634,7 +613,7 @@ abstract class GeoData : Storable() {
      * @param key key value that defined object
      * @return required object otherwise 'null'
      */
-    fun getTag(key: String): Any? {
+    fun getTag(key: String = TAG_KEY_DEFAULT): Any? {
         // check key
         if (key.isEmpty()) {
             Logger.logW(TAG, "getTag(" + key + "), " +
@@ -647,20 +626,12 @@ abstract class GeoData : Storable() {
     }
 
     /**
-     * Get all attached keys for tags.
-     */
-    fun getTagsKeys(): Array<String> {
-        return tags?.keys?.toTypedArray()
-                ?: emptyArray()
-    }
-
-    /**
      * Set new tag/object defined by key.
      *
      * @param key key that define object
      * @param value object itself or 'null' if we wants to remove it
      */
-    fun setTag(key: String, value: Any?) {
+    fun setTag(key: String = TAG_KEY_DEFAULT, value: Any?) {
         // check key
         if (key.isEmpty()) {
             Logger.logW(TAG, "setTag(" + key + "), " +
@@ -679,9 +650,20 @@ abstract class GeoData : Storable() {
         }
     }
 
+    /**
+     * Get all attached keys for tags.
+     */
+    fun getTagsKeys(): Array<String> {
+        return tags?.keys?.toTypedArray()
+                ?: emptyArray()
+    }
+
     companion object {
 
         // tag for logger
         private const val TAG = "GeoData"
+
+        // default key for "empty" tag value
+        private const val TAG_KEY_DEFAULT = "default"
     }
 }

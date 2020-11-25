@@ -35,36 +35,31 @@ class Point() : GeoData() {
      */
     var location: Location = Location()
 
+    // GEOCACHING DATA
+
     /**
-     * Additional geoCaching data
+     * Additional geoCaching data.
      */
     var gcData: GeocachingData? = null
 
-    // EXTRA CALLBACK
-
-    val extraCallback: String?
-        get() = getParameter(GeoDataExtra.PAR_INTENT_EXTRA_CALLBACK)
-
-    val extraOnDisplay: String?
-        get() = getParameter(GeoDataExtra.PAR_INTENT_EXTRA_ON_DISPLAY)
-
-    // GEOCACHING DATA
-
-    var geocachingData: ByteArray?
+    /**
+     * Deal with binary data of geocaching object.
+     */
+    var gcDataBinary: ByteArray?
         get() {
             return try {
                 val dw = DataWriterBigEndian()
                 writeGeocachingData(dw)
                 dw.toByteArray()
             } catch (e: IOException) {
-                Logger.logE(TAG, "getGeocachingData()", e)
+                Logger.logE(TAG, "gcDataBinary - get()", e)
                 null
             }
         }
         set(data) = try {
             gcData = readGeocachingData(DataReaderBigEndian(data))
         } catch (e: Exception) {
-            Logger.logE(TAG, "setGeocachingData($data)", e)
+            Logger.logE(TAG, "gcDataBinary - set($data)", e)
             gcData = null
         }
 
@@ -75,6 +70,11 @@ class Point() : GeoData() {
         this.name = name
         this.location = loc
     }
+
+    // EXTRA "CALLBACK"
+
+    val extraCallback: String?
+        get() = getParameter(GeoDataExtra.PAR_INTENT_EXTRA_CALLBACK)
 
     /**
      * Simply allow set callback value on point. This appear when you click on point
@@ -124,6 +124,11 @@ class Point() : GeoData() {
     fun removeExtraCallback() {
         addParameter(GeoDataExtra.PAR_INTENT_EXTRA_CALLBACK, "clear")
     }
+
+    // EXTRA "ON-DISPLAY"
+
+    val extraOnDisplay: String?
+        get() = getParameter(GeoDataExtra.PAR_INTENT_EXTRA_ON_DISPLAY)
 
     /**
      * Extra feature that allow to send to locus only partial point data. When you click on
@@ -194,7 +199,7 @@ class Point() : GeoData() {
 
         // V2
         if (version >= 2) {
-            readWriteMode = ReadWriteMode.values()[dr.readInt()]
+            protected = dr.readInt() == 0
         }
 
         // V3
@@ -227,7 +232,7 @@ class Point() : GeoData() {
         dw.writeLong(timeCreated)
 
         // V2
-        dw.writeInt(readWriteMode.ordinal)
+        dw.writeInt(if (protected) 0 else 1)
 
         // V3
         dw.writeLong(timeUpdated)
