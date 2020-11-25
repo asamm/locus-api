@@ -613,6 +613,7 @@ abstract class GeoData : Storable() {
      * @param key key value that defined object
      * @return required object otherwise 'null'
      */
+    @JvmOverloads
     fun getTag(key: String = TAG_KEY_DEFAULT): Any? {
         // check key
         if (key.isEmpty()) {
@@ -623,6 +624,13 @@ abstract class GeoData : Storable() {
 
         // get tag
         return tags?.get(key)
+    }
+
+    /**
+     * Set new tag/object under base key.
+     */
+    fun setTag(value: Any?) {
+        setTag(value = value)
     }
 
     /**

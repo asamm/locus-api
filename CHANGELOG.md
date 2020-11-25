@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [0.9.18] - 2020-11-25
+## [0.9.19] - 2020-11-25
 ### Changed
-- readWriteMode parameter changed to "protected"
+- readWriteMode parameter changed to "protected" parameter
 - minor updates in TrackStats (mainly naming)
 
 ## [0.9.17] - 2020-09-21
