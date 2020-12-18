@@ -330,12 +330,15 @@ class GeocachingData : Storable() {
         get() {
             // if cache is from Groundspeak, return "coord.info" url
             if (source == CACHE_SOURCE_GEOCACHING_COM) {
-                return "http://coord.info/$cacheID"
+                return "https://coord.info/$cacheID"
             }
+
             // check defined URL
             return if (cacheUrl.isNotEmpty()) {
                 cacheUrl
-            } else "http://www.geocaching.com/seek/cache_details.aspx?wp=$cacheID"
+            } else {
+                "https://www.geocaching.com/seek/cache_details.aspx?wp=$cacheID"
+            }
         }
 
     //*************************************************
