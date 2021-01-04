@@ -29,6 +29,12 @@ import locus.api.utils.Utils
 
 import java.io.IOException
 
+/**
+ * Container for location related information.
+ *
+ * Class is made open because of WhereYouGo request:
+ * https://github.com/asamm/locus-api/issues/30
+ */
 open class Location() : Storable() {
 
     /**
@@ -125,16 +131,16 @@ open class Location() : Storable() {
     /**
      * Container for extended data for location class.
      */
-    private class ExtraBasic internal constructor() : Cloneable {
+    private class ExtraBasic : Cloneable {
 
-        internal var hasSpeed: Boolean = false
-        internal var speed: Float = 0.toFloat()
+        var hasSpeed: Boolean = false
+        var speed: Float = 0.toFloat()
 
-        internal var hasBearing: Boolean = false
-        internal var bearing: Float = 0.toFloat()
+        var hasBearing: Boolean = false
+        var bearing: Float = 0.toFloat()
 
-        internal var hasAccuracy: Boolean = false
-        internal var accuracy: Float = 0.toFloat()
+        var hasAccuracy: Boolean = false
+        var accuracy: Float = 0.toFloat()
 
         init {
             hasSpeed = false
@@ -156,7 +162,7 @@ open class Location() : Storable() {
             return newExtra
         }
 
-        internal fun hasData(): Boolean {
+        fun hasData(): Boolean {
             return hasSpeed || hasBearing || hasAccuracy
         }
 
@@ -170,23 +176,23 @@ open class Location() : Storable() {
      */
     private class ExtraSensor : Storable(), Cloneable {
 
-        internal var hasHr: Boolean = false
-        internal var hr: Int = 0
+        var hasHr: Boolean = false
+        var hr: Int = 0
 
-        internal var hasCadence: Boolean = false
-        internal var cadence: Int = 0
+        var hasCadence: Boolean = false
+        var cadence: Int = 0
 
-        internal var hasSpeed: Boolean = false
-        internal var speed: Float = 0.toFloat()
+        var hasSpeed: Boolean = false
+        var speed: Float = 0.toFloat()
 
-        internal var hasPower: Boolean = false
-        internal var power: Float = 0.toFloat()
+        var hasPower: Boolean = false
+        var power: Float = 0.toFloat()
 
-        internal var hasStrides: Boolean = false
-        internal var strides: Int = 0
+        var hasStrides: Boolean = false
+        var strides: Int = 0
 
-        internal var hasTemperature: Boolean = false
-        internal var temperature: Float = 0.toFloat()
+        var hasTemperature: Boolean = false
+        var temperature: Float = 0.toFloat()
 
         init {
             hasHr = false
@@ -220,7 +226,7 @@ open class Location() : Storable() {
             return newExtra
         }
 
-        internal fun hasData(): Boolean {
+        fun hasData(): Boolean {
             return hasHr || hasCadence ||
                     hasSpeed || hasPower ||
                     hasStrides || hasTemperature
@@ -319,98 +325,6 @@ open class Location() : Storable() {
         } else {
             extraSensor = null
         }
-    }
-
-    //*************************************************
-    // STORABLE
-    //*************************************************
-
-    override fun getVersion(): Int {
-        return 2
-    }
-
-    @Throws(IOException::class)
-    override fun readObject(version: Int, dr: DataReaderBigEndian) {
-        id = dr.readLong()
-        provider = dr.readString()
-        time = dr.readLong()
-        latitude = dr.readDouble()
-        longitude = dr.readDouble()
-        hasAltitude = dr.readBoolean()
-        _altitude = dr.readDouble()
-
-        // red basic data
-        if (dr.readBoolean()) {
-            extraBasic = ExtraBasic().apply {
-                hasAccuracy = dr.readBoolean()
-                accuracy = dr.readFloat()
-                hasBearing = dr.readBoolean()
-                bearing = dr.readFloat()
-                hasSpeed = dr.readBoolean()
-                speed = dr.readFloat()
-            }.takeIf { it.hasData() }
-        }
-
-        // V1
-        if (version >= 1) {
-            // read sensor data
-            if (dr.readBoolean()) {
-                if (version == 1) {
-                    readSensorVersion1(dr)
-                } else {
-                    extraSensor = ExtraSensor().apply { read(dr) }
-                }
-            }
-        }
-    }
-
-    private fun readSensorVersion1(dr: DataReaderBigEndian) {
-        extraSensor = ExtraSensor().apply {
-            hasHr = dr.readBoolean()
-            hr = dr.readInt()
-            hasCadence = dr.readBoolean()
-            cadence = dr.readInt()
-            hasSpeed = dr.readBoolean()
-            speed = dr.readFloat()
-            hasPower = dr.readBoolean()
-            power = dr.readFloat()
-        }.takeIf { it.hasData() }
-    }
-
-    @Throws(IOException::class)
-    override fun writeObject(dw: DataWriterBigEndian) {
-        dw.writeLong(id)
-        dw.writeString(provider)
-        dw.writeLong(time)
-        dw.writeDouble(latitude)
-        dw.writeDouble(longitude)
-        dw.writeBoolean(hasAltitude)
-        dw.writeDouble(altitude)
-
-        // write basic data
-        extraBasic
-                ?.takeIf { it.hasData() }
-                ?.let {
-                    dw.writeBoolean(true)
-                    dw.writeBoolean(it.hasAccuracy)
-                    dw.writeFloat(it.accuracy)
-                    dw.writeBoolean(it.hasBearing)
-                    dw.writeFloat(it.bearing)
-                    dw.writeBoolean(it.hasSpeed)
-                    dw.writeFloat(it.speed)
-                } ?: {
-            dw.writeBoolean(false)
-        }()
-
-        // write ant data (version 1+)
-        extraSensor
-                ?.takeIf { it.hasData() }
-                ?.let {
-                    dw.writeBoolean(true)
-                    it.write(dw)
-                } ?: {
-            dw.writeBoolean(false)
-        }()
     }
 
     //*************************************************
@@ -872,6 +786,98 @@ open class Location() : Storable() {
     fun distanceAndBearingTo(dest: Location): FloatArray {
         val com = LocationCompute(this)
         return floatArrayOf(com.distanceTo(dest), com.bearingTo(dest))
+    }
+
+    //*************************************************
+    // STORABLE
+    //*************************************************
+
+    override fun getVersion(): Int {
+        return 2
+    }
+
+    @Throws(IOException::class)
+    override fun readObject(version: Int, dr: DataReaderBigEndian) {
+        id = dr.readLong()
+        provider = dr.readString()
+        time = dr.readLong()
+        latitude = dr.readDouble()
+        longitude = dr.readDouble()
+        hasAltitude = dr.readBoolean()
+        _altitude = dr.readDouble()
+
+        // red basic data
+        if (dr.readBoolean()) {
+            extraBasic = ExtraBasic().apply {
+                hasAccuracy = dr.readBoolean()
+                accuracy = dr.readFloat()
+                hasBearing = dr.readBoolean()
+                bearing = dr.readFloat()
+                hasSpeed = dr.readBoolean()
+                speed = dr.readFloat()
+            }.takeIf { it.hasData() }
+        }
+
+        // V1
+        if (version >= 1) {
+            // read sensor data
+            if (dr.readBoolean()) {
+                if (version == 1) {
+                    readSensorVersion1(dr)
+                } else {
+                    extraSensor = ExtraSensor().apply { read(dr) }
+                }
+            }
+        }
+    }
+
+    private fun readSensorVersion1(dr: DataReaderBigEndian) {
+        extraSensor = ExtraSensor().apply {
+            hasHr = dr.readBoolean()
+            hr = dr.readInt()
+            hasCadence = dr.readBoolean()
+            cadence = dr.readInt()
+            hasSpeed = dr.readBoolean()
+            speed = dr.readFloat()
+            hasPower = dr.readBoolean()
+            power = dr.readFloat()
+        }.takeIf { it.hasData() }
+    }
+
+    @Throws(IOException::class)
+    override fun writeObject(dw: DataWriterBigEndian) {
+        dw.writeLong(id)
+        dw.writeString(provider)
+        dw.writeLong(time)
+        dw.writeDouble(latitude)
+        dw.writeDouble(longitude)
+        dw.writeBoolean(hasAltitude)
+        dw.writeDouble(altitude)
+
+        // write basic data
+        extraBasic
+                ?.takeIf { it.hasData() }
+                ?.let {
+                    dw.writeBoolean(true)
+                    dw.writeBoolean(it.hasAccuracy)
+                    dw.writeFloat(it.accuracy)
+                    dw.writeBoolean(it.hasBearing)
+                    dw.writeFloat(it.bearing)
+                    dw.writeBoolean(it.hasSpeed)
+                    dw.writeFloat(it.speed)
+                } ?: {
+            dw.writeBoolean(false)
+        }()
+
+        // write ant data (version 1+)
+        extraSensor
+                ?.takeIf { it.hasData() }
+                ?.let {
+                    dw.writeBoolean(true)
+                    it.write(dw)
+                } ?: {
+            dw.writeBoolean(false)
+        }()
     }
 
     companion object {

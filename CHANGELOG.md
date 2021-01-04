@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.22] - 2021-01-04
+### Changed
+- [#30](https://github.com/asamm/locus-api/issues/30), made `Location` object open
+
 ## [0.9.21] - 2020-12-18
 ### Changed
 - cacheUrl generated with `https` protocol
@@ -218,7 +222,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.2.21] - 2018-04-05
 ### Changed
-- [fixed #9](https://github.com/asamm/locus-api/issues/9) - getting info about available Locus versions 
+- [fixed #9](https://github.com/asamm/locus-api/issues/9), getting info about available Locus versions 
 
 ## [0.2.20] - 2018-03-04
 ### Changed
