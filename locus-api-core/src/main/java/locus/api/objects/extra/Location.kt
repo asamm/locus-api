@@ -29,7 +29,7 @@ import locus.api.utils.Utils
 
 import java.io.IOException
 
-class Location() : Storable() {
+open class Location() : Storable() {
 
     /**
      * Location unique ID.
