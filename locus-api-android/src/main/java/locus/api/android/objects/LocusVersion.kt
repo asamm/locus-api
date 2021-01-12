@@ -97,6 +97,10 @@ class LocusVersion(packageName: String, versionName: String, versionCode: Int) :
         }
     }
 
+    override fun toString(): String {
+        return "$packageName: $versionName"
+    }
+
     //*************************************************
     // STORABLE PART
     //*************************************************

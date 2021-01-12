@@ -27,7 +27,7 @@ class PointChangedReceiver : BroadcastReceiver() {
         val pointId = intent.getLongExtra(
                 LocusConst.INTENT_EXTRA_ITEM_ID, -1L)
         val name = intent.getStringExtra(
-                LocusConst.INTENT_EXTRA_NAME)
+                LocusConst.INTENT_EXTRA_NAME) ?: ""
         var gcCode: String? = null
         if (intent.hasExtra(LocusConst.INTENT_EXTRA_GEOCACHE_CODE)) {
             gcCode = intent.getStringExtra(

@@ -287,10 +287,12 @@ object ActionDisplayPoints {
      */
     fun readPacksFile(ctx: Context, intent: Intent): List<PackPoints> {
         return if (intent.hasExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_URI)) {
-            readDataFromUri(ctx, intent.getParcelableExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_URI))
-        } else {
+            readDataFromUri(ctx, intent.getParcelableExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_URI)!!)
+        } else if (intent.hasExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH)) {
             // backward compatibility
-            readDataFromPath(intent.getStringExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH))
+            readDataFromPath(intent.getStringExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH)!!)
+        } else {
+            listOf()
         }
     }
 

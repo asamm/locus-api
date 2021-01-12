@@ -38,7 +38,7 @@ class ParcelableContainer : Parcelable {
 
     private fun readFromParcel(`in`: Parcel) {
         data = ByteArray(`in`.readInt())
-        `in`.readByteArray(data)
+        `in`.readByteArray(data!!)
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

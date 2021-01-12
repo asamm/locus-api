@@ -312,7 +312,7 @@ object IntentHelper {
         }
 
         // convert data to valid Location object
-        return Location().apply { read(intent.getByteArrayExtra(key)) }
+        return Location().apply { read(intent.getByteArrayExtra(key)!!) }
     }
 
     /**
@@ -345,7 +345,7 @@ object IntentHelper {
 
             // try load full included point
             if (intent.hasExtra(LocusConst.INTENT_EXTRA_POINT)) {
-                return Point().apply { read(intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINT)) }
+                return Point().apply { read(intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINT)!!) }
             }
         } catch (e: Exception) {
             Logger.logE(TAG, "getPointFromIntent($intent)", e)
