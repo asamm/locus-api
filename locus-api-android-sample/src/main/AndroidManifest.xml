@@ -8,6 +8,13 @@
     <uses-permission android:name="com.asamm.locus.permission.READ_GEOCACHING_DATA" />
     <uses-permission android:name="com.asamm.locus.permission.WRITE_GEOCACHING_DATA" />
 
+    <queries>
+        <package android:name="menion.android.locus" />
+        <package android:name="menion.android.locus.pro" />
+        <package android:name="menion.android.locus.free.amazon" />
+        <package android:name="menion.android.locus.pro.amazon" />
+    </queries>
+
     <application
         android:name=".MainApplication"
         android:allowBackup="false"

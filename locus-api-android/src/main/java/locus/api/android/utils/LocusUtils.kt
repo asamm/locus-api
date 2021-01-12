@@ -92,19 +92,18 @@ object LocusUtils {
         // search for optimal version
         var backupVersion: LocusVersion? = null
         var backupLastActive = 0L
-        for (i in 0 until versions.size) {
+        for (element in versions) {
             // get and test version
-            val lv = versions[i]
-            if (lv.isVersionFree) {
-                if (minLocusMapFree <= 0 || lv.versionCode < minLocusMapFree) {
+            if (element.isVersionFree) {
+                if (minLocusMapFree <= 0 || element.versionCode < minLocusMapFree) {
                     continue
                 }
-            } else if (lv.isVersionPro) {
-                if (minLocusMapPro <= 0 || lv.versionCode < minLocusMapPro) {
+            } else if (element.isVersionPro) {
+                if (minLocusMapPro <= 0 || element.versionCode < minLocusMapPro) {
                     continue
                 }
-            } else if (lv.isVersionGis) {
-                if (minLocusGis <= 0 || lv.versionCode < minLocusGis) {
+            } else if (element.isVersionGis) {
+                if (minLocusGis <= 0 || element.versionCode < minLocusGis) {
                     continue
                 }
             } else {
@@ -113,18 +112,18 @@ object LocusUtils {
             }
 
             // check if Locus runs and if so, set it as active version
-            val li = ActionBasics.getLocusInfo(ctx, lv)
+            val li = ActionBasics.getLocusInfo(ctx, element)
                     ?: continue
 
             // backup valid version
             if (backupVersion == null || li.lastActive >= backupLastActive) {
-                backupVersion = lv
+                backupVersion = element
                 backupLastActive = li.lastActive
             }
 
             // check if is running
             if (li.isRunning) {
-                return lv
+                return element
             }
         }
 
@@ -146,14 +145,16 @@ object LocusUtils {
         val pm = ctx.packageManager
         for (pn in packageNames) {
             try {
+                val packageInfo = pm.getPackageInfo(pn, 0)
                 val appInfo = pm.getApplicationInfo(pn, 0)
-                if (appInfo != null) {
-                    val lv = createLocusVersion(ctx, appInfo.packageName)
-                    if (lv != null) {
-                        versions.add(lv)
-                    }
+                val lv = createLocusVersion(ctx, appInfo.packageName)
+                if (lv != null) {
+                    versions.add(lv)
                 }
             } catch (ignored: PackageManager.NameNotFoundException) {
+                Logger.logD(TAG, "getAvailableVersions($ctx), " +
+                        "e: $ignored")
+                ignored.printStackTrace()
             }
         }
 
@@ -208,7 +209,7 @@ object LocusUtils {
         }
 
         val packageName = intent.getStringExtra(LocusConst.INTENT_EXTRA_PACKAGE_NAME)
-        return if (packageName != null && packageName.length > 0) {
+        return if (packageName != null && packageName.isNotEmpty()) {
             createLocusVersion(ctx, packageName)
         } else {
             createLocusVersion(ctx)
@@ -236,10 +237,9 @@ object LocusUtils {
         Logger.logW(TAG, "getLocusVersion(" + ctx + "), " +
                 "Warning: old version of Locus: Correct package name is not known!")
         val versions = getAvailableVersions(ctx)
-        for (i in 0 until versions.size) {
-            val lv = versions[i]
-            if (lv.isVersionFree || lv.isVersionPro) {
-                return lv
+        for (element in versions) {
+            if (element.isVersionFree || element.isVersionPro) {
+                return element
             }
         }
         return null
@@ -272,8 +272,8 @@ object LocusUtils {
     fun isLocusAvailable(ctx: Context,
             versionFree: Int, versionPro: Int, versionGis: Int): Boolean {
         val versions = getAvailableVersions(ctx)
-        for (i in 0 until versions.size) {
-            val lv = versions[i]
+        for (element in versions) {
+            val lv = element
             if (lv.isVersionFree && versionFree > 0 &&
                     lv.versionCode >= versionFree) {
                 return true
