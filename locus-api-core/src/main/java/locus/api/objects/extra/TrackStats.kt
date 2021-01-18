@@ -242,7 +242,8 @@ class TrackStats : Storable() {
     @Deprecated(
             message = "Use 'heartRateAverage' instead",
             replaceWith = ReplaceWith("heartRateAverage"))
-    val hrmAverage: Int = heartRateAverage
+    val hrmAverage: Int
+        get() = heartRateAverage
 
     /**
      * Maximum HRM value.
@@ -253,7 +254,8 @@ class TrackStats : Storable() {
     @Deprecated(
             message = "Use 'heartRateMax' instead",
             replaceWith = ReplaceWith("heartRateMax"))
-    val hrmMax = heartRateMax
+    val hrmMax: Int
+        get() = heartRateMax
 
     /**
      * Add measured heart rate values.

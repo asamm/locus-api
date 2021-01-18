@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.23] - 2021-01-18
+### Changed
+- updates in sample project dependencies
+- making sample app works with recent API 30+
+
+### Fixed
+- problem in heart rate values obtained from stats
+
 ## [0.9.22] - 2021-01-04
 ### Changed
 - [#30](https://github.com/asamm/locus-api/issues/30), made `Location` object open
