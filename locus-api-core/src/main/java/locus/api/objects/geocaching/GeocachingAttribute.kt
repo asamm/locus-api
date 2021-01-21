@@ -178,6 +178,10 @@ class GeocachingAttribute() : Storable() {
                 this["frontyard"] = 65
                 this["teamwork"] = 66
                 this["geotour"] = 67
+                this["bonus"] = 69
+                this["power"] = 70
+                this["challenge"] = 71
+                this["checker"] = 72
             }
         }
     }
