@@ -706,11 +706,6 @@ class GeoDataExtra : Storable() {
         const val PAR_GOOGLE_PLACES_DETAILS = 17
 
         /**
-         * Container for online POI ID value.
-         */
-        const val PAR_DB_POI_ONLINE_ID = 18
-
-        /**
          * Extra parameters from Locus Store, mostly with custom provider data.
          */
         const val PAR_STORE_EXTRA = 19
@@ -877,7 +872,9 @@ class GeoDataExtra : Storable() {
          */
         const val PAR_RTE_SURFACES = 125
 
+        //*********************************************
         // OSM BUGS (300 - 309)
+        //*********************************************
 
         /**
          * OpenStreetMap bug/notes ID.
@@ -888,6 +885,26 @@ class GeoDataExtra : Storable() {
          * OpenStreetMap bug/notes flag about it's state.
          */
         const val PAR_OSM_NOTES_CLOSED = 302
+
+        //*********************************************
+        // LOPOINTS (310 - 330)
+        //*********************************************
+
+        /**
+         * Container for online POI ID value.
+         */
+        const val PAR_LOPOINTS_ONLINE_ID = 310
+
+        /**
+         * Container for LoPoints labels.
+         */
+        const val PAR_LOPOINTS_ONLINE_LABELS = 311
+
+        /**
+         * Container for LoPoints opening hours system.
+         */
+        const val PAR_LOPOINTS_ONLINE_OH = 312
+
 
         //*************************************************
         // CALL BACK HELPERS
