@@ -55,10 +55,6 @@ class GeocachingAttribute() : Storable() {
     val isPositive: Boolean
         get() = id > 100
 
-    init {
-        id = -1
-    }
-
     /**
      * Create attribute container.
      *
@@ -80,7 +76,7 @@ class GeocachingAttribute() : Storable() {
      */
     constructor(url: String) : this() {
         if (url.isNotEmpty()) {
-            val imgName = url.substring(url.lastIndexOf("/" + 1), url.lastIndexOf("-"))
+            val imgName = url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("-"))
             id = attrIds[imgName]
                     ?: return
             if (url.contains("-yes.")) {
