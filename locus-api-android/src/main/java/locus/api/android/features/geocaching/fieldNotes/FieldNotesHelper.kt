@@ -610,7 +610,7 @@ class FieldNotesHelper private constructor() {
                     type = cursor.getInt(
                             cursor.getColumnIndexOrThrow(ColFieldNote.TYPE))
                     time = cursor.getLong(
-                            cursor.getColumnIndex(ColFieldNote.TIME))
+                            cursor.getColumnIndexOrThrow(ColFieldNote.TIME))
 
                     // set parameters (optional)
                     cursor.getColumnIndex(ColFieldNote.NOTE)
