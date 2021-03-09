@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.28] - 2021-03-09
+### Changed
+- added `SHARED_URL` privacy option for GeoData
+- removed `PUBLIC` privacy option for GeoData
+
 ## [0.9.27] - 2021-02-17
 ### Fixed
 - [#32](https://github.com/asamm/locus-api/issues/32), incorrect creating of GeocachingAttributes

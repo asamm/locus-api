@@ -46,9 +46,9 @@ abstract class GeoData : Storable() {
         PRIVATE,
 
         /**
-         * Item is public to audience.
+         * Item is public thanks to public URL.
          */
-        PUBLIC
+        SHARED_URL
     }
 
     // STORABLE PARAMETERS
