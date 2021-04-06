@@ -28,14 +28,17 @@ object UtilsAddonAR {
 
     // intent call to view AR
     private const val INTENT_VIEW = "locus.api.android.addon.ar.ACTION_VIEW"
+
     // broadcast intent
     private const val BROADCAST_DATA = "locus.api.android.addon.ar.NEW_DATA"
+
     // id used for recognizing if add-on is closed or not. Register receiver in your
     // starting activity on this number
     private const val REQUEST_ADDON_AR = 30001
 
     // extra identification for intent - location
     const val EXTRA_LOCATION = "EXTRA_LOCATION"
+
     // identification of actual guiding item
     const val EXTRA_GUIDING_ID = "EXTRA_GUIDING_ID"
 

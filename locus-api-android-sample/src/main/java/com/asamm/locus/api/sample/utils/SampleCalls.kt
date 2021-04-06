@@ -439,10 +439,11 @@ object SampleCalls {
     @Throws(RequiredVersionMissingException::class)
     fun callSendOneTrack(ctx: Context) {
         // prepare data
-        val track = generateTrack(50.0, 15.0)
+        val track = generateTrack(50.0, 15.0, 30000)
 
         // send data
-        val send = ActionDisplayTracks.sendTrack(ctx, track, ActionDisplayVarious.ExtraAction.CENTER)
+        val send = ActionDisplayTracks.sendTrack(ctx, track,
+                ActionDisplayVarious.ExtraAction.IMPORT)
         Logger.logD(TAG, "callSendOneTrack(), " +
                 "send:" + send)
     }
@@ -652,7 +653,7 @@ object SampleCalls {
      * @param startLon start longitude
      * @return generated track
      */
-    private fun generateTrack(startLat: Double, startLon: Double): Track {
+    private fun generateTrack(startLat: Double, startLon: Double, numOfPoints: Int = 1000): Track {
         val track = Track()
         track.name = "track from API ($startLat|$startLon)"
         track.addParameter(GeoDataExtra.PAR_DESCRIPTION, "simple track bla bla bla ...")
@@ -666,7 +667,7 @@ object SampleCalls {
         var lat = startLat
         var lon = startLon
         val locs = ArrayList<Location>()
-        for (i in 0..999) {
+        for (i in 0 until numOfPoints) {
             lat += (Math.random() - 0.5) * 0.01
             lon += Math.random() * 0.001
             val loc = Location()

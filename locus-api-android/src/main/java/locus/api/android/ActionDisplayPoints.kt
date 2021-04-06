@@ -224,7 +224,13 @@ object ActionDisplayPoints {
     private fun sendPacksFile(action: String, ctx: Context, lv: LocusVersion,
             data: List<PackPoints>, file: File, fileUri: Uri?,
             callImport: Boolean, centerOnData: Boolean): Boolean {
-        return if (sendDataWriteOnCard(data, file)) {
+        // write data to storage
+        val writeResult = ActionDisplayVarious.sendDataWriteOnCard(file) {
+            Storable.writeList(data, this)
+        }
+
+        // send intent with reference to stored data
+        return if (writeResult) {
             val intent = Intent()
             return if (fileUri != null) {
                 // setup intent
@@ -246,35 +252,6 @@ object ActionDisplayPoints {
         }
     }
 
-    private fun sendDataWriteOnCard(data: List<PackPoints>, file: File): Boolean {
-        if (data.isEmpty()) {
-            return false
-        }
-
-        var dos: DataOutputStream? = null
-        try {
-            file.parentFile.mkdirs()
-
-            // delete previous file
-            if (file.exists()) {
-                file.delete()
-            }
-
-            // create stream
-            dos = DataOutputStream(FileOutputStream(file, false))
-
-            // write current version
-            Storable.writeList(data, dos)
-            dos.flush()
-            return true
-        } catch (e: Exception) {
-            Logger.logE(TAG, "sendDataWriteOnCard(" + file.absolutePath + ", " + data + ")", e)
-            return false
-        } finally {
-            Utils.closeStream(dos)
-        }
-    }
-
     // HANDLE RECEIVED DATA
 
     /**
@@ -286,13 +263,17 @@ object ActionDisplayPoints {
      * @return loaded pack of points
      */
     fun readPacksFile(ctx: Context, intent: Intent): List<PackPoints> {
-        return if (intent.hasExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_URI)) {
-            readDataFromUri(ctx, intent.getParcelableExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_URI)!!)
-        } else if (intent.hasExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH)) {
-            // backward compatibility
-            readDataFromPath(intent.getStringExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH)!!)
-        } else {
-            listOf()
+        return when {
+            intent.hasExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_URI) -> {
+                readDataFromUri(ctx, intent.getParcelableExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_URI)!!)
+            }
+            intent.hasExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH) -> {
+                // backward compatibility
+                readDataFromPath(intent.getStringExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH)!!)
+            }
+            else -> {
+                listOf()
+            }
         }
     }
 
