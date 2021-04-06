@@ -27,13 +27,13 @@ class RequiredVersionMissingException : Exception {
 
     constructor(version: Int) : this(version, version)
 
-    constructor(versionFree: Int, versionPro: Int) : super("Required version: Free (" + versionFree + "), " +
+    constructor(versionFree: Int, versionPro: Int) : super("Required version: Map (" + versionFree + "), " +
             "or Pro (" + versionPro + "), not installed!")
 
     constructor(vc: VersionCode) : super("Required version: " +
-            "Free (" + getVersionAsText(vc.vcFree) + "), or " +
+            "Map (" + getVersionAsText(vc.vcFree) + "), or " +
             "Pro (" + getVersionAsText(vc.vcPro) + "), or " +
-            "Gis (" + getVersionAsText(vc.vcGis) + "), not installed!")
+            "GIS (" + getVersionAsText(vc.vcGis) + "), not installed!")
 
     constructor(packageName: String, version: Int)
             : super(String.format("Required application: '%s', version: '%s', not installed", packageName, version))
@@ -46,7 +46,7 @@ class RequiredVersionMissingException : Exception {
             return if (code == 0) {
                 "Not supported"
             } else {
-                Integer.toString(code)
+                code.toString()
             }
         }
     }

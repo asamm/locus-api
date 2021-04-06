@@ -43,6 +43,13 @@ object ActionDisplayVarious {
         val lv = LocusUtils.getActiveVersion(ctx, vc)
                 ?: throw RequiredVersionMissingException(vc.vcFree)
 
+        // send data with valid active version
+        return sendData(action, ctx, intent, callImport, center, lv)
+    }
+
+    @Throws(RequiredVersionMissingException::class)
+    internal fun sendData(action: String, ctx: Context, intent: Intent,
+            callImport: Boolean, center: Boolean, lv: LocusVersion): Boolean {
         // check intent firstly
         if (!hasData(intent)) {
             Logger.logW(TAG, "Intent 'null' or not contain any data")
@@ -195,6 +202,7 @@ object ActionDisplayVarious {
                 && intent.getParcelableExtra<Parcelable>(LocusConst.INTENT_EXTRA_POINTS_FILE_URI) == null
                 && intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_TRACKS_SINGLE) == null
                 && intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_TRACKS_MULTI) == null
+                && intent.getParcelableExtra<Parcelable>(LocusConst.INTENT_EXTRA_TRACKS_FILE_URI) == null
                 && intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_CIRCLES_MULTI) == null)
     }
 }

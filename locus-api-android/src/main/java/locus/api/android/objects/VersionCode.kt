@@ -40,6 +40,7 @@ enum class VersionCode(
      * Locus Free/Pro 2.7.0, Gis 1.0.0 (235, 235, 1)
      */
     UPDATE_01(235, 235, 0),
+
     /**
      *
      *  * Control of track recording
@@ -48,6 +49,7 @@ enum class VersionCode(
      * Locus Free/Pro 2.8.4 (242, 242, 1)
      */
     UPDATE_02(242, 242, 0),
+
     /**
      *
      *  * Get waypoint by ID
@@ -55,6 +57,7 @@ enum class VersionCode(
      * Locus Free/Pro 2.17.3 (269, 269, 1)
      */
     UPDATE_03(269, 269, 0),
+
     /**
      *
      *  * Added MapPreview
@@ -62,6 +65,7 @@ enum class VersionCode(
      * Locus Free/Pro 2.20.2.4 (278, 278, 1)
      */
     UPDATE_04(278, 278, 0),
+
     /**
      *
      *  * Added Compute track service
@@ -71,6 +75,7 @@ enum class VersionCode(
      * Locus GIS (no news)
      */
     UPDATE_05(296, 296, 0),
+
     /**
      *
      *  * Added request on purchase state of item in Locus Store
@@ -79,6 +84,7 @@ enum class VersionCode(
      * Locus GIS (no news)
      */
     UPDATE_06(311, 311, 5),
+
     /**
      *
      *  * Added request to display Point detail screen
@@ -86,6 +92,7 @@ enum class VersionCode(
      * Locus Free/Pro 3.3.0(317)<br></br>
      */
     UPDATE_07(317, 317, 0),
+
     /**
      *
      *  * Added "Navigation" on address
@@ -93,6 +100,7 @@ enum class VersionCode(
      * Locus Free/Pro 3.5.3(343)<br></br>
      */
     UPDATE_08(343, 343, 0),
+
     /**
      *
      *  * Added "Track record profiles"
@@ -100,6 +108,7 @@ enum class VersionCode(
      * Locus Free/Pro 3.8.0(357)<br></br>
      */
     UPDATE_09(357, 357, 0),
+
     /**
      *
      *  * Added "Get track by ID"
@@ -107,6 +116,7 @@ enum class VersionCode(
      * Locus Free/Pro 3.9.0(370)<br></br>
      */
     UPDATE_10(370, 370, 0),
+
     /**
      *
      *  * Added parameters to Locus Info
@@ -114,6 +124,7 @@ enum class VersionCode(
      * Locus Free/Pro 3.9.2(380)<br></br>
      */
     UPDATE_11(380, 380, 0),
+
     /**
      *
      *  * Added parameters to display certain item in Locus Store
@@ -121,6 +132,7 @@ enum class VersionCode(
      * Locus Free/Pro 3.13.0(421)<br></br>
      */
     UPDATE_12(421, 421, 0),
+
     /**
      *
      *  * Added direct request on LocusInfo and UpdateContainer over ActionTools
@@ -128,6 +140,7 @@ enum class VersionCode(
      * Locus Free/Pro 3.25.6(652)<br></br>
      */
     UPDATE_13(652, 652, 0),
+
     /**
      *
      *  * New version of "Get map preview" system
@@ -135,6 +148,7 @@ enum class VersionCode(
      * Locus Free/Pro 3.29.0(684)<br></br>
      */
     UPDATE_14(684, 684, 0),
+
     /**
      *
      *  * chg: send pack file via FileProvider
@@ -144,11 +158,20 @@ enum class VersionCode(
      * Locus Free/Pro 3.36.0(796)<br></br>
      */
     UPDATE_15(796, 796, 0),
+
     /**
      *
      *  * add: ActionBasic.getTrackInFormat, get track exported in defined format
      * <br></br>
      * Locus Free/Pro 3.37.0(815)<br></br>
      */
-    UPDATE_16(815, 815, 0)
+    UPDATE_16(815, 815, 0),
+
+    /**
+     * add: new system for sending content defined in 'sendToApp' package
+     * <br></br>
+     * Locus Map 4.1.0, Locus Classic 3.52.0 (1004)
+     * <br></br>
+     */
+    UPDATE_17(1004, 1004, 0)
 }

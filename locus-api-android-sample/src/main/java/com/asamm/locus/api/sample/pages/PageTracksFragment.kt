@@ -17,9 +17,11 @@ class PageTracksFragment : ABasePageFragment() {
             // create list of items
             val items = ArrayList<BasicAdapterItem>()
             items.add(BasicAdapterItem(1,
-                    "Display one track"))
+                    "Display one track",
+                    "Display single huge track, send over fileUri."))
             items.add(BasicAdapterItem(2,
-                    "Display multiple tracks"))
+                    "Display multiple tracks",
+                    "Quickly display multiple small tracks at once."))
 
             items.add(BasicAdapterItem(8,
                     "Start Navigation (to a point)",

@@ -1,14 +1,14 @@
 package locus.api.android
 
 import android.content.Context
-import android.content.Intent
+import locus.api.android.features.sendToApp.SendMode
+import locus.api.android.features.sendToApp.SendTrack
+import locus.api.android.features.sendToApp.SendTracks
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
-import locus.api.objects.Storable
 import locus.api.objects.geoData.Track
-import locus.api.utils.Logger
 
-@Suppress("unused")
+@Deprecated(message = "Use `SendTrack` or `SendTracks` objects.")
 object ActionDisplayTracks {
 
     // tag for logger
@@ -34,19 +34,26 @@ object ActionDisplayTracks {
     @Throws(RequiredVersionMissingException::class)
     private fun sendTrack(action: String, ctx: Context, track: Track,
             callImport: Boolean, centerOnData: Boolean, startNavigation: Boolean): Boolean {
-        // check track
-        if (track.points.size == 0) {
-            Logger.logE(TAG, "sendTrack(" + action + ", " + ctx + ", " + track + ", " +
-                    callImport + ", " + centerOnData + ", " + startNavigation + "), " +
-                    "track is null or contain no points")
-            return false
+        // prepare mode
+        val sendMode = when {
+            callImport -> {
+                SendMode.Import()
+            }
+            action == LocusConst.ACTION_DISPLAY_DATA -> {
+                SendMode.Basic(centerOnData)
+            }
+            action == LocusConst.ACTION_DISPLAY_DATA_SILENTLY -> {
+                SendMode.Silent()
+            }
+            else -> {
+                return false
+            }
         }
 
-        // create and start intent
-        val intent = Intent()
-        intent.putExtra(LocusConst.INTENT_EXTRA_TRACKS_SINGLE, track.asBytes)
-        intent.putExtra(LocusConst.INTENT_EXTRA_START_NAVIGATION, startNavigation)
-        return ActionDisplayVarious.sendData(action, ctx, intent, callImport, centerOnData)
+        // send request
+        return SendTrack(sendMode, track) {
+            this.startNavigation = startNavigation
+        }.send(ctx)
     }
 
     // SEND TRACK PACK (MORE THEN ONE)
@@ -68,15 +75,24 @@ object ActionDisplayTracks {
     @Throws(RequiredVersionMissingException::class)
     private fun sendTracks(action: String, ctx: Context,
             tracks: List<Track>, callImport: Boolean, centerOnData: Boolean): Boolean {
-        // check data
-        if (tracks.isEmpty()) {
-            return false
+        // prepare mode
+        val sendMode = when {
+            callImport -> {
+                SendMode.Import()
+            }
+            action == LocusConst.ACTION_DISPLAY_DATA -> {
+                SendMode.Basic(centerOnData)
+            }
+            action == LocusConst.ACTION_DISPLAY_DATA_SILENTLY -> {
+                SendMode.Silent()
+            }
+            else -> {
+                return false
+            }
         }
 
-        // create and start intent
-        val intent = Intent()
-        intent.putExtra(LocusConst.INTENT_EXTRA_TRACKS_MULTI,
-                Storable.getAsBytes(tracks))
-        return ActionDisplayVarious.sendData(action, ctx, intent, callImport, centerOnData)
+        // send request
+        return SendTracks(sendMode, tracks)
+                .send(ctx)
     }
 }

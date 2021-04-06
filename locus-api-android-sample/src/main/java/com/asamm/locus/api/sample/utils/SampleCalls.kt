@@ -35,6 +35,10 @@ import locus.api.android.ActionDisplayPoints
 import locus.api.android.ActionDisplayTracks
 import locus.api.android.ActionDisplayVarious
 import locus.api.android.ActionFiles
+import locus.api.android.features.sendToApp.SendMode
+import locus.api.android.features.sendToApp.SendToAppHelper
+import locus.api.android.features.sendToApp.SendTrack
+import locus.api.android.features.sendToApp.SendTracks
 import locus.api.android.objects.LocusVersion
 import locus.api.android.objects.PackPoints
 import locus.api.android.objects.VersionCode
@@ -285,20 +289,8 @@ object SampleCalls {
     fun callSendMorePointsGeocacheFileMethod(ctx: Context) {
         val version = LocusUtils.getActiveVersion(ctx) ?: return
 
-        // get filepath
-        val dir: File?
-        if (version.isVersionValid(VersionCode.UPDATE_15)) {
-            dir = File(ctx.cacheDir, "shared")
-            dir.mkdirs()
-        } else {
-            dir = ctx.externalCacheDir
-            if (dir == null || !dir.exists()) {
-                Logger.logW(TAG, "problem with obtain of External dir")
-                return
-            }
-        }
-
-        val file = File(dir, "testFile.lb")
+        // get file to share
+        val file = SendToAppHelper.getCacheFile(ctx)
 
         // prepare data
         val pw = PackPoints("test07")
@@ -397,7 +389,7 @@ object SampleCalls {
                     // start search
                     try {
                         val pts = ActionBasics.getPointsId(ctx, activeLocus, name)
-                        Toast.makeText(ctx, "Found pts: \'" + Arrays.toString(pts) + "\'",
+                        Toast.makeText(ctx, "Found pts: \'" + pts.contentToString() + "\'",
                                 Toast.LENGTH_LONG)
                                 .show()
                     } catch (e: RequiredVersionMissingException) {
@@ -431,21 +423,27 @@ object SampleCalls {
     //*************************************************
 
     /**
-     * Send (display) single track on Locus map.
+     * Send (display) single track on the Locus Map map.
      *
      * @param ctx current context
      * @throws RequiredVersionMissingException exception in case of missing required app version
      */
     @Throws(RequiredVersionMissingException::class)
     fun callSendOneTrack(ctx: Context) {
-        // prepare data
-        val track = generateTrack(50.0, 15.0, 30000)
+        // prepare data. Create a huge track that may be send only over fileUri (over-limit of
+        // basic intent 1MB)
+        val track = generateTrack(50.0, 15.0, 100000)
 
-        // send data
-        val send = ActionDisplayTracks.sendTrack(ctx, track,
-                ActionDisplayVarious.ExtraAction.IMPORT)
+        // get file to share
+        val file = SendToAppHelper.getCacheFile(ctx)
+        // prepare file Uri: share via FileProvider. You don't need WRITE_EXTERNAL_STORAGE permission for this!
+        val uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
+
+        // send data the app. 'SendMode' define core behavior how Locus app handle received data
+        val sendResult = SendTrack(SendMode.Basic(), track)
+                .sendOverFile(ctx, cacheFile = file, cacheFileUri = uri)
         Logger.logD(TAG, "callSendOneTrack(), " +
-                "send:" + send)
+                "send:" + sendResult)
     }
 
     /**
@@ -463,7 +461,9 @@ object SampleCalls {
         }
 
         // send data
-        val send = ActionDisplayTracks.sendTracks(ctx, tracks, ActionDisplayVarious.ExtraAction.CENTER)
+        val send = SendTracks(SendMode.Basic(centerOnData = true), tracks)
+                .send(ctx)
+        //ActionDisplayTracks.sendTracks(ctx, tracks, ActionDisplayVarious.ExtraAction.CENTER)
         Logger.logD(TAG, "callSendMultipleTracks(" + ctx + "), " +
                 "send:" + send)
     }

@@ -234,7 +234,7 @@ object LocusConst {
 
     //*************************************************
     // EXTRAS
-    /** */
+    //*************************************************
 
     // VARIOUS
 
@@ -291,6 +291,11 @@ object LocusConst {
      * Sends multiple tracks to Locus
      */
     const val INTENT_EXTRA_TRACKS_MULTI = "INTENT_EXTRA_TRACKS_MULTI"
+
+    /**
+     * Sends tracks data serialized as byte[] through file shared via `FileProvider`.
+     */
+    const val INTENT_EXTRA_TRACKS_FILE_URI = "INTENT_EXTRA_TRACKS_FILE_URI"
 
     /**
      * one PointData object, send over intent
