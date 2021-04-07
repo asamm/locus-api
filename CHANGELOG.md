@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.30] - 2021-04-07
+### Changed
+- minor refactoring in `Logger` instance
+
 ## [0.9.29] - 2021-04-07
 ### Added
 - new `SendTrack` and `SendTracks` API objects to simplify sending tracks to the app

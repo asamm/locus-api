@@ -1,5 +1,9 @@
 package locus.api.utils
 
+/**
+ * Generic static logger instance used in Locus API system.
+ * To receive correct log messages, initialize over `registerLogger` as soon as possible.
+ */
 object Logger {
 
     private var logger: ILogger? = null
@@ -9,44 +13,31 @@ object Logger {
     }
 
     fun logI(tag: String, msg: String) {
-        if (logger == null) {
-            println("$tag - $msg")
-        } else {
-            logger!!.logI(tag, msg)
-        }
+        logger?.logI(tag, msg)
+                ?: println("$tag - $msg")
     }
 
     fun logD(tag: String, msg: String) {
-        if (logger == null) {
-            println("$tag - $msg")
-        } else {
-            logger!!.logD(tag, msg)
-        }
+        logger?.logD(tag, msg)
+                ?: println("$tag - $msg")
     }
 
     fun logW(tag: String, msg: String) {
-        if (logger == null) {
-            println("$tag - $msg")
-        } else {
-            logger!!.logW(tag, msg)
-        }
+        logger?.logW(tag, msg)
+                ?: println("$tag - $msg")
     }
 
     fun logE(tag: String, msg: String) {
-        if (logger == null) {
-            System.err.println("$tag - $msg")
-        } else {
-            logger!!.logE(tag, msg)
-        }
+        logger?.logE(tag, msg)
+                ?: System.err.println("$tag - $msg")
     }
 
     fun logE(tag: String, msg: String, e: Exception) {
-        if (logger == null) {
-            System.err.println(tag + " - " + msg + ", e:" + e.message)
-            e.printStackTrace()
-        } else {
-            logger!!.logE(tag, msg, e)
-        }
+        logger?.logE(tag, msg, e)
+                ?: {
+                    System.err.println(tag + " - " + msg + ", e:" + e.message)
+                    e.printStackTrace()
+                }()
     }
 
     interface ILogger {
