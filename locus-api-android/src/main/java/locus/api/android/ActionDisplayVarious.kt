@@ -6,17 +6,12 @@ import android.os.Parcelable
 import locus.api.android.objects.LocusVersion
 import locus.api.android.objects.PackPoints
 import locus.api.android.objects.VersionCode
-
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.Storable
 import locus.api.objects.geoData.Circle
 import locus.api.utils.Logger
-import locus.api.utils.Utils
-import java.io.DataOutputStream
-import java.io.File
-import java.io.FileOutputStream
 
 object ActionDisplayVarious {
 
@@ -110,36 +105,6 @@ object ActionDisplayVarious {
         // set import tag
         LocusUtils.sendBroadcast(ctx, intent, lv)
         return true
-    }
-
-    //*************************************************
-    // SEND DATA, FILESYSTEM
-    //*************************************************
-
-    internal fun sendDataWriteOnCard(file: File, writer: DataOutputStream.() -> Unit): Boolean {
-        // prepare output
-        var dos: DataOutputStream? = null
-        try {
-            file.parentFile!!.mkdirs()
-
-            // delete previous file
-            if (file.exists()) {
-                file.delete()
-            }
-
-            // create stream
-            dos = DataOutputStream(FileOutputStream(file, false))
-
-            // write current version
-            writer(dos)
-            dos.flush()
-            return true
-        } catch (e: Exception) {
-            Logger.logE(TAG, "sendDataWriteOnCard($file, $writer)", e)
-            return false
-        } finally {
-            Utils.closeStream(dos)
-        }
     }
 
     //*************************************************

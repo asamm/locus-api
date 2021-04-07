@@ -12,9 +12,27 @@
 package locus.api.android.features.sendToApp
 
 import android.content.Context
+import android.net.Uri
+import locus.api.objects.Storable
+import locus.api.utils.Logger
+import locus.api.utils.Utils
+import java.io.DataInputStream
+import java.io.DataOutputStream
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.util.*
 
 object SendToAppHelper {
+
+    // tag for logger
+    private const val TAG = "SendToAppHelper"
+
+    //*************************************************
+    // FILESYSTEM
+    //*************************************************
+
+    // SEND DATA
 
     /**
      * Get cache directory used for sending content to Locus app.
@@ -30,5 +48,73 @@ object SendToAppHelper {
 
         // return generated file
         return File(dir, filename)
+    }
+
+    internal fun sendDataWriteOnCard(file: File, writer: DataOutputStream.() -> Unit): Boolean {
+        // prepare output
+        var dos: DataOutputStream? = null
+        try {
+            file.parentFile!!.mkdirs()
+
+            // delete previous file
+            if (file.exists()) {
+                file.delete()
+            }
+
+            // create stream
+            dos = DataOutputStream(FileOutputStream(file, false))
+
+            // write current version
+            writer(dos)
+            dos.flush()
+            return true
+        } catch (e: Exception) {
+            Logger.logE(TAG, "sendDataWriteOnCard($file, $writer)", e)
+            return false
+        } finally {
+            Utils.closeStream(dos)
+        }
+    }
+
+    // RECEIVE DATA
+
+    /**
+     * Read data stored in certain path. This method is deprecated and should not be used. Instead
+     * use new method over FileUri system.
+     */
+    @Deprecated (message = "Use system over FileUri")
+    internal inline fun <reified T : Storable> readDataFromPath(filepath: String): List<T> {
+        // check file
+        val file = File(filepath)
+        if (!file.exists() || !file.isFile) {
+            return ArrayList()
+        }
+
+        var dis: DataInputStream? = null
+        try {
+            dis = DataInputStream(FileInputStream(file))
+            return Storable.readList(T::class.java, dis)
+        } catch (e: Exception) {
+            Logger.logE(TAG, "readDataFromPath($filepath)", e)
+        } finally {
+            Utils.closeStream(dis)
+        }
+        return ArrayList()
+    }
+
+    /**
+     * Read data from the supplied [fileUri] source.
+     */
+    internal inline fun <reified T : Storable> readDataFromUri(ctx: Context, fileUri: Uri): List<T> {
+        var dis: DataInputStream? = null
+        try {
+            dis = DataInputStream(ctx.contentResolver.openInputStream(fileUri))
+            return Storable.readList(T::class.java, dis)
+        } catch (e: Exception) {
+            Logger.logE(TAG, "readDataFromUri($fileUri)", e)
+        } finally {
+            Utils.closeStream(dis)
+        }
+        return listOf()
     }
 }

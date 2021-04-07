@@ -32,13 +32,12 @@ import androidx.fragment.app.FragmentActivity
 import com.asamm.locus.api.sample.R
 import locus.api.android.ActionBasics
 import locus.api.android.ActionDisplayPoints
-import locus.api.android.ActionDisplayTracks
 import locus.api.android.ActionDisplayVarious
 import locus.api.android.ActionFiles
 import locus.api.android.features.sendToApp.SendMode
 import locus.api.android.features.sendToApp.SendToAppHelper
-import locus.api.android.features.sendToApp.SendTrack
-import locus.api.android.features.sendToApp.SendTracks
+import locus.api.android.features.sendToApp.tracks.SendTrack
+import locus.api.android.features.sendToApp.tracks.SendTracks
 import locus.api.android.objects.LocusVersion
 import locus.api.android.objects.PackPoints
 import locus.api.android.objects.VersionCode

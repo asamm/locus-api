@@ -9,12 +9,14 @@
  * WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
  ***************************************************************************/
-package locus.api.android.features.sendToApp
+package locus.api.android.features.sendToApp.tracks
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import locus.api.android.ActionDisplayVarious
+import locus.api.android.features.sendToApp.SendMode
+import locus.api.android.features.sendToApp.SendToAppBase
+import locus.api.android.features.sendToApp.SendToAppHelper
 import locus.api.android.objects.LocusVersion
 import locus.api.android.objects.VersionCode
 import locus.api.android.utils.LocusConst
@@ -23,17 +25,18 @@ import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.Storable
 import locus.api.objects.geoData.Track
 import locus.api.utils.Logger
-import locus.api.utils.Utils
-import java.io.DataInputStream
 import java.io.File
 
 /**
  * Base class for sending track(s) to Locus apps.
+ *
+ * Do not use directly but instead use it's extensions. Class is public because of Kotlin
+ * limitations in inheritance.
  */
 abstract class SendTrackBase internal constructor(
-        internal val sendMode: SendMode,
+        sendMode: SendMode,
         internal val tracks: List<Track>)
-    : SendToAppBase() {
+    : SendToAppBase(sendMode) {
 
     // SEND DATA
 
@@ -70,26 +73,7 @@ abstract class SendTrackBase internal constructor(
         intentExtra?.invoke(intent)
 
         // send request
-        return when (sendMode) {
-            is SendMode.Basic -> {
-                ActionDisplayVarious.sendData(sendMode.action, ctx, intent,
-                        callImport = false,
-                        center = sendMode.centerOnData,
-                        lv = lv)
-            }
-            is SendMode.Silent -> {
-                ActionDisplayVarious.sendData(sendMode.action, ctx, intent,
-                        callImport = false,
-                        center = false,
-                        lv = lv)
-            }
-            is SendMode.Import -> {
-                ActionDisplayVarious.sendData(sendMode.action, ctx, intent,
-                        callImport = true,
-                        center = false,
-                        lv = lv)
-            }
-        }
+        return sendFinal(ctx, intent, lv)
     }
 
     /**
@@ -130,7 +114,7 @@ abstract class SendTrackBase internal constructor(
         }
 
         // write data to storage
-        val writeResult = ActionDisplayVarious.sendDataWriteOnCard(cacheFile) {
+        val writeResult = SendToAppHelper.sendDataWriteOnCard(cacheFile) {
             Storable.writeList(tracks, this)
         }
 
@@ -146,26 +130,7 @@ abstract class SendTrackBase internal constructor(
             ctx.grantUriPermission(lv.packageName, cacheFileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
             // send request
-            return when (sendMode) {
-                is SendMode.Basic -> {
-                    ActionDisplayVarious.sendData(sendMode.action, ctx, intent,
-                            callImport = false,
-                            center = sendMode.centerOnData,
-                            lv = lv)
-                }
-                is SendMode.Silent -> {
-                    ActionDisplayVarious.sendData(sendMode.action, ctx, intent,
-                            callImport = false,
-                            center = false,
-                            lv = lv)
-                }
-                is SendMode.Import -> {
-                    ActionDisplayVarious.sendData(sendMode.action, ctx, intent,
-                            callImport = true,
-                            center = false,
-                            lv = lv)
-                }
-            }
+            return sendFinal(ctx, intent, lv)
         } else {
             false
         }
@@ -201,7 +166,8 @@ abstract class SendTrackBase internal constructor(
         // RECEIVE DATA
 
         /**
-         * Invert method to [sendOverFile]. This load serialized data from a file stored in [Intent].
+         * Invert method to [SendTrackBase.sendOverFile]. This load serialized data from
+         * a file stored in [Intent].
          *
          * @param ctx context
          * @param intent intent data
@@ -210,28 +176,13 @@ abstract class SendTrackBase internal constructor(
         fun readTracksFile(ctx: Context, intent: Intent): List<Track> {
             return when {
                 intent.hasExtra(LocusConst.INTENT_EXTRA_TRACKS_FILE_URI) -> {
-                    readDataFromUri(ctx, intent.getParcelableExtra(LocusConst.INTENT_EXTRA_TRACKS_FILE_URI)!!)
+                    SendToAppHelper.readDataFromUri(ctx,
+                            intent.getParcelableExtra(LocusConst.INTENT_EXTRA_TRACKS_FILE_URI)!!)
                 }
                 else -> {
                     listOf()
                 }
             }
-        }
-
-        /**
-         * Read track(s) data from the [fileUri].
-         */
-        private fun readDataFromUri(ctx: Context, fileUri: Uri): List<Track> {
-            var dis: DataInputStream? = null
-            try {
-                dis = DataInputStream(ctx.contentResolver.openInputStream(fileUri))
-                return Storable.readList(Track::class.java, dis)
-            } catch (e: Exception) {
-                Logger.logE(TAG, "readDataFromUri($fileUri)", e)
-            } finally {
-                Utils.closeStream(dis)
-            }
-            return listOf()
         }
     }
 }

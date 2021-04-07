@@ -2,8 +2,8 @@ package locus.api.android
 
 import android.content.Context
 import locus.api.android.features.sendToApp.SendMode
-import locus.api.android.features.sendToApp.SendTrack
-import locus.api.android.features.sendToApp.SendTracks
+import locus.api.android.features.sendToApp.tracks.SendTrack
+import locus.api.android.features.sendToApp.tracks.SendTracks
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.geoData.Track

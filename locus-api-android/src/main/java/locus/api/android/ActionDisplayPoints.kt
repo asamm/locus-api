@@ -15,19 +15,15 @@ package locus.api.android
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import locus.api.android.features.sendToApp.points.SendPointBase
+import locus.api.android.features.sendToApp.SendToAppHelper
 import locus.api.android.objects.LocusVersion
 import locus.api.android.objects.PackPoints
 import locus.api.android.objects.VersionCode
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.Storable
-import locus.api.utils.Logger
-import locus.api.utils.Utils
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.util.*
 
 object ActionDisplayPoints {
@@ -225,7 +221,7 @@ object ActionDisplayPoints {
             data: List<PackPoints>, file: File, fileUri: Uri?,
             callImport: Boolean, centerOnData: Boolean): Boolean {
         // write data to storage
-        val writeResult = ActionDisplayVarious.sendDataWriteOnCard(file) {
+        val writeResult = SendToAppHelper.sendDataWriteOnCard(file) {
             Storable.writeList(data, this)
         }
 
@@ -263,50 +259,7 @@ object ActionDisplayPoints {
      * @return loaded pack of points
      */
     fun readPacksFile(ctx: Context, intent: Intent): List<PackPoints> {
-        return when {
-            intent.hasExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_URI) -> {
-                readDataFromUri(ctx, intent.getParcelableExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_URI)!!)
-            }
-            intent.hasExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH) -> {
-                // backward compatibility
-                readDataFromPath(intent.getStringExtra(LocusConst.INTENT_EXTRA_POINTS_FILE_PATH)!!)
-            }
-            else -> {
-                listOf()
-            }
-        }
-    }
-
-    private fun readDataFromUri(ctx: Context, fileUri: Uri): List<PackPoints> {
-        var dis: DataInputStream? = null
-        try {
-            dis = DataInputStream(ctx.contentResolver.openInputStream(fileUri))
-            return Storable.readList(PackPoints::class.java, dis)
-        } catch (e: Exception) {
-            Logger.logE(TAG, "readDataFromUri($fileUri)", e)
-        } finally {
-            Utils.closeStream(dis)
-        }
-        return ArrayList()
-    }
-
-    private fun readDataFromPath(filepath: String): List<PackPoints> {
-        // check file
-        val file = File(filepath)
-        if (!file.exists() || !file.isFile) {
-            return ArrayList()
-        }
-
-        var dis: DataInputStream? = null
-        try {
-            dis = DataInputStream(FileInputStream(file))
-            return Storable.readList(PackPoints::class.java, dis)
-        } catch (e: Exception) {
-            Logger.logE(TAG, "readDataFromPath($filepath)", e)
-        } finally {
-            Utils.closeStream(dis)
-        }
-        return ArrayList()
+        return SendPointBase.readPointsFile(ctx, intent)
     }
 
     /**
