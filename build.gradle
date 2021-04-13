@@ -8,11 +8,11 @@ buildscript {
         // Android build
         classpath 'com.android.tools.build:gradle:' + ANDROID_PLUGIN_GRADLE
 
-        // Bintray support
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
-
         // Kotlin
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:' + KOTLIN_VERSION
+
+        // Dokka
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:' + KOTLIN_DOKKA
     }
 }
 
@@ -24,8 +24,8 @@ allprojects {
 
         // basic repositories
         google()
-        jcenter()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 

@@ -6,8 +6,6 @@ on:
       - '*'
 
 env:
-  BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
-  BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
   ANDROID_SIGN_DEBUG: ${{ secrets.ANDROID_SIGN_DEBUG }}
   ANDROID_SIGN_RELEASE: ${{ secrets.ANDROID_SIGN_RELEASE }}
 

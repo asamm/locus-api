@@ -1,3 +1,10 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        jcenter()
+    }
+}
+
+include ':locus-api-core'
 include ':locus-api-android'
 include ':locus-api-android-sample'
-include ':locus-api-core'
