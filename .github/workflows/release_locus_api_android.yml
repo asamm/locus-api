@@ -1,4 +1,4 @@
-name: Release Locus API
+name: Publish Locus API - Android
 
 on:
   push:
