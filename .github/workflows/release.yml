@@ -27,28 +27,32 @@ jobs:
         with:
           java-version: 1.8
 
-      # Public Locus API
+      # Base64 decodes and pipes the GPG key content into the secret file
+      - name: Prepare environment
+        env:
+          GPG_KEY_CONTENTS: ${{ secrets.GPG_KEY_CONTENTS }}
+          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
+        run: |
+          git fetch --unshallow
+          sudo bash -c "echo '$GPG_KEY_CONTENTS' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
+
+      # Set locale environment
+      env:
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+        SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+        SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
+        SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
+
+      # Public Locus API - core
       - name: Publish `locus-api-core`
-        run: ./gradlew :locus-api-core:clean :locus-api-core:publishToMavenLocal :locus-api-core:bintrayUpload
+        run: ./gradlew :locus-api-core:clean :locus-api-core:publishReleasePublicationToMavencentralRepository
 
       # Publish Locus API - Android
       - name: Publish `locus-api-android`
-        run: ./gradlew :locus-api-android:clean :locus-api-android:build :locus-api-android:bintrayUpload --info
+        run: ./gradlew :locus-api-android:clean :locus-api-android:assembleRelease :locus-api-android:publishReleasePublicationToMavencentralRepository
 
-#      - name: Publish `locus-api-core`
-#        # The GITHUB_REF tag comes in the format 'refs/tags/xxx'.
-#        # So if we split on '/' and take the 3rd value, we can get the release name.
-#        run: |
-#          NEW_VERSION=$(echo "${GITHUB_REF}" | cut -d "/" -f3)
-#          echo "New version: ${NEW_VERSION}"
-#          echo "Github username: ${GITHUB_ACTOR}"
-#          ./gradlew -PAPI_VERSION=${NEW_VERSION} locus-api-core:publishReleasePublicationToGitHubPackagesRepository
-#
-#      - name: Publish `locus-api-android`
-#        # The GITHUB_REF tag comes in the format 'refs/tags/xxx'.
-#        # So if we split on '/' and take the 3rd value, we can get the release name.
-#        run: |
-#          NEW_VERSION=$(echo "${GITHUB_REF}" | cut -d "/" -f3)
-#          echo "New version: ${NEW_VERSION}"
-#          echo "Github username: ${GITHUB_ACTOR}"
-#          ./gradlew -PAPI_VERSION=${NEW_VERSION} locus-api-android:publishReleasePublicationToGitHubPackagesRepository
+      # Runs upload, and then closes & releases the repository
+      - name: Releaes repository
+        run: ./gradlew closeAndReleaseRepository
