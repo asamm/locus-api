@@ -51,6 +51,7 @@ class GeocachingData : Storable() {
      * number that has no extra usage in Locus.
      */
     var id: Long = 0L
+
     /**
      * Whole cache ID from gc.com - so GC...
      * REQUIRED
@@ -73,117 +74,144 @@ class GeocachingData : Storable() {
                 else -> CACHE_SOURCE_UNDEFINED
             }
         }
+
     /**
      * State of cache - available or disable.
      */
     var isAvailable: Boolean = true
+
     /**
      * State of cache - already archived or not.
      */
     var isArchived: Boolean = false
+
     /**
      * Flag if cache is only for a premium members.
      */
     var isPremiumOnly: Boolean = false
+
     /**
      * Name of cache visible on all places in Locus as an title.
      * REQUIRED!
      */
     var name: String = ""
+
     /**
      * Name of person who placed cache (groundspeak:placed_by). It is displayed in Locus when
      * tapped on point or in main GC page.
      */
     var placedBy: String = ""
+
     /**
      * Name of cache owner (groundspeak:owner). This value is not displayed in Locus.
      */
     var owner: String = ""
+
     /**
      * Get date/time, when owner create/hide cache on a gc.com web page.
      */
     var dateHidden: Long = 0L
+
     /**
      * Date/time, when owner published cache for users. Usually most important date.
      */
     var datePublished: Long = 0L
+
     /**
      * Date/time, when cache was updated for the last time, on gc.com server.
      */
     var dateUpdated: Long = 0L
+
     /**
      * Type of a cache, define by constants CACHE_TYPE_X.
      */
-    var type: Int = CACHE_TYPE_TRADITIONAL
+    var type: Int = CACHE_TYPE_UNDEFINED
+
     /**
      * Size of cache container. Size is defined by parameters CACHE_SIZE_X, or by text directly.
      */
     var container: Int = CACHE_SIZE_NOT_CHOSEN
+
     /**
      * Difficulty value - 1.0 - 5.0 (by 0.5).
      */
     var difficulty: Float = -1.0f
+
     /**
      * Terrain value - 1.0 - 5.0 (by 0.5).
      */
     var terrain: Float = -1.0f
+
     /**
      * Name of country, where is cache places.
      */
     var country: String = ""
+
     /**
      * Name of state, where is cache places.
      */
     var state: String = ""
+
     /**
      * Descriptions are now stored in raw GZIPed bytes. This allows to keep smaller size
      * of loaded GeocacheData object and also in cases, we don't need short/long
      * description, it also save quite a lot of CPU (not need to use GZIP)
      */
     private var descBytes: ByteArray? = null
+
     /**
      * Length of Short description in descBytes array. This parameter is needed
      * for correct storalization.
      */
     private var shortDescLength: Int = 0
+
     /**
      * Encoded hints.
      */
     var encodedHints: String = ""
+
     /**
      * List of attributes.
      */
     var attributes: MutableList<GeocachingAttribute> = arrayListOf()
+
     /**
      * List of logs.
      */
     var logs: MutableList<GeocachingLog> = arrayListOf()
+
     /**
      * List of travel bugs.
      */
     var trackables: MutableList<GeocachingTrackable> = arrayListOf()
+
     /**
      * List of waypoints.
      */
     var waypoints: MutableList<GeocachingWaypoint> = arrayListOf()
+
     /**
      * User notes.
      */
     var notes: String = ""
+
     /**
      * Flag if cache is 'computed' - have corrected coordinates.
      */
     var isComputed: Boolean = false
+
     /**
      * Flag if cache is already found by user.
      */
     var isFound: Boolean = false
+
     /**
      * Stored URL to cache itself. Keep in mind that this value may not be defined or
      * may include various formats. Suggested is to use [.getCacheUrlFull] method,
      * that should return valid URL.
      */
     var cacheUrl: String = ""
+
     /**
      * Number of favorite points attached to current cache.
      */
@@ -195,10 +223,12 @@ class GeocachingData : Storable() {
      * GcVote - number of votes.
      */
     var gcVoteNumOfVotes: Int = -1
+
     /**
      * Average (not median) value.
      */
     var gcVoteAverage: Float = 0.0f
+
     /**
      * User value for GCVote.
      */
@@ -210,10 +240,12 @@ class GeocachingData : Storable() {
      * Original longitude defined by owner.
      */
     var lonOriginal: Double = 0.0
+
     /**
      * Original latitude defined by owner.
      */
     var latOriginal: Double = 0.0
+
     /**
      * List of attached images.
      */
@@ -241,7 +273,6 @@ class GeocachingData : Storable() {
                 CACHE_SIZE_SMALL -> return "Small"
                 CACHE_SIZE_REGULAR -> return "Regular"
                 CACHE_SIZE_LARGE -> return "Large"
-                CACHE_SIZE_HUGE -> return "Huge"
                 CACHE_SIZE_NOT_CHOSEN -> return "Not chosen"
                 CACHE_SIZE_OTHER -> return "Other"
             }
@@ -249,14 +280,13 @@ class GeocachingData : Storable() {
         }
 
     fun setContainer(value: String) {
-        when {
-            value.equals("Micro", ignoreCase = true) -> container = CACHE_SIZE_MICRO
-            value.equals("Small", ignoreCase = true) -> container = CACHE_SIZE_SMALL
-            value.equals("Regular", ignoreCase = true) -> container = CACHE_SIZE_REGULAR
-            value.equals("Large", ignoreCase = true) -> container = CACHE_SIZE_LARGE
-            value.equals("Huge", ignoreCase = true) -> container = CACHE_SIZE_HUGE
-            value.equals("Not chosen", ignoreCase = true) -> container = CACHE_SIZE_NOT_CHOSEN
-            value.equals("Other", ignoreCase = true) -> container = CACHE_SIZE_OTHER
+        container = when {
+            value.equals("Micro", ignoreCase = true) -> CACHE_SIZE_MICRO
+            value.equals("Small", ignoreCase = true) -> CACHE_SIZE_SMALL
+            value.equals("Regular", ignoreCase = true) -> CACHE_SIZE_REGULAR
+            value.equals("Large", ignoreCase = true) -> CACHE_SIZE_LARGE
+            value.equals("Other", ignoreCase = true) -> CACHE_SIZE_OTHER
+            else -> CACHE_SIZE_NOT_CHOSEN
         }
     }
 
@@ -342,24 +372,27 @@ class GeocachingData : Storable() {
         }
 
     //*************************************************
-    // VARIOUS UTILS
+    // UTILS
     //*************************************************
 
+    /**
+     * Check if cache is valid.
+     *
+     * This means it has:
+     * - valid 'cache ID' (GC code)
+     * - valid 'name'
+     * - valid 'type'
+     */
     val isCacheValid: Boolean
-        get() = cacheID.isNotEmpty() && name.isNotEmpty()
+        get() = cacheID.isNotEmpty()
+                && name.isNotEmpty()
+                && type != CACHE_TYPE_UNDEFINED
 
+    /**
+     * Set type of the cache from the String representation.
+     */
     fun setType(type: String) {
         this.type = getTypeAsInt(type)
-    }
-
-    fun sortTrackables() {
-        // check content
-        if (trackables.size <= 1) {
-            return
-        }
-
-        // sort by name
-        trackables.sortBy { it.name }
     }
 
     /**
@@ -527,116 +560,143 @@ class GeocachingData : Storable() {
          * Traditional cache, API Id: 2
          */
         const val CACHE_TYPE_TRADITIONAL = 0
+
         /**
          * Multi-cache, API Id: 3
          */
         const val CACHE_TYPE_MULTI = 1
+
         /**
          * Mystery/Unknown cache, API Id: 8
          */
         const val CACHE_TYPE_MYSTERY = 2
+
         /**
          * Virtual cache, API Id: 4
          */
         const val CACHE_TYPE_VIRTUAL = 3
+
         /**
          * Earthcache, API Id: 137
          */
         const val CACHE_TYPE_EARTH = 4
+
         /**
          * Project A.P.E., API Id: 9
          */
         const val CACHE_TYPE_PROJECT_APE = 5
+
         /**
          * Letterbox Hybrid cache, API Id: 5
          */
         const val CACHE_TYPE_LETTERBOX = 6
+
         /**
          * Wherigo, API Id: 1858
          */
         const val CACHE_TYPE_WHERIGO = 7
+
         /**
          * Event cache, API Id: 6
          */
         const val CACHE_TYPE_EVENT = 8
+
         /**
          * Mega-event, API Id: 453
          */
         const val CACHE_TYPE_MEGA_EVENT = 9
+
         /**
          * Cache In Trash Out Event, API Id: 13
          */
         const val CACHE_TYPE_CACHE_IN_TRASH_OUT = 10
+
         /**
          * GPS Adventures Exhibit, API Id: 1304
          */
         const val CACHE_TYPE_GPS_ADVENTURE = 11
+
         /**
          * Webcam, API Id: 11
          */
         const val CACHE_TYPE_WEBCAM = 12
+
         /**
          * Locationless (Reverse) Cache, API Id: 12
          */
         const val CACHE_TYPE_LOCATIONLESS = 13
+
         /**
          * Benchmark, not published over API
          */
         const val CACHE_TYPE_BENCHMARK = 14
+
         /**
          * Maze Exhibit, not published over API
          */
         const val CACHE_TYPE_MAZE_EXHIBIT = 15
+
         /**
          * Waymark, not published over API
          */
         const val CACHE_TYPE_WAYMARK = 16
+
         @Deprecated(message = "No longer user cache type/name",
                 replaceWith = ReplaceWith("CACHE_TYPE_GC_HQ"))
         const val CACHE_TYPE_GROUNDSPEAK = 17
+
         /**
          * Geocaching HQ, API Id: 3773
          * Previously "Groundspeak"
          */
         const val CACHE_TYPE_GC_HQ = 17
+
         @Deprecated(message = "No longer user cache type/name",
                 replaceWith = ReplaceWith("CACHE_TYPE_COMMUNITY_CELEBRATION"))
         const val CACHE_TYPE_LF_EVENT = 18
+
         /**
          * Community Celebration Event, API Id: 3653
          * Previously "Lost And Found Event"
          */
         const val CACHE_TYPE_COMMUNITY_CELEBRATION = 18
+
         @Deprecated(message = "No longer user cache type/name",
                 replaceWith = ReplaceWith("CACHE_TYPE_GC_HQ_CELEBRATION"))
         const val CACHE_TYPE_LF_CELEBRATION = 19
+
         /**
          * Geocaching HQ Celebration, API Id: 3774
          * Previously "Lost And Found Celebration"
          */
         const val CACHE_TYPE_GC_HQ_CELEBRATION = 19
+
         /**
          * Giga-event, API Id: 7005
          */
         const val CACHE_TYPE_GIGA_EVENT = 20
+
         /**
          * Lab cache, not published over API
          */
         const val CACHE_TYPE_LAB_CACHE = 21
+
         /**
          * Geocaching HQ Block Party, API Id: 4738
          */
         const val CACHE_TYPE_GC_HQ_BLOCK_PARTY = 22
 
-
-        const val CACHE_TYPE_UNDEFINED = 100
+        /**
+         * Incorrect/undefined type of geocache. Such point should not be considered as geocache
+         * at all.
+         */
+        const val CACHE_TYPE_UNDEFINED = -1
 
         const val CACHE_SIZE_NOT_CHOSEN = 0
         const val CACHE_SIZE_MICRO = 1
         const val CACHE_SIZE_SMALL = 2
         const val CACHE_SIZE_REGULAR = 3
         const val CACHE_SIZE_LARGE = 4
-        const val CACHE_SIZE_HUGE = 5
         const val CACHE_SIZE_OTHER = 6
 
         const val CACHE_SOURCE_UNDEFINED = 0
@@ -691,7 +751,7 @@ class GeocachingData : Storable() {
         fun getTypeAsInt(type: String): Int {
             var typeNew = type
             // check text
-            if (typeNew.isEmpty()) {
+            if (typeNew.isBlank()) {
                 return CACHE_TYPE_UNDEFINED
             }
 
