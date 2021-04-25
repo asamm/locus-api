@@ -4,13 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.34] - 2021-04-25
+### Changed
+- [#35](https://github.com/asamm/locus-api/issues/35), reverted removed of the "Huge" size of geocaches (used in OpenCaching)
+
 ## [0.9.33] - 2021-04-23
 ### Changed
 - validation of geocaches
+- removed "Huge" size of geocaches (not used in Geocaching)
 
 ## [0.9.32] - 2021-04-07
 ### Changed
-- setup of new system for Mavencentral repository
+- [#33](https://github.com/asamm/locus-api/issues/33), setup of new system for Mavencentral repository
 
 ## [0.9.29] - 2021-04-07
 ### Added
