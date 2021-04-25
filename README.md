@@ -1,4 +1,5 @@
-[ ![Download](https://api.bintray.com/packages/asammsoft/maven/locus-api-android/images/download.svg) ](https://bintray.com/asammsoft/maven/locus-api-android/_latestVersion)
+[![API, core](https://maven-badges.herokuapp.com/maven-central/com.asamm/locus-api-core/badge.svg)](https://search.maven.org/artifact/com.asamm/locus-api-core)
+[![API, Android](https://maven-badges.herokuapp.com/maven-central/com.asamm/locus-api-android/badge.svg)](https://search.maven.org/artifact/com.asamm/locus-api-android)
 ![Release](https://github.com/asamm/locus-api/workflows/Release/badge.svg)
 
 <p align="center">
@@ -15,7 +16,7 @@ Library for [Locus Map](http://www.locusmap.eu) application for Android devices.
 
 ## Current version
 
-Latest stable LT version: **0.9.32**
+Latest stable LT version: **0.9.34**
 Available versions on the maven repository: [here](https://repo1.maven.org/maven2/com/asamm/).
 
 How to **update to new 0.9.x** version? More about it [here](https://github.com/asamm/locus-api/wiki/Update-to-version-0.9.0).
