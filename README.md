@@ -1,6 +1,6 @@
 [![API, core](https://maven-badges.herokuapp.com/maven-central/com.asamm/locus-api-core/badge.svg)](https://search.maven.org/artifact/com.asamm/locus-api-core)
 [![API, Android](https://maven-badges.herokuapp.com/maven-central/com.asamm/locus-api-android/badge.svg)](https://search.maven.org/artifact/com.asamm/locus-api-android)
-![Release](https://github.com/asamm/locus-api/workflows/Release/badge.svg)
+[![API, Android](https://github.com/asamm/locus-api/actions/workflows/release_locus_api_android.yml/badge.svg)](https://github.com/asamm/locus-api/actions/workflows/release_locus_api_android.yml)
 
 <p align="center">
     <a href="#current-version">Current version</a> | 
