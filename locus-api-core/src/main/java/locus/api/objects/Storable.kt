@@ -192,8 +192,8 @@ abstract class Storable {
             val size = dr.readInt()
 
             // check size to prevent OOE
-            if (size < 0 || size > 20 * 1024 * 1024) {
-                throw IOException("item size too big, size:$size, max: 20MB")
+            if (size < 0 || size > 50 * 1024 * 1024) {
+                throw IOException("item size too big, size:$size, max: 50MB")
             }
 
             // read object data
