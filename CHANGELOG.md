@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - [#36](https://github.com/asamm/locus-api/issues/36), queries for A11+ package visibility
 - fixed sending of files for import into system/app (Sample app)
+- [#37](https://github.com/asamm/locus-api/issues/37), fixed, incorrect description for map zoom level the `UpdateContainer`
 
 ## [0.9.35] - 2021-05-03
 ### Changed

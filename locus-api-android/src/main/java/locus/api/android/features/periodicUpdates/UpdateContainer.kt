@@ -153,7 +153,7 @@ class UpdateContainer : Storable() {
      * Current map zoom level. This value should not be precise in case of using
      * custom map projections, anyway it's always closest possible value.
      *
-     * @return integer as a current zoom level (zoom 8 == whole world (1 tile 256x256px))
+     * @return integer as a current zoom level (zoom 0 == whole world (1 tile 256x256px))
      */
     var mapZoomLevel: Int = -1
 
