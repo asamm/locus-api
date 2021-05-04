@@ -24,7 +24,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.os.Environment
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.FileProvider
@@ -66,11 +65,12 @@ object SampleCalls {
 
     /**
      * Temporary file used for testing of import feature.
-     *
-     * @return GPX file
      */
-    private val tempGpxFile: File
-        get() = File(Environment.getExternalStorageDirectory().path, "temporary_path.gpx")
+    private fun getTempGpxFile(ctx: Context, content: String): File {
+        return File(ctx.externalCacheDir, "temporary_path.gpx").apply {
+            writeText(content)
+        }
+    }
 
     //*************************************************
     // BASIC CHECKS
@@ -502,22 +502,22 @@ object SampleCalls {
     //*************************************************
 
     fun callSendFileToSystem(ctx: Context) {
-        val file = tempGpxFile
+        val file = getTempGpxFile(ctx, "<xml></xml>")
 
         // generate Uri over FileProvider
         val uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
 
         // send request for "display"
         val send = ActionFiles.importFileSystem(ctx, uri, ActionFiles.getMimeType(file))
-        Logger.logD(TAG, "callSendFileToSystem(" + ctx + "), " +
-                "send:" + send)
+        Logger.logD(TAG, "callSendFileToSystem($ctx), " +
+                "send: $send, file: $file, uri: $uri")
     }
 
     /**
      * Send certain file directly to Locus Map application for handling.
      */
     fun callSendFileToLocus(ctx: Context, lv: LocusVersion) {
-        val file = tempGpxFile
+        val file = getTempGpxFile(ctx, "<xml></xml>")
 
         // generate Uri over FileProvider
         val uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
@@ -525,7 +525,7 @@ object SampleCalls {
         // send request for "display"
         val send = ActionFiles.importFileLocus(ctx, uri, ActionFiles.getMimeType(file), lv, false)
         Logger.logD(TAG, "callSendFileToLocus($ctx, $lv), " +
-                "send:" + send)
+                "send: $send, file: $file, uri: $uri")
     }
 
     /**

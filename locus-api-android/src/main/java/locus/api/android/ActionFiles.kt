@@ -59,7 +59,7 @@ object ActionFiles {
 
         // send request
         ctx.startActivity(Intent(Intent.ACTION_VIEW).apply {
-            setClassName(lv.packageName, lv.mainActivityClassName)
+            setPackage(lv.packageName)
             setDataAndType(fileUri, type)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra(LocusConst.INTENT_EXTRA_CALL_IMPORT, callImport)

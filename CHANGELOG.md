@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.36] - in progress
+### Fixed
+- [#36](https://github.com/asamm/locus-api/issues/36), queries for A11+ package visibility
+- fixed sending of files for import into system/app (Sample app)
+
 ## [0.9.35] - 2021-05-03
 ### Changed
 - increased size limit of the `Storable` objects to 50MB

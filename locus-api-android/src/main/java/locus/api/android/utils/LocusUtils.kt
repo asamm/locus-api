@@ -152,9 +152,8 @@ object LocusUtils {
                     versions.add(lv)
                 }
             } catch (ignored: PackageManager.NameNotFoundException) {
-                Logger.logD(TAG, "getAvailableVersions($ctx), " +
-                        "e: $ignored")
-                //ignored.printStackTrace()
+//                Logger.logD(TAG, "getAvailableVersions($ctx), " +
+//                        "e: $ignored")
             }
         }
 
