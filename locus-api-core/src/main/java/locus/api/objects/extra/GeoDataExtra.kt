@@ -893,22 +893,27 @@ class GeoDataExtra : Storable() {
         /**
          * Online LoPoint ID value.
          */
-        const val PAR_LOPOINTS_ONLINE_ID = 310
+        const val PAR_LOPOINTS_ID = 310
 
         /**
          * LoPoints labels defined on the server.
          */
-        const val PAR_LOPOINTS_ONLINE_LABELS = 311
+        const val PAR_LOPOINTS_LABELS = 311
 
         /**
          * Opening hours String formatted in the OSM format.
          */
-        const val PAR_LOPOINTS_ONLINE_OH = 312
+        const val PAR_LOPOINTS_OPENING_HOURS = 312
 
         /**
          * Precise point time-zone.
          */
         const val PAR_LOPOINTS_TIMEZONE = 313
+
+        /**
+         * Extra geometry of the LoPoint in WKB format.
+         */
+        const val PAR_LOPOINTS_GEOMETRY = 314
 
         //*************************************************
         // CALL BACK HELPERS
