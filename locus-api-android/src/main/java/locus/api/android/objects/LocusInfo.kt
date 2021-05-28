@@ -9,6 +9,11 @@ import locus.api.objects.Storable
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
 
+/**
+ * Object that keep information about current state of application and it's core Metadata.
+ *
+ * Be aware that object is refreshed once per minute.
+ */
 class LocusInfo : Storable() {
 
     /**
@@ -16,11 +21,13 @@ class LocusInfo : Storable() {
      */
     var packageName: String = ""
     /**
-     * Flag if Locus is currently running.
+     * Flag if Locus is currently running. This means if app has valid instance of
+     * the "Main activity" screen (core screen with the map).
      */
     var isRunning: Boolean = false
     /**
-     * Time of last activity (in ms).
+     * Time of last activity (in ms). This parameter is refreshed in the moment, 'onResume()' of
+     * the main activity screen is called.
      */
     var lastActive: Long = 0L
     /**

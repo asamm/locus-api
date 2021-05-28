@@ -21,12 +21,7 @@
 package locus.api.objects.extra
 
 import locus.api.objects.Storable
-import locus.api.utils.LocationCompute
-import locus.api.utils.DataReaderBigEndian
-import locus.api.utils.DataWriterBigEndian
-import locus.api.utils.Logger
-import locus.api.utils.Utils
-
+import locus.api.utils.*
 import java.io.IOException
 
 /**
@@ -41,10 +36,12 @@ open class Location() : Storable() {
      * Location unique ID.
      */
     var id: Long = -1L
+
     /**
      * Provider for location source.
      */
     var provider: String = ""
+
     /**
      * UTC time of this location (in ms).
      */
@@ -123,6 +120,7 @@ open class Location() : Storable() {
      * Container for basic values.
      */
     private var extraBasic: ExtraBasic? = null
+
     /**
      * Container for sensor values.
      */
@@ -334,15 +332,7 @@ open class Location() : Storable() {
     // SPEED
 
     /**
-     * Check if location contains speed information.
-     */
-    fun hasSpeed(): Boolean {
-        return extraBasic?.hasSpeed == true
-    }
-
-    /**
-     * Speed of the device over ground in meters/second. If hasSpeed() is false,
-     * 0.0f is returned (in m/s).
+     * Speed of the device in meters/second. If [hasSpeed] is 'false', 0.0f is returned.
      */
     var speed: Float
         get() = if (hasSpeed()) {
@@ -357,13 +347,28 @@ open class Location() : Storable() {
         }
 
     /**
-     * Check if at least some speed is stored.
-     *
-     * @return `true` if speed is stored in this object
+     * Check if location contains speed information received from GPS hardware.
      */
-    fun hasSpeedOptimal(): Boolean {
-        return hasSpeed() || hasSensorSpeed()
+    fun hasSpeed(): Boolean {
+        return extraBasic?.hasSpeed == true
     }
+
+    /**
+     * Clears the speed of this location. Following this call, [hasSpeed] will return false.
+     */
+    fun removeSpeed() {
+        // check container
+        if (extraBasic == null) {
+            return
+        }
+
+        // remove parameter
+        extraBasic!!.speed = 0.0f
+        extraBasic!!.hasSpeed = false
+        checkExtraBasic()
+    }
+
+    // SPEED, OPTIMAL
 
     /**
      * Get stored speed useful for display to users or for compute with some operations, based on best
@@ -378,18 +383,10 @@ open class Location() : Storable() {
         } else speed
 
     /**
-     * Clears the speed of this fix.  Following this call, hasSpeed() will return false.
+     * Check if any speed (GPS or from sensors) is stored.
      */
-    fun removeSpeed() {
-        // check container
-        if (extraBasic == null) {
-            return
-        }
-
-        // remove parameter
-        extraBasic!!.speed = 0.0f
-        extraBasic!!.hasSpeed = false
-        checkExtraBasic()
+    fun hasSpeedOptimal(): Boolean {
+        return hasSpeed() || hasSensorSpeed()
     }
 
     // BEARING
@@ -575,7 +572,9 @@ open class Location() : Storable() {
     // SPEED
 
     /**
-     * Speed of the fix in meters per sec. If hasSensorSpeed() is false, 0.0 is returned.
+     * Speed of the device over ground in meters/second. This speed is defined only when
+     * 'speed sensor' is connected and supply valid values.
+     * If [hasSensorSpeed] is 'false', 0.0f is returned (in m/s).
      */
     var sensorSpeed: Float
         get() = if (hasSensorSpeed()) {
@@ -590,15 +589,15 @@ open class Location() : Storable() {
         }
 
     /**
-     * Returns true if the provider is able to report speed value, false otherwise.
-     * The default implementation returns false.
+     * Check if the speed received from connected sensor exists.
      */
     fun hasSensorSpeed(): Boolean {
         return extraSensor?.hasSpeed == true
     }
 
     /**
-     * Clears the speed of this fix.  Following this call, hasSensorSpeed() will return false.
+     * Clears the sensor based speed.
+     * After this, [hasSensorSpeed] will return 'false'.
      */
     fun removeSensorSpeed() {
         extraSensor?.let {
