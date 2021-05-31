@@ -1,12 +1,12 @@
 package locus.api.android.features.periodicUpdates
 
-import java.io.IOException
 import locus.api.objects.Storable
-import locus.api.objects.extra.PointRteAction
 import locus.api.objects.extra.Location
+import locus.api.objects.extra.PointRteAction
 import locus.api.objects.extra.TrackStats
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
+import java.io.IOException
 
 class UpdateContainer : Storable() {
 
@@ -19,6 +19,7 @@ class UpdateContainer : Storable() {
      * which specific action is doing, only that something is happening.
      */
     var isUserTouching: Boolean = false
+
     /**
      * Flag if GPS is currently enabled in Locus.
      */
@@ -36,24 +37,29 @@ class UpdateContainer : Storable() {
      * @return current [Location] or just container for sensors data
      */
     var locMyLocation: Location = Location()
+
     /**
      * Information if current [.getLocMyLocation] location is valid GPS location
      * with usable accuracy (GPS has correctly computed "fix" value).
      */
     var isGpsLocValid: Boolean = false
+
     /**
      * Number of used satellites for GPS fix.
      */
     var gpsSatsUsed: Int = 0
+
     /**
      * Total number of visible satellites.
      */
     var gpsSatsAll: Int = 0
+
     /**
-     * Current declination computed from a) current GPS location, or b) last known location 
+     * Current declination computed from a) current GPS location, or b) last known location
      * Locus app knows.
      */
     var declination: Float = 0.0f
+
     /**
      * Current device orientation. Source for value depend on settings in Locus.
      * Also this value will be 0 in case, user do not need orientation for any action.
@@ -61,12 +67,14 @@ class UpdateContainer : Storable() {
      * @return orientation value (in degrees) or 0 if orientation is not used or known
      */
     var orientHeading: Float = 0.0f
+
     /**
      * Return opposite value to [.getOrientHeading]
      *
      * @return orientation (in degree) or 0 if orientation is not used or known
      */
     var orientHeadingOpposit: Float = 0.0f
+
     /**
      * Current device course. Source for this value is change in coordinates,
      * or directly GPS values.
@@ -74,6 +82,7 @@ class UpdateContainer : Storable() {
      * @return course value (in degrees) or 0 if course is not known
      */
     var orientCourse: Float = 0.0f
+
     /**
      * Pitch angle of current device.
      * For more info see [wiki](http://en.wikipedia.org/wiki/Flight_dynamics)
@@ -81,6 +90,7 @@ class UpdateContainer : Storable() {
      * @return pitch angle (in degree) or 0 if not known
      */
     var orientPitch: Float = 0.0f
+
     /**
      * Roll angle of current device.
      * For more info see [wiki](http://en.wikipedia.org/wiki/Flight_dynamics)
@@ -88,6 +98,7 @@ class UpdateContainer : Storable() {
      * @return roll angle (in degree) or 0 if not known
      */
     var orientRoll: Float = 0.0f
+
     /**
      * Angle between GPS shift and current orientation. This values differ from 0
      * based on current outside conditions
@@ -95,17 +106,20 @@ class UpdateContainer : Storable() {
      * @return angle (in degrees) or 0 if no shift exists or GPS or sensors are disabled
      */
     var orientGpsAngle: Float = 0.0f
+
     /**
      * Current users pace value (min / km). Computed pace is from highly filtered speed, not from
      * real speed included in current [locMyLocation] object.
      */
     var pace: Float = 0.0f
+
     /**
      * Vertical speed from last few (around 5) seconds of enabled GPS
      *
      * @return vertical speed in m/s
      */
     var speedVertical: Float = 0.0f
+
     /**
      * Current (little filtered) slope value. More about slope, for example at
      * [Wikipedia](http://en.wikipedia.org/wiki/Slope)
@@ -124,6 +138,7 @@ class UpdateContainer : Storable() {
      * @return `true` if map is visible
      */
     var isMapVisible: Boolean = false
+
     /**
      * Current rotation value of map screen. This value may be same as current
      * orientation or should be value by user manual rotation
@@ -131,24 +146,28 @@ class UpdateContainer : Storable() {
      * @return angle (in degrees) as map rotate
      */
     var mapRotate: Float = 0.0f
+
     /**
      * Even if map is visible or not, this define current map center.
      *
      * @return current map center
      */
     var locMapCenter: Location? = null
+
     /**
      * Top-left coordinate of current map screen
      *
      * @return max top-left visible location
      */
     var mapTopLeft: Location? = null
+
     /**
      * Bottom-right coordinate of current map screen
      *
      * @return max bottom-right visible location
      */
     var mapBottomRight: Location? = null
+
     /**
      * Current map zoom level. This value should not be precise in case of using
      * custom map projections, anyway it's always closest possible value.
@@ -168,6 +187,7 @@ class UpdateContainer : Storable() {
      * @return `true` if track recording is active
      */
     var isTrackRecRecording: Boolean = false
+
     /**
      * Flag if track recording is currently active or paused. Firstly check if recording is running
      * before testing if is paused.
@@ -175,12 +195,14 @@ class UpdateContainer : Storable() {
      * @return `true` if track recording is paused
      */
     var isTrackRecPaused: Boolean = false
+
     /**
      * Name of the active recording profile.
      *
      * @return profile name
      */
     var trackRecProfileName: String = ""
+
     /**
      * Complete track statistics. This container is available only when [isTrackRecRecording]
      * returns `true`.
@@ -197,30 +219,37 @@ class UpdateContainer : Storable() {
      * Get current guiding type.
      */
     var guideType: Int = GUIDE_TYPE_DISABLED
+
     /**
      * ID of current target.
      */
     var guideTargetId: Long = -1L
+
     /**
      * Name of guiding target.
      */
     var guideWptName: String = ""
+
     /**
      * Current guiding location.
      */
     var guideWptLoc: Location? = null
+
     /**
      * Distance to target.
      */
     var guideWptDist: Double = 0.0
+
     /**
      * Azimuth to target.
      */
     var guideWptAzim: Float = 0.0f
+
     /**
      * Bearing to target.
      */
     var guideWptAngle: Float = 0.0f
+
     /**
      * Expected time to target.
      */
@@ -230,14 +259,17 @@ class UpdateContainer : Storable() {
      * Flag if active track guidance is valid.
      */
     var guideValid: Boolean = true
+
     /**
      * Distance from start (in case of guiding along track).
      */
     var guideDistFromStart: Double = 0.0
+
     /**
      * Distance to finish (in case of guiding along track).
      */
     var guideDistToFinish: Double = 0.0
+
     /**
      * Expected time to finish (in case of guiding along track).
      */
@@ -247,22 +279,27 @@ class UpdateContainer : Storable() {
      * Name of current navigation target point.
      */
     var guideNavPoint1Name: String = ""
+
     /**
      * Location of current navigation point.
      */
     var guideNavPoint1Loc: Location? = null
+
     /**
      * Distance to current navigation point.
      */
     var guideNavPoint1Dist: Double = 0.0
+
     /**
      * Time to current navigation point.
      */
     var guideNavPoint1Time: Long = 0L
+
     /**
      * Action that happen on current navigation point.
      */
     var guideNavPoint1Action: PointRteAction = PointRteAction.UNDEFINED
+
     /**
      * Extra information for navigation point.
      */
@@ -272,26 +309,46 @@ class UpdateContainer : Storable() {
      * Name of next navigation target point.
      */
     var guideNavPoint2Name: String = ""
+
     /**
      * Location of next navigation point.
      */
     var guideNavPoint2Loc: Location? = null
+
     /**
      * Distance to next navigation point.
      */
     var guideNavPoint2Dist: Double = 0.0
+
     /**
      * Time to next navigation point.
      */
     var guideNavPoint2Time: Long = 0L
+
     /**
      * Action that happen on next navigation point.
      */
     var guideNavPoint2Action: PointRteAction = PointRteAction.UNDEFINED
+
     /**
      * Extra information for navigation point.
      */
     var guideNavPoint2Extra: String = ""
+
+    /**
+     * Name of the next via-point (or destination in case, no other via points exists).
+     */
+    var guideNextViaName: String = ""
+
+    /**
+     * Distance to the next via-point (or destination in case, no other via points exists).
+     */
+    var guideNextViaDist: Double = 0.0
+
+    /**
+     * Relative time to the next via-point (or destination in case, no other via points exists).
+     */
+    var guideNextViaTime: Long = 0L
 
     //*************************************************
     // VARIOUS
@@ -301,16 +358,19 @@ class UpdateContainer : Storable() {
      * ID of active visible dashboard.
      */
     var activeDashboardId: String = ""
+
     /**
      * ID of active running Live tracking.
      */
     var activeLiveTrackId: String = ""
+
     /**
      * Battery value of current device
      *
      * @return value of current battery in percents (0 - 100)
      */
     var deviceBatteryValue: Int = 0
+
     /**
      * Current battery temperature
      *
@@ -372,12 +432,21 @@ class UpdateContainer : Storable() {
                         guideNavPoint2Dist, guideNavPoint2Time, guideNavPoint2Extra)
             }
 
+            // generate next Via point
+            var nextVia: UpdateContainerGuideTrack.ViaPoint? = null
+            if (guideNextViaName.isNotBlank()) {
+                nextVia = UpdateContainerGuideTrack.ViaPoint(
+                        guideNextViaName,
+                        guideNextViaDist,
+                        guideNextViaTime)
+            }
+
             // return generated container
             return UpdateContainerGuideTrack(guideType,
                     guideTargetId, guideWptName, guideWptLoc!!, guideWptDist,
                     guideWptAzim, guideWptAngle, guideWptTime,
                     guideValid, guideDistFromStart, guideDistToFinish, guideTimeToFinish,
-                    navPoint1, navPoint2)
+                    navPoint1, navPoint2, nextVia)
         }
 
     //*************************************************
@@ -385,7 +454,7 @@ class UpdateContainer : Storable() {
     //*************************************************
 
     override fun getVersion(): Int {
-        return 5
+        return 6
     }
 
     @Throws(IOException::class)
@@ -487,6 +556,13 @@ class UpdateContainer : Storable() {
             guideNavPoint1Extra = dr.readString()
             guideNavPoint2Extra = dr.readString()
         }
+
+        // V6
+        if (version >= 6) {
+            guideNextViaName = dr.readString()
+            guideNextViaDist = dr.readDouble()
+            guideNextViaTime = dr.readLong()
+        }
     }
 
     @Throws(IOException::class)
@@ -580,6 +656,11 @@ class UpdateContainer : Storable() {
         // V5
         dw.writeString(guideNavPoint1Extra)
         dw.writeString(guideNavPoint2Extra)
+
+        // V6
+        dw.writeString(guideNextViaName)
+        dw.writeDouble(guideNextViaDist)
+        dw.writeLong(guideNextViaTime)
     }
 
     /**

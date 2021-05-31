@@ -12,8 +12,8 @@
 
 package locus.api.android.features.periodicUpdates
 
-import locus.api.objects.extra.PointRteAction
 import locus.api.objects.extra.Location
+import locus.api.objects.extra.PointRteAction
 
 /**
  * Container with active navigation/guidance along the track.
@@ -78,7 +78,11 @@ class UpdateContainerGuideTrack internal constructor(
         /**
          * Second navigation point.
          */
-        val navPointSecond: NavPoint?) {
+        val navPointSecond: NavPoint?,
+        /**
+         * Next via point (or destination in case, no other via points exists).
+         */
+        val nextViaPoint: ViaPoint?) {
 
     /**
      * Container of navigation point and metadata related to current active navigation/guidance.
@@ -109,4 +113,21 @@ class UpdateContainerGuideTrack internal constructor(
              * street name or user-defined content.
              */
             val extraInfo: String)
+
+    /**
+     * Container of navigation point and metadata related to current active navigation/guidance.
+     */
+    class ViaPoint internal constructor(
+            /**
+             * Name of the next via-point (or destination in case, no other via points exists)
+             */
+            val name: String,
+            /**
+             * Distance to the next via-point (or destination in case, no other via points exists).
+             */
+            val distance: Double,
+            /**
+             * Relative time to the next via-point (or destination in case, no other via points exists).
+             */
+            val time: Long)
 }
