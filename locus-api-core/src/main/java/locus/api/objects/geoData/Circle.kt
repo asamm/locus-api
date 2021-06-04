@@ -26,6 +26,12 @@ class Circle() : GeoData() {
         }
 
     /**
+     * Flag that define units used for radius. In case of `false` value, pixels area used (so circle
+     * will be independent on the zoom level).
+     */
+    var unitsMetres: Boolean = true
+
+    /**
      * Flag if circle should be draw as precise geodetic circle. This will highly improve
      * circle precision for bigger radius (100+ metres), but may affect rendering performance.
      */
@@ -43,7 +49,7 @@ class Circle() : GeoData() {
     //*************************************************
 
     override fun getVersion(): Int {
-        return 2
+        return 3
     }
 
     @Throws(IOException::class)
@@ -68,6 +74,11 @@ class Circle() : GeoData() {
         if (version >= 2) {
             timeUpdated = dr.readLong()
         }
+
+        // V3
+        if (version >= 3) {
+            unitsMetres = dr.readBoolean()
+        }
     }
 
     @Throws(IOException::class)
@@ -88,5 +99,8 @@ class Circle() : GeoData() {
 
         // V2
         dw.writeLong(timeUpdated)
+
+        // V3
+        dw.writeBoolean(unitsMetres)
     }
 }
