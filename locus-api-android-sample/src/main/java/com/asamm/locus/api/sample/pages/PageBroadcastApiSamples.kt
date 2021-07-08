@@ -69,6 +69,7 @@ class PageBroadcastApiSamples : DialogFragment() {
     private fun getItems(): MutableList<BasicAdapterItem> {
         val items = ArrayList<BasicAdapterItem>()
         items.add(BasicAdapterItem(1, "Toggle centering"))
+        items.add(BasicAdapterItem(12, "Toggle rotation"))
         items.add(BasicAdapterItem(2, "Move map top-left"))
         items.add(BasicAdapterItem(3, "Move map bottom-right"))
         items.add(BasicAdapterItem(4, "Zoom map in"))
@@ -107,6 +108,10 @@ class PageBroadcastApiSamples : DialogFragment() {
             11 -> activity?.sendBroadcast(Intent("com.asamm.locus.ACTION_TASK").apply {
                 setPackage(activeLocus.packageName)
                 putExtra("tasks", "{ function: { value: \"quick_action_menu\" } }")
+            })
+            12 -> activity?.sendBroadcast(Intent("com.asamm.locus.ACTION_TASK").apply {
+                setPackage(activeLocus.packageName)
+                putExtra("tasks", "{ map_rotate: { action: \"toggle\" } }")
             })
         }
     }
