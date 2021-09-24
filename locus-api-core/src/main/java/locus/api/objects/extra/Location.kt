@@ -84,198 +84,127 @@ open class Location() : Storable() {
             field = newValue
         }
 
-    // ALTITUDE
+    // BASIC GNSS VALUES
 
     /**
-     * Flag if altitude is set.
+     * Altitude value of the location (in m). If 'hasData' is false, 0.0f is returned.
      */
-    var hasAltitude: Boolean = false
+    val altitude = ValueContainerDouble(EXTRA_KEY_ALTITUDE, 0.0)
 
     /**
-     * Altitude value of the location (in m). If [hasAltitude] is false, 0.0f is returned.
+     * Speed of the device in meters/second.
      */
-    var altitude: Double
-        get() = if (hasAltitude) {
-            _altitude
-        } else 0.0
-        set(altitude) {
-            this._altitude = altitude
-            this.hasAltitude = true
-        }
+    val speed = ValueContainerFloat(EXTRA_KEY_SPEED, 0.0f)
 
     /**
-     * Backing field for altitude value (in m).
+     * Direction of travel in degrees East of true North. If 'hasData' is false,
+     * 0.0 is returned (in degree).
      */
-    private var _altitude: Double = 0.0
+    val bearing = object : ValueContainerFloat(EXTRA_KEY_BEARING, 0.0f) {
 
-    /**
-     * Clears the altitude of this fix. Following this call, hasAltitude() will return false.
-     */
-    fun removeAltitude() {
-        this._altitude = 0.0
-        this.hasAltitude = false
-    }
-
-    /**
-     * Container for basic values.
-     */
-    private var extraBasic: ExtraBasic? = null
-
-    /**
-     * Container for sensor values.
-     */
-    private var extraSensor: ExtraSensor? = null
-
-    /**
-     * Container for extended data for location class.
-     */
-    private class ExtraBasic : Cloneable {
-
-        var hasSpeed: Boolean = false
-        var speed: Float = 0.toFloat()
-
-        var hasBearing: Boolean = false
-        var bearing: Float = 0.toFloat()
-
-        var hasAccuracy: Boolean = false
-        var accuracy: Float = 0.toFloat()
-
-        init {
-            hasSpeed = false
-            speed = 0.0f
-            hasBearing = false
-            bearing = 0.0f
-            hasAccuracy = false
-            accuracy = 0.0f
-        }
-
-        public override fun clone(): ExtraBasic {
-            val newExtra = ExtraBasic()
-            newExtra.hasSpeed = hasSpeed
-            newExtra.speed = speed
-            newExtra.hasBearing = hasBearing
-            newExtra.bearing = bearing
-            newExtra.hasAccuracy = hasAccuracy
-            newExtra.accuracy = accuracy
-            return newExtra
-        }
-
-        fun hasData(): Boolean {
-            return hasSpeed || hasBearing || hasAccuracy
-        }
-
-        override fun toString(): String {
-            return Utils.toString(this@ExtraBasic, "    ")
-        }
-    }
-
-    /**
-     * Container for data usually received from sensors.
-     */
-    private class ExtraSensor : Storable(), Cloneable {
-
-        var hasHr: Boolean = false
-        var hr: Int = 0
-
-        var hasCadence: Boolean = false
-        var cadence: Int = 0
-
-        var hasSpeed: Boolean = false
-        var speed: Float = 0.toFloat()
-
-        var hasPower: Boolean = false
-        var power: Float = 0.toFloat()
-
-        var hasStrides: Boolean = false
-        var strides: Int = 0
-
-        var hasTemperature: Boolean = false
-        var temperature: Float = 0.toFloat()
-
-        init {
-            hasHr = false
-            hr = 0
-            hasCadence = false
-            cadence = 0
-            hasSpeed = false
-            speed = 0.0f
-            hasPower = false
-            power = 0.0f
-            hasStrides = false
-            strides = 0
-            hasTemperature = false
-            temperature = 0f
-        }
-
-        public override fun clone(): ExtraSensor {
-            val newExtra = ExtraSensor()
-            newExtra.hasHr = hasHr
-            newExtra.hr = hr
-            newExtra.hasCadence = hasCadence
-            newExtra.cadence = cadence
-            newExtra.hasSpeed = hasSpeed
-            newExtra.speed = speed
-            newExtra.hasPower = hasPower
-            newExtra.power = power
-            newExtra.hasStrides = hasStrides
-            newExtra.strides = strides
-            newExtra.hasTemperature = hasTemperature
-            newExtra.temperature = temperature
-            return newExtra
-        }
-
-        fun hasData(): Boolean {
-            return hasHr || hasCadence ||
-                    hasSpeed || hasPower ||
-                    hasStrides || hasTemperature
-        }
-
-        override fun getVersion(): Int {
-            return 1
-        }
-
-        @Throws(IOException::class)
-        override fun readObject(version: Int, dr: DataReaderBigEndian) {
-            hasHr = dr.readBoolean()
-            hr = dr.readInt()
-            hasCadence = dr.readBoolean()
-            cadence = dr.readInt()
-            hasSpeed = dr.readBoolean()
-            speed = dr.readFloat()
-            hasPower = dr.readBoolean()
-            power = dr.readFloat()
-            hasStrides = dr.readBoolean()
-            strides = dr.readInt()
-            dr.readBoolean() // hasBattery
-            dr.readInt() // battery
-            if (version >= 1) {
-                hasTemperature = dr.readBoolean()
-                temperature = dr.readFloat()
+        override fun validateNewValue(value: Float): Float {
+            var bearingNew = value
+            while (bearingNew < 0.0f) {
+                bearingNew += 360.0f
             }
-        }
-
-        @Throws(IOException::class)
-        override fun writeObject(dw: DataWriterBigEndian) {
-            dw.writeBoolean(hasHr)
-            dw.writeInt(hr)
-            dw.writeBoolean(hasCadence)
-            dw.writeInt(cadence)
-            dw.writeBoolean(hasSpeed)
-            dw.writeFloat(speed)
-            dw.writeBoolean(hasPower)
-            dw.writeFloat(power)
-            dw.writeBoolean(hasStrides)
-            dw.writeInt(strides)
-            dw.writeBoolean(false) // hasBattery
-            dw.writeInt(0) // battery
-            dw.writeBoolean(hasTemperature)
-            dw.writeFloat(temperature)
-        }
-
-        override fun toString(): String {
-            return Utils.toString(this@ExtraSensor, "    ")
+            while (bearingNew >= 360.0f) {
+                bearingNew -= 360.0f
+            }
+            return bearingNew
         }
     }
+
+    /**
+     * Accuracy of the fix. If 'hasData' is false, 0.0 is returned (in m).
+     */
+    val accuracy = ValueContainerFloat(EXTRA_KEY_ACCURACY, 0.0f)
+
+    // SENSOR VALUES
+
+    /**
+     * Cadence value. If hasCadence() is false, 0 is returned.
+     */
+    var sensorCadence = ValueContainerInt(EXTRA_KEY_SENSOR_CADENCE, 0)
+
+    /**
+     * Heart rate value in BMP. If hasSensorHeartRate() is false, 0 is returned.
+     */
+    var sensorHeartRate = ValueContainerInt(EXTRA_KEY_SENSOR_HEART_RATE, 0)
+
+    /**
+     * Speed of the device over ground in meters/second. This speed is defined only when
+     * 'speed sensor' is connected and supply valid values.
+     *
+     * If 'hasData' is 'false', 0.0f is returned (in m/s).
+     */
+    var sensorSpeed = ValueContainerFloat(EXTRA_KEY_SENSOR_SPEED, 0.0f)
+
+    /**
+     * Power value of the fix in W. If hasSensorPower() is false, 0.0 is returned.
+     */
+    var sensorPower = ValueContainerFloat(EXTRA_KEY_SENSOR_POWER, 0.0f)
+
+    /**
+     * The num of strides. If hasSensorStrides() is false, 0 is returned.
+     */
+    var sensorStrides = ValueContainerInt(EXTRA_KEY_SENSOR_STRIDES, 0)
+
+    /**
+     * Temperature value. If hasSensorTemperature() is false, 0.0f is returned.
+     */
+    var sensorTemperature = ValueContainerFloat(EXTRA_KEY_SENSOR_TEMPERATURE, 0.0f)
+
+    // GNSS META-DATA
+
+    val gnssStatus = ValueContainerInt(EXTRA_KEY_GNSS_STATUS, 0)
+
+    /**
+     * Horizontal dilution of precision for current location.
+     *
+     * More info: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation).
+     */
+    val gnssHdop = ValueContainerFloat(EXTRA_KEY_GNSS_HDOP, 0.0f)
+
+    /**
+     * Vertical dilution of precision for current location.
+     *
+     * More info: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation).
+     */
+    val gnssVdop = ValueContainerFloat(EXTRA_KEY_GNSS_VDOP, 0.0f)
+
+    /**
+     * Position (3D) dilution of precision for current location.
+     *
+     * More info: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation).
+     */
+    val gnssPdop = ValueContainerFloat(EXTRA_KEY_GNSS_PDOP, 0.0f)
+
+    /**
+     * Number of used satellites used to obtain current location.
+     */
+    val gnssSatsUsed = ValueContainerInt(EXTRA_KEY_GNSS_SATS_USED, 0)
+
+    /**
+     * Number of used satellites used to obtain current location.
+     */
+    val gnssSatsVisible = ValueContainerInt(EXTRA_KEY_GNSS_SATS_VISIBLE, 0)
+
+    // CONTAINERS
+
+    /**
+     * Container for integer based extra data.
+     */
+    private var extraDataInt = SparseArrayCompat<Int>(0)
+
+    /**
+     * Container for float based extra data.
+     */
+    private var extraDataFloat = SparseArrayCompat<Float>(0)
+
+    /**
+     * Container for double based extra data.
+     */
+    private var extraDataDouble = SparseArrayCompat<Double>(0)
 
     //*************************************************
     // CONSTRUCTION
@@ -292,8 +221,6 @@ open class Location() : Storable() {
 
     /**
      * Sets the contents of the location to the values from the given location.
-     *
-     * @param loc source location object
      */
     fun set(loc: Location) {
         id = loc.id
@@ -301,72 +228,16 @@ open class Location() : Storable() {
         time = loc.time
         latitude = loc.latitude
         longitude = loc.longitude
-        hasAltitude = loc.hasAltitude
-        _altitude = loc._altitude
 
-        // set extra basic data
-        if (loc.extraBasic != null && loc.extraBasic!!.hasData()) {
-            extraBasic = loc.extraBasic!!.clone()
-            if (!extraBasic!!.hasData()) {
-                extraBasic = null
-            }
-        } else {
-            extraBasic = null
-        }
-
-        // set extra ant data
-        if (loc.extraSensor != null && loc.extraSensor!!.hasData()) {
-            extraSensor = loc.extraSensor!!.clone()
-            if (!extraSensor!!.hasData()) {
-                extraSensor = null
-            }
-        } else {
-            extraSensor = null
-        }
+        // set extra data
+        extraDataInt.putAll(loc.extraDataInt)
+        extraDataFloat.putAll(loc.extraDataFloat)
+        extraDataDouble.putAll(loc.extraDataDouble)
     }
 
     //*************************************************
     // BASIC EXTRA DATA
     //*************************************************
-
-    // SPEED
-
-    /**
-     * Speed of the device in meters/second. If [hasSpeed] is 'false', 0.0f is returned.
-     */
-    var speed: Float
-        get() = if (hasSpeed()) {
-            extraBasic!!.speed
-        } else 0.0f
-        set(speed) {
-            if (extraBasic == null) {
-                extraBasic = ExtraBasic()
-            }
-            extraBasic!!.speed = speed
-            extraBasic!!.hasSpeed = true
-        }
-
-    /**
-     * Check if location contains speed information received from GPS hardware.
-     */
-    fun hasSpeed(): Boolean {
-        return extraBasic?.hasSpeed == true
-    }
-
-    /**
-     * Clears the speed of this location. Following this call, [hasSpeed] will return false.
-     */
-    fun removeSpeed() {
-        // check container
-        if (extraBasic == null) {
-            return
-        }
-
-        // remove parameter
-        extraBasic!!.speed = 0.0f
-        extraBasic!!.hasSpeed = false
-        checkExtraBasic()
-    }
 
     // SPEED, OPTIMAL
 
@@ -377,366 +248,87 @@ open class Location() : Storable() {
      *
      * @return speed for display purpose
      */
+    @Deprecated (message = "Work with speed value directly")
     val speedOptimal: Float
-        get() = if (hasSensorSpeed()) {
-            sensorSpeed
-        } else speed
+        get() = if (sensorSpeed.hasData) {
+            sensorSpeed.value
+        } else speed.value
 
     /**
      * Check if any speed (GPS or from sensors) is stored.
      */
+    @Deprecated (message = "Work with speed value directly")
     fun hasSpeedOptimal(): Boolean {
-        return hasSpeed() || hasSensorSpeed()
-    }
-
-    // BEARING
-
-    /**
-     * Direction of travel in degrees East of true North. If hasBearing() is false,
-     * 0.0 is returned (in degree).
-     */
-    var bearing: Float
-        get() = if (hasBearing()) {
-            extraBasic!!.bearing
-        } else 0.0f
-        set(bearing) {
-            var bearingNew = bearing
-            while (bearingNew < 0.0f) {
-                bearingNew += 360.0f
-            }
-            while (bearingNew >= 360.0f) {
-                bearingNew -= 360.0f
-            }
-
-            // set value
-            if (extraBasic == null) {
-                extraBasic = ExtraBasic()
-            }
-            extraBasic!!.bearing = bearingNew
-            extraBasic!!.hasBearing = true
-        }
-
-    /**
-     * Check if the location is able to report bearing information.
-     */
-    fun hasBearing(): Boolean {
-        return extraBasic?.hasBearing == true
-    }
-
-    /**
-     * Clears the bearing of this fix.  Following this call, hasBearing()
-     * will return false.
-     */
-    fun removeBearing() {
-        // check data
-        if (extraBasic == null) {
-            return
-        }
-
-        // remove parameter
-        extraBasic!!.bearing = 0.0f
-        extraBasic!!.hasBearing = false
-        checkExtraBasic()
-    }
-
-    // ACCURACY
-
-    /**
-     * Accuracy of the fix. If hasAccuracy() is false, 0.0 is returned (in m).
-     */
-    var accuracy: Float
-        get() = if (hasAccuracy()) {
-            extraBasic!!.accuracy
-        } else 0.0f
-        set(accuracy) {
-            if (extraBasic == null) {
-                extraBasic = ExtraBasic()
-            }
-            extraBasic!!.accuracy = accuracy
-            extraBasic!!.hasAccuracy = true
-        }
-
-    /**
-     * Returns true if the provider is able to report accuracy information,
-     * false otherwise.  The default implementation returns false.
-     *
-     * @return `true` is location has defined accuracy
-     */
-    fun hasAccuracy(): Boolean {
-        return extraBasic?.hasAccuracy == true
-    }
-
-    /**
-     * Clears the accuracy of this fix.  Following this call, hasAccuracy() will return false.
-     */
-    fun removeAccuracy() {
-        // check container
-        if (extraBasic == null) {
-            return
-        }
-
-        // remove data
-        extraBasic!!.accuracy = 0.0f
-        extraBasic!!.hasAccuracy = false
-        checkExtraBasic()
-    }
-
-    // TOOLS
-
-    /**
-     * Check extra data container and remove it if no data exists.
-     */
-    private fun checkExtraBasic() {
-        if (!extraBasic!!.hasData()) {
-            extraBasic = null
-        }
+        return speed.hasData || sensorSpeed.hasData
     }
 
     //*************************************************
-    // EXTRA SENSORS DATA
+    // CONTAINERS
     //*************************************************
 
-    // HEART RATE
+    open class ValueContainer<T> constructor(private val dataContainer: SparseArrayCompat<T>,
+            val id: Int, val defaultEmpty: T) {
 
-    /**
-     * Heart rate value in BMP. If hasSensorHeartRate() is false, 0.0 is returned.
-     */
-    var sensorHeartRate: Int
-        get() = if (hasSensorHeartRate()) {
-            extraSensor!!.hr
-        } else 0
-        set(heartRate) {
-            if (extraSensor == null) {
-                extraSensor = ExtraSensor()
+        val hasData: Boolean
+            get() = dataContainer.containsKey(id)
+
+        var value: T
+            get() = dataContainer.get(id, defaultEmpty)
+            set(value) = dataContainer.put(id, value)
+
+        /**
+         * Validate received value.
+         */
+        internal open fun validateNewValue(value: T): T {
+            return value
+        }
+
+        fun doIfValid(action: (T) -> Unit) {
+            if (hasData) {
+                action(value)
             }
-            extraSensor!!.hasHr = true
-            extraSensor!!.hr = heartRate
         }
 
-    /**
-     * Returns true if the provider is able to report Heart rate information, false otherwise.
-     * The default implementation returns false.
-     */
-    fun hasSensorHeartRate(): Boolean {
-        return extraSensor?.hasHr == true
-    }
-
-    /**
-     * Clears the accuracy of this fix.  Following this call, hasSensorHeartRate()
-     * will return false.
-     */
-    fun removeSensorHeartRate() {
-        extraSensor?.let {
-            it.hasHr = false
-            it.hr = 0
-            checkExtraSensor()
+        fun remove() {
+            dataContainer.remove(id)
         }
     }
 
-    // CADENCE
+    inner class ValueContainerInt(id: Int, defaultEmpty: Int)
+        : ValueContainer<Int>(extraDataInt, id, defaultEmpty)
 
-    /**
-     * Cadence value. If hasCadence() is false, 0 is returned.
-     */
-    var sensorCadence: Int
-        get() = if (hasSensorCadence()) {
-            extraSensor!!.cadence
-        } else 0
-        set(cadence) {
-            if (extraSensor == null) {
-                extraSensor = ExtraSensor()
-            }
-            extraSensor!!.hasCadence = true
-            extraSensor!!.cadence = cadence
-        }
+    open inner class ValueContainerFloat(id: Int, defaultEmpty: Float)
+        : ValueContainer<Float>(extraDataFloat, id, defaultEmpty)
 
-    /**
-     * Returns true if the provider is able to report cadence information, false otherwise.
-     * The default implementation returns false.
-     */
-    fun hasSensorCadence(): Boolean {
-        return extraSensor?.hasCadence == true
-    }
+    inner class ValueContainerDouble(id: Int, defaultEmpty: Double)
+        : ValueContainer<Double>(extraDataDouble, id, defaultEmpty)
 
-    /**
-     * Clears the cadence of this fix.  Following this call, hasCadence() will return false.
-     */
-    fun removeSensorCadence() {
-        extraSensor?.let {
-            it.hasCadence = false
-            it.cadence = 0
-            checkExtraSensor()
-        }
-    }
-
-    // SPEED
-
-    /**
-     * Speed of the device over ground in meters/second. This speed is defined only when
-     * 'speed sensor' is connected and supply valid values.
-     * If [hasSensorSpeed] is 'false', 0.0f is returned (in m/s).
-     */
-    var sensorSpeed: Float
-        get() = if (hasSensorSpeed()) {
-            extraSensor!!.speed
-        } else 0.0f
-        set(speed) {
-            if (extraSensor == null) {
-                extraSensor = ExtraSensor()
-            }
-            extraSensor!!.hasSpeed = true
-            extraSensor!!.speed = speed
-        }
-
-    /**
-     * Check if the speed received from connected sensor exists.
-     */
-    fun hasSensorSpeed(): Boolean {
-        return extraSensor?.hasSpeed == true
-    }
-
-    /**
-     * Clears the sensor based speed.
-     * After this, [hasSensorSpeed] will return 'false'.
-     */
-    fun removeSensorSpeed() {
-        extraSensor?.let {
-            it.hasSpeed = false
-            it.speed = 0.0f
-            checkExtraSensor()
-        }
-    }
-
-    // POWER
-
-    /**
-     * Power value of the fix in W. If hasSensorPower() is false, 0.0 is returned.
-     *
-     * @return power value (in Watts)
-     */
-    var sensorPower: Float
-        get() = if (hasSensorPower()) {
-            extraSensor!!.power
-        } else 0.0f
-        set(power) {
-            if (extraSensor == null) {
-                extraSensor = ExtraSensor()
-            }
-            extraSensor!!.hasPower = true
-            extraSensor!!.power = power
-        }
-
-    /**
-     * Returns true if the provider is able to report power value, false otherwise.
-     * The default implementation returns false.
-     */
-    fun hasSensorPower(): Boolean {
-        return extraSensor?.hasPower == true
-    }
-
-    /**
-     * Clears the power of this fix.  Following this call, hasSensorPower()
-     * will return false.
-     */
-    fun removeSensorPower() {
-        extraSensor?.let {
-            it.hasPower = false
-            it.power = 0.0f
-            checkExtraSensor()
-        }
-    }
-
-    // STRIDES
-
-    /**
-     * The num of strides. If hasSensorStrides() is false, 0 is returned.
-     */
-    var sensorStrides: Int
-        get() = if (hasSensorStrides()) {
-            extraSensor!!.strides
-        } else 0
-        set(strides) {
-            if (extraSensor == null) {
-                extraSensor = ExtraSensor()
-            }
-            extraSensor!!.hasStrides = true
-            extraSensor!!.strides = strides
-        }
-
-    /**
-     * Returns true if the provider is able to report strides value, false otherwise.
-     * The default implementation returns false.
-     */
-    fun hasSensorStrides(): Boolean {
-        return extraSensor?.hasStrides == true
-    }
-
-    /**
-     * Clears the num of strides. Following this call, hasSensorStrides() will return false.
-     */
-    fun removeSensorStrides() {
-        extraSensor?.let {
-            it.hasStrides = false
-            it.strides = 0
-            checkExtraSensor()
-        }
-    }
-
-    // TEMPERATURE
-
-    /**
-     * Temperature value. If hasSensorTemperature() is false, 0.0f is returned.
-     */
-    var sensorTemperature: Float
-        get() = if (hasSensorTemperature()) {
-            extraSensor!!.temperature
-        } else 0.0f
-        set(temperature) {
-            if (extraSensor == null) {
-                extraSensor = ExtraSensor()
-            }
-            extraSensor!!.hasTemperature = true
-            extraSensor!!.temperature = temperature
-        }
-
-    /**
-     * Returns true if the provider is able to report temperature value, false otherwise.
-     * The default implementation returns false.
-     */
-    fun hasSensorTemperature(): Boolean {
-        return extraSensor?.hasTemperature == true
-    }
-
-    /**
-     * Clears the temperature value. Following this call, hasSensorTemperature()
-     * will return false.
-     */
-    fun removeSensorTemperature() {
-        extraSensor?.let {
-            it.hasTemperature = false
-            it.temperature = 0.0f
-            checkExtraSensor()
-        }
-    }
-
+    //*************************************************
     // TOOLS
-
-    private fun checkExtraSensor() {
-        if (extraSensor?.hasData() != true) {
-            extraSensor = null
-        }
-    }
+    //*************************************************
 
     /**
-     * Clear all attached sensors values.
+     * Remove all attached sensors values.
      */
     fun removeSensorAll() {
-        extraSensor = null
+        sensorCadence.remove()
+        sensorHeartRate.remove()
+        sensorPower.remove()
+        sensorSpeed.remove()
+        sensorStrides.remove()
+        sensorTemperature.remove()
     }
 
-    //*************************************************
-    // UTILS PART
-    //*************************************************
+    /**
+     * Remove all values related to GNSS metadata.
+     */
+    fun removeGnssAll() {
+        gnssStatus.remove()
+        gnssHdop.remove()
+        gnssVdop.remove()
+        gnssPdop.remove()
+        gnssSatsUsed.remove()
+    }
 
     override fun toString(): String {
         return "Location [" +
@@ -746,6 +338,8 @@ open class Location() : Storable() {
                 "lat: $latitude, " +
                 "alt: $altitude]"
     }
+
+    // COMPUTATIONS
 
     /**
      * Returns the approximate distance in meters between this
@@ -792,7 +386,7 @@ open class Location() : Storable() {
     //*************************************************
 
     override fun getVersion(): Int {
-        return 2
+        return 3
     }
 
     @Throws(IOException::class)
@@ -802,45 +396,91 @@ open class Location() : Storable() {
         time = dr.readLong()
         latitude = dr.readDouble()
         longitude = dr.readDouble()
-        hasAltitude = dr.readBoolean()
-        _altitude = dr.readDouble()
+        val hasAltitude = dr.readBoolean()
+        val altitude = dr.readDouble()
+        if (hasAltitude) {
+            this.altitude.value = altitude
+        }
 
         // red basic data
         if (dr.readBoolean()) {
-            extraBasic = ExtraBasic().apply {
-                hasAccuracy = dr.readBoolean()
-                accuracy = dr.readFloat()
-                hasBearing = dr.readBoolean()
-                bearing = dr.readFloat()
-                hasSpeed = dr.readBoolean()
-                speed = dr.readFloat()
-            }.takeIf { it.hasData() }
+            val hasAccuracy = dr.readBoolean()
+            val accuracy = dr.readFloat()
+            if (hasAccuracy) {
+                this.accuracy.value = accuracy
+            }
+            val hasBearing = dr.readBoolean()
+            val bearing = dr.readFloat()
+            if (hasBearing) {
+                this.bearing.value = bearing
+            }
+            val hasSpeed = dr.readBoolean()
+            val speed = dr.readFloat()
+            if (hasSpeed) {
+                this.speed.value = speed
+            }
         }
 
         // V1
         if (version >= 1) {
             // read sensor data
             if (dr.readBoolean()) {
-                if (version == 1) {
-                    readSensorVersion1(dr)
+                // read data from storage
+                val extraSensor = if (version == 1) {
+                    ExtraSensor().apply {
+                        hasHr = dr.readBoolean()
+                        hr = dr.readInt()
+                        hasCadence = dr.readBoolean()
+                        cadence = dr.readInt()
+                        hasSpeed = dr.readBoolean()
+                        speed = dr.readFloat()
+                        hasPower = dr.readBoolean()
+                        power = dr.readFloat()
+                    }
                 } else {
-                    extraSensor = ExtraSensor().apply { read(dr) }
+                    ExtraSensor().apply { read(dr) }
+                }
+
+                // map values to new system
+                if (extraSensor.hasCadence) {
+                    sensorCadence.value = extraSensor.cadence
+                }
+                if (extraSensor.hasHr) {
+                    sensorHeartRate.value = extraSensor.hr
+                }
+                if (extraSensor.hasPower) {
+                    sensorPower.value = extraSensor.power
+                }
+                if (extraSensor.hasSpeed) {
+                    sensorSpeed.value = extraSensor.speed
+                }
+                if (extraSensor.hasStrides) {
+                    sensorStrides.value = extraSensor.strides
+                }
+                if (extraSensor.hasTemperature) {
+                    sensorTemperature.value = extraSensor.temperature
                 }
             }
         }
-    }
 
-    private fun readSensorVersion1(dr: DataReaderBigEndian) {
-        extraSensor = ExtraSensor().apply {
-            hasHr = dr.readBoolean()
-            hr = dr.readInt()
-            hasCadence = dr.readBoolean()
-            cadence = dr.readInt()
-            hasSpeed = dr.readBoolean()
-            speed = dr.readFloat()
-            hasPower = dr.readBoolean()
-            power = dr.readFloat()
-        }.takeIf { it.hasData() }
+        // V3
+        if (version >= 3) {
+            extraDataInt.clear()
+            var size = dr.readInt()
+            for (i in 0 until size) {
+                extraDataInt.put(dr.readInt(), dr.readInt())
+            }
+            extraDataFloat.clear()
+            size = dr.readInt()
+            for (i in 0 until size) {
+                extraDataFloat.put(dr.readInt(), dr.readFloat())
+            }
+            extraDataDouble.clear()
+            size = dr.readInt()
+            for (i in 0 until size) {
+                extraDataDouble.put(dr.readInt(), dr.readDouble())
+            }
+        }
     }
 
     @Throws(IOException::class)
@@ -850,38 +490,168 @@ open class Location() : Storable() {
         dw.writeLong(time)
         dw.writeDouble(latitude)
         dw.writeDouble(longitude)
-        dw.writeBoolean(hasAltitude)
-        dw.writeDouble(altitude)
+        dw.writeBoolean(altitude.hasData)
+        dw.writeDouble(altitude.value)
 
-        // write basic data
-        extraBasic
-                ?.takeIf { it.hasData() }
-                ?.let {
-                    dw.writeBoolean(true)
-                    dw.writeBoolean(it.hasAccuracy)
-                    dw.writeFloat(it.accuracy)
-                    dw.writeBoolean(it.hasBearing)
-                    dw.writeFloat(it.bearing)
-                    dw.writeBoolean(it.hasSpeed)
-                    dw.writeFloat(it.speed)
-                } ?: {
-            dw.writeBoolean(false)
-        }()
+        // write (deprecated) basic data
+        if (accuracy.hasData || bearing.hasData || speed.hasData) {
+            dw.writeBoolean(true)
+            dw.writeBoolean(accuracy.hasData)
+            dw.writeFloat(accuracy.value)
+            dw.writeBoolean(bearing.hasData)
+            dw.writeFloat(bearing.value)
+            dw.writeBoolean(speed.hasData)
+            dw.writeFloat(speed.value)
+        }
 
-        // write ant data (version 1+)
+        // write sensors data (version 1+)
+        val extraSensor = ExtraSensor().apply {
+            if (sensorCadence.hasData) {
+                hasCadence = true
+                cadence = sensorCadence.value
+            }
+            if (sensorHeartRate.hasData) {
+                hasHr = true
+                hr = sensorHeartRate.value
+            }
+            if (sensorPower.hasData) {
+                hasPower = true
+                power = sensorPower.value
+            }
+            if (sensorSpeed.hasData) {
+                hasSpeed = true
+                speed = sensorSpeed.value
+            }
+            if (sensorStrides.hasData) {
+                hasStrides = true
+                strides = sensorStrides.value
+            }
+            if (sensorTemperature.hasData) {
+                hasTemperature = true
+                temperature = sensorTemperature.value
+            }
+        }
         extraSensor
-                ?.takeIf { it.hasData() }
+                .takeIf { it.hasData() }
                 ?.let {
                     dw.writeBoolean(true)
                     it.write(dw)
                 } ?: {
             dw.writeBoolean(false)
         }()
+
+        // V3
+        dw.writeInt(extraDataInt.size())
+        for (i in 0 until extraDataInt.size()) {
+            dw.writeInt(extraDataInt.keyAt(i))
+            dw.writeInt(extraDataInt.valueAt(i))
+        }
+        dw.writeInt(extraDataFloat.size())
+        for (i in 0 until extraDataFloat.size()) {
+            dw.writeInt(extraDataFloat.keyAt(i))
+            dw.writeFloat(extraDataFloat.valueAt(i))
+        }
+        dw.writeInt(extraDataDouble.size())
+        for (i in 0 until extraDataDouble.size()) {
+            dw.writeInt(extraDataDouble.keyAt(i))
+            dw.writeDouble(extraDataDouble.valueAt(i))
+        }
+    }
+
+    /**
+     * Deprecated container for sensors data used only to keep compatibility with older
+     * location object versions.
+     */
+    private class ExtraSensor : Storable() {
+
+        var hasHr: Boolean = false
+        var hr: Int = 0
+
+        var hasCadence: Boolean = false
+        var cadence: Int = 0
+
+        var hasSpeed: Boolean = false
+        var speed: Float = 0.0f
+
+        var hasPower: Boolean = false
+        var power: Float = 0.0f
+
+        var hasStrides: Boolean = false
+        var strides: Int = 0
+
+        var hasTemperature: Boolean = false
+        var temperature: Float = 0.0f
+
+        fun hasData(): Boolean {
+            return hasHr || hasCadence || hasSpeed
+                    || hasPower || hasStrides || hasTemperature
+        }
+
+        override fun getVersion(): Int {
+            return 1
+        }
+
+        @Throws(IOException::class)
+        override fun readObject(version: Int, dr: DataReaderBigEndian) {
+            hasHr = dr.readBoolean()
+            hr = dr.readInt()
+            hasCadence = dr.readBoolean()
+            cadence = dr.readInt()
+            hasSpeed = dr.readBoolean()
+            speed = dr.readFloat()
+            hasPower = dr.readBoolean()
+            power = dr.readFloat()
+            hasStrides = dr.readBoolean()
+            strides = dr.readInt()
+            dr.readBoolean() // hasBattery
+            dr.readInt() // battery
+            if (version >= 1) {
+                hasTemperature = dr.readBoolean()
+                temperature = dr.readFloat()
+            }
+        }
+
+        @Throws(IOException::class)
+        override fun writeObject(dw: DataWriterBigEndian) {
+            dw.writeBoolean(hasHr)
+            dw.writeInt(hr)
+            dw.writeBoolean(hasCadence)
+            dw.writeInt(cadence)
+            dw.writeBoolean(hasSpeed)
+            dw.writeFloat(speed)
+            dw.writeBoolean(hasPower)
+            dw.writeFloat(power)
+            dw.writeBoolean(hasStrides)
+            dw.writeInt(strides)
+            dw.writeBoolean(false) // hasBattery
+            dw.writeInt(0) // battery
+            dw.writeBoolean(hasTemperature)
+            dw.writeFloat(temperature)
+        }
     }
 
     companion object {
 
         // tag for logger
         private const val TAG = "Location"
+
+        private const val EXTRA_KEY_ALTITUDE = 300
+        private const val EXTRA_KEY_SPEED = 301
+        private const val EXTRA_KEY_BEARING = 302
+        private const val EXTRA_KEY_ACCURACY = 303
+
+        private const val EXTRA_KEY_SENSOR_HEART_RATE = 400
+        private const val EXTRA_KEY_SENSOR_CADENCE = 401
+        private const val EXTRA_KEY_SENSOR_SPEED = 402
+        private const val EXTRA_KEY_SENSOR_TEMPERATURE = 403
+        private const val EXTRA_KEY_SENSOR_POWER = 404
+        private const val EXTRA_KEY_SENSOR_STRIDES = 405
+
+        private const val EXTRA_KEY_GNSS_STATUS = 500
+        private const val EXTRA_KEY_GNSS_HDOP = 501
+        private const val EXTRA_KEY_GNSS_VDOP = 502
+        private const val EXTRA_KEY_GNSS_PDOP = 503
+        private const val EXTRA_KEY_GNSS_SATS_USED = 504
+        private const val EXTRA_KEY_GNSS_SATS_VISIBLE = 505
     }
 }

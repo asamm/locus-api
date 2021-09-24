@@ -15,9 +15,38 @@
  */
 package locus.api.utils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
- * A copy of the current platform (VERSION_CODES#KITKAT) version of android.util.SparseArray.
- * It provides a removeAt() method and other things.
+ * A copy of the latest implementation from AndroidX, Collections, 1.1.
+ *
+ * SparseArrays map integers to Objects.  Unlike a normal array of Objects,
+ * there can be gaps in the indices.  It is intended to be more memory efficient
+ * than using a HashMap to map Integers to Objects, both because it avoids
+ * auto-boxing keys and its data structure doesn't rely on an extra entry object
+ * for each mapping.
+ *
+ * <p>Note that this container keeps its mappings in an array data structure,
+ * using a binary search to find keys.  The implementation is not intended to be appropriate for
+ * data structures
+ * that may contain large numbers of items.  It is generally slower than a traditional
+ * HashMap, since lookups require a binary search and adds and removes require inserting
+ * and deleting entries in the array.  For containers holding up to hundreds of items,
+ * the performance difference is not significant, less than 50%.</p>
+ *
+ * <p>To help with performance, the container includes an optimization when removing
+ * keys: instead of compacting its array immediately, it leaves the removed entry marked
+ * as deleted.  The entry can then be re-used for the same key, or compacted later in
+ * a single garbage collection step of all removed entries.  This garbage collection will
+ * need to be performed at any time the array needs to be grown or the the map size or
+ * entry values are retrieved.</p>
+ *
+ * <p>It is possible to iterate over the items in this container using
+ * {@link #keyAt(int)} and {@link #valueAt(int)}. Iterating over the keys using
+ * <code>keyAt(int)</code> with ascending values of the index will return the
+ * keys in ascending order, or the values corresponding to the keys in ascending
+ * order in the case of <code>valueAt(int)</code>.</p>
  */
 public class SparseArrayCompat<E> implements Cloneable {
     private static final Object DELETED = new Object();
@@ -50,19 +79,18 @@ public class SparseArrayCompat<E> implements Cloneable {
             mKeys = new int[initialCapacity];
             mValues = new Object[initialCapacity];
         }
-        mSize = 0;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public SparseArrayCompat<E> clone() {
-        SparseArrayCompat<E> clone = null;
+        SparseArrayCompat<E> clone;
         try {
             clone = (SparseArrayCompat<E>) super.clone();
             clone.mKeys = mKeys.clone();
             clone.mValues = mValues.clone();
-        } catch (CloneNotSupportedException cnse) {
-            /* ignore */
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e); // Cannot happen as we implement Cloneable.
         }
         return clone;
     }
@@ -71,7 +99,14 @@ public class SparseArrayCompat<E> implements Cloneable {
      * Gets the Object mapped from the specified key, or <code>null</code>
      * if no such mapping has been made.
      */
+    @Nullable
+    @SuppressWarnings("NullAway") // See inline comment.
     public E get(int key) {
+        // We pass null as the default to a function which isn't explicitly annotated as nullable.
+        // Not marking the function as nullable should allow us to eventually propagate the generic
+        // parameter's nullability to the caller. If we were to mark it as nullable now, we would
+        // also be forced to mark the return type of that method as nullable which harms the case
+        // where you are passing in a non-null default value.
         return get(key, null);
     }
 
@@ -91,27 +126,48 @@ public class SparseArrayCompat<E> implements Cloneable {
     }
 
     /**
+     * @deprecated Alias for {@link #remove(int)}.
+     */
+    @Deprecated
+    public void delete(int key) {
+        remove(key);
+    }
+
+    /**
      * Removes the mapping from the specified key, if there was any.
      */
-    @SuppressWarnings("unchecked")
-    public E remove(int key) {
+    public void remove(int key) {
         int i = ContainerHelpers.binarySearch(mKeys, mSize, key);
 
-        E item = null;
         if (i >= 0) {
             if (mValues[i] != DELETED) {
-                item = (E) mValues[i];
                 mValues[i] = DELETED;
                 mGarbage = true;
             }
         }
-        return item;
+    }
+
+    /**
+     * Remove an existing key from the array map only if it is currently mapped to {@code value}.
+     *
+     * @param key   The key of the mapping to remove.
+     * @param value The value expected to be mapped to the key.
+     * @return Returns true if the mapping was removed.
+     */
+    public boolean remove(int key, Object value) {
+        int index = indexOfKey(key);
+        if (index >= 0) {
+            E mapValue = valueAt(index);
+            if (value == mapValue || (value != null && value.equals(mapValue))) {
+                removeAt(index);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Removes the mapping at the specified index.
-     *
-     * @param index index at which remove item
      */
     public void removeAt(int index) {
         if (mValues[index] != DELETED) {
@@ -131,6 +187,44 @@ public class SparseArrayCompat<E> implements Cloneable {
         for (int i = index; i < end; i++) {
             removeAt(i);
         }
+    }
+
+    /**
+     * Replace the mapping for {@code key} only if it is already mapped to a value.
+     *
+     * @param key   The key of the mapping to replace.
+     * @param value The value to store for the given key.
+     * @return Returns the previous mapped value or null.
+     */
+    @Nullable
+    public E replace(int key, E value) {
+        int index = indexOfKey(key);
+        if (index >= 0) {
+            E oldValue = (E) mValues[index];
+            mValues[index] = value;
+            return oldValue;
+        }
+        return null;
+    }
+
+    /**
+     * Replace the mapping for {@code key} only if it is already mapped to a value.
+     *
+     * @param key      The key of the mapping to replace.
+     * @param oldValue The value expected to be mapped to the key.
+     * @param newValue The value to store for the given key.
+     * @return Returns true if the value was replaced.
+     */
+    public boolean replace(int key, E oldValue, E newValue) {
+        int index = indexOfKey(key);
+        if (index >= 0) {
+            Object mapValue = mValues[index];
+            if (mapValue == oldValue || (oldValue != null && oldValue.equals(mapValue))) {
+                mValues[index] = newValue;
+                return true;
+            }
+        }
+        return false;
     }
 
     private void gc() {
@@ -214,6 +308,35 @@ public class SparseArrayCompat<E> implements Cloneable {
     }
 
     /**
+     * Copies all of the mappings from the {@code other} to this map. The effect of this call is
+     * equivalent to that of calling {@link #put(int, Object)} on this map once for each mapping
+     * from key to value in {@code other}.
+     */
+    public void putAll(@NotNull SparseArrayCompat<? extends E> other) {
+        for (int i = 0, size = other.size(); i < size; i++) {
+            put(other.keyAt(i), other.valueAt(i));
+        }
+    }
+
+    /**
+     * Add a new value to the array map only if the key does not already have a value or it is
+     * mapped to {@code null}.
+     *
+     * @param key   The key under which to store the value.
+     * @param value The value to store for the given key.
+     * @return Returns the value that was stored for the given key, or null if there
+     * was no such key.
+     */
+    @Nullable
+    public E putIfAbsent(int key, E value) {
+        E mapValue = get(key);
+        if (mapValue == null) {
+            put(key, value);
+        }
+        return mapValue;
+    }
+
+    /**
      * Returns the number of key-value mappings that this SparseArray
      * currently stores.
      */
@@ -223,6 +346,15 @@ public class SparseArrayCompat<E> implements Cloneable {
         }
 
         return mSize;
+    }
+
+    /**
+     * Return true if size() is 0.
+     *
+     * @return true if size() is 0.
+     */
+    public boolean isEmpty() {
+        return size() == 0;
     }
 
     /**
@@ -298,6 +430,20 @@ public class SparseArrayCompat<E> implements Cloneable {
                 return i;
 
         return -1;
+    }
+
+    /**
+     * Returns true if the specified key is mapped.
+     */
+    public boolean containsKey(int key) {
+        return indexOfKey(key) >= 0;
+    }
+
+    /**
+     * Returns true if the specified value is mapped from any key.
+     */
+    public boolean containsValue(E value) {
+        return indexOfValue(value) >= 0;
     }
 
     /**
@@ -445,6 +591,9 @@ public class SparseArrayCompat<E> implements Cloneable {
                 }
             }
             return ~lo;  // value not present
+        }
+
+        private ContainerHelpers() {
         }
     }
 }
