@@ -133,9 +133,9 @@ class ActivityDashboard : FragmentActivity() {
                 tv03.text = uc.gpsSatsUsed.toString()
                 tv04.text = uc.gpsSatsAll.toString()
                 tv05.text = uc.isMapVisible.toString()
-                tv06.text = uc.locMyLocation.accuracy.toString()
-                tv07.text = uc.locMyLocation.bearing.toString()
-                tv08.text = uc.locMyLocation.speed.toString()
+                tv06.text = uc.locMyLocation.accuracyHor.value.toString()
+                tv07.text = uc.locMyLocation.bearing.value.toString()
+                tv08.text = uc.locMyLocation.speed.value.toString()
             }
         }
     }

@@ -37,6 +37,11 @@ open class Location() : Storable() {
     /**
      * Container for integer based extra data.
      */
+    private var extraDataShort = SparseArrayCompat<Short>(0)
+
+    /**
+     * Container for integer based extra data.
+     */
     private var extraDataInt = SparseArrayCompat<Int>(0)
 
     /**
@@ -148,12 +153,12 @@ open class Location() : Storable() {
     /**
      * Cadence value. If hasCadence() is false, 0 is returned.
      */
-    var sensorCadence = ValueContainerInt(EXTRA_KEY_SENSOR_CADENCE, 0)
+    var sensorCadence = ValueContainerShort(EXTRA_KEY_SENSOR_CADENCE, 0)
 
     /**
      * Heart rate value in BMP. If hasSensorHeartRate() is false, 0 is returned.
      */
-    var sensorHeartRate = ValueContainerInt(EXTRA_KEY_SENSOR_HEART_RATE, 0)
+    var sensorHeartRate = ValueContainerShort(EXTRA_KEY_SENSOR_HEART_RATE, 0)
 
     /**
      * Speed of the device over ground in meters/second. This speed is defined only when
@@ -180,7 +185,7 @@ open class Location() : Storable() {
 
     // GNSS META-DATA
 
-    val gnssStatus = ValueContainerInt(EXTRA_KEY_GNSS_STATUS, 0)
+    val gnssStatus = ValueContainerShort(EXTRA_KEY_GNSS_STATUS, 0)
 
     /**
      * Horizontal dilution of precision for current location.
@@ -206,12 +211,12 @@ open class Location() : Storable() {
     /**
      * Number of used satellites used to obtain current location.
      */
-    val gnssSatsUsed = ValueContainerInt(EXTRA_KEY_GNSS_SATS_USED, 0)
+    val gnssSatsUsed = ValueContainerShort(EXTRA_KEY_GNSS_SATS_USED, 0)
 
     /**
      * Number of used satellites used to obtain current location.
      */
-    val gnssSatsVisible = ValueContainerInt(EXTRA_KEY_GNSS_SATS_VISIBLE, 0)
+    val gnssSatsVisible = ValueContainerShort(EXTRA_KEY_GNSS_SATS_VISIBLE, 0)
 
     //*************************************************
     // CONSTRUCTION
@@ -237,6 +242,7 @@ open class Location() : Storable() {
         longitude = loc.longitude
 
         // set extra data
+        extraDataShort.putAll(loc.extraDataShort)
         extraDataInt.putAll(loc.extraDataInt)
         extraDataFloat.putAll(loc.extraDataFloat)
         extraDataDouble.putAll(loc.extraDataDouble)
@@ -275,17 +281,17 @@ open class Location() : Storable() {
 
     open class ValueContainer<T> constructor(
             private val dataContainer: SparseArrayCompat<T>,
-            private val id: Int,
+            private val id: Byte,
             private val defaultEmpty: T) {
 
         val hasData: Boolean
-            get() = dataContainer.containsKey(id)
+            get() = dataContainer.containsKey(id.toInt())
 
         var value: T
-            get() = dataContainer.get(id, defaultEmpty)
+            get() = dataContainer.get(id.toInt(), defaultEmpty)
             set(value) {
                 val validatedValue = validateNewValue(value)
-                dataContainer.put(id, validatedValue)
+                dataContainer.put(id.toInt(), validatedValue)
             }
 
         /**
@@ -302,17 +308,20 @@ open class Location() : Storable() {
         }
 
         fun remove() {
-            dataContainer.remove(id)
+            dataContainer.remove(id.toInt())
         }
     }
 
-    inner class ValueContainerInt(id: Int, defaultEmpty: Int)
+    inner class ValueContainerShort(id: Byte, defaultEmpty: Short)
+        : ValueContainer<Short>(extraDataShort, id, defaultEmpty)
+
+    inner class ValueContainerInt(id: Byte, defaultEmpty: Int)
         : ValueContainer<Int>(extraDataInt, id, defaultEmpty)
 
-    open inner class ValueContainerFloat(id: Int, defaultEmpty: Float)
+    open inner class ValueContainerFloat(id: Byte, defaultEmpty: Float)
         : ValueContainer<Float>(extraDataFloat, id, defaultEmpty)
 
-    inner class ValueContainerDouble(id: Int, defaultEmpty: Double)
+    inner class ValueContainerDouble(id: Byte, defaultEmpty: Double)
         : ValueContainer<Double>(extraDataDouble, id, defaultEmpty)
 
     //*************************************************
@@ -455,10 +464,10 @@ open class Location() : Storable() {
 
                 // map values to new system
                 if (extraSensor.hasCadence) {
-                    sensorCadence.value = extraSensor.cadence
+                    sensorCadence.value = extraSensor.cadence.toShort()
                 }
                 if (extraSensor.hasHr) {
-                    sensorHeartRate.value = extraSensor.hr
+                    sensorHeartRate.value = extraSensor.hr.toShort()
                 }
                 if (extraSensor.hasPower) {
                     sensorPower.value = extraSensor.power
@@ -477,20 +486,25 @@ open class Location() : Storable() {
 
         // V3
         if (version >= 3) {
-            extraDataInt.clear()
-            var size = dr.readInt()
+            extraDataShort.clear()
+            var size = dr.readByte()
             for (i in 0 until size) {
-                extraDataInt.put(dr.readInt(), dr.readInt())
+                extraDataShort.put(dr.readByte().toInt(), dr.readShort())
+            }
+            extraDataInt.clear()
+            size = dr.readByte()
+            for (i in 0 until size) {
+                extraDataInt.put(dr.readByte().toInt(), dr.readInt())
             }
             extraDataFloat.clear()
-            size = dr.readInt()
+            size = dr.readByte()
             for (i in 0 until size) {
-                extraDataFloat.put(dr.readInt(), dr.readFloat())
+                extraDataFloat.put(dr.readByte().toInt(), dr.readFloat())
             }
             extraDataDouble.clear()
-            size = dr.readInt()
+            size = dr.readByte()
             for (i in 0 until size) {
-                extraDataDouble.put(dr.readInt(), dr.readDouble())
+                extraDataDouble.put(dr.readByte().toInt(), dr.readDouble())
             }
         }
     }
@@ -514,17 +528,19 @@ open class Location() : Storable() {
             dw.writeFloat(bearing.value)
             dw.writeBoolean(speed.hasData)
             dw.writeFloat(speed.value)
+        } else {
+            dw.writeBoolean(false)
         }
 
         // write sensors data (version 1+)
         val extraSensor = ExtraSensor().apply {
             if (sensorCadence.hasData) {
                 hasCadence = true
-                cadence = sensorCadence.value
+                cadence = sensorCadence.value.toInt()
             }
             if (sensorHeartRate.hasData) {
                 hasHr = true
-                hr = sensorHeartRate.value
+                hr = sensorHeartRate.value.toInt()
             }
             if (sensorPower.hasData) {
                 hasPower = true
@@ -553,19 +569,24 @@ open class Location() : Storable() {
         }()
 
         // V3
-        dw.writeInt(extraDataInt.size())
+        dw.writeByte(extraDataShort.size().toByte())
+        for (i in 0 until extraDataShort.size()) {
+            dw.writeByte(extraDataShort.keyAt(i).toByte())
+            dw.writeShort(extraDataShort.valueAt(i).toInt())
+        }
+        dw.writeByte(extraDataInt.size().toByte())
         for (i in 0 until extraDataInt.size()) {
-            dw.writeInt(extraDataInt.keyAt(i))
+            dw.writeByte(extraDataInt.keyAt(i).toByte())
             dw.writeInt(extraDataInt.valueAt(i))
         }
-        dw.writeInt(extraDataFloat.size())
+        dw.writeByte(extraDataFloat.size().toByte())
         for (i in 0 until extraDataFloat.size()) {
-            dw.writeInt(extraDataFloat.keyAt(i))
+            dw.writeByte(extraDataFloat.keyAt(i).toByte())
             dw.writeFloat(extraDataFloat.valueAt(i))
         }
-        dw.writeInt(extraDataDouble.size())
+        dw.writeByte(extraDataDouble.size().toByte())
         for (i in 0 until extraDataDouble.size()) {
-            dw.writeInt(extraDataDouble.keyAt(i))
+            dw.writeByte(extraDataDouble.keyAt(i).toByte())
             dw.writeDouble(extraDataDouble.valueAt(i))
         }
     }
@@ -647,24 +668,24 @@ open class Location() : Storable() {
         // tag for logger
         private const val TAG = "Location"
 
-        private const val EXTRA_KEY_ALTITUDE = 300
-        private const val EXTRA_KEY_SPEED = 301
-        private const val EXTRA_KEY_BEARING = 302
-        private const val EXTRA_KEY_ACCURACY_HOR = 303
-        private const val EXTRA_KEY_ACCURACY_VER = 304
+        private const val EXTRA_KEY_ALTITUDE = 10.toByte()
+        private const val EXTRA_KEY_SPEED = 11.toByte()
+        private const val EXTRA_KEY_BEARING = 12.toByte()
+        private const val EXTRA_KEY_ACCURACY_HOR = 13.toByte()
+        private const val EXTRA_KEY_ACCURACY_VER = 14.toByte()
 
-        private const val EXTRA_KEY_SENSOR_HEART_RATE = 400
-        private const val EXTRA_KEY_SENSOR_CADENCE = 401
-        private const val EXTRA_KEY_SENSOR_SPEED = 402
-        private const val EXTRA_KEY_SENSOR_TEMPERATURE = 403
-        private const val EXTRA_KEY_SENSOR_POWER = 404
-        private const val EXTRA_KEY_SENSOR_STRIDES = 405
+        private const val EXTRA_KEY_SENSOR_HEART_RATE = 20.toByte()
+        private const val EXTRA_KEY_SENSOR_CADENCE = 21.toByte()
+        private const val EXTRA_KEY_SENSOR_SPEED = 22.toByte()
+        private const val EXTRA_KEY_SENSOR_TEMPERATURE = 23.toByte()
+        private const val EXTRA_KEY_SENSOR_POWER = 24.toByte()
+        private const val EXTRA_KEY_SENSOR_STRIDES = 25.toByte()
 
-        private const val EXTRA_KEY_GNSS_STATUS = 500
-        private const val EXTRA_KEY_GNSS_HDOP = 501
-        private const val EXTRA_KEY_GNSS_VDOP = 502
-        private const val EXTRA_KEY_GNSS_PDOP = 503
-        private const val EXTRA_KEY_GNSS_SATS_USED = 504
-        private const val EXTRA_KEY_GNSS_SATS_VISIBLE = 505
+        private const val EXTRA_KEY_GNSS_STATUS = 51.toByte()
+        private const val EXTRA_KEY_GNSS_HDOP = 52.toByte()
+        private const val EXTRA_KEY_GNSS_VDOP = 53.toByte()
+        private const val EXTRA_KEY_GNSS_PDOP = 54.toByte()
+        private const val EXTRA_KEY_GNSS_SATS_USED = 55.toByte()
+        private const val EXTRA_KEY_GNSS_SATS_VISIBLE = 56.toByte()
     }
 }
