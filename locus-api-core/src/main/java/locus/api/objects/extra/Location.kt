@@ -32,6 +32,25 @@ import java.io.IOException
  */
 open class Location() : Storable() {
 
+    // CONTAINERS
+
+    /**
+     * Container for integer based extra data.
+     */
+    private var extraDataInt = SparseArrayCompat<Int>(0)
+
+    /**
+     * Container for float based extra data.
+     */
+    private var extraDataFloat = SparseArrayCompat<Float>(0)
+
+    /**
+     * Container for double based extra data.
+     */
+    private var extraDataDouble = SparseArrayCompat<Double>(0)
+
+    // VARIABLES
+
     /**
      * Location unique ID.
      */
@@ -194,23 +213,6 @@ open class Location() : Storable() {
      */
     val gnssSatsVisible = ValueContainerInt(EXTRA_KEY_GNSS_SATS_VISIBLE, 0)
 
-    // CONTAINERS
-
-    /**
-     * Container for integer based extra data.
-     */
-    private var extraDataInt = SparseArrayCompat<Int>(0)
-
-    /**
-     * Container for float based extra data.
-     */
-    private var extraDataFloat = SparseArrayCompat<Float>(0)
-
-    /**
-     * Container for double based extra data.
-     */
-    private var extraDataDouble = SparseArrayCompat<Double>(0)
-
     //*************************************************
     // CONSTRUCTION
     //*************************************************
@@ -253,7 +255,7 @@ open class Location() : Storable() {
      *
      * @return speed for display purpose
      */
-    @Deprecated (message = "Work with speed value directly")
+    @Deprecated(message = "Work with speed value directly")
     val speedOptimal: Float
         get() = if (sensorSpeed.hasData) {
             sensorSpeed.value
@@ -262,7 +264,7 @@ open class Location() : Storable() {
     /**
      * Check if any speed (GPS or from sensors) is stored.
      */
-    @Deprecated (message = "Work with speed value directly")
+    @Deprecated(message = "Work with speed value directly")
     fun hasSpeedOptimal(): Boolean {
         return speed.hasData || sensorSpeed.hasData
     }
@@ -271,15 +273,20 @@ open class Location() : Storable() {
     // CONTAINERS
     //*************************************************
 
-    open class ValueContainer<T> constructor(private val dataContainer: SparseArrayCompat<T>,
-            val id: Int, val defaultEmpty: T) {
+    open class ValueContainer<T> constructor(
+            private val dataContainer: SparseArrayCompat<T>,
+            private val id: Int,
+            private val defaultEmpty: T) {
 
         val hasData: Boolean
             get() = dataContainer.containsKey(id)
 
         var value: T
             get() = dataContainer.get(id, defaultEmpty)
-            set(value) = dataContainer.put(id, value)
+            set(value) {
+                val validatedValue = validateNewValue(value)
+                dataContainer.put(id, validatedValue)
+            }
 
         /**
          * Validate received value.
