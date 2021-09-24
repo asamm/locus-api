@@ -108,7 +108,7 @@ object UtilsAddonAR {
         // do some tests if is really need to send new location
         val timeDiff = loc.time - mLastLocation!!.time
         val distDiff = loc.distanceTo(mLastLocation!!).toDouble()
-        val altDiff = Math.abs(loc.altitude - mLastLocation!!.altitude)
+        val altDiff = Math.abs(loc.altitude.value - mLastLocation!!.altitude.value)
         if (timeDiff < 5000 || distDiff < 5 && altDiff < 10) {
             return
         }

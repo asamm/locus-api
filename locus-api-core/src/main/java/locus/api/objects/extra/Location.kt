@@ -115,9 +115,14 @@ open class Location() : Storable() {
     }
 
     /**
-     * Accuracy of the fix. If 'hasData' is false, 0.0 is returned (in m).
+     * Horizontal accuracy of the fix. If 'hasData' is false, 0.0 is returned (in m).
      */
-    val accuracy = ValueContainerFloat(EXTRA_KEY_ACCURACY, 0.0f)
+    val accuracyHor = ValueContainerFloat(EXTRA_KEY_ACCURACY_HOR, 0.0f)
+
+    /**
+     * Vertical accuracy of the fix. If 'hasData' is false, 0.0 is returned (in m).
+     */
+    val accuracyVer = ValueContainerFloat(EXTRA_KEY_ACCURACY_VER, 0.0f)
 
     // SENSOR VALUES
 
@@ -407,7 +412,7 @@ open class Location() : Storable() {
             val hasAccuracy = dr.readBoolean()
             val accuracy = dr.readFloat()
             if (hasAccuracy) {
-                this.accuracy.value = accuracy
+                this.accuracyHor.value = accuracy
             }
             val hasBearing = dr.readBoolean()
             val bearing = dr.readFloat()
@@ -494,10 +499,10 @@ open class Location() : Storable() {
         dw.writeDouble(altitude.value)
 
         // write (deprecated) basic data
-        if (accuracy.hasData || bearing.hasData || speed.hasData) {
+        if (accuracyHor.hasData || bearing.hasData || speed.hasData) {
             dw.writeBoolean(true)
-            dw.writeBoolean(accuracy.hasData)
-            dw.writeFloat(accuracy.value)
+            dw.writeBoolean(accuracyHor.hasData)
+            dw.writeFloat(accuracyHor.value)
             dw.writeBoolean(bearing.hasData)
             dw.writeFloat(bearing.value)
             dw.writeBoolean(speed.hasData)
@@ -638,7 +643,8 @@ open class Location() : Storable() {
         private const val EXTRA_KEY_ALTITUDE = 300
         private const val EXTRA_KEY_SPEED = 301
         private const val EXTRA_KEY_BEARING = 302
-        private const val EXTRA_KEY_ACCURACY = 303
+        private const val EXTRA_KEY_ACCURACY_HOR = 303
+        private const val EXTRA_KEY_ACCURACY_VER = 304
 
         private const val EXTRA_KEY_SENSOR_HEART_RATE = 400
         private const val EXTRA_KEY_SENSOR_CADENCE = 401
