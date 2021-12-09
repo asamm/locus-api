@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.44]
+### Changed
+- reduced memory footprint for `Location` object
+- `Storable` object now correctly accept serialized size up to 50MB (on own risk)
+
 ## [0.9.43]
 ### Changed
 - updates in the `Location` serialization

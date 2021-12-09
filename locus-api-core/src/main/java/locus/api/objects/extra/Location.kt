@@ -113,52 +113,69 @@ open class Location() : Storable() {
     /**
      * Altitude value of the location (in m). If 'hasData' is false, 0.0f is returned.
      */
-    val altitude = ValueContainerDouble(EXTRA_KEY_ALTITUDE, 0.0)
+    val altitude by lazy { ValueContainerDouble(EXTRA_KEY_ALTITUDE) }
 
     /**
      * Speed of the device in meters/second.
      */
-    val speed = ValueContainerFloat(EXTRA_KEY_SPEED, 0.0f)
+    val speed by lazy { ValueContainerFloat(EXTRA_KEY_SPEED) }
 
     /**
      * Direction of travel in degrees East of true North. If 'hasData' is false,
      * 0.0 is returned (in degree).
      */
-    val bearing = object : ValueContainerFloat(EXTRA_KEY_BEARING, 0.0f) {
+    val bearing by lazy {
+        object : ValueContainerFloat(EXTRA_KEY_BEARING) {
 
-        override fun validateNewValue(value: Float): Float {
-            var bearingNew = value
-            while (bearingNew < 0.0f) {
-                bearingNew += 360.0f
+            override fun validateNewValue(value: Float): Float {
+                var bearingNew = value
+                while (bearingNew < 0.0f) {
+                    bearingNew += 360.0f
+                }
+                while (bearingNew >= 360.0f) {
+                    bearingNew -= 360.0f
+                }
+                return bearingNew
             }
-            while (bearingNew >= 360.0f) {
-                bearingNew -= 360.0f
-            }
-            return bearingNew
         }
     }
 
     /**
      * Horizontal accuracy of the fix. If 'hasData' is false, 0.0 is returned (in m).
      */
-    val accuracyHor = ValueContainerFloat(EXTRA_KEY_ACCURACY_HOR, 0.0f)
+    val accuracyHor by lazy { ValueContainerFloat(EXTRA_KEY_ACCURACY_HOR) }
 
     /**
      * Vertical accuracy of the fix. If 'hasData' is false, 0.0 is returned (in m).
      */
-    val accuracyVer = ValueContainerFloat(EXTRA_KEY_ACCURACY_VER, 0.0f)
+    val accuracyVer by lazy { ValueContainerFloat(EXTRA_KEY_ACCURACY_VER) }
 
     // SENSOR VALUES
 
     /**
+     * Check if object has any recorded sensor data.
+     *
+     * This method by-pass initializing of inner objects so it is a good practice to check this
+     * value before dealing with any sensor data.
+     */
+    fun hasAnySensorData(): Boolean {
+        return extraDataShort.containsKey(EXTRA_KEY_SENSOR_CADENCE.toInt())
+                || extraDataShort.containsKey(EXTRA_KEY_SENSOR_HEART_RATE.toInt())
+                || extraDataFloat.containsKey(EXTRA_KEY_SENSOR_SPEED.toInt())
+                || extraDataFloat.containsKey(EXTRA_KEY_SENSOR_POWER.toInt())
+                || extraDataInt.containsKey(EXTRA_KEY_SENSOR_STRIDES.toInt())
+                || extraDataFloat.containsKey(EXTRA_KEY_SENSOR_TEMPERATURE.toInt())
+    }
+
+    /**
      * Cadence value. If hasCadence() is false, 0 is returned.
      */
-    var sensorCadence = ValueContainerShort(EXTRA_KEY_SENSOR_CADENCE, 0)
+    val sensorCadence by lazy { ValueContainerShort(EXTRA_KEY_SENSOR_CADENCE) }
 
     /**
      * Heart rate value in BMP. If hasSensorHeartRate() is false, 0 is returned.
      */
-    var sensorHeartRate = ValueContainerShort(EXTRA_KEY_SENSOR_HEART_RATE, 0)
+    val sensorHeartRate by lazy { ValueContainerShort(EXTRA_KEY_SENSOR_HEART_RATE) }
 
     /**
      * Speed of the device over ground in meters/second. This speed is defined only when
@@ -166,57 +183,63 @@ open class Location() : Storable() {
      *
      * If 'hasData' is 'false', 0.0f is returned (in m/s).
      */
-    var sensorSpeed = ValueContainerFloat(EXTRA_KEY_SENSOR_SPEED, 0.0f)
+    val sensorSpeed by lazy { ValueContainerFloat(EXTRA_KEY_SENSOR_SPEED) }
 
     /**
      * Power value of the fix in W. If hasSensorPower() is false, 0.0 is returned.
      */
-    var sensorPower = ValueContainerFloat(EXTRA_KEY_SENSOR_POWER, 0.0f)
+    val sensorPower by lazy { ValueContainerFloat(EXTRA_KEY_SENSOR_POWER) }
 
     /**
      * The num of strides. If hasSensorStrides() is false, 0 is returned.
      */
-    var sensorStrides = ValueContainerInt(EXTRA_KEY_SENSOR_STRIDES, 0)
+    val sensorStrides by lazy { ValueContainerInt(EXTRA_KEY_SENSOR_STRIDES) }
 
     /**
      * Temperature value. If hasSensorTemperature() is false, 0.0f is returned.
      */
-    var sensorTemperature = ValueContainerFloat(EXTRA_KEY_SENSOR_TEMPERATURE, 0.0f)
+    val sensorTemperature by lazy { ValueContainerFloat(EXTRA_KEY_SENSOR_TEMPERATURE) }
 
     // GNSS META-DATA
 
-    val gnssStatus = ValueContainerShort(EXTRA_KEY_GNSS_STATUS, 0)
+    val gnssQuality: ValueContainerShort
+        get() = ValueContainerShort(EXTRA_KEY_GNSS_STATUS)
 
     /**
      * Horizontal dilution of precision for current location.
      *
      * More info: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation).
      */
-    val gnssHdop = ValueContainerFloat(EXTRA_KEY_GNSS_HDOP, 0.0f)
+    val gnssHdop: ValueContainerFloat
+        get() = ValueContainerFloat(EXTRA_KEY_GNSS_HDOP)
 
     /**
      * Vertical dilution of precision for current location.
      *
      * More info: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation).
      */
-    val gnssVdop = ValueContainerFloat(EXTRA_KEY_GNSS_VDOP, 0.0f)
+    val gnssVdop: ValueContainerFloat
+        get() = ValueContainerFloat(EXTRA_KEY_GNSS_VDOP)
 
     /**
      * Position (3D) dilution of precision for current location.
      *
      * More info: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation).
      */
-    val gnssPdop = ValueContainerFloat(EXTRA_KEY_GNSS_PDOP, 0.0f)
+    val gnssPdop: ValueContainerFloat
+        get() = ValueContainerFloat(EXTRA_KEY_GNSS_PDOP)
 
     /**
      * Number of used satellites used to obtain current location.
      */
-    val gnssSatsUsed = ValueContainerShort(EXTRA_KEY_GNSS_SATS_USED, 0)
+    val gnssSatsUsed: ValueContainerShort
+        get() = ValueContainerShort(EXTRA_KEY_GNSS_SATS_USED)
 
     /**
      * Number of used satellites used to obtain current location.
      */
-    val gnssSatsVisible = ValueContainerShort(EXTRA_KEY_GNSS_SATS_VISIBLE, 0)
+    val gnssSatsVisible: ValueContainerShort
+        get() = ValueContainerShort(EXTRA_KEY_GNSS_SATS_VISIBLE)
 
     //*************************************************
     // CONSTRUCTION
@@ -279,20 +302,26 @@ open class Location() : Storable() {
     // CONTAINERS
     //*************************************************
 
-    open class ValueContainer<T> constructor(
+    abstract class ValueContainer<T> constructor(
             private val dataContainer: SparseArrayCompat<T>,
-            private val id: Byte,
-            private val defaultEmpty: T) {
+            private val id: Byte) {
 
         val hasData: Boolean
             get() = dataContainer.containsKey(id.toInt())
 
         var value: T
-            get() = dataContainer.get(id.toInt(), defaultEmpty)
+            get() {
+                return dataContainer.get(id.toInt(), getDefaultEmpty())
+            }
             set(value) {
                 val validatedValue = validateNewValue(value)
                 dataContainer.put(id.toInt(), validatedValue)
             }
+
+        /**
+         * Get default empty value.
+         */
+        internal abstract fun getDefaultEmpty(): T
 
         /**
          * Validate received value.
@@ -312,17 +341,37 @@ open class Location() : Storable() {
         }
     }
 
-    inner class ValueContainerShort(id: Byte, defaultEmpty: Short)
-        : ValueContainer<Short>(extraDataShort, id, defaultEmpty)
+    inner class ValueContainerShort(id: Byte)
+        : ValueContainer<Short>(extraDataShort, id) {
 
-    inner class ValueContainerInt(id: Byte, defaultEmpty: Int)
-        : ValueContainer<Int>(extraDataInt, id, defaultEmpty)
+        override fun getDefaultEmpty(): Short {
+            return 0
+        }
+    }
 
-    open inner class ValueContainerFloat(id: Byte, defaultEmpty: Float)
-        : ValueContainer<Float>(extraDataFloat, id, defaultEmpty)
+    inner class ValueContainerInt(id: Byte)
+        : ValueContainer<Int>(extraDataInt, id) {
 
-    inner class ValueContainerDouble(id: Byte, defaultEmpty: Double)
-        : ValueContainer<Double>(extraDataDouble, id, defaultEmpty)
+        override fun getDefaultEmpty(): Int {
+            return 0
+        }
+    }
+
+    open inner class ValueContainerFloat(id: Byte)
+        : ValueContainer<Float>(extraDataFloat, id) {
+
+        override fun getDefaultEmpty(): Float {
+            return 0.0f
+        }
+    }
+
+    inner class ValueContainerDouble(id: Byte)
+        : ValueContainer<Double>(extraDataDouble, id) {
+
+        override fun getDefaultEmpty(): Double {
+            return 0.0
+        }
+    }
 
     //*************************************************
     // TOOLS
@@ -344,7 +393,7 @@ open class Location() : Storable() {
      * Remove all values related to GNSS metadata.
      */
     fun removeGnssAll() {
-        gnssStatus.remove()
+        gnssQuality.remove()
         gnssHdop.remove()
         gnssVdop.remove()
         gnssPdop.remove()

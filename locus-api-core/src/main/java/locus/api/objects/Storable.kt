@@ -73,9 +73,9 @@ abstract class Storable {
     private class BodyContainer {
 
         // current item version
-        internal var version: Int = 0
+        var version: Int = 0
         // data in item
-        internal var data: ByteArray? = null
+        var data: ByteArray? = null
     }
 
     //*************************************************
@@ -176,6 +176,9 @@ abstract class Storable {
         // tag for logger
         private const val TAG = "Storable"
 
+        // maximal size of Storable item
+        private const val MAX_SIZE = 50 * 1024 * 1024
+
         /**
          * Read header of object from stream.
          *
@@ -192,7 +195,7 @@ abstract class Storable {
             val size = dr.readInt()
 
             // check size to prevent OOE
-            if (size < 0 || size > 50 * 1024 * 1024) {
+            if (size < 0 || size > MAX_SIZE) {
                 throw IOException("item size too big, size:$size, max: 50MB")
             }
 
@@ -219,7 +222,7 @@ abstract class Storable {
             val size = dis.readInt()
 
             // check size to prevent OOE
-            if (size < 0 || size > 10 * 1024 * 1024) {
+            if (size < 0 || size > MAX_SIZE) {
                 throw IOException("item size too big, size:$size, max: 10MB")
             }
 
@@ -353,8 +356,8 @@ abstract class Storable {
             }
 
             // write objects
-            for (i in 0 until objs.size) {
-                dos.write(objs[i].asBytes!!)
+            for (obj in objs) {
+                dos.write(obj.asBytes!!)
             }
         }
     }
