@@ -383,16 +383,16 @@ object LocusUtils {
         loc.latitude = oldLoc.latitude
         loc.time = oldLoc.time
         if (oldLoc.hasAccuracy()) {
-            loc.accuracyHor.value = oldLoc.accuracy
+            loc.accuracyHor = oldLoc.accuracy
         }
         if (oldLoc.hasAltitude()) {
-            loc.altitude.value = oldLoc.altitude
+            loc.altitude = oldLoc.altitude
         }
         if (oldLoc.hasBearing()) {
-            loc.bearing.value = oldLoc.bearing
+            loc.bearing = oldLoc.bearing
         }
         if (oldLoc.hasSpeed()) {
-            loc.speed.value = oldLoc.speed
+            loc.speed = oldLoc.speed
         }
         return loc
     }
@@ -408,17 +408,17 @@ object LocusUtils {
         loc.longitude = oldLoc.longitude
         loc.latitude = oldLoc.latitude
         loc.time = oldLoc.time
-        if (oldLoc.accuracyHor.hasData) {
-            loc.accuracy = oldLoc.accuracyHor.value
+        if (oldLoc.hasAccuracyHor) {
+            loc.accuracy = oldLoc.accuracyHor
         }
-        if (oldLoc.altitude.hasData) {
-            loc.altitude = oldLoc.altitude.value
+        if (oldLoc.hasAltitude) {
+            loc.altitude = oldLoc.altitude
         }
-        if (oldLoc.bearing.hasData) {
-            loc.bearing = oldLoc.bearing.value
+        if (oldLoc.hasBearing) {
+            loc.bearing = oldLoc.bearing
         }
-        if (oldLoc.speed.hasData) {
-            loc.speed = oldLoc.speed.value
+        if (oldLoc.hasSpeed) {
+            loc.speed = oldLoc.speed
         }
         return loc
     }

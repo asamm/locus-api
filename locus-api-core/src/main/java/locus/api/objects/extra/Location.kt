@@ -108,74 +108,163 @@ open class Location() : Storable() {
             field = newValue
         }
 
+    //*************************************************
     // BASIC GNSS VALUES
+    //*************************************************
+
+    // ALTITUDE
 
     /**
      * Altitude value of the location (in m). If 'hasData' is false, 0.0f is returned.
      */
-    val altitude by lazy { ValueContainerDouble(EXTRA_KEY_ALTITUDE) }
+    var altitude: Double
+        get() {
+            return extraDataDouble.get(EXTRA_KEY_ALTITUDE, 0.0)
+        }
+        set(value) {
+            extraDataDouble.put(EXTRA_KEY_ALTITUDE, value)
+        }
+
+    val hasAltitude: Boolean
+        get() = extraDataDouble.containsKey(EXTRA_KEY_ALTITUDE)
+
+    fun removeAltitude() {
+        extraDataDouble.remove(EXTRA_KEY_ALTITUDE)
+    }
+
+    // SPEED
 
     /**
      * Speed of the device in meters/second.
      */
-    val speed by lazy { ValueContainerFloat(EXTRA_KEY_SPEED) }
+    var speed: Float
+        get() {
+            return extraDataFloat.get(EXTRA_KEY_SPEED, 0.0f)
+        }
+        set(value) {
+            extraDataFloat.put(EXTRA_KEY_SPEED, value)
+        }
+
+    val hasSpeed: Boolean
+        get() = extraDataFloat.containsKey(EXTRA_KEY_SPEED)
+
+    fun removeSpeed() {
+        extraDataFloat.remove(EXTRA_KEY_SPEED)
+    }
+
+    // BEARING
 
     /**
      * Direction of travel in degrees East of true North. If 'hasData' is false,
      * 0.0 is returned (in degree).
      */
-    val bearing by lazy {
-        object : ValueContainerFloat(EXTRA_KEY_BEARING) {
-
-            override fun validateNewValue(value: Float): Float {
-                var bearingNew = value
-                while (bearingNew < 0.0f) {
-                    bearingNew += 360.0f
-                }
-                while (bearingNew >= 360.0f) {
-                    bearingNew -= 360.0f
-                }
-                return bearingNew
-            }
+    var bearing: Float
+        get() {
+            return extraDataFloat.get(EXTRA_KEY_BEARING, 0.0f)
         }
+        set(value) {
+            var bearingNew = value
+            while (bearingNew < 0.0f) {
+                bearingNew += 360.0f
+            }
+            while (bearingNew >= 360.0f) {
+                bearingNew -= 360.0f
+            }
+            extraDataFloat.put(EXTRA_KEY_BEARING, bearingNew)
+        }
+
+    val hasBearing: Boolean
+        get() = extraDataFloat.containsKey(EXTRA_KEY_BEARING)
+
+    fun removeBearing() {
+        extraDataFloat.remove(EXTRA_KEY_BEARING)
     }
+
+    // HORIZONTAL ACCURACY
 
     /**
      * Horizontal accuracy of the fix. If 'hasData' is false, 0.0 is returned (in m).
      */
-    val accuracyHor by lazy { ValueContainerFloat(EXTRA_KEY_ACCURACY_HOR) }
+    var accuracyHor: Float
+        get() {
+            return extraDataFloat.get(EXTRA_KEY_ACCURACY_HOR, 0.0f)
+        }
+        set(value) {
+            extraDataFloat.put(EXTRA_KEY_ACCURACY_HOR, value)
+        }
+
+    val hasAccuracyHor: Boolean
+        get() = extraDataFloat.containsKey(EXTRA_KEY_ACCURACY_HOR)
+
+    fun removeAccuracyHor() {
+        extraDataFloat.remove(EXTRA_KEY_ACCURACY_HOR)
+    }
+
+    // VERTICAL ACCURACY
 
     /**
      * Vertical accuracy of the fix. If 'hasData' is false, 0.0 is returned (in m).
      */
-    val accuracyVer by lazy { ValueContainerFloat(EXTRA_KEY_ACCURACY_VER) }
+    var accuracyVer: Float
+        get() {
+            return extraDataFloat.get(EXTRA_KEY_ACCURACY_VER, 0.0f)
+        }
+        set(value) {
+            extraDataFloat.put(EXTRA_KEY_ACCURACY_VER, value)
+        }
 
-    // SENSOR VALUES
+    val hasAccuracyVer: Boolean
+        get() = extraDataFloat.containsKey(EXTRA_KEY_ACCURACY_VER)
 
-    /**
-     * Check if object has any recorded sensor data.
-     *
-     * This method by-pass initializing of inner objects so it is a good practice to check this
-     * value before dealing with any sensor data.
-     */
-    fun hasAnySensorData(): Boolean {
-        return extraDataShort.containsKey(EXTRA_KEY_SENSOR_CADENCE.toInt())
-                || extraDataShort.containsKey(EXTRA_KEY_SENSOR_HEART_RATE.toInt())
-                || extraDataFloat.containsKey(EXTRA_KEY_SENSOR_SPEED.toInt())
-                || extraDataFloat.containsKey(EXTRA_KEY_SENSOR_POWER.toInt())
-                || extraDataInt.containsKey(EXTRA_KEY_SENSOR_STRIDES.toInt())
-                || extraDataFloat.containsKey(EXTRA_KEY_SENSOR_TEMPERATURE.toInt())
+    fun removeAccuracyVer() {
+        extraDataFloat.remove(EXTRA_KEY_ACCURACY_VER)
     }
+
+    //*************************************************
+    // SENSOR VALUES
+    //*************************************************
+
+    // CADENCE
 
     /**
      * Cadence value. If hasCadence() is false, 0 is returned.
      */
-    val sensorCadence by lazy { ValueContainerShort(EXTRA_KEY_SENSOR_CADENCE) }
+    var sensorCadence: Short
+        get() {
+            return extraDataShort.get(EXTRA_KEY_SENSOR_CADENCE, 0)
+        }
+        set(value) {
+            extraDataShort.put(EXTRA_KEY_SENSOR_CADENCE, value)
+        }
+
+    val hasSensorCadence: Boolean
+        get() = extraDataShort.containsKey(EXTRA_KEY_SENSOR_CADENCE)
+
+    fun removeSensorCadence() {
+        extraDataShort.remove(EXTRA_KEY_SENSOR_CADENCE)
+    }
+
+    // HEART RATE
 
     /**
      * Heart rate value in BMP. If hasSensorHeartRate() is false, 0 is returned.
      */
-    val sensorHeartRate by lazy { ValueContainerShort(EXTRA_KEY_SENSOR_HEART_RATE) }
+    var sensorHeartRate: Short
+        get() {
+            return extraDataShort.get(EXTRA_KEY_SENSOR_HEART_RATE, 0)
+        }
+        set(value) {
+            extraDataShort.put(EXTRA_KEY_SENSOR_HEART_RATE, value)
+        }
+
+    val hasSensorHeartRate: Boolean
+        get() = extraDataShort.containsKey(EXTRA_KEY_SENSOR_HEART_RATE)
+
+    fun removeSensorHeartRate() {
+        extraDataShort.remove(EXTRA_KEY_SENSOR_HEART_RATE)
+    }
+
+    // SPEED FROM SENSOR
 
     /**
      * Speed of the device over ground in meters/second. This speed is defined only when
@@ -183,63 +272,207 @@ open class Location() : Storable() {
      *
      * If 'hasData' is 'false', 0.0f is returned (in m/s).
      */
-    val sensorSpeed by lazy { ValueContainerFloat(EXTRA_KEY_SENSOR_SPEED) }
+    var sensorSpeed: Float
+        get() {
+            return extraDataFloat.get(EXTRA_KEY_SENSOR_SPEED, 0.0f)
+        }
+        set(value) {
+            extraDataFloat.put(EXTRA_KEY_SENSOR_SPEED, value)
+        }
+
+    val hasSensorSpeed: Boolean
+        get() = extraDataFloat.containsKey(EXTRA_KEY_SENSOR_SPEED)
+
+    fun removeSensorSpeed() {
+        extraDataFloat.remove(EXTRA_KEY_SENSOR_SPEED)
+    }
+
+    // POWER
 
     /**
      * Power value of the fix in W. If hasSensorPower() is false, 0.0 is returned.
      */
-    val sensorPower by lazy { ValueContainerFloat(EXTRA_KEY_SENSOR_POWER) }
+    var sensorPower: Float
+        get() {
+            return extraDataFloat.get(EXTRA_KEY_SENSOR_POWER, 0.0f)
+        }
+        set(value) {
+            extraDataFloat.put(EXTRA_KEY_SENSOR_POWER, value)
+        }
+
+    val hasSensorPower: Boolean
+        get() = extraDataFloat.containsKey(EXTRA_KEY_SENSOR_POWER)
+
+    fun removeSensorPower() {
+        extraDataFloat.remove(EXTRA_KEY_SENSOR_POWER)
+    }
+
+    // STRIDES
 
     /**
      * The num of strides. If hasSensorStrides() is false, 0 is returned.
      */
-    val sensorStrides by lazy { ValueContainerInt(EXTRA_KEY_SENSOR_STRIDES) }
+    var sensorStrides: Int
+        get() {
+            return extraDataInt.get(EXTRA_KEY_SENSOR_STRIDES, 0)
+        }
+        set(value) {
+            extraDataInt.put(EXTRA_KEY_SENSOR_STRIDES, value)
+        }
+
+    val hasSensorStrides: Boolean
+        get() = extraDataInt.containsKey(EXTRA_KEY_SENSOR_STRIDES)
+
+    fun removeSensorStrides() {
+        extraDataInt.remove(EXTRA_KEY_SENSOR_STRIDES)
+    }
+
+    // TEMPERATURE
 
     /**
      * Temperature value. If hasSensorTemperature() is false, 0.0f is returned.
      */
-    val sensorTemperature by lazy { ValueContainerFloat(EXTRA_KEY_SENSOR_TEMPERATURE) }
+    var sensorTemperature: Float
+        get() {
+            return extraDataFloat.get(EXTRA_KEY_SENSOR_TEMPERATURE, 0.0f)
+        }
+        set(value) {
+            extraDataFloat.put(EXTRA_KEY_SENSOR_TEMPERATURE, value)
+        }
 
+    val hasSensorTemperature: Boolean
+        get() = extraDataFloat.containsKey(EXTRA_KEY_SENSOR_TEMPERATURE)
+
+    fun removeSensorTemperature() {
+        extraDataFloat.remove(EXTRA_KEY_SENSOR_TEMPERATURE)
+    }
+
+    //*************************************************
     // GNSS META-DATA
+    //*************************************************
 
-    val gnssQuality: ValueContainerShort
-        get() = ValueContainerShort(EXTRA_KEY_GNSS_STATUS)
+    // GNSS QUALITY
+
+    var gnssQuality: Short
+        get() {
+            return extraDataShort.get(EXTRA_KEY_GNSS_QUALITY, 0)
+        }
+        set(value) {
+            extraDataShort.put(EXTRA_KEY_GNSS_QUALITY, value)
+        }
+
+    val hasGnssQuality: Boolean
+        get() = extraDataShort.containsKey(EXTRA_KEY_GNSS_QUALITY)
+
+    fun removeGnssQuality() {
+        extraDataShort.remove(EXTRA_KEY_GNSS_QUALITY)
+    }
+
+    // GNSS, HDOP
 
     /**
      * Horizontal dilution of precision for current location.
      *
      * More info: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation).
      */
-    val gnssHdop: ValueContainerFloat
-        get() = ValueContainerFloat(EXTRA_KEY_GNSS_HDOP)
+    var gnssHdop: Float
+        get() {
+            return extraDataFloat.get(EXTRA_KEY_GNSS_HDOP, 0.0f)
+        }
+        set(value) {
+            extraDataFloat.put(EXTRA_KEY_GNSS_HDOP, value)
+        }
+
+    val hasGnssHdop: Boolean
+        get() = extraDataFloat.containsKey(EXTRA_KEY_GNSS_HDOP)
+
+    fun removeGnssHdop() {
+        extraDataFloat.remove(EXTRA_KEY_GNSS_HDOP)
+    }
+
+    // GNSS, VDOP
 
     /**
      * Vertical dilution of precision for current location.
      *
      * More info: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation).
      */
-    val gnssVdop: ValueContainerFloat
-        get() = ValueContainerFloat(EXTRA_KEY_GNSS_VDOP)
+    var gnssVdop: Float
+        get() {
+            return extraDataFloat.get(EXTRA_KEY_GNSS_VDOP, 0.0f)
+        }
+        set(value) {
+            extraDataFloat.put(EXTRA_KEY_GNSS_VDOP, value)
+        }
+
+    val hasGnssVdop: Boolean
+        get() = extraDataFloat.containsKey(EXTRA_KEY_GNSS_VDOP)
+
+    fun removeGnssVdop() {
+        extraDataFloat.remove(EXTRA_KEY_GNSS_VDOP)
+    }
+
+    // GNSS, PDOP
 
     /**
      * Position (3D) dilution of precision for current location.
      *
      * More info: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation).
      */
-    val gnssPdop: ValueContainerFloat
-        get() = ValueContainerFloat(EXTRA_KEY_GNSS_PDOP)
+    var gnssPdop: Float
+        get() {
+            return extraDataFloat.get(EXTRA_KEY_GNSS_PDOP, 0.0f)
+        }
+        set(value) {
+            extraDataFloat.put(EXTRA_KEY_GNSS_PDOP, value)
+        }
+
+    val hasGnssPdop: Boolean
+        get() = extraDataFloat.containsKey(EXTRA_KEY_GNSS_PDOP)
+
+    fun removeGnssPdop() {
+        extraDataFloat.remove(EXTRA_KEY_GNSS_PDOP)
+    }
+
+    // GNSS, NUMBER OF USED SATS
 
     /**
      * Number of used satellites used to obtain current location.
      */
-    val gnssSatsUsed: ValueContainerShort
-        get() = ValueContainerShort(EXTRA_KEY_GNSS_SATS_USED)
+    var gnssSatsUsed: Short
+        get() {
+            return extraDataShort.get(EXTRA_KEY_GNSS_SATS_USED, 0)
+        }
+        set(value) {
+            extraDataShort.put(EXTRA_KEY_GNSS_SATS_USED, value)
+        }
+
+    val hasGnssSatsUsed: Boolean
+        get() = extraDataShort.containsKey(EXTRA_KEY_GNSS_SATS_USED)
+
+    fun removeGnssSatsUsed() {
+        extraDataShort.remove(EXTRA_KEY_GNSS_SATS_USED)
+    }
+
+    // GNSS, NUMBER OF VISIBLE SATS
 
     /**
      * Number of used satellites used to obtain current location.
      */
-    val gnssSatsVisible: ValueContainerShort
-        get() = ValueContainerShort(EXTRA_KEY_GNSS_SATS_VISIBLE)
+    var gnssSatsVisible: Short
+        get() {
+            return extraDataShort.get(EXTRA_KEY_GNSS_SATS_VISIBLE, 0)
+        }
+        set(value) {
+            extraDataShort.put(EXTRA_KEY_GNSS_SATS_VISIBLE, value)
+        }
+
+    val hasGnssSatsVisible: Boolean
+        get() = extraDataShort.containsKey(EXTRA_KEY_GNSS_SATS_VISIBLE)
+
+    fun removeGnssSatsVisible() {
+        extraDataShort.remove(EXTRA_KEY_GNSS_SATS_VISIBLE)
+    }
 
     //*************************************************
     // CONSTRUCTION
@@ -286,16 +519,16 @@ open class Location() : Storable() {
      */
     @Deprecated(message = "Work with speed value directly")
     val speedOptimal: Float
-        get() = if (sensorSpeed.hasData) {
-            sensorSpeed.value
-        } else speed.value
+        get() = if (hasSensorSpeed) {
+            sensorSpeed
+        } else speed
 
     /**
      * Check if any speed (GPS or from sensors) is stored.
      */
     @Deprecated(message = "Work with speed value directly")
     fun hasSpeedOptimal(): Boolean {
-        return speed.hasData || sensorSpeed.hasData
+        return hasSpeed || hasSensorSpeed
     }
 
     //*************************************************
@@ -357,21 +590,6 @@ open class Location() : Storable() {
         }
     }
 
-    open inner class ValueContainerFloat(id: Byte)
-        : ValueContainer<Float>(extraDataFloat, id) {
-
-        override fun getDefaultEmpty(): Float {
-            return 0.0f
-        }
-    }
-
-    inner class ValueContainerDouble(id: Byte)
-        : ValueContainer<Double>(extraDataDouble, id) {
-
-        override fun getDefaultEmpty(): Double {
-            return 0.0
-        }
-    }
 
     //*************************************************
     // TOOLS
@@ -381,23 +599,24 @@ open class Location() : Storable() {
      * Remove all attached sensors values.
      */
     fun removeSensorAll() {
-        sensorCadence.remove()
-        sensorHeartRate.remove()
-        sensorPower.remove()
-        sensorSpeed.remove()
-        sensorStrides.remove()
-        sensorTemperature.remove()
+        removeSensorCadence()
+        removeSensorHeartRate()
+        removeSensorPower()
+        removeSensorSpeed()
+        removeSensorStrides()
+        removeSensorTemperature()
     }
 
     /**
      * Remove all values related to GNSS metadata.
      */
     fun removeGnssAll() {
-        gnssQuality.remove()
-        gnssHdop.remove()
-        gnssVdop.remove()
-        gnssPdop.remove()
-        gnssSatsUsed.remove()
+        removeGnssQuality()
+        removeGnssHdop()
+        removeGnssVdop()
+        removeGnssPdop()
+        removeGnssSatsUsed()
+        removeGnssSatsVisible()
     }
 
     override fun toString(): String {
@@ -469,7 +688,7 @@ open class Location() : Storable() {
         val hasAltitude = dr.readBoolean()
         val altitude = dr.readDouble()
         if (hasAltitude) {
-            this.altitude.value = altitude
+            this.altitude = altitude
         }
 
         // red basic data
@@ -477,17 +696,17 @@ open class Location() : Storable() {
             val hasAccuracy = dr.readBoolean()
             val accuracy = dr.readFloat()
             if (hasAccuracy) {
-                this.accuracyHor.value = accuracy
+                this.accuracyHor = accuracy
             }
             val hasBearing = dr.readBoolean()
             val bearing = dr.readFloat()
             if (hasBearing) {
-                this.bearing.value = bearing
+                this.bearing = bearing
             }
             val hasSpeed = dr.readBoolean()
             val speed = dr.readFloat()
             if (hasSpeed) {
-                this.speed.value = speed
+                this.speed = speed
             }
         }
 
@@ -513,22 +732,22 @@ open class Location() : Storable() {
 
                 // map values to new system
                 if (extraSensor.hasCadence) {
-                    sensorCadence.value = extraSensor.cadence.toShort()
+                    sensorCadence = extraSensor.cadence.toShort()
                 }
                 if (extraSensor.hasHr) {
-                    sensorHeartRate.value = extraSensor.hr.toShort()
+                    sensorHeartRate = extraSensor.hr.toShort()
                 }
                 if (extraSensor.hasPower) {
-                    sensorPower.value = extraSensor.power
+                    sensorPower = extraSensor.power
                 }
                 if (extraSensor.hasSpeed) {
-                    sensorSpeed.value = extraSensor.speed
+                    sensorSpeed = extraSensor.speed
                 }
                 if (extraSensor.hasStrides) {
-                    sensorStrides.value = extraSensor.strides
+                    sensorStrides = extraSensor.strides
                 }
                 if (extraSensor.hasTemperature) {
-                    sensorTemperature.value = extraSensor.temperature
+                    sensorTemperature = extraSensor.temperature
                 }
             }
         }
@@ -565,47 +784,47 @@ open class Location() : Storable() {
         dw.writeLong(time)
         dw.writeDouble(latitude)
         dw.writeDouble(longitude)
-        dw.writeBoolean(altitude.hasData)
-        dw.writeDouble(altitude.value)
+        dw.writeBoolean(hasAltitude)
+        dw.writeDouble(altitude)
 
         // write (deprecated) basic data
-        if (accuracyHor.hasData || bearing.hasData || speed.hasData) {
+        if (hasAccuracyHor || hasBearing || hasSpeed) {
             dw.writeBoolean(true)
-            dw.writeBoolean(accuracyHor.hasData)
-            dw.writeFloat(accuracyHor.value)
-            dw.writeBoolean(bearing.hasData)
-            dw.writeFloat(bearing.value)
-            dw.writeBoolean(speed.hasData)
-            dw.writeFloat(speed.value)
+            dw.writeBoolean(hasAccuracyHor)
+            dw.writeFloat(accuracyHor)
+            dw.writeBoolean(hasBearing)
+            dw.writeFloat(bearing)
+            dw.writeBoolean(hasSpeed)
+            dw.writeFloat(speed)
         } else {
             dw.writeBoolean(false)
         }
 
         // write sensors data (version 1+)
         val extraSensor = ExtraSensor().apply {
-            if (sensorCadence.hasData) {
+            if (hasSensorCadence) {
                 hasCadence = true
-                cadence = sensorCadence.value.toInt()
+                cadence = sensorCadence.toInt()
             }
-            if (sensorHeartRate.hasData) {
+            if (hasSensorHeartRate) {
                 hasHr = true
-                hr = sensorHeartRate.value.toInt()
+                hr = sensorHeartRate.toInt()
             }
-            if (sensorPower.hasData) {
+            if (hasSensorPower) {
                 hasPower = true
-                power = sensorPower.value
+                power = sensorPower
             }
-            if (sensorSpeed.hasData) {
+            if (hasSensorSpeed) {
                 hasSpeed = true
-                speed = sensorSpeed.value
+                speed = sensorSpeed
             }
-            if (sensorStrides.hasData) {
+            if (hasSensorStrides) {
                 hasStrides = true
-                strides = sensorStrides.value
+                strides = sensorStrides
             }
-            if (sensorTemperature.hasData) {
+            if (hasSensorTemperature) {
                 hasTemperature = true
-                temperature = sensorTemperature.value
+                temperature = sensorTemperature
             }
         }
         extraSensor
@@ -717,24 +936,24 @@ open class Location() : Storable() {
         // tag for logger
         private const val TAG = "Location"
 
-        private const val EXTRA_KEY_ALTITUDE = 10.toByte()
-        private const val EXTRA_KEY_SPEED = 11.toByte()
-        private const val EXTRA_KEY_BEARING = 12.toByte()
-        private const val EXTRA_KEY_ACCURACY_HOR = 13.toByte()
-        private const val EXTRA_KEY_ACCURACY_VER = 14.toByte()
+        private const val EXTRA_KEY_ALTITUDE = 10
+        private const val EXTRA_KEY_SPEED = 11
+        private const val EXTRA_KEY_BEARING = 12
+        private const val EXTRA_KEY_ACCURACY_HOR = 13
+        private const val EXTRA_KEY_ACCURACY_VER = 14
 
-        private const val EXTRA_KEY_SENSOR_HEART_RATE = 20.toByte()
-        private const val EXTRA_KEY_SENSOR_CADENCE = 21.toByte()
-        private const val EXTRA_KEY_SENSOR_SPEED = 22.toByte()
-        private const val EXTRA_KEY_SENSOR_TEMPERATURE = 23.toByte()
-        private const val EXTRA_KEY_SENSOR_POWER = 24.toByte()
-        private const val EXTRA_KEY_SENSOR_STRIDES = 25.toByte()
+        private const val EXTRA_KEY_SENSOR_HEART_RATE = 20
+        private const val EXTRA_KEY_SENSOR_CADENCE = 21
+        private const val EXTRA_KEY_SENSOR_SPEED = 22
+        private const val EXTRA_KEY_SENSOR_TEMPERATURE = 23
+        private const val EXTRA_KEY_SENSOR_POWER = 24
+        private const val EXTRA_KEY_SENSOR_STRIDES = 25
 
-        private const val EXTRA_KEY_GNSS_STATUS = 51.toByte()
-        private const val EXTRA_KEY_GNSS_HDOP = 52.toByte()
-        private const val EXTRA_KEY_GNSS_VDOP = 53.toByte()
-        private const val EXTRA_KEY_GNSS_PDOP = 54.toByte()
-        private const val EXTRA_KEY_GNSS_SATS_USED = 55.toByte()
-        private const val EXTRA_KEY_GNSS_SATS_VISIBLE = 56.toByte()
+        private const val EXTRA_KEY_GNSS_QUALITY = 51
+        private const val EXTRA_KEY_GNSS_HDOP = 52
+        private const val EXTRA_KEY_GNSS_VDOP = 53
+        private const val EXTRA_KEY_GNSS_PDOP = 54
+        private const val EXTRA_KEY_GNSS_SATS_USED = 55
+        private const val EXTRA_KEY_GNSS_SATS_VISIBLE = 56
     }
 }
