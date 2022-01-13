@@ -532,66 +532,6 @@ open class Location() : Storable() {
     }
 
     //*************************************************
-    // CONTAINERS
-    //*************************************************
-
-    abstract class ValueContainer<T> constructor(
-            private val dataContainer: SparseArrayCompat<T>,
-            private val id: Byte) {
-
-        val hasData: Boolean
-            get() = dataContainer.containsKey(id.toInt())
-
-        var value: T
-            get() {
-                return dataContainer.get(id.toInt(), getDefaultEmpty())
-            }
-            set(value) {
-                val validatedValue = validateNewValue(value)
-                dataContainer.put(id.toInt(), validatedValue)
-            }
-
-        /**
-         * Get default empty value.
-         */
-        internal abstract fun getDefaultEmpty(): T
-
-        /**
-         * Validate received value.
-         */
-        internal open fun validateNewValue(value: T): T {
-            return value
-        }
-
-        fun doIfValid(action: (T) -> Unit) {
-            if (hasData) {
-                action(value)
-            }
-        }
-
-        fun remove() {
-            dataContainer.remove(id.toInt())
-        }
-    }
-
-    inner class ValueContainerShort(id: Byte)
-        : ValueContainer<Short>(extraDataShort, id) {
-
-        override fun getDefaultEmpty(): Short {
-            return 0
-        }
-    }
-
-    inner class ValueContainerInt(id: Byte)
-        : ValueContainer<Int>(extraDataInt, id) {
-
-        override fun getDefaultEmpty(): Int {
-            return 0
-        }
-    }
-
-
-    //*************************************************
     // TOOLS
     //*************************************************
 
