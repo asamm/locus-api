@@ -415,7 +415,7 @@ class GeoDataExtra : Storable() {
      * @param value item value itself
      * @return `true` if correctly added
      */
-    fun addAttachment(type: AttachType, label: String? = "", value: String): Boolean {
+    fun addAttachment(type: AttachType, label: String? = null, value: String): Boolean {
         return addToStorage(label, value, type.min, type.max)
     }
 
@@ -457,7 +457,7 @@ class GeoDataExtra : Storable() {
 
         // create item
         val item = if (label?.isNotEmpty() == true) {
-            "$label|$text"
+            "${label.replace("|", "/")}|$text"
         } else {
             text
         }

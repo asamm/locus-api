@@ -107,7 +107,7 @@ abstract class GeoData : Storable() {
     // TEMPORARY PARAMETERS
 
     /**
-     * Additional temporary storage object. Object is not serialized!
+     * Additional temporary storage object. Object is not serialized so transport over API does not work!
      */
     private var tags: Hashtable<String, Any>? = null
 
@@ -178,9 +178,9 @@ abstract class GeoData : Storable() {
                 ?.let {
                     dw.writeBoolean(true)
                     dw.writeStorable(it)
-                } ?: {
+                } ?: run {
             dw.writeBoolean(false)
-        }()
+        }
     }
 
     /**
@@ -206,6 +206,10 @@ abstract class GeoData : Storable() {
             Logger.logE(TAG, "setExtraDataRaw($data)", e)
             extraData = null
         }
+
+    //*************************************************
+    // EXTRA DATA - PARAMETERS
+    //*************************************************
 
     /**
      * Add parameter into attached [extraData] container.
@@ -236,10 +240,6 @@ abstract class GeoData : Storable() {
             false
         }
     }
-
-    //*************************************************
-    // EXTRA DATA - PARAMETERS
-    //*************************************************
 
     /**
      * Add single parameter defined by it's ID into `extraData` container.
@@ -378,9 +378,9 @@ abstract class GeoData : Storable() {
      * @param uri uri to add
      * @return `true` if audio was correctly added
      */
-    fun addAttachmentAudio(uri: String): Boolean {
+    fun addAttachmentAudio(uri: String, label: String? = null): Boolean {
         return addParameter {
-            addAttachment(GeoDataExtra.AttachType.AUDIO, null, uri)
+            addAttachment(GeoDataExtra.AttachType.AUDIO, label, uri)
         }
     }
 
@@ -390,9 +390,9 @@ abstract class GeoData : Storable() {
      * @param uri uri to add
      * @return `true` if photo was correctly added
      */
-    fun addAttachmentPhoto(uri: String): Boolean {
+    fun addAttachmentPhoto(uri: String, label: String? = null): Boolean {
         return addParameter {
-            addAttachment(GeoDataExtra.AttachType.PHOTO, null, uri)
+            addAttachment(GeoDataExtra.AttachType.PHOTO, label, uri)
         }
     }
 
@@ -402,9 +402,9 @@ abstract class GeoData : Storable() {
      * @param uri uri to add
      * @return `true` if video was correctly added
      */
-    fun addAttachmentVideo(uri: String): Boolean {
+    fun addAttachmentVideo(uri: String, label: String? = null): Boolean {
         return addParameter {
-            addAttachment(GeoDataExtra.AttachType.VIDEO, null, uri)
+            addAttachment(GeoDataExtra.AttachType.VIDEO, label, uri)
         }
     }
 
@@ -414,46 +414,10 @@ abstract class GeoData : Storable() {
      * @param uri uri to add
      * @return `true` if object was correctly added
      */
-    fun addAttachmentOther(uri: String): Boolean {
+    fun addAttachmentOther(uri: String, label: String? = null): Boolean {
         return addParameter {
-            addAttachment(GeoDataExtra.AttachType.OTHER, null, uri)
+            addAttachment(GeoDataExtra.AttachType.OTHER, label, uri)
         }
-    }
-
-    @Deprecated(message = "",
-            replaceWith = ReplaceWith("addParameterEmail(email, \"\")"))
-    fun addEmail(email: String) {
-        addEmail(null, email)
-    }
-
-    @Deprecated(message = "",
-            replaceWith = ReplaceWith("addParameterEmail(email, label)"))
-    fun addEmail(label: String?, email: String) {
-        addParameterEmail(email, label)
-    }
-
-    @Deprecated(message = "",
-            replaceWith = ReplaceWith("addParameterPhone(phone, \"\")"))
-    fun addPhone(phone: String) {
-        addPhone(null, phone)
-    }
-
-    @Deprecated(message = "",
-            replaceWith = ReplaceWith("addParameterPhone(phone, label)"))
-    fun addPhone(label: String?, phone: String) {
-        addParameterPhone(phone, label)
-    }
-
-    @Deprecated(message = "",
-            replaceWith = ReplaceWith("addParameterUrl(url, \"\")"))
-    fun addUrl(url: String) {
-        addUrl(null, url)
-    }
-
-    @Deprecated(message = "",
-            replaceWith = ReplaceWith("addParameterUrl(url, label)"))
-    fun addUrl(label: String?, url: String) {
-        addParameterUrl(url, label)
     }
 
     //*************************************************
@@ -576,15 +540,15 @@ abstract class GeoData : Storable() {
         styleNormal?.let {
             dw.writeBoolean(true)
             dw.writeStorable(it)
-        } ?: {
+        } ?: run {
             dw.writeBoolean(false)
-        }()
+        }
         styleHighlight?.let {
             dw.writeBoolean(true)
             dw.writeStorable(it)
-        } ?: {
+        } ?: run {
             dw.writeBoolean(false)
-        }()
+        }
     }
 
     var styles: ByteArray?

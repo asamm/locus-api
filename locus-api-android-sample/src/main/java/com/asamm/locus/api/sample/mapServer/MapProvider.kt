@@ -18,10 +18,10 @@ import java.util.*
  */
 class MapProvider : MapTileService() {
 
-    override val mapConfigs: List<MapConfigLayer>?
+    override val mapConfigs: List<MapConfigLayer>
         get() = generateMapConfig()
 
-    override fun getMapTile(request: MapTileRequest): MapTileResponse? {
+    override fun getMapTile(request: MapTileRequest): MapTileResponse {
         return loadMapTile(request)
     }
 

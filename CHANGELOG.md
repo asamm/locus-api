@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.46]
+### Changed
+- updated work with parameters in [GeoData] objects
+
 ## [0.9.45]
 ### Changed
 - reverted `Location` object close to old system due to high memory footprint in new solution
