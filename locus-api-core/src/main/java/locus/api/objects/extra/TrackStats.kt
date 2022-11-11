@@ -60,13 +60,6 @@ class TrackStats : Storable() {
         }
     }
 
-    @Deprecated(
-            message = "Use 'getLength' instead",
-            replaceWith = ReplaceWith("getLength(onlyWithMove)"))
-    fun getTrackLength(onlyWithMove: Boolean): Float {
-        return getLength(onlyWithMove)
-    }
-
     // TOTAL TIME
 
     /**
@@ -102,13 +95,6 @@ class TrackStats : Storable() {
         } else {
             totalTime
         }
-    }
-
-    @Deprecated(
-            message = "Use 'getTime' instead",
-            replaceWith = ReplaceWith("getTime(onlyWithMove)"))
-    fun getTrackTime(onlyWithMove: Boolean): Long {
-        return getTime(onlyWithMove)
     }
 
     // SPEED
@@ -239,23 +225,11 @@ class TrackStats : Storable() {
             0
         }
 
-    @Deprecated(
-            message = "Use 'heartRateAverage' instead",
-            replaceWith = ReplaceWith("heartRateAverage"))
-    val hrmAverage: Int
-        get() = heartRateAverage
-
     /**
      * Maximum HRM value.
      */
     var heartRateMax: Int = 0
         private set
-
-    @Deprecated(
-            message = "Use 'heartRateMax' instead",
-            replaceWith = ReplaceWith("heartRateMax"))
-    val hrmMax: Int
-        get() = heartRateMax
 
     /**
      * Add measured heart rate values.

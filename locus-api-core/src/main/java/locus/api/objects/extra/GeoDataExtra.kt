@@ -58,13 +58,13 @@ class GeoDataExtra : Storable() {
 
         val formattedAsEmail: String
             get() {
-                val lab = if (label.isEmpty()) text else label
+                val lab = label.ifEmpty { text }
                 return "<a href=\"mailto:$text\">$lab</a>"
             }
 
         val formattedAsPhone: String
             get() {
-                val lab = if (label.isEmpty()) text else label
+                val lab = label.ifEmpty { text }
                 return "<a href=\"tel:$text\">$lab</a>"
             }
 
@@ -89,7 +89,7 @@ class GeoDataExtra : Storable() {
         }
 
         fun getFormattedAsUrl(checkProtocol: Boolean): String {
-            val lab = if (label.isEmpty()) text else label
+            val lab = label.ifEmpty { text }
             var url = text
             if (checkProtocol && !url.contains("://")) {
                 url = "http://$url"
@@ -194,7 +194,7 @@ class GeoDataExtra : Storable() {
     }
 
     /**
-     * Get parameter already converted to text represenation.
+     * Get parameter already converted to text representation.
      *
      * @param key parameter key
      */
@@ -693,17 +693,20 @@ class GeoDataExtra : Storable() {
         /**
          * Reference to original Google Places item.
          */
-        const val PAR_GOOGLE_PLACES_REFERENCE = 15
+        @Deprecated(message = "not supported anymore")
+        private const val PAR_GOOGLE_PLACES_REFERENCE = 15
 
         /**
          * Google Places rating.
          */
-        const val PAR_GOOGLE_PLACES_RATING = 16
+        @Deprecated(message = "not supported anymore")
+        private const val PAR_GOOGLE_PLACES_RATING = 16
 
         /**
          * Google places details.
          */
-        const val PAR_GOOGLE_PLACES_DETAILS = 17
+        @Deprecated(message = "not supported anymore")
+        private const val PAR_GOOGLE_PLACES_DETAILS = 17
 
         /**
          * Extra parameters from Locus Store, mostly with custom provider data.
