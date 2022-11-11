@@ -642,6 +642,8 @@ class GeoDataExtra : Storable() {
         // routing profile usually used for "climb" or "mountain hiking"
         const val VALUE_RTE_TYPE_FOOT_03 = 11
 
+        const val VALUE_RTE_TYPE_SKI_CROSS_COUNTRY = 12
+
         /**
          * All possible RTE_TYPES also sorted in correct order.
          */
@@ -835,6 +837,11 @@ class GeoDataExtra : Storable() {
          * Used to determine which type of action should be taken in order to stay on route.
          */
         const val PAR_RTE_POINT_ACTION = 110
+
+        /**
+         * Parameter that define if Via-point should be notified during navigation.
+         */
+        const val PAR_RTE_POINT_PASS_PLACE_NOTIFY = 111
 
         // PARAMETERS FOR NAVIGATION ROUTE
 
