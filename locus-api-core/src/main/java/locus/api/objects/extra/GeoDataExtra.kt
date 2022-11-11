@@ -642,6 +642,7 @@ class GeoDataExtra : Storable() {
         // routing profile usually used for "climb" or "mountain hiking"
         const val VALUE_RTE_TYPE_FOOT_03 = 11
 
+        // routing profile for "cross country skiing"
         const val VALUE_RTE_TYPE_SKI_CROSS_COUNTRY = 12
 
         /**

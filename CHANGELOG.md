@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.9.47]
 ### Added
-- [GeoDataExtra] navigation: Via-point notified during navigation
-- [GeoDataExtra] routing: cross-country skiing profile
+- via-point notified during navigation (`PAR_RTE_POINT_PASS_PLACE_NOTIFY` in [GeoDataExtra])
+- cross-country skiing profile (`VALUE_RTE_TYPE_SKI_CROSS_COUNTRY` in [GeoDataExtra])
+
+### Changed
+- removed deprecated track statistics methods
+- minor [GeoDataExtra] refactoring
 
 ## [0.9.46]
 ### Changed
