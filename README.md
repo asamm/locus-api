@@ -16,7 +16,7 @@ Library for [Locus Map](https://www.locusmap.app) application for Android device
 
 ## Current version
 
-Latest stable LT version: **0.9.46**
+Latest stable LT version: **0.9.47**
 Available versions on the maven repository: [here](https://repo1.maven.org/maven2/com/asamm/).
 
 How to **update to new 0.9.x** version? More about it [here](https://github.com/asamm/locus-api/wiki/Update-to-version-0.9.0).
@@ -60,7 +60,9 @@ Check for sample use-cases in Locus API - Android sample project.
 
 ## New version release steps
 
-1. update in the `gradle.properties` 
+1. Raise version in the `gradle.properties`
+   * `API_CODE` (+1)
+   * `API_VERSION`
 2. update version also in this "README" file (line 19)
 3. update "CHANGELOG" news file
 4. commit changes to GitHub
