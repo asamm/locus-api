@@ -490,7 +490,7 @@ class TrackStats : Storable() {
     //*************************************************
 
     override fun getVersion(): Int {
-        return 3
+        return 4
     }
 
     @Throws(IOException::class)
