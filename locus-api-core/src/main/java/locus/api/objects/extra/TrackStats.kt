@@ -202,53 +202,6 @@ class TrackStats : Storable() {
                 || (altitudeMax != Float.NEGATIVE_INFINITY && altitudeMax != 0.0f)
     }
 
-    // HEART RATE
-
-    /**
-     * Number of measured beats.
-     */
-    private var heartRateBeats: Double = 0.0
-
-    /**
-     * Time during which were beats measured.
-     */
-    private var heartRateTime: Long = 0L
-
-    /**
-     * Average value of heart rate.
-     */
-    val heartRateAverage: Int
-        get() = if (heartRateBeats > 0 && heartRateTime > 0L) {
-            val minutes = heartRateTime / (60.0 * 1000.0)
-            (heartRateBeats / minutes).toInt()
-        } else {
-            0
-        }
-
-    /**
-     * Maximum HRM value.
-     */
-    var heartRateMax: Int = 0
-        private set
-
-    /**
-     * Add measured heart rate values.
-     *
-     * @param hrmMeasured   measured heart rate value (in bpm)
-     * @param hrmAvgSegment average heart rate value in segment (in bpm)
-     * @param measureTime   time of segment (in millis)
-     */
-    fun addHeartRateMeasure(hrmMeasured: Int, hrmAvgSegment: Int, measureTime: Long) {
-        // store values
-        val inMinutes = measureTime * 1.0 / (60 * 1000)
-        val numOfBeats = hrmAvgSegment * inMinutes
-        heartRateBeats += numOfBeats
-        heartRateTime += measureTime
-
-        // compute max. heart rate
-        heartRateMax = max(heartRateMax, hrmMeasured)
-    }
-
     // CADENCE
 
     /**
@@ -315,12 +268,129 @@ class TrackStats : Storable() {
         this.energy += energy
     }
 
+    // HEART RATE
+
+    /**
+     * Number of measured beats.
+     */
+    private var heartRateBeats: Double = 0.0
+
+    /**
+     * Time during which were beats measured.
+     */
+    private var heartRateTime: Long = 0L
+
+    /**
+     * Average value of heart rate.
+     */
+    val heartRateAverage: Int
+        get() = if (heartRateBeats > 0 && heartRateTime > 0L) {
+            val minutes = heartRateTime / (60.0 * 1000.0)
+            (heartRateBeats / minutes).toInt()
+        } else {
+            0
+        }
+
+    /**
+     * Maximum HRM value.
+     */
+    var heartRateMax: Int = 0
+        private set
+
+    /**
+     * Add measured heart rate values.
+     *
+     * @param hrmMeasured   measured heart rate value (in bpm)
+     * @param hrmAvgSegment average heart rate value in segment (in bpm)
+     * @param measureTime   time of segment (in millis)
+     */
+    fun addHeartRateMeasure(hrmMeasured: Int, hrmAvgSegment: Int, measureTime: Long) {
+        // store values
+        val inMinutes = measureTime * 1.0 / (60 * 1000)
+        val numOfBeats = hrmAvgSegment * inMinutes
+        heartRateBeats += numOfBeats
+        heartRateTime += measureTime
+
+        // compute max. heart rate
+        heartRateMax = max(heartRateMax, hrmMeasured)
+    }
+
+    // POWER
+
+    /**
+     * Sum of the average power counter (power measurement W * time in sec).
+     */
+    private var powerAvgSum: Double = 0.0
+
+    /**
+     * Time during which were power measured (in millis).
+     */
+    private var powerTime: Long = 0L
+
+    /**
+     * Average value of power (W).
+     */
+    val powerAverage: Int
+        get() = if (powerAvgSum > 0.0 && powerTime > 0L) {
+            val isSeconds = powerTime / 1000.0
+            (powerAvgSum / isSeconds).toInt()
+        } else {
+            0
+        }
+
+    /**
+     * Maximum power value (W).
+     */
+    var powerMax: Int = 0
+        private set
+
+    /**
+     * Add measured power values.
+     *
+     * @param powerMeasured measured power value (in W)
+     * @param powerAvgSegment average power value in segment (in W)
+     * @param timeSegment time of segment (in millis)
+     */
+    fun addPowerMeasure(powerMeasured: Int, powerAvgSegment: Int, timeSegment: Long) {
+        // store values
+        val inSeconds = timeSegment / 1000.0
+        powerAvgSum += powerAvgSegment * inSeconds
+        powerTime += timeSegment
+        powerMax = max(powerMax, powerMeasured)
+    }
+
     // STRIDES
 
     /**
      * Total number of strides..
      */
     var numOfStrides: Int = 0
+
+    // TEMPERATURE
+
+    /**
+     * Flag if temperature values are available.
+     */
+    var hasTemperature: Boolean = false
+
+    /**
+     * Minimum measured temperature (in °C).
+     */
+    var temperatureMin: Float = Float.POSITIVE_INFINITY
+
+    /**
+     * Maximum measured temperature (in °C).
+     */
+    var temperatureMax: Float = Float.NEGATIVE_INFINITY
+
+    /**
+     * Add temperature to current track statistics.
+     */
+    fun addTemperature(temp: Float) {
+        hasTemperature = true
+        temperatureMin = min(temperatureMin, temp)
+        temperatureMax = max(temperatureMax, temp)
+    }
 
     //*************************************************
     // OTHER TOOLS
@@ -341,17 +411,22 @@ class TrackStats : Storable() {
         totalTime = 0L
         totalTimeMove = 0L
         speedMax = 0.0f
-        heartRateBeats = 0.0
-        heartRateTime = 0L
-        heartRateMax = 0
+        resetStatisticsAltitude()
+
         cadenceNumber = 0.0
         cadenceTime = 0L
         cadenceMax = 0
         energy = 0
+        heartRateBeats = 0.0
+        heartRateTime = 0L
+        heartRateMax = 0
         numOfStrides = 0
-
-        // reset also elevation values
-        resetStatisticsAltitude()
+        powerAvgSum = 0.0
+        powerTime = 0L
+        powerMax = 0
+        hasTemperature = false
+        temperatureMin = Float.POSITIVE_INFINITY
+        temperatureMax = Float.NEGATIVE_INFINITY
     }
 
     /**
@@ -384,9 +459,9 @@ class TrackStats : Storable() {
         this.totalTime += stats.totalTime
         this.totalTimeMove += stats.totalTimeMove
         this.speedMax = max(speedMax, stats.speedMax)
+
         this.altitudeMax = max(altitudeMax, stats.altitudeMax)
         this.altitudeMin = min(altitudeMin, stats.altitudeMin)
-
         this.eleNeutralDistance += stats.eleNeutralDistance
         this.eleNeutralHeight += stats.eleNeutralHeight
         this.elePositiveDistance += stats.elePositiveDistance
@@ -394,15 +469,19 @@ class TrackStats : Storable() {
         this.eleNegativeDistance += stats.eleNegativeDistance
         this.eleNegativeHeight += stats.eleNegativeHeight
 
-        this.heartRateBeats += stats.heartRateBeats
-        this.heartRateTime += stats.heartRateTime
-        this.heartRateMax = max(this.heartRateMax, stats.heartRateMax)
-
         this.cadenceNumber += stats.cadenceNumber
         this.cadenceTime += stats.cadenceTime
         this.cadenceMax = max(this.cadenceMax, stats.cadenceMax)
-
         this.energy += stats.energy
+        this.heartRateBeats += stats.heartRateBeats
+        this.heartRateTime += stats.heartRateTime
+        this.heartRateMax = max(this.heartRateMax, stats.heartRateMax)
+        this.powerAvgSum += stats.powerAvgSum
+        this.powerTime += stats.powerTime
+        this.powerMax = max(this.powerMax, stats.powerMax)
+        this.hasTemperature = this.hasTemperature || stats.hasTemperature
+        this.temperatureMin = min(this.temperatureMin, stats.temperatureMin)
+        this.temperatureMax = max(this.temperatureMax, stats.temperatureMax)
         this.numOfStrides += stats.numOfStrides
     }
 
@@ -461,6 +540,16 @@ class TrackStats : Storable() {
         if (version >= 3) {
             numOfStrides = dr.readInt()
         }
+
+        // V4
+        if (version >= 4) {
+            powerAvgSum = dr.readDouble()
+            powerTime = dr.readLong()
+            powerMax = dr.readInt()
+            hasTemperature = dr.readBoolean()
+            temperatureMin = dr.readFloat()
+            temperatureMax = dr.readFloat()
+        }
     }
 
     @Throws(IOException::class)
@@ -504,5 +593,13 @@ class TrackStats : Storable() {
 
         // V3
         dw.writeInt(numOfStrides)
+
+        // V4
+        dw.writeDouble(powerAvgSum)
+        dw.writeLong(powerTime)
+        dw.writeInt(powerMax)
+        dw.writeBoolean(hasTemperature)
+        dw.writeFloat(temperatureMin)
+        dw.writeFloat(temperatureMax)
     }
 }
