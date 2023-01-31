@@ -191,9 +191,34 @@ class GeocachingData : Storable() {
     var waypoints: MutableList<GeocachingWaypoint> = arrayListOf()
 
     /**
-     * User notes.
+     * User notes defined locally. Modify only directly by the user, not over any API or 3rd party service.
      */
-    var notes: String = ""
+    var notesLocal: String = ""
+        set(value) {
+            field = value
+            notesLocalUpdatedAt = System.currentTimeMillis()
+        }
+
+    /**
+     * Time when local notes were updated for the last time.
+     */
+    var notesLocalUpdatedAt: Long = 0L
+        private set
+
+    /**
+     * External notes loaded online or over any 3rd party app, GPX, etc.
+     */
+    var notesExternal: String = ""
+        set(value) {
+            field = value
+            notesExternalUpdatedAt = System.currentTimeMillis()
+        }
+
+    /**
+     * Time when external notes were updated for the last time.
+     */
+    var notesExternalUpdatedAt: Long = 0L
+        private set
 
     /**
      * Flag if cache is 'computed' - have corrected coordinates.
@@ -425,7 +450,7 @@ class GeocachingData : Storable() {
     //*************************************************
 
     override fun getVersion(): Int {
-        return 3
+        return 4
     }
 
     @Throws(IOException::class)
@@ -464,7 +489,7 @@ class GeocachingData : Storable() {
         logs = dr.readListStorable(GeocachingLog::class.java)
         trackables = dr.readListStorable(GeocachingTrackable::class.java)
         waypoints = dr.readListStorable(GeocachingWaypoint::class.java)
-        notes = dr.readString()
+        notesLocal = dr.readString()
         isComputed = dr.readBoolean()
         isFound = dr.readBoolean()
         cacheUrl = dr.readString()
@@ -487,6 +512,13 @@ class GeocachingData : Storable() {
         // V3
         if (version >= 3) {
             source = dr.readInt()
+        }
+
+        // V4
+        if (version >= 4) {
+            notesLocalUpdatedAt = dr.readLong()
+            notesExternal = dr.readString()
+            notesExternalUpdatedAt = dr.readLong()
         }
     }
 
@@ -530,7 +562,7 @@ class GeocachingData : Storable() {
         dw.writeListStorable(logs)
         dw.writeListStorable(trackables)
         dw.writeListStorable(waypoints)
-        dw.writeString(notes)
+        dw.writeString(notesLocal)
         dw.writeBoolean(isComputed)
         dw.writeBoolean(isFound)
         dw.writeString(cacheUrl)
@@ -548,6 +580,11 @@ class GeocachingData : Storable() {
 
         // V3
         dw.writeInt(source)
+
+        // V4
+        dw.writeLong(notesLocalUpdatedAt)
+        dw.writeString(notesExternal)
+        dw.writeLong(notesExternalUpdatedAt)
     }
 
     companion object {

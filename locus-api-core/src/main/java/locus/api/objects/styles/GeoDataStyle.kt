@@ -40,27 +40,22 @@ class GeoDataStyle() : Storable() {
      * ID in style tag.
      */
     var id: String = ""
+
     /**
      * name of the style.
      */
     var name: String = ""
 
     /**
-     * Style for popup balloons.
-     */
-    var balloonStyle: BalloonStyle? = null
-    /**
      * Style for icons.
      */
     var iconStyle: IconStyle? = null
+
     /**
      * Style of label.
      */
     var labelStyle: LabelStyle? = null
-    /**
-     * Style of lists.
-     */
-    var listStyle: ListStyle? = null
+
     /**
      * Style for line and polygons.
      */
@@ -78,7 +73,9 @@ class GeoDataStyle() : Storable() {
     val iconStyleIconUrl: String?
         get() = if (iconStyle == null) {
             null
-        } else iconStyle!!.iconHref
+        } else {
+            iconStyle!!.iconHref
+        }
 
     /**
      * Create new instance of style container with defined name.
@@ -111,24 +108,28 @@ class GeoDataStyle() : Storable() {
     }
 
     fun setIconStyleHotSpot(hotspot: Int) {
-        setIconStyleHotSpot(when (hotspot) {
-            HOTSPOT_TOP_LEFT -> {
-                KmlVec2(0.0, KmlVec2.Units.FRACTION, 1.0, KmlVec2.Units.FRACTION)
+        setIconStyleHotSpot(
+            when (hotspot) {
+                HOTSPOT_TOP_LEFT -> {
+                    KmlVec2(0.0, KmlVec2.Units.FRACTION, 1.0, KmlVec2.Units.FRACTION)
+                }
+                HOTSPOT_CENTER_CENTER -> {
+                    KmlVec2(0.5, KmlVec2.Units.FRACTION, 0.5, KmlVec2.Units.FRACTION)
+                }
+                else -> {
+                    // HOTSPOT_BOTTOM_CENTER
+                    generateDefaultHotSpot()
+                }
             }
-            HOTSPOT_CENTER_CENTER -> {
-                KmlVec2(0.5, KmlVec2.Units.FRACTION, 0.5, KmlVec2.Units.FRACTION)
-            }
-            else -> {
-                // HOTSPOT_BOTTOM_CENTER
-                generateDefaultHotSpot()
-            }
-        })
+        )
     }
 
     fun setIconStyleHotSpot(vec2: KmlVec2) {
         if (iconStyle == null) {
-            Logger.logW(TAG, "setIconStyleHotSpot($vec2), " +
-                    "initialize IconStyle before settings hotSpot or hotSpot is null!")
+            Logger.logW(
+                TAG, "setIconStyleHotSpot($vec2), " +
+                        "initialize IconStyle before settings hotSpot or hotSpot is null!"
+            )
             return
         }
 
@@ -192,7 +193,8 @@ class GeoDataStyle() : Storable() {
         var polyStyleOld: PolyStyleOld? = null
         try {
             if (dr.readBoolean()) {
-                balloonStyle = read(BalloonStyle::class.java, dr)
+                // removed
+                readUnknownObject(dr)
             }
             if (dr.readBoolean()) {
                 iconStyle = read(IconStyle::class.java, dr)
@@ -204,7 +206,8 @@ class GeoDataStyle() : Storable() {
                 lineStyleOld = read(LineStyleOld::class.java, dr)
             }
             if (dr.readBoolean()) {
-                listStyle = read(ListStyle::class.java, dr)
+                // removed
+                readUnknownObject(dr)
             }
             if (dr.readBoolean()) {
                 polyStyleOld = read(PolyStyleOld::class.java, dr)
@@ -232,12 +235,7 @@ class GeoDataStyle() : Storable() {
         dw.writeString(name)
 
         // balloon style
-        if (balloonStyle == null) {
-            dw.writeBoolean(false)
-        } else {
-            dw.writeBoolean(true)
-            balloonStyle!!.write(dw)
-        }
+        dw.writeBoolean(false)
 
         // icon style
         if (iconStyle == null) {
@@ -259,12 +257,7 @@ class GeoDataStyle() : Storable() {
         dw.writeBoolean(false)
 
         // list style
-        if (listStyle == null) {
-            dw.writeBoolean(false)
-        } else {
-            dw.writeBoolean(true)
-            listStyle!!.write(dw)
-        }
+        dw.writeBoolean(false)
 
         // poly style (removed)
         dw.writeBoolean(false)
@@ -291,18 +284,20 @@ class GeoDataStyle() : Storable() {
         fun generateDefaultHotSpot(): KmlVec2 {
             // HOTSPOT_BOTTOM_CENTER
             return KmlVec2(
-                    0.5, KmlVec2.Units.FRACTION,
-                    0.0, KmlVec2.Units.FRACTION)
+                0.5, KmlVec2.Units.FRACTION,
+                0.0, KmlVec2.Units.FRACTION
+            )
         }
 
         // STYLES
 
         // shortcut to simple black color
         const val BLACK = -0x1000000
+
         // shortcut to simple white color
         const val WHITE = -0x1
+
         // default basic color
         const val COLOR_DEFAULT = WHITE
     }
 }
-
