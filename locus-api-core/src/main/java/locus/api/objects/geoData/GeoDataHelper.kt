@@ -5,174 +5,10 @@ import locus.api.objects.extra.PointRteAction
 import locus.api.utils.Utils
 
 //*************************************************
-// PARAMETER "DESCRIPTION"
+// PRIVATE REFERENCES (0 - 29)
 //*************************************************
 
-/**
- * Description parameter attached to this object.
- */
-var GeoData.parameterDescription: String
-    get() {
-        return extraData?.getParameterNotNull(GeoDataExtra.PAR_DESCRIPTION)
-            ?: ""
-    }
-    set(value) {
-        addParameter(GeoDataExtra.PAR_DESCRIPTION, value)
-    }
-
-fun GeoData.removeParameterDescription() {
-    removeParameter(GeoDataExtra.PAR_DESCRIPTION)
-}
-
-//*************************************************
-// PARAMETER "LOPOINTS_ID"
-//*************************************************
-
-/**
- * Check if point contains reference to online LoPoint.
- */
-val Point.hasParameterLoPointsId: Boolean
-    get() = hasParameter(GeoDataExtra.PAR_LOPOINTS_ID)
-
-/**
- * Reference to the online LoPoint.
- */
-var Point.parameterLoPointsId: Long
-    get() {
-        return getParameter(GeoDataExtra.PAR_LOPOINTS_ID)
-            ?.let { Utils.parseLong(it) }
-            ?: -1L
-    }
-    set(value) {
-        addParameter(GeoDataExtra.PAR_LOPOINTS_ID, value.toString())
-    }
-
-//*************************************************
-// PARAMETER "RTE TIME"
-//*************************************************
-
-/**
- * Check if point contains navigation distance value.
- */
-val Point.hasParameterRteDistance: Boolean
-    get() = hasParameter(GeoDataExtra.PAR_RTE_DISTANCE_F)
-
-/**
- * Get navigation Distance (in metres) from current navPoint to next.
- */
-var Point.parameterRteDistance: Float
-    get() {
-        return getParameter(GeoDataExtra.PAR_RTE_DISTANCE_F)
-            ?.let { Utils.parseFloat(it) }
-            ?: 0.0f
-    }
-    set(value) {
-        addParameter(GeoDataExtra.PAR_RTE_DISTANCE_F, value.toString())
-    }
-
-//*************************************************
-// PARAMETER "RTE_INDEX"
-//*************************************************
-
-/**
- * Get parameter that define index of point in track (index of trackpoint).
- *
- * @return index in track or '-1' if no index is defined
- */
-val Point.parameterRteIndex: Int
-    get() {
-        return getParameter(GeoDataExtra.PAR_RTE_INDEX)
-            ?.let { Utils.parseInt(it) }
-            ?: -1
-    }
-
-//*************************************************
-// PARAMETER "RTE_POINT_ACTION"
-//*************************************************
-
-/**
- * RTE action defined for current object.
- */
-var Point.parameterRteAction: PointRteAction
-    get() {
-        return getParameter(GeoDataExtra.PAR_RTE_POINT_ACTION)
-            ?.takeIf { it.isNotEmpty() }
-            ?.let { PointRteAction.getActionById(Utils.parseInt(it)) }
-            ?: PointRteAction.UNDEFINED
-    }
-    set(value) {
-        addParameter(GeoDataExtra.PAR_RTE_POINT_ACTION, value.id.toString())
-    }
-
-//*************************************************
-// PARAMETER "RTE_POINT_PASS_PLACE_NOTIFY"
-//*************************************************
-
-/**
- * Parameter that define if Via-point should be notified during navigation.
- *
- * This parameter does not define if point is Via-point!
- */
-var Point.parameterRtePassPlaceNotify: Boolean
-    get() {
-        return getParameter(GeoDataExtra.PAR_RTE_POINT_PASS_PLACE_NOTIFY)
-            ?.takeIf { it.isNotEmpty() }
-            ?.let { Utils.parseBoolean(it) }
-            ?: true
-    }
-    set(value) {
-        addParameter(GeoDataExtra.PAR_RTE_POINT_PASS_PLACE_NOTIFY, if (value) "1" else "0")
-    }
-
-//*************************************************
-// PARAMETER "RTE SPEED"
-//*************************************************
-
-/**
- * Check if point contains navigation distance value.
- */
-val Point.hasParameterRteSpeed: Boolean
-    get() = hasParameter(GeoDataExtra.PAR_RTE_SPEED_F)
-
-/**
- * Get the speed for the segment between current and the next waypoint [in m/s].
- */
-var Point.parameterRteSpeed: Float
-    get() {
-        return getParameter(GeoDataExtra.PAR_RTE_SPEED_F)
-            ?.let { Utils.parseFloat(it) }
-            ?: 0.0f
-    }
-    set(value) {
-        addParameter(GeoDataExtra.PAR_RTE_SPEED_F, value.toString())
-    }
-
-//*************************************************
-// PARAMETER "RTE TIME"
-//*************************************************
-
-/**
- * Check if point contains navigation time value.
- */
-val Point.hasParameterRteTime: Boolean
-    get() = hasParameter(GeoDataExtra.PAR_RTE_TIME_I)
-
-/**
- * Get navigation time from the current waypoint to the next waypoint [in seconds].
- */
-var Point.parameterRteTime: Int
-    get() {
-        return getParameter(GeoDataExtra.PAR_RTE_TIME_I)
-            ?.let { Utils.parseInt(it) }
-            ?: 0
-    }
-    set(value) {
-        addParameter(GeoDataExtra.PAR_RTE_TIME_I, value.toString())
-    }
-
-//*************************************************
-// PARAMETER "SOURCE"
-//*************************************************
+// PAR_SOURCE
 
 /**
  * Current defined source parameter.
@@ -181,7 +17,7 @@ var Point.parameterRteTime: Int
  */
 var GeoData.parameterSource: Byte
     get() {
-        return extraData?.getParameterRaw(GeoDataExtra.PAR_SOURCE)
+        return getParameterRaw(GeoDataExtra.PAR_SOURCE)
             ?.takeIf { it.size == 1 }
             ?.let { it[0] }
             ?: GeoDataExtra.SOURCE_UNKNOWN
@@ -204,22 +40,267 @@ fun GeoData.isParameterSource(expectedSource: Byte): Boolean {
     return parameterSource == expectedSource
 }
 
-//*************************************************
-// PARAMETER "STYLE"
-//*************************************************
+// PAR_STYLE_NAME
 
-var Point.parameterStyleName: String
+var GeoData.parameterStyleName: String
     get() {
-        return extraData?.getParameter(GeoDataExtra.PAR_STYLE_NAME)
+        return getParameter(GeoDataExtra.PAR_STYLE_NAME)
             ?: ""
     }
     set(value) {
         addParameter(GeoDataExtra.PAR_STYLE_NAME, value)
     }
 
-fun Point.removeParameterStyleName() {
+fun GeoData.removeParameterStyleName() {
     removeParameter(GeoDataExtra.PAR_STYLE_NAME)
 }
+
+//*************************************************
+// PUBLIC VALUES (30 - 49)
+//*************************************************
+
+// PAR_DESCRIPTION
+
+/**
+ * Description parameter attached to this object.
+ */
+var GeoData.parameterDescription: String
+    get() {
+        return getParameter(GeoDataExtra.PAR_DESCRIPTION)
+            ?: ""
+    }
+    set(value) {
+        addParameter(GeoDataExtra.PAR_DESCRIPTION, value)
+    }
+
+fun GeoData.removeParameterDescription() {
+    removeParameter(GeoDataExtra.PAR_DESCRIPTION)
+}
+
+// PAR_COMMENT
+
+var GeoData.parameterComment: String
+    get() {
+        return getParameter(GeoDataExtra.PAR_COMMENT)
+            ?: ""
+    }
+    set(value) {
+        addParameter(GeoDataExtra.PAR_COMMENT, value)
+    }
+
+// PAR_ADDRESS_STREET
+
+var GeoData.parameterAddressStreet: String
+    get() {
+        return getParameter(GeoDataExtra.PAR_ADDRESS_STREET)
+            ?: ""
+    }
+    set(value) {
+        addParameter(GeoDataExtra.PAR_ADDRESS_STREET, value)
+    }
+
+// PAR_ADDRESS_CITY
+
+var GeoData.parameterAddressCity: String
+    get() {
+        return getParameter(GeoDataExtra.PAR_ADDRESS_CITY)
+            ?: ""
+    }
+    set(value) {
+        addParameter(GeoDataExtra.PAR_ADDRESS_CITY, value)
+    }
+
+// PAR_ADDRESS_REGION
+
+var GeoData.parameterAddressRegion: String
+    get() {
+        return getParameter(GeoDataExtra.PAR_ADDRESS_REGION)
+            ?: ""
+    }
+    set(value) {
+        addParameter(GeoDataExtra.PAR_ADDRESS_REGION, value)
+    }
+
+// PAR_ADDRESS_POST_CODE
+
+var GeoData.parameterAddressPostCode: String
+    get() {
+        return getParameter(GeoDataExtra.PAR_ADDRESS_POST_CODE)
+            ?: ""
+    }
+    set(value) {
+        addParameter(GeoDataExtra.PAR_ADDRESS_POST_CODE, value)
+    }
+
+// PAR_ADDRESS_COUNTRY
+
+var GeoData.parameterAddressCountry: String
+    get() {
+        return getParameter(GeoDataExtra.PAR_ADDRESS_COUNTRY)
+            ?: ""
+    }
+    set(value) {
+        addParameter(GeoDataExtra.PAR_ADDRESS_COUNTRY, value)
+    }
+
+//*************************************************
+// ROUTE PARAMETERS (100 - 199)
+//*************************************************
+
+// PAR_RTE_INDEX
+
+/**
+ * Get parameter that define index of point in track (index of trackpoint).
+ *
+ * @return index in track or '-1' if no index is defined
+ */
+val Point.parameterRteIndex: Int
+    get() {
+        return getParameter(GeoDataExtra.PAR_RTE_INDEX)
+            ?.let { Utils.parseInt(it) }
+            ?: -1
+    }
+
+// PAR_RTE_DISTANCE_F
+
+/**
+ * Check if point contains navigation distance value.
+ */
+val Point.hasParameterRteDistance: Boolean
+    get() = hasParameter(GeoDataExtra.PAR_RTE_DISTANCE_F)
+
+/**
+ * Get navigation Distance (in metres) from current navPoint to next.
+ */
+var Point.parameterRteDistance: Float
+    get() {
+        return getParameter(GeoDataExtra.PAR_RTE_DISTANCE_F)
+            ?.let { Utils.parseFloat(it) }
+            ?: 0.0f
+    }
+    set(value) {
+        addParameter(GeoDataExtra.PAR_RTE_DISTANCE_F, value.toString())
+    }
+
+// PAR_RTE_TIME_I
+
+/**
+ * Check if point contains navigation time value.
+ */
+val Point.hasParameterRteTime: Boolean
+    get() = hasParameter(GeoDataExtra.PAR_RTE_TIME_I)
+
+/**
+ * Get navigation time from the current waypoint to the next waypoint [in seconds].
+ */
+var Point.parameterRteTime: Int
+    get() {
+        return getParameter(GeoDataExtra.PAR_RTE_TIME_I)
+            ?.let { Utils.parseInt(it) }
+            ?: 0
+    }
+    set(value) {
+        addParameter(GeoDataExtra.PAR_RTE_TIME_I, value.toString())
+    }
+
+// PAR_RTE_SPEED_F
+
+/**
+ * Check if point contains navigation distance value.
+ */
+val Point.hasParameterRteSpeed: Boolean
+    get() = hasParameter(GeoDataExtra.PAR_RTE_SPEED_F)
+
+/**
+ * Get the speed for the segment between current and the next waypoint [in m/s].
+ */
+var Point.parameterRteSpeed: Float
+    get() {
+        return getParameter(GeoDataExtra.PAR_RTE_SPEED_F)
+            ?.let { Utils.parseFloat(it) }
+            ?: 0.0f
+    }
+    set(value) {
+        addParameter(GeoDataExtra.PAR_RTE_SPEED_F, value.toString())
+    }
+
+// PAR_RTE_POINT_ACTION
+
+/**
+ * RTE action defined for current object.
+ */
+var Point.parameterRteAction: PointRteAction
+    get() {
+        return getParameter(GeoDataExtra.PAR_RTE_POINT_ACTION)
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { PointRteAction.getActionById(Utils.parseInt(it)) }
+            ?: PointRteAction.UNDEFINED
+    }
+    set(value) {
+        addParameter(GeoDataExtra.PAR_RTE_POINT_ACTION, value.id.toString())
+    }
+
+// PAR_RTE_POINT_PASS_PLACE_NOTIFY
+
+/**
+ * Parameter that define if Via-point should be notified during navigation.
+ *
+ * This parameter does not define if point is Via-point!
+ */
+var Point.parameterRtePassPlaceNotify: Boolean
+    get() {
+        return getParameter(GeoDataExtra.PAR_RTE_POINT_PASS_PLACE_NOTIFY)
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { Utils.parseBoolean(it) }
+            ?: true
+    }
+    set(value) {
+        addParameter(GeoDataExtra.PAR_RTE_POINT_PASS_PLACE_NOTIFY, if (value) "1" else "0")
+    }
+
+// PAR_RTE_COMPUTE_TYPE
+
+/**
+ * Type of track (car-fast, bike-short, ...).
+ */
+var Track.parameterRteComputeType: Int
+    get() {
+        return getParameter(GeoDataExtra.PAR_RTE_COMPUTE_TYPE)
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { Utils.parseInt(it) }
+            ?: GeoDataExtra.VALUE_RTE_TYPE_NO_TYPE
+    }
+    set(value) {
+        addParameter(
+            GeoDataExtra.PAR_RTE_COMPUTE_TYPE,
+            value.toString()
+        )
+    }
+
+//*************************************************
+// LOPOINTS (310 - 330)
+//*************************************************
+
+// PAR_LOPOINTS_ID
+
+/**
+ * Check if point contains reference to online LoPoint.
+ */
+val Point.hasParameterLoPointsId: Boolean
+    get() = parameterLoPointsId >= 1L
+
+/**
+ * Reference to the online LoPoint.
+ */
+var Point.parameterLoPointsId: Long
+    get() {
+        return getParameter(GeoDataExtra.PAR_LOPOINTS_ID)
+            ?.let { Utils.parseLong(it) }
+            ?: -1L
+    }
+    set(value) {
+        addParameter(GeoDataExtra.PAR_LOPOINTS_ID, value.toString())
+    }
 
 //*************************************************
 // ATTACHMENTS
