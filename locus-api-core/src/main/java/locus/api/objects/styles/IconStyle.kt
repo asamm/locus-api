@@ -58,7 +58,7 @@ class IconStyle : Storable() {
         scale = dr.readFloat()
         heading = dr.readFloat()
         iconHref = dr.readString()
-        hotSpot = KmlVec2.Companion.read(dr)
+        hotSpot = KmlVec2.read(dr)
     }
 
     @Throws(IOException::class)

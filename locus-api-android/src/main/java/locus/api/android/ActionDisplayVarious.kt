@@ -3,6 +3,7 @@ package locus.api.android
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
+import com.asamm.loggerV2.logW
 import locus.api.android.objects.LocusVersion
 import locus.api.android.objects.PackPoints
 import locus.api.android.objects.VersionCode
@@ -11,7 +12,6 @@ import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.Storable
 import locus.api.objects.geoData.Circle
-import locus.api.utils.Logger
 
 object ActionDisplayVarious {
 
@@ -25,29 +25,37 @@ object ActionDisplayVarious {
     // PRIVATE CALLS
 
     @Throws(RequiredVersionMissingException::class)
-    internal fun sendData(action: String, context: Context, intent: Intent,
-            callImport: Boolean, center: Boolean): Boolean {
-        return sendData(action, context, intent,
-                callImport, center, VersionCode.UPDATE_01)
+    internal fun sendData(
+        action: String, context: Context, intent: Intent,
+        callImport: Boolean, center: Boolean
+    ): Boolean {
+        return sendData(
+            action, context, intent,
+            callImport, center, VersionCode.UPDATE_01
+        )
     }
 
     @Throws(RequiredVersionMissingException::class)
-    internal fun sendData(action: String, ctx: Context, intent: Intent,
-            callImport: Boolean, center: Boolean, vc: VersionCode): Boolean {
+    internal fun sendData(
+        action: String, ctx: Context, intent: Intent,
+        callImport: Boolean, center: Boolean, vc: VersionCode
+    ): Boolean {
         // get valid version
         val lv = LocusUtils.getActiveVersion(ctx, vc)
-                ?: throw RequiredVersionMissingException(vc.vcFree)
+            ?: throw RequiredVersionMissingException(vc.vcFree)
 
         // send data with valid active version
         return sendData(action, ctx, intent, callImport, center, lv)
     }
 
     @Throws(RequiredVersionMissingException::class)
-    internal fun sendData(action: String, ctx: Context, intent: Intent,
-            callImport: Boolean, center: Boolean, lv: LocusVersion): Boolean {
+    internal fun sendData(
+        action: String, ctx: Context, intent: Intent,
+        callImport: Boolean, center: Boolean, lv: LocusVersion
+    ): Boolean {
         // check intent firstly
         if (!hasData(intent)) {
-            Logger.logW(TAG, "Intent 'null' or not contain any data")
+            logW(tag = TAG) { "Intent 'null' or not contain any data" }
             return false
         }
 
@@ -84,8 +92,10 @@ object ActionDisplayVarious {
      * @throws RequiredVersionMissingException exception in case of missing required app version
      */
     @Throws(RequiredVersionMissingException::class)
-    internal fun removeSpecialDataSilently(ctx: Context, lv: LocusVersion,
-            extraName: String, itemsId: LongArray?): Boolean {
+    internal fun removeSpecialDataSilently(
+        ctx: Context, lv: LocusVersion,
+        extraName: String, itemsId: LongArray?
+    ): Boolean {
         // check Locus version
         if (!lv.isVersionValid(VersionCode.UPDATE_02)) {
             throw RequiredVersionMissingException(VersionCode.UPDATE_02)
@@ -93,7 +103,7 @@ object ActionDisplayVarious {
 
         // check intent firstly
         if (itemsId == null || itemsId.isEmpty()) {
-            Logger.logW(TAG, "Intent 'null' or not contain any data")
+            logW(tag = TAG) { "Intent 'null' or not contain any data" }
             return false
         }
 
@@ -118,13 +128,17 @@ object ActionDisplayVarious {
      */
     @Throws(RequiredVersionMissingException::class)
     fun sendCirclesSilent(ctx: Context, circles: List<Circle>, centerOnData: Boolean): Boolean {
-        return sendCirclesSilent(LocusConst.ACTION_DISPLAY_DATA_SILENTLY,
-                ctx, circles, false, centerOnData)
+        return sendCirclesSilent(
+            LocusConst.ACTION_DISPLAY_DATA_SILENTLY,
+            ctx, circles, false, centerOnData
+        )
     }
 
     @Throws(RequiredVersionMissingException::class)
-    private fun sendCirclesSilent(action: String, ctx: Context,
-            circles: List<Circle>, callImport: Boolean, centerOnData: Boolean): Boolean {
+    private fun sendCirclesSilent(
+        action: String, ctx: Context,
+        circles: List<Circle>, callImport: Boolean, centerOnData: Boolean
+    ): Boolean {
         // check data
         if (circles.isEmpty()) {
             return false
@@ -132,10 +146,14 @@ object ActionDisplayVarious {
 
         // create and start intent
         val intent = Intent()
-        intent.putExtra(LocusConst.INTENT_EXTRA_CIRCLES_MULTI,
-                Storable.getAsBytes(circles))
-        return sendData(action, ctx, intent, callImport, centerOnData,
-                VersionCode.UPDATE_02)
+        intent.putExtra(
+            LocusConst.INTENT_EXTRA_CIRCLES_MULTI,
+            Storable.getAsBytes(circles)
+        )
+        return sendData(
+            action, ctx, intent, callImport, centerOnData,
+            VersionCode.UPDATE_02
+        )
     }
 
     /**

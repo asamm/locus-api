@@ -7,11 +7,11 @@ import android.os.Looper
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import com.asamm.locus.api.sample.utils.SampleCalls
+import com.asamm.loggerV2.logW
 import locus.api.android.ActionBasics
 import locus.api.android.features.periodicUpdates.UpdateContainer
 import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.LocusUtils
-import locus.api.utils.Logger
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -24,8 +24,10 @@ class ActivityDashboard : FragmentActivity() {
 
     // refresh handler
     private val handler: Handler = Handler(Looper.getMainLooper())
+
     // refresh interval (in ms)
     private val refreshInterval = TimeUnit.SECONDS.toMillis(1)
+
     // refresh task itself
     private val refresh: (() -> Unit) = {
         refreshContent()
@@ -81,16 +83,14 @@ class ActivityDashboard : FragmentActivity() {
                 LocusUtils.getActiveVersion(this)?.let { lv ->
                     ActionBasics.getUpdateContainer(this, lv)?.let { uc ->
                         handleUpdate(lv, uc)
-                    } ?: {
+                    } ?: run {
                         handleUpdate(lv, null)
-                        Logger.logW(TAG, "refreshContent(), " +
-                                "unable to obtain `UpdateContainer`")
-                    }()
-                } ?: {
+                        logW(tag = TAG) { "refreshContent(), unable to obtain `UpdateContainer`" }
+                    }
+                } ?: run {
                     handleUpdate(null, null)
-                    Logger.logW(TAG, "refreshContent(), " +
-                            "unable to obtain `ActiveVersion`")
-                }()
+                    logW(tag = TAG) { "refreshContent(), unable to obtain `ActiveVersion`" }
+                }
 
             }.start()
         } finally {
@@ -113,21 +113,32 @@ class ActivityDashboard : FragmentActivity() {
                 val sb = StringBuilder()
                 sb.append("UpdateContainer not valid\n\n")
                 sb.append("- active version: ")
-                        .append(lv?.versionName).append(" | ").append(lv?.versionCode)
-                        .append("\n")
+                    .append(lv?.versionName).append(" | ").append(lv?.versionCode)
+                    .append("\n")
                 sb.append("- Locus Map is running: ")
-                        .append(if (lv?.let { SampleCalls.isRunning(this, it) } == true) "running" else "stopped")
-                        .append("\n")
+                    .append(if (lv?.let {
+                            SampleCalls.isRunning(
+                                this,
+                                it
+                            )
+                        } == true) "running" else "stopped")
+                    .append("\n")
                 sb.append("- periodic updates: ")
-                        .append(if (lv?.let { SampleCalls.isPeriodicUpdateEnabled(this, it) } == true) "enabled" else "disabled")
-                        .append("\n")
+                    .append(if (lv?.let {
+                            SampleCalls.isPeriodicUpdateEnabled(
+                                this,
+                                it
+                            )
+                        } == true) "enabled" else "disabled")
+                    .append("\n")
 
                 // set text to field
                 tvInfo.text = sb
             } else {
                 // refresh content
-                tvInfo.text = "Fresh uc received at ${SimpleDateFormat.getTimeInstance().format(Date())}\n" +
-                        "App: ${lv.versionName}, battery:${uc.deviceBatteryValue}"
+                tvInfo.text =
+                    "Fresh uc received at ${SimpleDateFormat.getTimeInstance().format(Date())}\n" +
+                            "App: ${lv.versionName}, battery:${uc.deviceBatteryValue}"
                 tv01.text = uc.locMyLocation.latitude.toString()
                 tv02.text = uc.locMyLocation.longitude.toString()
                 tv03.text = uc.gpsSatsUsed.toString()

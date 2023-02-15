@@ -1,5 +1,8 @@
 package locus.api.utils;
 
+import com.asamm.loggerV2.LogCategory;
+import com.asamm.loggerV2.LogKt;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -196,9 +199,9 @@ public class DataReaderBigEndian {
                 item.read(this);
                 objs.add(item);
             } catch (InstantiationException e) {
-                Logger.INSTANCE.logE(TAG, "readList(" + claz + ")", e);
+                LogKt.logE(LogCategory.Companion.getCORE(), TAG, e, () -> "readList(" + claz + ")");
             } catch (IllegalAccessException e) {
-                Logger.INSTANCE.logE(TAG, "readList(" + claz + ")", e);
+                LogKt.logE(LogCategory.Companion.getCORE(), TAG, e, () -> "readList(" + claz + ")");
             }
         }
         return objs;

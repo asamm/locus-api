@@ -20,6 +20,7 @@
 
 package locus.api.utils
 
+import com.asamm.loggerV2.logE
 import java.io.Closeable
 import java.nio.charset.Charset
 
@@ -40,7 +41,7 @@ object Utils {
 
     fun parseBoolean(data: String): Boolean {
         return try {
-            data.toLowerCase().contains("true") || data.contains("1")
+            data.lowercase().contains("true") || data.contains("1")
         } catch (e: Exception) {
             false
         }
@@ -109,7 +110,8 @@ object Utils {
     fun parseDouble(data: String): Double {
         return try {
             java.lang.Double.parseDouble(
-                    data.trim { it <= ' ' }.replace(",", "."))
+                data.trim { it <= ' ' }.replace(",", ".")
+            )
         } catch (e: Exception) {
             0.0
         }
@@ -119,7 +121,7 @@ object Utils {
         return try {
             text.toByteArray(charset("UTF-8"))
         } catch (e: Exception) {
-            Logger.logE(TAG, "doStringToBytes($text)", e)
+            logE(tag = TAG, ex = e) { "doStringToBytes($text)" }
             ByteArray(0)
         }
     }
@@ -128,7 +130,7 @@ object Utils {
         return try {
             String(data, Charset.forName("UTF-8"))
         } catch (e: Exception) {
-            Logger.logE(TAG, "doBytesToString($data)", e)
+            logE(tag = TAG, ex = e) { "doBytesToString($data)" }
             ""
         }
     }

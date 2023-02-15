@@ -15,13 +15,14 @@ package locus.api.android.utils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import com.asamm.loggerV2.logD
+import com.asamm.loggerV2.logE
 import locus.api.android.ActionBasics
 import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.extra.Location
 import locus.api.objects.geoData.Point
 import locus.api.objects.geoData.Track
-import locus.api.utils.Logger
 
 /**
  * Methods useful for handling received results from Locus based app.
@@ -64,8 +65,10 @@ object IntentHelper {
      * @throws NullPointerException exception if any required data are missing
      */
     @Throws(NullPointerException::class)
-    fun handleIntentMainFunction(ctx: Context, intent: Intent,
-            handler: OnIntentReceived) {
+    fun handleIntentMainFunction(
+        ctx: Context, intent: Intent,
+        handler: OnIntentReceived
+    ) {
         handleIntentGeneral(ctx, intent, LocusConst.INTENT_ITEM_MAIN_FUNCTION, handler)
     }
 
@@ -77,8 +80,10 @@ object IntentHelper {
      * @throws NullPointerException exception if any required data are missing
      */
     @Throws(NullPointerException::class)
-    fun handleIntentMainFunctionGc(ctx: Context, intent: Intent,
-            handler: OnIntentReceived) {
+    fun handleIntentMainFunctionGc(
+        ctx: Context, intent: Intent,
+        handler: OnIntentReceived
+    ) {
         handleIntentGeneral(ctx, intent, LocusConst.INTENT_ITEM_MAIN_FUNCTION_GC, handler)
     }
 
@@ -226,8 +231,10 @@ object IntentHelper {
     //*************************************************
 
     @Throws(NullPointerException::class)
-    private fun handleIntentGeneral(ctx: Context, intent: Intent, action: String,
-            handler: OnIntentReceived) {
+    private fun handleIntentGeneral(
+        ctx: Context, intent: Intent, action: String,
+        handler: OnIntentReceived
+    ) {
         // check intent itself
         if (!isAction(intent, action)) {
             handler.onFailed()
@@ -236,12 +243,14 @@ object IntentHelper {
 
         // get version and handle received data
         LocusUtils.createLocusVersion(ctx, intent)?.let {
-            handler.onReceived(it,
-                    getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_GPS),
-                    getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER))
-        } ?: {
+            handler.onReceived(
+                it,
+                getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_GPS),
+                getLocationFromIntent(intent, LocusConst.INTENT_EXTRA_LOCATION_MAP_CENTER)
+            )
+        } ?: run {
             handler.onFailed()
-        }()
+        }
     }
 
     /**
@@ -348,7 +357,7 @@ object IntentHelper {
                 return Point().apply { read(intent.getByteArrayExtra(LocusConst.INTENT_EXTRA_POINT)!!) }
             }
         } catch (e: Exception) {
-            Logger.logE(TAG, "getPointFromIntent($intent)", e)
+            logE(tag = TAG, ex = e) { "getPointFromIntent($intent)" }
         }
         return null
     }
@@ -378,8 +387,10 @@ object IntentHelper {
                 return ActionBasics.getTrack(ctx, it, trackId)
             }
         }
-        Logger.logD(TAG, "handleIntentTrackTools($ctx, $intent), " +
-                "unable to obtain track $trackId")
+        logD(tag = TAG) {
+            "handleIntentTrackTools($ctx, $intent), " +
+                    "unable to obtain track $trackId"
+        }
         return null
     }
 }

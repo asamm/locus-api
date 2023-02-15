@@ -3,6 +3,7 @@ package locus.api.android.features.augmentedReality
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import com.asamm.loggerV2.logW
 import locus.api.android.ActionDisplayVarious
 import locus.api.android.objects.PackPoints
 import locus.api.android.utils.LocusConst
@@ -10,7 +11,6 @@ import locus.api.android.utils.LocusUtils
 import locus.api.objects.Storable
 import locus.api.objects.extra.Location
 import locus.api.objects.geoData.Track
-import locus.api.utils.Logger
 import java.security.NoSuchAlgorithmException
 
 object UtilsAddonAR {
@@ -56,8 +56,10 @@ object UtilsAddonAR {
      * @return `true` if valid version is installed
      */
     fun isInstalled(context: Context): Boolean {
-        return LocusUtils.isAppAvailable(context,
-                "menion.android.locus.addon.ar", REQUIRED_VERSION)
+        return LocusUtils.isAppAvailable(
+            context,
+            "menion.android.locus.addon.ar", REQUIRED_VERSION
+        )
     }
 
     /**
@@ -69,24 +71,30 @@ object UtilsAddonAR {
      * @param guidedWptId ID of point on which is currently active guidance
      * @return `true` if add-on was correctly called
      */
-    fun showPoints(act: Activity, data: List<PackPoints>,
-            yourLoc: Location, guidedWptId: Long): Boolean {
+    fun showPoints(
+        act: Activity, data: List<PackPoints>,
+        yourLoc: Location, guidedWptId: Long
+    ): Boolean {
         if (!isInstalled(act)) {
-            Logger.logW(TAG, "missing required version $REQUIRED_VERSION")
+            logW(tag = TAG) { "missing required version $REQUIRED_VERSION" }
             return false
         }
 
         // prepare intent
         val intent = Intent(INTENT_VIEW)
-        intent.putExtra(LocusConst.INTENT_EXTRA_POINTS_DATA_ARRAY,
-                Storable.getAsBytes(data))
-        intent.putExtra(EXTRA_LOCATION,
-                yourLoc.asBytes)
+        intent.putExtra(
+            LocusConst.INTENT_EXTRA_POINTS_DATA_ARRAY,
+            Storable.getAsBytes(data)
+        )
+        intent.putExtra(
+            EXTRA_LOCATION,
+            yourLoc.asBytes
+        )
         intent.putExtra(EXTRA_GUIDING_ID, guidedWptId)
 
         // check intent firstly
         if (!ActionDisplayVarious.hasData(intent)) {
-            Logger.logW(TAG, "Intent 'null' or not contain any data")
+            logW(tag = TAG) { "Intent 'null' or not contain any data" }
             return false
         }
 

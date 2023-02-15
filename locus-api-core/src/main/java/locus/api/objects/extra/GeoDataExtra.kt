@@ -20,10 +20,11 @@
 
 package locus.api.objects.extra
 
+import com.asamm.loggerV2.logD
+import com.asamm.loggerV2.logW
 import locus.api.objects.Storable
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
-import locus.api.utils.Logger
 import locus.api.utils.SparseArrayCompat
 import locus.api.utils.Utils
 import java.io.IOException
@@ -120,7 +121,7 @@ class GeoDataExtra : Storable() {
     fun addParameter(key: Int, value: String?): Boolean {
         // check on 'null' value
         var newValue: String = value
-                ?: return false
+            ?: return false
 
         // remove previous parameter
         removeParameter(key)
@@ -133,8 +134,10 @@ class GeoDataExtra : Storable() {
 
         // check keys
         if (key in 1001..1999) {
-            Logger.logW(TAG, "addParam(" + key + ", " + newValue + "), " +
-                    "values 1000 - 1999 reserved!")
+            logW(tag = TAG) {
+                "addParam(" + key + ", " + newValue + "), " +
+                        "values 1000 - 1999 reserved!"
+            }
             return false
         }
 
@@ -172,8 +175,10 @@ class GeoDataExtra : Storable() {
 
         // check keys
         if (key in 1001..1999) {
-            Logger.logW(TAG, "addParam(" + key + ", " + Arrays.toString(value) + "), " +
-                    "values 1000 - 1999 reserved!")
+            logW(tag = TAG) {
+                "addParam(" + key + ", " + Arrays.toString(value) + "), " +
+                        "values 1000 - 1999 reserved!"
+            }
             return false
         }
 
@@ -350,10 +355,11 @@ class GeoDataExtra : Storable() {
      * Type of attached object.
      */
     enum class AttachType constructor(
-            // minimal value in storage
-            internal val min: Int,
-            // maximal allowed value in storage
-            internal val max: Int) {
+        // minimal value in storage
+        internal val min: Int,
+        // maximal allowed value in storage
+        internal val max: Int
+    ) {
 
         PHONE(1000, 1099),
         EMAIL(1100, 1199),
@@ -649,19 +655,20 @@ class GeoDataExtra : Storable() {
          * All possible RTE_TYPES also sorted in correct order.
          */
         val RTE_TYPES_SORTED = intArrayOf(
-                VALUE_RTE_TYPE_NO_TYPE,
-                VALUE_RTE_TYPE_CAR,
-                VALUE_RTE_TYPE_CAR_FAST,
-                VALUE_RTE_TYPE_CAR_SHORT,
-                VALUE_RTE_TYPE_MOTORCYCLE,
-                VALUE_RTE_TYPE_CYCLE,
-                VALUE_RTE_TYPE_CYCLE_FAST,
-                VALUE_RTE_TYPE_CYCLE_SHORT,
-                VALUE_RTE_TYPE_CYCLE_MTB,
-                VALUE_RTE_TYPE_CYCLE_RACING,
-                VALUE_RTE_TYPE_FOOT_01,
-                VALUE_RTE_TYPE_FOOT_02,
-                VALUE_RTE_TYPE_FOOT_03)
+            VALUE_RTE_TYPE_NO_TYPE,
+            VALUE_RTE_TYPE_CAR,
+            VALUE_RTE_TYPE_CAR_FAST,
+            VALUE_RTE_TYPE_CAR_SHORT,
+            VALUE_RTE_TYPE_MOTORCYCLE,
+            VALUE_RTE_TYPE_CYCLE,
+            VALUE_RTE_TYPE_CYCLE_FAST,
+            VALUE_RTE_TYPE_CYCLE_SHORT,
+            VALUE_RTE_TYPE_CYCLE_MTB,
+            VALUE_RTE_TYPE_CYCLE_RACING,
+            VALUE_RTE_TYPE_FOOT_01,
+            VALUE_RTE_TYPE_FOOT_02,
+            VALUE_RTE_TYPE_FOOT_03
+        )
 
         //*************************************************
         // PRIVATE REFERENCES (0 - 29)
@@ -669,30 +676,39 @@ class GeoDataExtra : Storable() {
 
         /**
          * Object source.
+         *
+         * "BYTE" in ByteArray
          */
         const val PAR_SOURCE = 0
 
         /**
          * Private parameter for handling of styles.
          * Use getter/setter directly in GeoData object
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_STYLE_NAME = 5
 
         /**
          * Computed are value. Used mainly for tracks
+         *
+         * "DOUBLE" as String in ByteArray
          */
         const val PAR_AREA_SIZE = 12
 
         /**
          * Extra data for offline POI database
+         *
+         * "STRING" (JSON) in ByteArray
          */
         const val PAR_DB_POI_EXTRA_DATA = 13
 
         /**
          * ID of KML trip to which item belongs
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_KML_TRIP_ID = 14
-
         /**
          * Reference to original Google Places item.
          */
@@ -713,16 +729,22 @@ class GeoDataExtra : Storable() {
 
         /**
          * Extra parameters from Locus Store, mostly with custom provider data.
+         *
+         * "STRING" (JSON) in ByteArray
          */
         const val PAR_STORE_EXTRA = 19
 
         /**
          * Extra callback parameter used directly by API.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_INTENT_EXTRA_CALLBACK = 20
 
         /**
          * Extra OnDisplay parameter used directly by API.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_INTENT_EXTRA_ON_DISPLAY = 21
 
@@ -731,38 +753,52 @@ class GeoDataExtra : Storable() {
         //*************************************************
 
         /**
-         * `STRING` Item visible description.
+         * Item visible description.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_DESCRIPTION = 30
 
         /**
-         * `STRING` Storage for comments (extra tiny description available in GPX files).
+         * Storage for comments (extra tiny description available in GPX files).
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_COMMENT = 31
 
         /**
-         * `STRING` Relative path to working dir (for images for example).
+         * Relative path to working dir (for images for example).
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_RELATIVE_WORKING_DIR = 32
 
         /**
-         * `INT` Type (classification) of the item (point).
+         * Type (classification) of the item (point).
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_TYPE = 33
 
         /**
-         * `STRING` Special code used in Geocache waypoints.
+         * Special code used in Geocache waypoints.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_GEOCACHE_CODE = 34
 
         /**
-         * `BOOLEAN` Flag to include item in POI alert feature. If missing, "true" used as default.
+         * Flag to include item in POI alert feature. If missing, "true" used as default.
+         *
+         * "BOOLEAN" as String (0,1) in ByteArray
          */
         const val PAR_POI_ALERT_INCLUDE = 35
 
         /**
-         * "STRING", separated 2-letter language codes (ISO 639-1) by pipe "|", that define language of
+         * Separated 2-letter language codes (ISO 639-1) by pipe "|", that define language of
          * the content. Mainly related to text "name", "description" and "comment" values.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_LANGUAGE = 36
 
@@ -770,26 +806,36 @@ class GeoDataExtra : Storable() {
 
         /**
          * Address value - street name.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_ADDRESS_STREET = 50
 
         /**
          * Address value - city name.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_ADDRESS_CITY = 51
 
         /**
          * Address value - name of region.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_ADDRESS_REGION = 52
 
         /**
          * Address value - PSČ, post code number.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_ADDRESS_POST_CODE = 53
 
         /**
          * Address value - name of country.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_ADDRESS_COUNTRY = 54
 
@@ -801,25 +847,31 @@ class GeoDataExtra : Storable() {
 
         /**
          * Index to the point list.
-         * <br></br>
          * Locus internal variable, **DO NOT SET**
+         *
+         * "INT" as String in ByteArray
          */
         const val PAR_RTE_INDEX = 100
 
         /**
          * Distance (in metres) from current navPoint to next
-         * <br></br>
          * Locus internal variable, **DO NOT SET** (float)
+         *
+         * "FLOAT" as String in ByteArray
          */
         const val PAR_RTE_DISTANCE_F = 101
 
         /**
-         * Time (in sec) from current navPoint to next (integer).
+         * Time (in sec) from current navPoint to next.
+         *
+         * "INT" as String in ByteArray
          */
         const val PAR_RTE_TIME_I = 102
 
         /**
-         * Speed (in m/s) from current navPoint to next (float).
+         * Speed (in m/s) from current navPoint to next.
+         *
+         * "FLOAT" as String in ByteArray
          */
         const val PAR_RTE_SPEED_F = 103
 
@@ -829,21 +881,30 @@ class GeoDataExtra : Storable() {
          * number of links at the intersection, and types of roads at
          * the intersection. This attempts to estimate the time in seconds it
          * would take for stops, or places where a vehicle must slow to make a turn.
+         *
+         * "INT" as String in ByteArray
          */
         const val PAR_RTE_TURN_COST = 104
 
         /**
          * String representation of next street label.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_RTE_STREET = 109
 
         /**
          * Used to determine which type of action should be taken in order to stay on route.
+         * Defined as id from `PointRteAction` object.
+         *
+         * "INT" as String in ByteArray
          */
         const val PAR_RTE_POINT_ACTION = 110
 
         /**
          * Parameter that define if Via-point should be notified during navigation.
+         *
+         * "BOOLEAN" as String (0,1) in ByteArray
          */
         const val PAR_RTE_POINT_PASS_PLACE_NOTIFY = 111
 
@@ -851,6 +912,8 @@ class GeoDataExtra : Storable() {
 
         /**
          * Type of route (car_fast, car_short, cyclo, foot).
+         *
+         * "INT" as String in ByteArray
          */
         const val PAR_RTE_COMPUTE_TYPE = 120
 
@@ -858,11 +921,15 @@ class GeoDataExtra : Storable() {
          * Roundabout is usually defined from two points. First on enter correctly
          * defined by ACTION 27 - 34, second on exit simply defined by exit angle.
          * In case of usage only exit point, it's need to set this flag.
+         *
+         * "BOOLEAN" as String (0,1) in ByteArray
          */
         const val PAR_RTE_SIMPLE_ROUNDABOUTS = 121
 
         /**
          * Configuration of (route) plan as defined in route planner.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_RTE_PLAN_DEFINITION = 122
 
@@ -870,16 +937,22 @@ class GeoDataExtra : Storable() {
 
         /**
          * Container for max. speeds for the trackpoints.
+         *
+         * "STRING" (JSON) in ByteArray
          */
         const val PAR_RTE_MAX_SPEEDS = 123
 
         /**
          * Container for max. speeds for the trackpoints.
+         *
+         * "STRING" (JSON) in ByteArray
          */
         const val PAR_RTE_WAY_TYPES = 124
 
         /**
          * Container for track surfaces.
+         *
+         * "STRING" (JSON) in ByteArray
          */
         const val PAR_RTE_SURFACES = 125
 
@@ -889,11 +962,15 @@ class GeoDataExtra : Storable() {
 
         /**
          * OpenStreetMap bug/notes ID.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_OSM_NOTES_ID = 301
 
         /**
          * OpenStreetMap bug/notes flag about it's state.
+         *
+         * "BOOLEAN" as String (0,1) in ByteArray
          */
         const val PAR_OSM_NOTES_CLOSED = 302
 
@@ -903,26 +980,36 @@ class GeoDataExtra : Storable() {
 
         /**
          * Online LoPoint ID value.
+         *
+         * "LONG" as String in ByteArray
          */
         const val PAR_LOPOINTS_ID = 310
 
         /**
          * LoPoints labels defined on the server.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_LOPOINTS_LABELS = 311
 
         /**
          * Opening hours String formatted in the OSM format.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_LOPOINTS_OPENING_HOURS = 312
 
         /**
          * Precise point time-zone.
+         *
+         * "STRING" in ByteArray
          */
         const val PAR_LOPOINTS_TIMEZONE = 313
 
         /**
          * Extra geometry of the LoPoint in WKB format.
+         *
+         * "BYTEARRAY"
          */
         const val PAR_LOPOINTS_GEOMETRY = 314
 
@@ -940,13 +1027,17 @@ class GeoDataExtra : Storable() {
          * @param returnDataValue variable value
          * @return generated text
          */
-        fun generateCallbackString(name: String, packageName: String,
-                className: String, returnDataName: String, returnDataValue: String): String {
+        fun generateCallbackString(
+            name: String, packageName: String,
+            className: String, returnDataName: String, returnDataValue: String
+        ): String {
             // check parameters
             if (packageName.isEmpty() || className.isEmpty()) {
-                Logger.logD(TAG, "generateCallbackString(" + name + ", " + packageName + ", " +
-                        className + ", " + returnDataName + ", " + returnDataValue + "), " +
-                        "invalid packageName or className parameter")
+                logD(tag = TAG) {
+                    "generateCallbackString(" + name + ", " + packageName + ", " +
+                            className + ", " + returnDataName + ", " + returnDataValue + "), " +
+                            "invalid packageName or className parameter"
+                }
                 return ""
             }
 

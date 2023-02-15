@@ -24,18 +24,21 @@ import com.asamm.locus.api.sample.pages.PageWelcomeFragment
 import com.asamm.locus.api.sample.utils.BasicAdapter
 import com.asamm.locus.api.sample.utils.BasicAdapterItem
 import com.asamm.locus.api.sample.utils.Utils
-import locus.api.utils.Logger
+import com.asamm.loggerV2.logD
+import com.asamm.loggerV2.logE
 import java.io.File
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     // top toolbar
     private var mToolbar: ActionBar? = null
+
     // drawer itself
     private var mDrawerLayout: DrawerLayout? = null
+
     // toggle drawer
     private var mToggle: ActionBarDrawerToggle? = null
+
     // ID of currently selected item
     private var mCurrentSelectedItemId: Int = 0
 
@@ -55,7 +58,8 @@ class MainActivity : AppCompatActivity() {
         enableDrawer()
 
         // restore state
-        mCurrentSelectedItemId = PreferenceManager.getDefaultSharedPreferences(this).getInt(KEY_I_SELECTED_ITEM_ID, ITEM_ID_WELCOME)
+        mCurrentSelectedItemId = PreferenceManager.getDefaultSharedPreferences(this)
+            .getInt(KEY_I_SELECTED_ITEM_ID, ITEM_ID_WELCOME)
         setFragment(mCurrentSelectedItemId)
 
         // finally check intent that started this sample
@@ -71,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar_top))
         mToolbar = supportActionBar
         if (mToolbar == null) {
-            Logger.logD(TAG, "initializeToolbar(), " + "problem with initializing of toolbar")
+            logD(tag = TAG) { "initializeToolbar(), " + "problem with initializing of toolbar" }
             return false
         }
 
@@ -118,8 +122,10 @@ class MainActivity : AppCompatActivity() {
         })
 
         // setup drawer icon
-        mToggle = ActionBarDrawerToggle(this, mDrawerLayout,
-                R.string.app_name, R.string.app_name)
+        mToggle = ActionBarDrawerToggle(
+            this, mDrawerLayout,
+            R.string.app_name, R.string.app_name
+        )
         mDrawerLayout!!.addDrawerListener(mToggle!!)
 
         // refresh content
@@ -161,14 +167,30 @@ class MainActivity : AppCompatActivity() {
      */
     private fun setContentDrawer(drawerContainer: FrameLayout) {
         val items = ArrayList<BasicAdapterItem>()
-        items.add(BasicAdapterItem(ITEM_ID_WELCOME,
-                getTitleById(ITEM_ID_WELCOME)))
-        items.add(BasicAdapterItem(ITEM_ID_POINTS,
-                getTitleById(ITEM_ID_POINTS)))
-        items.add(BasicAdapterItem(ITEM_ID_TRACKS,
-                getTitleById(ITEM_ID_TRACKS)))
-        items.add(BasicAdapterItem(ITEM_ID_UTILS,
-                getTitleById(ITEM_ID_UTILS)))
+        items.add(
+            BasicAdapterItem(
+                ITEM_ID_WELCOME,
+                getTitleById(ITEM_ID_WELCOME)
+            )
+        )
+        items.add(
+            BasicAdapterItem(
+                ITEM_ID_POINTS,
+                getTitleById(ITEM_ID_POINTS)
+            )
+        )
+        items.add(
+            BasicAdapterItem(
+                ITEM_ID_TRACKS,
+                getTitleById(ITEM_ID_TRACKS)
+            )
+        )
+        items.add(
+            BasicAdapterItem(
+                ITEM_ID_UTILS,
+                getTitleById(ITEM_ID_UTILS)
+            )
+        )
 
         val lv = ListView(this)
         val adapter = BasicAdapter(this, items)
@@ -181,7 +203,8 @@ class MainActivity : AppCompatActivity() {
             mDrawerLayout!!.closeDrawers()
 
             // store value
-            PreferenceManager.getDefaultSharedPreferences(this@MainActivity).edit().putInt(KEY_I_SELECTED_ITEM_ID, mCurrentSelectedItemId).apply()
+            PreferenceManager.getDefaultSharedPreferences(this@MainActivity).edit()
+                .putInt(KEY_I_SELECTED_ITEM_ID, mCurrentSelectedItemId).apply()
 
         }
         drawerContainer.addView(lv)
@@ -195,7 +218,8 @@ class MainActivity : AppCompatActivity() {
     private fun setFragment(itemId: Int) {
         // update the main content by replacing fragments
         val fragmentManager = supportFragmentManager
-        fragmentManager.beginTransaction().replace(FRAGMENT_CONTAINER_ID, getContentById(itemId)!!).commit()
+        fragmentManager.beginTransaction().replace(FRAGMENT_CONTAINER_ID, getContentById(itemId)!!)
+            .commit()
 
         // set page title
         mToolbar?.title = getTitleById(itemId)
@@ -237,13 +261,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        Logger.logD(TAG, "onActivityResult($requestCode, $resultCode, $data)")
+        logD(tag = TAG) { "onActivityResult($requestCode, $resultCode, $data)" }
         if (requestCode == RC_A) {
             // pick file
             if (resultCode == Activity.RESULT_OK && data != null) {
                 val file = File(data.data!!.path)
-                Toast.makeText(this, "Process successful\n\nFile:" + file.absolutePath +
-                        ", exists:" + file.exists(), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this, "Process successful\n\nFile:" + file.absolutePath +
+                            ", exists:" + file.exists(), Toast.LENGTH_LONG
+                ).show()
             } else {
                 Toast.makeText(this, "Process unsuccessful", Toast.LENGTH_SHORT).show()
             }
@@ -251,8 +277,10 @@ class MainActivity : AppCompatActivity() {
             // pick directory
             if (resultCode == Activity.RESULT_OK && data != null) {
                 val dir = File(data.data!!.path)
-                Toast.makeText(this, "Process successful\n\nDir:" + dir.name +
-                        ", exists:" + dir.exists(), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this, "Process successful\n\nDir:" + dir.name +
+                            ", exists:" + dir.exists(), Toast.LENGTH_LONG
+                ).show()
             } else {
                 Toast.makeText(this, "Process unsuccessful", Toast.LENGTH_SHORT).show()
             }
@@ -261,14 +289,18 @@ class MainActivity : AppCompatActivity() {
                 try {
                     val targetFile = createTempFile(System.currentTimeMillis().toString(), "gpx")
                     Utils.copy(this, data.data!!, targetFile)
-                    Toast.makeText(this, "Process successful\n\nDir:" + targetFile.name +
-                            ", exists:" + targetFile.exists(), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this, "Process successful\n\nDir:" + targetFile.name +
+                                ", exists:" + targetFile.exists(), Toast.LENGTH_LONG
+                    ).show()
                 } catch (e: Exception) {
-                    Logger.logE(TAG, "onActivityResult($requestCode, $resultCode, $data)", e)
+                    logE(tag = TAG, ex = e) { "onActivityResult($requestCode, $resultCode, $data)" }
                 }
             } else {
                 Toast.makeText(this, "Process unsuccessful", Toast.LENGTH_SHORT).show()
             }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
         }
     }
 

@@ -31,6 +31,9 @@ allprojects {
         google()
         mavenCentral()
         gradlePluginPortal()
+
+        // Logger
+        maven { url 'https://jitpack.io' }
     }
 }
 

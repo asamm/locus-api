@@ -5,10 +5,10 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.asamm.loggerV2.logE
 import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.LocusConst
 import locus.api.android.utils.LocusUtils
-import locus.api.utils.Logger
 import java.io.File
 
 @Suppress("unused")
@@ -47,13 +47,17 @@ object ActionFiles {
      * @return `false` if file don't exist or Locus is not installed
      */
     @JvmOverloads
-    fun importFileLocus(ctx: Context, fileUri: Uri, type: String,
-            lv: LocusVersion? = LocusUtils.getActiveVersion(ctx),
-            callImport: Boolean = true): Boolean {
+    fun importFileLocus(
+        ctx: Context, fileUri: Uri, type: String,
+        lv: LocusVersion? = LocusUtils.getActiveVersion(ctx),
+        callImport: Boolean = true
+    ): Boolean {
         // check requirements
         if (lv == null) {
-            Logger.logE(TAG, "importFileLocus(" + ctx + ", " + lv + ", " + fileUri + ", " + callImport + "), " +
-                    "invalid input parameters. Import cannot be performed!")
+            logE(tag = TAG) {
+                "importFileLocus(" + ctx + ", " + lv + ", " + fileUri + ", " + callImport + "), " +
+                        "invalid input parameters. Import cannot be performed!"
+            }
             return false
         }
 
@@ -106,10 +110,14 @@ object ActionFiles {
      */
     @JvmOverloads
     @Throws(ActivityNotFoundException::class)
-    fun actionPickFile(activity: Activity, requestCode: Int,
-            title: String? = null, filter: Array<String>? = null) {
-        intentPick("org.openintents.action.PICK_FILE",
-                activity, requestCode, title, filter)
+    fun actionPickFile(
+        activity: Activity, requestCode: Int,
+        title: String? = null, filter: Array<String>? = null
+    ) {
+        intentPick(
+            "org.openintents.action.PICK_FILE",
+            activity, requestCode, title, filter
+        )
     }
 
     /**
@@ -132,8 +140,10 @@ object ActionFiles {
     @JvmOverloads
     @Throws(ActivityNotFoundException::class)
     fun actionPickDir(activity: Activity, requestCode: Int, title: String? = null) {
-        intentPick("org.openintents.action.PICK_DIRECTORY",
-                activity, requestCode, title, null)
+        intentPick(
+            "org.openintents.action.PICK_DIRECTORY",
+            activity, requestCode, title, null
+        )
     }
 
     /**
@@ -147,8 +157,10 @@ object ActionFiles {
      * @throws ActivityNotFoundException thrown in case of missing required Locus app
      */
     @Throws(ActivityNotFoundException::class)
-    private fun intentPick(action: String, act: Activity, requestCode: Int,
-            title: String?, filter: Array<String>?) {
+    private fun intentPick(
+        action: String, act: Activity, requestCode: Int,
+        title: String?, filter: Array<String>?
+    ) {
         // create intent
         val intent = Intent(action)
         if (title != null && title.isNotEmpty()) {

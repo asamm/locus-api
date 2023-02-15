@@ -20,11 +20,11 @@
 
 package locus.api.objects.geoData
 
+import com.asamm.loggerV2.logE
 import locus.api.objects.extra.Location
 import locus.api.objects.extra.TrackStats
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
-import locus.api.utils.Logger
 import java.io.IOException
 
 class Track : GeoData() {
@@ -64,7 +64,7 @@ class Track : GeoData() {
                     breaks.add(dr.readInt())
                 }
             } catch (e: Exception) {
-                Logger.logE(TAG, "setBreaksFromData($value)", e)
+                logE(tag = TAG, ex = e) { "setBreaksFromData($value)" }
                 breaks.clear()
             }
         }
@@ -123,7 +123,7 @@ class Track : GeoData() {
         stats = try {
             TrackStats().apply { read(data) }
         } catch (e: Exception) {
-            Logger.logE(TAG, "setStats(" + data.contentToString() + ")", e)
+            logE(tag = TAG, ex = e) { "setStats(" + data.contentToString() + ")" }
             TrackStats()
         }
     }
@@ -138,6 +138,10 @@ class Track : GeoData() {
 
     @Throws(IOException::class)
     public override fun readObject(version: Int, dr: DataReaderBigEndian) {
+        // reset defaults
+        stats = TrackStats()
+
+        // read basics
         id = dr.readLong()
         name = dr.readString()
 
@@ -157,32 +161,8 @@ class Track : GeoData() {
         readExtraData(dr)
         readStyles(dr)
 
-        // old deprecated statistics
-        // clear previous values
-        stats = TrackStats()
-
-        // read all old data
-        stats.numOfPoints = dr.readInt()
-        stats.startTime = dr.readLong()
-        stats.stopTime = dr.readLong()
-
-        stats.totalLength = dr.readFloat()
-        stats.totalLengthMove = dr.readFloat()
-        stats.totalTime = dr.readLong()
-        stats.totalTimeMove = dr.readLong()
-        stats.speedMax = dr.readFloat()
-
-        stats.altitudeMax = dr.readFloat()
-        stats.altitudeMin = dr.readFloat()
-
-        stats.eleNeutralDistance = dr.readFloat()
-        stats.eleNeutralHeight = dr.readFloat()
-        stats.elePositiveDistance = dr.readFloat()
-        stats.elePositiveHeight = dr.readFloat()
-        stats.eleNegativeDistance = dr.readFloat()
-        stats.eleNegativeHeight = dr.readFloat()
-        dr.readFloat() // eleTotalAbsDistance
-        dr.readFloat() // eleTotalAbsHeight
+        // skip old statistics
+        dr.readBytes(88)
 
         // V1
         if (version >= 1) {
@@ -225,7 +205,7 @@ class Track : GeoData() {
         if (version >= 8) {
             val privacyValue = dr.readString()
             privacy = Privacy.values().find { it.name == privacyValue }
-                    ?: privacy
+                ?: privacy
         }
     }
 
@@ -252,28 +232,8 @@ class Track : GeoData() {
         writeExtraData(dw)
         writeStyles(dw)
 
-        // write old statistics for reader below version 3
-        dw.writeInt(0)
-        dw.writeLong(0L)
-        dw.writeLong(0L)
-
-        dw.writeFloat(0.0f)
-        dw.writeFloat(0.0f)
-        dw.writeLong(0L)
-        dw.writeLong(0L)
-        dw.writeFloat(0.0f)
-
-        dw.writeFloat(0.0f)
-        dw.writeFloat(0.0f)
-
-        dw.writeFloat(0.0f)
-        dw.writeFloat(0.0f)
-        dw.writeFloat(0.0f)
-        dw.writeFloat(0.0f)
-        dw.writeFloat(0.0f)
-        dw.writeFloat(0.0f)
-        dw.writeFloat(0.0f)
-        dw.writeFloat(0.0f)
+        // write block of empty statistics
+        dw.write(ByteArray(88) { 0 })
 
         // V1
         dw.writeBoolean(isUseFolderStyle)

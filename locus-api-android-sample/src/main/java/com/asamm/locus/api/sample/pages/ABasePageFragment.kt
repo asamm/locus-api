@@ -15,9 +15,9 @@ import androidx.fragment.app.Fragment
 import com.asamm.locus.api.sample.MainActivity
 import com.asamm.locus.api.sample.utils.BasicAdapter
 import com.asamm.locus.api.sample.utils.BasicAdapterItem
+import com.asamm.loggerV2.logE
 import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.LocusUtils
-import locus.api.utils.Logger
 
 abstract class ABasePageFragment : Fragment() {
 
@@ -37,7 +37,11 @@ abstract class ABasePageFragment : Fragment() {
         this.act = context as MainActivity
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         // prepare adapter and ListView
         val lv = ListView(act)
@@ -48,8 +52,10 @@ abstract class ABasePageFragment : Fragment() {
             // check valid Locus version
             val activeLocus = LocusUtils.getActiveVersion(act)
             if (activeLocus == null) {
-                Toast.makeText(act,
-                        "Locus is not installed", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    act,
+                    "Locus is not installed", Toast.LENGTH_LONG
+                ).show()
                 return@setOnItemClickListener
             }
 
@@ -58,10 +64,13 @@ abstract class ABasePageFragment : Fragment() {
             try {
                 onItemClicked(item.id, activeLocus)
             } catch (e: Exception) {
-                Toast.makeText(act,
-                        "Problem with action:" + item.id, Toast.LENGTH_LONG).show()
-                Logger.logE(TAG, "onItemClick(), " +
-                        "item:" + item.id + " failed", e)
+                Toast.makeText(
+                    act,
+                    "Problem with action:" + item.id, Toast.LENGTH_LONG
+                ).show()
+                logE(tag = TAG, ex = e) {
+                    "onItemClick(), item:" + item.id + " failed"
+                }
             }
         }
 

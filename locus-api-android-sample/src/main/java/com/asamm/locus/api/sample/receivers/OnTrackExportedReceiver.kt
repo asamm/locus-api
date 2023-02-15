@@ -17,19 +17,23 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import com.asamm.locus.api.sample.utils.Utils
+import com.asamm.loggerV2.logD
+import com.asamm.loggerV2.logE
+import com.asamm.loggerV2.logW
 import locus.api.android.utils.LocusConst
-import locus.api.utils.Logger
 
 class OnTrackExportedReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        Logger.logD(TAG, "onReceive($context, $intent)")
+        logD(tag = TAG) { "onReceive($context, $intent)" }
         try {
             // check if defined (optional) extra match
             val resultExtra = intent.getStringExtra("resultExtra")
             if (resultExtra == "test") {
-                Logger.logW(TAG, "received resultExtra `" + resultExtra + "` " +
-                        "does not match expected `xxx`. Export incorrect.")
+                logW(tag = TAG) {
+                    "received resultExtra `" + resultExtra + "` " +
+                            "does not match expected `xxx`. Export incorrect."
+                }
                 return
             }
 
@@ -37,17 +41,21 @@ class OnTrackExportedReceiver : BroadcastReceiver() {
             intent.data?.let {
                 val targetFile = createTempFile(System.currentTimeMillis().toString(), "gpx")
                 Utils.copy(context, it, targetFile)
-                Toast.makeText(context, "Process successful\n\nDir:" + targetFile.name +
-                        ", exists:" + targetFile.exists(),
-                        Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    context, "Process successful\n\nDir:" + targetFile.name +
+                            ", exists:" + targetFile.exists(),
+                    Toast.LENGTH_LONG
+                ).show()
             } ?: {
                 val errorMessage = intent.getStringExtra(LocusConst.INTENT_EXTRA_ERROR)
-                Toast.makeText(context, "Process failed\n\nError: $errorMessage",
-                        Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    context, "Process failed\n\nError: $errorMessage",
+                    Toast.LENGTH_LONG
+                ).show()
             }()
 
         } catch (e: Exception) {
-            Logger.logE(TAG, "onReceive($context, $intent)", e)
+            logE(tag = TAG, ex = e) { "onReceive($context, $intent)" }
         }
     }
 

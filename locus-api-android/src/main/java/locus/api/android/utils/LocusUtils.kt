@@ -5,12 +5,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
+import com.asamm.loggerV2.logE
+import com.asamm.loggerV2.logW
 import locus.api.android.ActionBasics
 import locus.api.android.objects.LocusVersion
 import locus.api.android.objects.VersionCode
 import locus.api.objects.extra.Location
 import locus.api.objects.geoData.Point
-import locus.api.utils.Logger
 import java.util.*
 
 /**
@@ -20,7 +21,7 @@ fun Cursor.closeQuietly() {
     try {
         close()
     } catch (e: Exception) {
-        Logger.logE("Utils", "closeQuietly(), e: $e")
+        logE(tag = "Utils") { "closeQuietly(), e: $e" }
         e.printStackTrace()
     }
 }
@@ -35,13 +36,14 @@ object LocusUtils {
      */
     private val packageNames: Array<String>
         get() = arrayOf(
-                "menion.android.locus",
-                "menion.android.locus.free.amazon",
-                "menion.android.locus.free.samsung",
-                "menion.android.locus.pro",
-                "menion.android.locus.pro.amazon",
-                "menion.android.locus.pro.asamm",
-                "menion.android.locus.pro.computerBild")
+            "menion.android.locus",
+            "menion.android.locus.free.amazon",
+            "menion.android.locus.free.samsung",
+            "menion.android.locus.pro",
+            "menion.android.locus.pro.amazon",
+            "menion.android.locus.pro.asamm",
+            "menion.android.locus.pro.computerBild"
+        )
 
     /**
      * Search for existing (and better also running) version of Locus. This function
@@ -81,8 +83,10 @@ object LocusUtils {
      * @param minLocusGis minimal version code of Locus GIS
      * @return active version
      */
-    private fun getActiveVersion(ctx: Context,
-            minLocusMapFree: Int, minLocusMapPro: Int, minLocusGis: Int): LocusVersion? {
+    private fun getActiveVersion(
+        ctx: Context,
+        minLocusMapFree: Int, minLocusMapPro: Int, minLocusGis: Int
+    ): LocusVersion? {
         // get valid Locus version for any actions
         val versions = getAvailableVersions(ctx)
         if (versions.isEmpty()) {
@@ -113,7 +117,7 @@ object LocusUtils {
 
             // check if Locus runs and if so, set it as active version
             val li = ActionBasics.getLocusInfo(ctx, element)
-                    ?: continue
+                ?: continue
 
             // backup valid version
             if (backupVersion == null || li.lastActive >= backupLastActive) {
@@ -174,8 +178,9 @@ object LocusUtils {
         try {
             // check package name
             if (packageName == null
-                    || packageName.isEmpty()
-                    || !packageName.startsWith("menion.android.locus")) {
+                || packageName.isEmpty()
+                || !packageName.startsWith("menion.android.locus")
+            ) {
                 return null
             }
 
@@ -186,7 +191,7 @@ object LocusUtils {
             // finally add item to list
             return LocusVersion(packageName, info.versionName, info.versionCode)
         } catch (e: Exception) {
-            Logger.logE(TAG, "getLocusVersion($ctx, $packageName)", e)
+            logE(tag = TAG, ex = e) { "getLocusVersion($ctx, $packageName)" }
             return null
         }
     }
@@ -233,8 +238,10 @@ object LocusUtils {
 
         // older versions of Locus do not send package name in it's intents.
         // So we return closest valid Locus version (Pro/Free)
-        Logger.logW(TAG, "getLocusVersion(" + ctx + "), " +
-                "Warning: old version of Locus: Correct package name is not known!")
+        logW(tag = TAG) {
+            "getLocusVersion(" + ctx + "), " +
+                    "Warning: old version of Locus: Correct package name is not known!"
+        }
         val versions = getAvailableVersions(ctx)
         for (element in versions) {
             if (element.isVersionFree || element.isVersionPro) {
@@ -268,21 +275,26 @@ object LocusUtils {
      * Locus Gis (or '0' if we don't want Locus Gis)
      * @return `true` if required Locus is installed
      */
-    fun isLocusAvailable(ctx: Context,
-            versionFree: Int, versionPro: Int, versionGis: Int): Boolean {
+    fun isLocusAvailable(
+        ctx: Context,
+        versionFree: Int, versionPro: Int, versionGis: Int
+    ): Boolean {
         val versions = getAvailableVersions(ctx)
         for (element in versions) {
             val lv = element
             if (lv.isVersionFree && versionFree > 0 &&
-                    lv.versionCode >= versionFree) {
+                lv.versionCode >= versionFree
+            ) {
                 return true
             }
             if (lv.isVersionPro && versionPro > 0 &&
-                    lv.versionCode >= versionPro) {
+                lv.versionCode >= versionPro
+            ) {
                 return true
             }
             if (lv.isVersionGis && versionGis > 0 &&
-                    lv.versionCode >= versionGis) {
+                lv.versionCode >= versionGis
+            ) {
                 return true
             }
         }
@@ -316,8 +328,11 @@ object LocusUtils {
      * @param ctx current context
      */
     fun callInstallLocus(ctx: Context) {
-        ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(
-                "http://market.android.com/details?id=menion.android.locus")).apply {
+        ctx.startActivity(Intent(
+            Intent.ACTION_VIEW, Uri.parse(
+                "http://market.android.com/details?id=menion.android.locus"
+            )
+        ).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         })
     }
@@ -434,7 +449,7 @@ object LocusUtils {
     fun isAppAvailable(ctx: Context, packageName: String, version: Int): Boolean {
         try {
             return ctx.packageManager.getPackageInfo(packageName, 0)
-                    ?.versionCode ?: -1 >= version
+                ?.versionCode ?: -1 >= version
         } catch (e: PackageManager.NameNotFoundException) {
             return false
         }

@@ -22,6 +22,9 @@ import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.text.TextUtils
+import com.asamm.loggerV2.logD
+import com.asamm.loggerV2.logE
+import com.asamm.loggerV2.logW
 import locus.api.android.features.periodicUpdates.UpdateContainer
 import locus.api.android.objects.LocusInfo
 import locus.api.android.objects.LocusVersion
@@ -36,7 +39,6 @@ import locus.api.objects.extra.GeoDataExtra
 import locus.api.objects.extra.Location
 import locus.api.objects.geoData.Point
 import locus.api.objects.geoData.Track
-import locus.api.utils.Logger
 import org.json.JSONObject
 import java.io.InvalidObjectException
 import java.util.*
@@ -67,8 +69,10 @@ object ActionBasics {
             when {
                 lv.isVersionValid(VersionCode.UPDATE_13) -> {
                     // get scheme
-                    val scheme = getProviderUriData(lv, VersionCode.UPDATE_13,
-                            LocusConst.CONTENT_PROVIDER_PATH_DATA + "/" + LocusConst.VALUE_LOCUS_INFO)
+                    val scheme = getProviderUriData(
+                        lv, VersionCode.UPDATE_13,
+                        LocusConst.CONTENT_PROVIDER_PATH_DATA + "/" + LocusConst.VALUE_LOCUS_INFO
+                    )
 
                     // execute action
                     val data = queryData(ctx, scheme, null, LocusConst.VALUE_LOCUS_INFO)
@@ -78,8 +82,10 @@ object ActionBasics {
                 }
                 else -> {
                     // get scheme
-                    val scheme = getProviderUriData(lv, VersionCode.UPDATE_01,
-                            LocusConst.CONTENT_PROVIDER_PATH_INFO)
+                    val scheme = getProviderUriData(
+                        lv, VersionCode.UPDATE_01,
+                        LocusConst.CONTENT_PROVIDER_PATH_INFO
+                    )
 
                     // get data
                     cursor = queryData(ctx, scheme, null)
@@ -89,7 +95,7 @@ object ActionBasics {
                 }
             }
         } catch (e: Exception) {
-            Logger.logE(TAG, "getLocusInfo($ctx, $lv)", e)
+            logE(tag = TAG, ex = e) { "getLocusInfo($ctx, $lv)" }
         } finally {
             cursor?.closeQuietly()
         }
@@ -109,8 +115,10 @@ object ActionBasics {
     @Throws(RequiredVersionMissingException::class)
     fun getUpdateContainer(ctx: Context, lv: LocusVersion): UpdateContainer? {
         // get scheme if valid Locus is available
-        val scheme = getProviderUriData(lv, VersionCode.UPDATE_13,
-                LocusConst.CONTENT_PROVIDER_PATH_DATA + "/" + LocusConst.VALUE_UPDATE_CONTAINER)
+        val scheme = getProviderUriData(
+            lv, VersionCode.UPDATE_13,
+            LocusConst.CONTENT_PROVIDER_PATH_DATA + "/" + LocusConst.VALUE_UPDATE_CONTAINER
+        )
 
         // execute action
         try {
@@ -119,7 +127,7 @@ object ActionBasics {
                 return UpdateContainer().apply { read(data) }
             }
         } catch (e: Exception) {
-            Logger.logE(TAG, "getUpdateContainer($ctx, $lv)", e)
+            logE(tag = TAG, ex = e) { "getUpdateContainer($ctx, $lv)" }
         }
         return null
     }
@@ -165,7 +173,8 @@ object ActionBasics {
     fun actionTrackRecordStart(ctx: Context, lv: LocusVersion, profileName: String? = null) {
         // create basic intent
         val intent = actionTrackRecord(
-                LocusConst.ACTION_TRACK_RECORD_START, lv)
+            LocusConst.ACTION_TRACK_RECORD_START, lv
+        )
 
         // set (optional) recording profile
         if (profileName?.isNotBlank() == true) {
@@ -184,8 +193,10 @@ object ActionBasics {
      */
     @Throws(RequiredVersionMissingException::class)
     fun actionTrackRecordPause(ctx: Context, lv: LocusVersion) {
-        LocusUtils.sendBroadcast(ctx,
-                actionTrackRecord(LocusConst.ACTION_TRACK_RECORD_PAUSE, lv), lv)
+        LocusUtils.sendBroadcast(
+            ctx,
+            actionTrackRecord(LocusConst.ACTION_TRACK_RECORD_PAUSE, lv), lv
+        )
     }
 
     /**
@@ -199,7 +210,8 @@ object ActionBasics {
     fun actionTrackRecordStop(ctx: Context, lv: LocusVersion, autoSave: Boolean) {
         // create intent
         val intent = actionTrackRecord(
-                LocusConst.ACTION_TRACK_RECORD_STOP, lv)
+            LocusConst.ACTION_TRACK_RECORD_STOP, lv
+        )
         intent.putExtra(LocusConst.INTENT_EXTRA_TRACK_REC_AUTO_SAVE, autoSave)
 
         // sent intent
@@ -218,10 +230,14 @@ object ActionBasics {
      */
     @JvmOverloads
     @Throws(RequiredVersionMissingException::class)
-    fun actionTrackRecordAddWpt(ctx: Context, lv: LocusVersion,
-            wptName: String? = null, autoSave: Boolean = false) {
-        LocusUtils.sendBroadcast(ctx,
-                prepareTrackRecordAddWptIntent(lv, wptName, autoSave), lv)
+    fun actionTrackRecordAddWpt(
+        ctx: Context, lv: LocusVersion,
+        wptName: String? = null, autoSave: Boolean = false
+    ) {
+        LocusUtils.sendBroadcast(
+            ctx,
+            prepareTrackRecordAddWptIntent(lv, wptName, autoSave), lv
+        )
     }
 
     /**
@@ -233,13 +249,17 @@ object ActionBasics {
      * @param actionAfter action that may happen after (defined in LocusConst class)
      */
     @Throws(RequiredVersionMissingException::class)
-    fun actionTrackRecordAddWpt(ctx: Context, lv: LocusVersion,
-            wptName: String? = null, actionAfter: String) {
-        LocusUtils.sendBroadcast(ctx,
-                prepareTrackRecordAddWptIntent(lv, wptName, false).apply {
-                    // extra parameter
-                    putExtra(LocusConst.INTENT_EXTRA_TRACK_REC_ACTION_AFTER, actionAfter)
-                }, lv)
+    fun actionTrackRecordAddWpt(
+        ctx: Context, lv: LocusVersion,
+        wptName: String? = null, actionAfter: String
+    ) {
+        LocusUtils.sendBroadcast(
+            ctx,
+            prepareTrackRecordAddWptIntent(lv, wptName, false).apply {
+                // extra parameter
+                putExtra(LocusConst.INTENT_EXTRA_TRACK_REC_ACTION_AFTER, actionAfter)
+            }, lv
+        )
     }
 
     /**
@@ -249,10 +269,13 @@ object ActionBasics {
      * @param wptName name of waypoint (optional)
      * @param autoSave `true` to automatically save waypoint without dialog
      */
-    private fun prepareTrackRecordAddWptIntent(lv: LocusVersion,
-            wptName: String?, autoSave: Boolean): Intent {
+    private fun prepareTrackRecordAddWptIntent(
+        lv: LocusVersion,
+        wptName: String?, autoSave: Boolean
+    ): Intent {
         return actionTrackRecord(
-                LocusConst.ACTION_TRACK_RECORD_ADD_WPT, lv).apply {
+            LocusConst.ACTION_TRACK_RECORD_ADD_WPT, lv
+        ).apply {
             // setup name
             if (wptName?.isNotBlank() == true) {
                 putExtra(LocusConst.INTENT_EXTRA_NAME, wptName)
@@ -300,8 +323,10 @@ object ActionBasics {
             : List<TrackRecordProfileSimple> {
         // get scheme if valid Locus is available
         val profiles = ArrayList<TrackRecordProfileSimple>()
-        val scheme = getProviderUriData(lv, VersionCode.UPDATE_09,
-                LocusConst.CONTENT_PROVIDER_PATH_TRACK_RECORD_PROFILE_NAMES)
+        val scheme = getProviderUriData(
+            lv, VersionCode.UPDATE_09,
+            LocusConst.CONTENT_PROVIDER_PATH_TRACK_RECORD_PROFILE_NAMES
+        )
 
         // get data
         var cursor: Cursor? = null
@@ -315,14 +340,15 @@ object ActionBasics {
             for (i in 0 until cursor.count) {
                 cursor.moveToPosition(i)
                 val prof = TrackRecordProfileSimple(
-                        cursor.getLong(0),
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getBlob(3))
+                    cursor.getLong(0),
+                    cursor.getString(1),
+                    cursor.getString(2),
+                    cursor.getBlob(3)
+                )
                 profiles.add(prof)
             }
         } catch (e: Exception) {
-            Logger.logE(TAG, "getTrackRecordingProfiles($ctx, $lv)", e)
+            logE(tag = TAG, ex = e) { "getTrackRecordingProfiles($ctx, $lv)" }
         } finally {
             cursor?.closeQuietly()
         }
@@ -345,8 +371,10 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    fun actionStartNavigation(ctx: Context,
-            name: String?, latitude: Double, longitude: Double) {
+    fun actionStartNavigation(
+        ctx: Context,
+        name: String?, latitude: Double, longitude: Double
+    ) {
         // check required version
         if (!LocusUtils.isLocusAvailable(ctx, VersionCode.UPDATE_01)) {
             throw RequiredVersionMissingException(VersionCode.UPDATE_01)
@@ -510,14 +538,16 @@ object ActionBasics {
 
         // generate cursor
         val scheme = ContentUris.withAppendedId(
-                getProviderUriData(lv,
-                        VersionCode.UPDATE_01,
-                        LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT),
-                ptId)
+            getProviderUriData(
+                lv,
+                VersionCode.UPDATE_01,
+                LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT
+            ),
+            ptId
+        )
         val cursor = queryData(ctx, scheme)
         if (cursor == null || !cursor.moveToFirst()) {
-            Logger.logD(TAG, "getPoint($ctx, $lv, $ptId), " +
-                    "no such point exists")
+            logD(tag = TAG) { "getPoint($ctx, $lv, $ptId), no such point exists" }
             return null
         }
 
@@ -525,7 +555,7 @@ object ActionBasics {
         try {
             return Point().apply { read(cursor.getBlob(1)) }
         } catch (e: Exception) {
-            Logger.logE(TAG, "getPoint($ctx, $ptId)", e)
+            logE(tag = TAG, ex = e) { "getPoint($ctx, $ptId)" }
         } finally {
             cursor.closeQuietly()
         }
@@ -560,13 +590,16 @@ object ActionBasics {
         }
 
         // generate cursor
-        val scheme = getProviderUriData(lv, VersionCode.UPDATE_03,
-                LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT)
-        val cursor = queryData(ctx, scheme,
-                "getWaypointId", arrayOf(ptName))
+        val scheme = getProviderUriData(
+            lv, VersionCode.UPDATE_03,
+            LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT
+        )
+        val cursor = queryData(
+            ctx, scheme,
+            "getWaypointId", arrayOf(ptName)
+        )
         if (cursor == null) {
-            Logger.logD(TAG, "getPointId($ctx, $lv, $ptName), " +
-                    "point with such name does not exists in database")
+            logD(tag = TAG) { "getPointId($ctx, $lv, $ptName), point with such name does not exists in database" }
             return LongArray(0)
         }
 
@@ -579,7 +612,7 @@ object ActionBasics {
             }
             return result
         } catch (e: Exception) {
-            Logger.logE(TAG, "getPointId($ctx, $lv, $ptName)", e)
+            logE(tag = TAG, ex = e) { "getPointId($ctx, $lv, $ptName)" }
         } finally {
             cursor.closeQuietly()
         }
@@ -597,8 +630,10 @@ object ActionBasics {
      * @param maxRadius max distance from defined based location (in meters)
      * @return list of found points
      */
-    fun getPointsId(ctx: Context, lv: LocusVersion, loc: Location,
-            limit: Int = 1, maxRadius: Double = Double.MAX_VALUE): LongArray {
+    fun getPointsId(
+        ctx: Context, lv: LocusVersion, loc: Location,
+        limit: Int = 1, maxRadius: Double = Double.MAX_VALUE
+    ): LongArray {
         // check version (available only in Free/Pro)
         val minVersion = VersionCode.UPDATE_15.vcFree
         if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
@@ -606,19 +641,20 @@ object ActionBasics {
         }
 
         // generate cursor
-        val scheme = getProviderUriData(lv, VersionCode.UPDATE_15,
-                LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT)
+        val scheme = getProviderUriData(
+            lv, VersionCode.UPDATE_15,
+            LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT
+        )
         val sel = JSONObject()
-                .put("type", "nearest")
-                .put("lon", loc.longitude)
-                .put("lat", loc.latitude)
-                .put("limit", limit)
-                .put("maxRadius", maxRadius)
-                .toString()
+            .put("type", "nearest")
+            .put("lon", loc.longitude)
+            .put("lat", loc.latitude)
+            .put("limit", limit)
+            .put("maxRadius", maxRadius)
+            .toString()
         val cursor = queryData(ctx, scheme, sel)
         if (cursor == null) {
-            Logger.logD(TAG, "getPointsId($ctx, $lv, $loc, $limit, $maxRadius), " +
-                    "no points found in area")
+            logD(tag = TAG) { "getPointsId($ctx, $lv, $loc, $limit, $maxRadius), no points found in area" }
             return LongArray(0)
         }
 
@@ -631,7 +667,7 @@ object ActionBasics {
             }
             return result
         } catch (e: Exception) {
-            Logger.logE(TAG, "getPointsId($ctx, $lv, $loc, $limit, $maxRadius)", e)
+            logE(tag = TAG, ex = e) { "getPointsId($ctx, $lv, $loc, $limit, $maxRadius)" }
         } finally {
             cursor.closeQuietly()
         }
@@ -652,8 +688,10 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    fun updatePoint(ctx: Context, lv: LocusVersion,
-            pt: Point, forceOverwrite: Boolean, loadAllGcWaypoints: Boolean = false): Int {
+    fun updatePoint(
+        ctx: Context, lv: LocusVersion,
+        pt: Point, forceOverwrite: Boolean, loadAllGcWaypoints: Boolean = false
+    ): Int {
         // check version (available only in Free/Pro)
         val minVersion = VersionCode.UPDATE_01.vcFree
         if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
@@ -661,8 +699,10 @@ object ActionBasics {
         }
 
         // generate cursor
-        val scheme = getProviderUriData(lv, VersionCode.UPDATE_01,
-                LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT)
+        val scheme = getProviderUriData(
+            lv, VersionCode.UPDATE_01,
+            LocusConst.CONTENT_PROVIDER_PATH_WAYPOINT
+        )
 
         // define empty cursor
         val cv = ContentValues().apply {
@@ -703,11 +743,14 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    fun displayPointScreen(ctx: Context, lv: LocusVersion, ptId: Long,
-            packageName: String, className: String, returnDataName: String, returnDataValue: String) {
+    fun displayPointScreen(
+        ctx: Context, lv: LocusVersion, ptId: Long,
+        packageName: String, className: String, returnDataName: String, returnDataValue: String
+    ) {
         // prepare callback
         val callback = GeoDataExtra.generateCallbackString(
-                "", packageName, className, returnDataName, returnDataValue)
+            "", packageName, className, returnDataName, returnDataValue
+        )
 
         // call intent
         displayPointScreen(ctx, lv, ptId, callback)
@@ -760,13 +803,14 @@ object ActionBasics {
         }
 
         // generate cursor
-        var scheme = getProviderUriData(lv, VersionCode.UPDATE_10,
-                LocusConst.CONTENT_PROVIDER_PATH_TRACK)
+        var scheme = getProviderUriData(
+            lv, VersionCode.UPDATE_10,
+            LocusConst.CONTENT_PROVIDER_PATH_TRACK
+        )
         scheme = ContentUris.withAppendedId(scheme, trackId)
         val cursor = queryData(ctx, scheme)
         if (cursor == null || !cursor.moveToFirst()) {
-            Logger.logW(TAG, "getTrack($ctx, $lv, $trackId), " +
-                    "'cursor' in not valid")
+            logW(tag = TAG) { "getTrack($ctx, $lv, $trackId), " + "'cursor' in not valid" }
             return null
         }
 
@@ -776,7 +820,7 @@ object ActionBasics {
                 read(cursor.getBlob(1))
             }
         } catch (e: Exception) {
-            Logger.logE(TAG, "getTrack($ctx, $trackId)", e)
+            logE(tag = TAG, ex = e) { "getTrack($ctx, $trackId)" }
         } finally {
             cursor.closeQuietly()
         }
@@ -805,10 +849,12 @@ object ActionBasics {
      * @param format export format
      * @param formatExtra extra format parameters
      */
-    fun getTrackInFormat(act: Activity,
-            lv: LocusVersion? = LocusUtils.getActiveVersion(act),
-            requestCode: Int,
-            trackId: Long, format: FileFormat, formatExtra: String = "") {
+    fun getTrackInFormat(
+        act: Activity,
+        lv: LocusVersion? = LocusUtils.getActiveVersion(act),
+        requestCode: Int,
+        trackId: Long, format: FileFormat, formatExtra: String = ""
+    ) {
         // check version
         val minVersion = VersionCode.UPDATE_16.vcFree
         if (!LocusUtils.isLocusFreePro(lv, minVersion)) {
@@ -816,9 +862,12 @@ object ActionBasics {
         }
 
         // execute request
-        act.startActivityForResult(prepareTrackInFormatIntent(
+        act.startActivityForResult(
+            prepareTrackInFormatIntent(
                 LocusConst.ACTION_GET_TRACK_AS_FILE,
-                lv!!, trackId, format, formatExtra), requestCode)
+                lv!!, trackId, format, formatExtra
+            ), requestCode
+        )
     }
 
 //    /**
@@ -866,12 +915,14 @@ object ActionBasics {
      * @param format export format
      * @param formatExtra extra format parameters
      */
-    private fun prepareTrackInFormatIntent(action: String, lv: LocusVersion,
-            trackId: Long, format: FileFormat, formatExtra: String = ""): Intent {
+    private fun prepareTrackInFormatIntent(
+        action: String, lv: LocusVersion,
+        trackId: Long, format: FileFormat, formatExtra: String = ""
+    ): Intent {
         return Intent(action).apply {
             setPackage(lv.packageName)
             putExtra("trackId", trackId)
-            putExtra("format", format.name.toLowerCase())
+            putExtra("format", format.name.lowercase())
             putExtra("formatExtra", formatExtra)
         }
     }
@@ -918,8 +969,10 @@ object ActionBasics {
     @Throws(RequiredVersionMissingException::class)
     fun getItemPurchaseState(ctx: Context, lv: LocusVersion, itemId: Long): Int {
         // get scheme if valid Locus is available
-        var scheme = getProviderUriData(lv, VersionCode.UPDATE_06,
-                LocusConst.CONTENT_PROVIDER_PATH_ITEM_PURCHASE_STATE)
+        var scheme = getProviderUriData(
+            lv, VersionCode.UPDATE_06,
+            LocusConst.CONTENT_PROVIDER_PATH_ITEM_PURCHASE_STATE
+        )
         scheme = ContentUris.withAppendedId(scheme, itemId)
 
         // get data
@@ -939,7 +992,7 @@ object ActionBasics {
                 }
             }
         } catch (e: Exception) {
-            Logger.logE(TAG, "getItemPurchaseState($ctx, $lv, $itemId)", e)
+            logE(tag = TAG, ex = e) { "getItemPurchaseState($ctx, $lv, $itemId)" }
         } finally {
             cursor?.closeQuietly()
         }
@@ -960,7 +1013,7 @@ object ActionBasics {
     fun displayLocusStoreItemDetail(ctx: Context, lv: LocusVersion?, itemId: Long) {
         // check if application is available
         if (lv == null || !lv.isVersionValid(VersionCode.UPDATE_12)) {
-            Logger.logW(TAG, "displayLocusStoreItemDetail(), " + "invalid Locus version")
+            logW(tag = TAG) { "displayLocusStoreItemDetail(), " + "invalid Locus version" }
             throw RequiredVersionMissingException(VersionCode.UPDATE_12)
         }
 
@@ -982,12 +1035,19 @@ object ActionBasics {
      * @param uri Uri to load data from
      * @return valid cursor with data or 'null' in case of empty or invalid cursor
      */
-    fun queryData(ctx: Context, uri: Uri, selection: String? = null, args: Array<String>? = null): Cursor? {
+    fun queryData(
+        ctx: Context,
+        uri: Uri,
+        selection: String? = null,
+        args: Array<String>? = null
+    ): Cursor? {
         // generate cursor
         val cursor = ctx.contentResolver.query(uri, null, selection, args, null)
         if (cursor == null || cursor.count == 0) {
-            Logger.logE(TAG, "queryData(" + ctx + ", " + uri + "), " +
-                    "invalid or empty cursor received")
+            logE(tag = TAG) {
+                "queryData(" + ctx + ", " + uri + "), " +
+                        "invalid or empty cursor received"
+            }
             return null
         }
         return cursor
@@ -1020,8 +1080,10 @@ object ActionBasics {
         }
 
         // no data loaded
-        Logger.logW(TAG, "queryData(" + ctx + ", " + uri + ", " + keyName + "), " +
-                "received data does not contains required key")
+        logW(tag = TAG) {
+            "queryData(" + ctx + ", " + uri + ", " + keyName + "), " +
+                    "received data does not contains required key"
+        }
         return null
     }
 
@@ -1036,9 +1098,11 @@ object ActionBasics {
      */
     @Throws(RequiredVersionMissingException::class)
     private fun getProviderUriData(lv: LocusVersion, requiredVc: VersionCode, path: String): Uri {
-        return getProviderUri(lv, requiredVc,
-                LocusConst.CONTENT_PROVIDER_AUTHORITY_DATA,
-                path)
+        return getProviderUri(
+            lv, requiredVc,
+            LocusConst.CONTENT_PROVIDER_AUTHORITY_DATA,
+            path
+        )
     }
 
     /**
@@ -1052,9 +1116,11 @@ object ActionBasics {
      */
     @Throws(RequiredVersionMissingException::class)
     fun getProviderUrlGeocaching(lv: LocusVersion, requiredVc: VersionCode, path: String): Uri {
-        return getProviderUri(lv, requiredVc,
-                LocusConst.CONTENT_PROVIDER_AUTHORITY_GEOCACHING,
-                path)
+        return getProviderUri(
+            lv, requiredVc,
+            LocusConst.CONTENT_PROVIDER_AUTHORITY_GEOCACHING,
+            path
+        )
     }
 
     /**
@@ -1068,17 +1134,19 @@ object ActionBasics {
      * @throws RequiredVersionMissingException if Locus in required version is missing
      */
     @Throws(RequiredVersionMissingException::class)
-    fun getProviderUri(lv: LocusVersion, requiredVc: VersionCode,
-            provider: String, path: String): Uri {
+    fun getProviderUri(
+        lv: LocusVersion, requiredVc: VersionCode,
+        provider: String, path: String
+    ): Uri {
         // check URI parts ( should not happen, just check )
         if (provider.isEmpty() || path.isEmpty()) {
-            Logger.logW(TAG, "getProviderUri(), " + "invalid 'authority' or 'path'parameters")
+            logW(tag = TAG) { "getProviderUri(), " + "invalid 'authority' or 'path'parameters" }
             throw RequiredVersionMissingException(requiredVc)
         }
 
         // check if application is available
         if (!lv.isVersionValid(requiredVc)) {
-            Logger.logW(TAG, "getProviderUri(), " + "invalid Locus version")
+            logW(tag = TAG) { "getProviderUri(), " + "invalid Locus version" }
             throw RequiredVersionMissingException(requiredVc)
         }
 
@@ -1089,8 +1157,10 @@ object ActionBasics {
             lv.isVersionPro -> sb.append("content://menion.android.locus.pro")
             lv.isVersionGis -> sb.append("content://menion.android.locus.gis")
             else -> {
-                Logger.logW(TAG, "getProviderUri(), " +
-                        "unknown Locus version:" + lv)
+                logW(tag = TAG) {
+                    "getProviderUri(), " +
+                            "unknown Locus version:" + lv
+                }
                 throw RequiredVersionMissingException(requiredVc)
             }
         }

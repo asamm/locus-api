@@ -20,6 +20,7 @@
 
 package locus.api.objects.styles
 
+import com.asamm.loggerV2.logW
 import locus.api.objects.Storable
 import locus.api.objects.extra.KmlVec2
 import locus.api.objects.styles.deprecated.LineStyleOld
@@ -27,7 +28,6 @@ import locus.api.objects.styles.deprecated.OldStyleHelper
 import locus.api.objects.styles.deprecated.PolyStyleOld
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
-import locus.api.utils.Logger
 import java.io.IOException
 
 
@@ -126,10 +126,10 @@ class GeoDataStyle() : Storable() {
 
     fun setIconStyleHotSpot(vec2: KmlVec2) {
         if (iconStyle == null) {
-            Logger.logW(
-                TAG, "setIconStyleHotSpot($vec2), " +
+            logW(tag = TAG) {
+                "setIconStyleHotSpot($vec2), " +
                         "initialize IconStyle before settings hotSpot or hotSpot is null!"
-            )
+            }
             return
         }
 
@@ -222,8 +222,7 @@ class GeoDataStyle() : Storable() {
         // V2
         if (version >= 2) {
             if (dr.readBoolean()) {
-                lineStyle = LineStyle()
-                lineStyle!!.read(dr)
+                lineStyle = LineStyle().apply { read(dr) }
             }
         }
     }
@@ -234,7 +233,7 @@ class GeoDataStyle() : Storable() {
         dw.writeString(id)
         dw.writeString(name)
 
-        // balloon style
+        // balloon style (removed)
         dw.writeBoolean(false)
 
         // icon style
@@ -256,7 +255,7 @@ class GeoDataStyle() : Storable() {
         // line style (removed)
         dw.writeBoolean(false)
 
-        // list style
+        // list style (removed)
         dw.writeBoolean(false)
 
         // poly style (removed)

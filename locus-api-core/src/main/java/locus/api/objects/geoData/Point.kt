@@ -20,12 +20,12 @@
 
 package locus.api.objects.geoData
 
+import com.asamm.loggerV2.logE
 import locus.api.objects.extra.GeoDataExtra
 import locus.api.objects.extra.Location
 import locus.api.objects.geocaching.GeocachingData
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
-import locus.api.utils.Logger
 import java.io.IOException
 
 class Point() : GeoData() {
@@ -52,14 +52,14 @@ class Point() : GeoData() {
                 writeGeocachingData(dw)
                 dw.toByteArray()
             } catch (e: IOException) {
-                Logger.logE(TAG, "gcDataBinary - get()", e)
+                logE(tag = TAG, ex = e) { "gcDataBinary - get()" }
                 null
             }
         }
         set(data) = try {
             gcData = readGeocachingData(DataReaderBigEndian(data))
         } catch (e: Exception) {
-            Logger.logE(TAG, "gcDataBinary - set($data)", e)
+            logE(tag = TAG, ex = e) { "gcDataBinary - set($data)" }
             gcData = null
         }
 
@@ -94,11 +94,15 @@ class Point() : GeoData() {
      * @param returnDataValue String under which data will be stored. Can be
      * retrieved by String data = getIntent.getStringExtra("returnData");
      */
-    fun setExtraCallback(btnName: String, packageName: String, className: String,
-            returnDataName: String, returnDataValue: String) {
+    fun setExtraCallback(
+        btnName: String, packageName: String, className: String,
+        returnDataName: String, returnDataValue: String
+    ) {
         // prepare callback
-        val callBack = GeoDataExtra.generateCallbackString(btnName, packageName, className,
-                returnDataName, returnDataValue)
+        val callBack = GeoDataExtra.generateCallbackString(
+            btnName, packageName, className,
+            returnDataName, returnDataValue
+        )
         if (callBack.isEmpty()) {
             return
         }
@@ -147,8 +151,10 @@ class Point() : GeoData() {
      * @param returnDataValue value that will be received when you try to get
      * data from received response
      */
-    fun setExtraOnDisplay(packageName: String, className: String,
-            returnDataName: String, returnDataValue: String) {
+    fun setExtraOnDisplay(
+        packageName: String, className: String,
+        returnDataName: String, returnDataValue: String
+    ) {
         val sb = StringBuilder()
         sb.append(TAG_EXTRA_ON_DISPLAY).append(";")
         sb.append(packageName).append(";")
@@ -211,7 +217,7 @@ class Point() : GeoData() {
         if (version >= 4) {
             val privacyValue = dr.readString()
             privacy = Privacy.values().find { it.name == privacyValue }
-                    ?: privacy
+                ?: privacy
         }
     }
 
@@ -246,9 +252,9 @@ class Point() : GeoData() {
         gcData?.let {
             dw.writeBoolean(true)
             it.write(dw)
-        } ?: {
+        } ?: run {
             dw.writeBoolean(false)
-        }()
+        }
     }
 
     companion object {

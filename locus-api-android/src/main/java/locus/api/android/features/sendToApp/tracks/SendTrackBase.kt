@@ -14,6 +14,7 @@ package locus.api.android.features.sendToApp.tracks
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.asamm.loggerV2.logE
 import locus.api.android.features.sendToApp.SendMode
 import locus.api.android.features.sendToApp.SendToAppBase
 import locus.api.android.features.sendToApp.SendToAppHelper
@@ -24,7 +25,6 @@ import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.Storable
 import locus.api.objects.geoData.Track
-import locus.api.utils.Logger
 import java.io.File
 
 /**
@@ -34,9 +34,9 @@ import java.io.File
  * limitations in inheritance.
  */
 abstract class SendTrackBase internal constructor(
-        sendMode: SendMode,
-        internal val tracks: List<Track>)
-    : SendToAppBase(sendMode) {
+    sendMode: SendMode,
+    internal val tracks: List<Track>
+) : SendToAppBase(sendMode) {
 
     // SEND DATA
 
@@ -45,12 +45,16 @@ abstract class SendTrackBase internal constructor(
      * Method is useful only for data less then 1MB big. For bigger tracks, use alternative method
      * over FileUri system `sendOverFile`.
      */
-    abstract fun send(ctx: Context,
-            lv: LocusVersion? = LocusUtils.getActiveVersion(ctx, VersionCode.UPDATE_01)): Boolean
+    abstract fun send(
+        ctx: Context,
+        lv: LocusVersion? = LocusUtils.getActiveVersion(ctx, VersionCode.UPDATE_01)
+    ): Boolean
 
     @Throws(RequiredVersionMissingException::class)
-    internal fun sendImpl(ctx: Context, lv: LocusVersion?,
-            intentExtra: (Intent.() -> Unit)? = null): Boolean {
+    internal fun sendImpl(
+        ctx: Context, lv: LocusVersion?,
+        intentExtra: (Intent.() -> Unit)? = null
+    ): Boolean {
         // validate tracks
         if (!validateTracks()) {
             return false
@@ -64,11 +68,15 @@ abstract class SendTrackBase internal constructor(
         // create and start intent
         val intent = Intent()
         if (tracks.size == 1) {
-            intent.putExtra(LocusConst.INTENT_EXTRA_TRACKS_SINGLE,
-                    tracks.first().asBytes)
+            intent.putExtra(
+                LocusConst.INTENT_EXTRA_TRACKS_SINGLE,
+                tracks.first().asBytes
+            )
         } else {
-            intent.putExtra(LocusConst.INTENT_EXTRA_TRACKS_MULTI,
-                    Storable.getAsBytes(tracks))
+            intent.putExtra(
+                LocusConst.INTENT_EXTRA_TRACKS_MULTI,
+                Storable.getAsBytes(tracks)
+            )
         }
         intentExtra?.invoke(intent)
 
@@ -86,9 +94,11 @@ abstract class SendTrackBase internal constructor(
      * @return `true` if request was correctly send
      */
     @Throws(RequiredVersionMissingException::class)
-    abstract fun sendOverFile(ctx: Context,
-            lv: LocusVersion? = LocusUtils.getActiveVersion(ctx, VersionCode.UPDATE_17),
-            cacheFile: File, cacheFileUri: Uri): Boolean
+    abstract fun sendOverFile(
+        ctx: Context,
+        lv: LocusVersion? = LocusUtils.getActiveVersion(ctx, VersionCode.UPDATE_17),
+        cacheFile: File, cacheFileUri: Uri
+    ): Boolean
 
     /**
      * Main function for sending pack of points over temporary stored file.
@@ -100,9 +110,11 @@ abstract class SendTrackBase internal constructor(
      * @return `true` if request was correctly send
      */
     @Throws(RequiredVersionMissingException::class)
-    internal fun sendOverFileImpl(ctx: Context, lv: LocusVersion?,
-            cacheFile: File, cacheFileUri: Uri,
-            intentExtra: (Intent.() -> Unit)? = null): Boolean {
+    internal fun sendOverFileImpl(
+        ctx: Context, lv: LocusVersion?,
+        cacheFile: File, cacheFileUri: Uri,
+        intentExtra: (Intent.() -> Unit)? = null
+    ): Boolean {
         // validate tracks
         if (!validateTracks()) {
             return false
@@ -127,7 +139,11 @@ abstract class SendTrackBase internal constructor(
 
             // grant permission to app package. Because we do not send `uri` over setData, we need
             // to use this method
-            ctx.grantUriPermission(lv.packageName, cacheFileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            ctx.grantUriPermission(
+                lv.packageName,
+                cacheFileUri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
 
             // send request
             return sendFinal(ctx, intent, lv)
@@ -144,13 +160,11 @@ abstract class SendTrackBase internal constructor(
     internal fun validateTracks(): Boolean {
         // validate tracks
         if (tracks.isEmpty()) {
-            Logger.logE(TAG, "validateTracks(), " +
-                    "no content to send")
+            logE(tag = TAG) { "validateTracks(), " + "no content to send" }
             return false
         }
         if (tracks.find { it.pointsCount == 0 } != null) {
-            Logger.logE(TAG, "validateTracks(), " +
-                    "exists empty track")
+            logE(tag = TAG) { "validateTracks(), " + "exists empty track" }
             return false
         }
 
@@ -176,8 +190,10 @@ abstract class SendTrackBase internal constructor(
         fun readTracksFile(ctx: Context, intent: Intent): List<Track> {
             return when {
                 intent.hasExtra(LocusConst.INTENT_EXTRA_TRACKS_FILE_URI) -> {
-                    SendToAppHelper.readDataFromUri(ctx,
-                            intent.getParcelableExtra(LocusConst.INTENT_EXTRA_TRACKS_FILE_URI)!!)
+                    SendToAppHelper.readDataFromUri(
+                        ctx,
+                        intent.getParcelableExtra(LocusConst.INTENT_EXTRA_TRACKS_FILE_URI)!!
+                    )
                 }
                 else -> {
                     listOf()

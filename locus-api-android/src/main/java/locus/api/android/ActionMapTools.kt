@@ -8,6 +8,7 @@ import android.content.Context
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.asamm.loggerV2.logE
 import locus.api.android.objects.LocusVersion
 import locus.api.android.objects.VersionCode
 import locus.api.android.utils.LocusConst
@@ -17,7 +18,6 @@ import locus.api.objects.Storable
 import locus.api.objects.extra.Location
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
-import locus.api.utils.Logger
 import java.io.IOException
 
 object ActionMapTools {
@@ -34,10 +34,12 @@ object ActionMapTools {
     fun getMapPreview(ctx: Context, lv: LocusVersion, params: MapPreviewParams): MapPreviewResult? {
 
         // get scheme if valid Locus is available
-        val scheme = ActionBasics.getProviderUri(lv,
-                VersionCode.UPDATE_14,
-                LocusConst.CONTENT_PROVIDER_AUTHORITY_MAP_TOOLS,
-                LocusConst.CONTENT_PROVIDER_PATH_MAP_PREVIEW)
+        val scheme = ActionBasics.getProviderUri(
+            lv,
+            VersionCode.UPDATE_14,
+            LocusConst.CONTENT_PROVIDER_AUTHORITY_MAP_TOOLS,
+            LocusConst.CONTENT_PROVIDER_PATH_MAP_PREVIEW
+        )
 
         // prepare base query with parameters
         val sbQuery = params.generateQuery()
@@ -66,7 +68,7 @@ object ActionMapTools {
             // return result
             return MapPreviewResult(img, notYetLoadedTiles)
         } catch (e: Exception) {
-            Logger.logE(TAG, "getMapPreview()", e)
+            logE(tag = TAG, ex = e) { "getMapPreview()" }
             return MapPreviewResult(null, 0)
         } finally {
             cursor?.closeQuietly()
@@ -81,25 +83,34 @@ class MapPreviewParams {
 
     // center location of request
     var locCenter: Location? = null
+
     // offset [px] in X axis
     var offsetX = 0
+
     // offset [px] in Y axis
     var offsetY = 0
+
     // zoom level value [0..19+]
     var zoom = 0
+
     // required width [px] of final preview
     var widthPx = 0
+
     // required height [px] of final preview
     var heightPx: Int = 0
+
     // density in DPI of device that send request (set '0' to let app default)
     var densityDpi = 0
+
     // flag if rotation is required
     var rotate = false
+
     // required rotation of final screenshot [°]. Needs to be used together with [radius]
     var rotation = 0
 
     // flag if user location, accuracy circle and other user-related stuff should be drawn
     var extraUser = true
+
     // flag if shading of the map is allowed
     var extraShading = true
 
@@ -129,6 +140,7 @@ class MapPreviewResult() : Storable() {
 
     // loaded image
     private var imgData: ByteArray? = null
+
     // number of not yet loaded tiles
     var numOfNotYetLoadedTiles = 0
 

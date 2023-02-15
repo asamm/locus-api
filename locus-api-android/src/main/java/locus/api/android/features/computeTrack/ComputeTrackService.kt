@@ -7,13 +7,13 @@ package locus.api.android.features.computeTrack
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import com.asamm.loggerV2.logE
+import com.asamm.loggerV2.logW
 import locus.api.android.objects.LocusVersion
-
 import locus.api.android.objects.ParcelableContainer
 import locus.api.android.utils.LocusUtils
 import locus.api.objects.extra.GeoDataExtra
 import locus.api.objects.geoData.Track
-import locus.api.utils.Logger
 
 /**
  * Base class for compute route service.
@@ -48,7 +48,7 @@ abstract class ComputeTrackService : Service() {
                 // get active running Locus
                 val lv = LocusUtils.getActiveVersion(this@ComputeTrackService)
                 if (lv == null) {
-                    Logger.logW(TAG, "Problem with finding running Locus instance")
+                    logW(tag = TAG) { "Problem with finding running Locus instance" }
                     return null
                 }
 
@@ -60,7 +60,7 @@ abstract class ComputeTrackService : Service() {
                     null
                 }
             } catch (e: Exception) {
-                Logger.logE(TAG, "computeTrack($trackParams)", e)
+                logE(tag = TAG, ex = e) { "computeTrack($trackParams)" }
                 return null
             }
         }

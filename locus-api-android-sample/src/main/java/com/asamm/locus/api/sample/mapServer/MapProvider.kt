@@ -1,15 +1,14 @@
 package com.asamm.locus.api.sample.mapServer
 
 import android.graphics.BitmapFactory
+import com.asamm.loggerV2.logE
 import locus.api.android.features.mapProvider.MapTileService
 import locus.api.android.features.mapProvider.data.MapConfigLayer
 import locus.api.android.features.mapProvider.data.MapTileRequest
 import locus.api.android.features.mapProvider.data.MapTileResponse
-import locus.api.utils.Logger
 import locus.api.utils.Utils
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
-import java.util.*
 
 /**
  * Service that provide map data to Locus Map application.
@@ -96,10 +95,10 @@ class MapProvider : MapTileService() {
         return try {
             input = assets.open("map_tiles/$name")
             ByteArrayOutputStream()
-                    .apply { input.copyTo(this) }
-                    .toByteArray()
+                .apply { input.copyTo(this) }
+                .toByteArray()
         } catch (e: Exception) {
-            Logger.logE(TAG, "loadMapTile($name), not exists", e)
+            logE(tag = TAG, ex = e) { "loadMapTile($name), not exists" }
             null
         } finally {
             Utils.closeStream(input)

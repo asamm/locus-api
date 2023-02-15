@@ -19,9 +19,9 @@
  */
 package locus.api.objects
 
+import com.asamm.loggerV2.logE
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
-import locus.api.utils.Logger
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.IOException
@@ -62,7 +62,7 @@ abstract class Storable {
                     write(this)
                 }.toByteArray()
             } catch (e: IOException) {
-                Logger.logE(TAG, "asBytes()", e)
+                logE(tag = TAG, ex = e) { "asBytes()" }
                 null
             }
         }
@@ -74,6 +74,7 @@ abstract class Storable {
 
         // current item version
         var version: Int = 0
+
         // data in item
         var data: ByteArray? = null
     }
@@ -292,8 +293,10 @@ abstract class Storable {
          * @return loaded list of items
          */
         @Throws(IOException::class)
-        fun <E : Storable> readList(claz: Class<E>,
-                dis: DataInputStream): List<E> {
+        fun <E : Storable> readList(
+            claz: Class<E>,
+            dis: DataInputStream
+        ): List<E> {
             // prepare container
             val objs = ArrayList<E>()
 
@@ -310,9 +313,9 @@ abstract class Storable {
                     item.read(dis)
                     objs.add(item)
                 } catch (e: InstantiationException) {
-                    Logger.logE(TAG, "readList($claz, $dis)", e)
+                    logE(tag = TAG, ex = e) { "readList($claz, $dis)" }
                 } catch (e: IllegalAccessException) {
-                    Logger.logE(TAG, "readList($claz, $dis)", e)
+                    logE(tag = TAG, ex = e) { "readList($claz, $dis)" }
                 }
 
             }
@@ -333,7 +336,7 @@ abstract class Storable {
                     writeListStorable(data)
                 }.toByteArray()
             } catch (e: Exception) {
-                Logger.logE(TAG, "getAsBytes($data)", e)
+                logE(tag = TAG, ex = e) { "getAsBytes($data)" }
                 null
             }
         }

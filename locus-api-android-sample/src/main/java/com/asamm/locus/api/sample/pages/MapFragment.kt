@@ -16,43 +16,47 @@ import android.view.GestureDetector
 import android.view.Gravity
 import android.view.MotionEvent
 import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.asamm.loggerV2.logD
 import locus.api.android.ActionMapTools
 import locus.api.android.MapPreviewParams
 import locus.api.android.objects.LocusVersion
 import locus.api.android.utils.LocusUtils
 import locus.api.objects.extra.Location
-import locus.api.utils.Logger
 
 class MapFragment : DialogFragment() {
 
     // current version
     private lateinit var lv: LocusVersion
+
     // base map view drawer
     private lateinit var mapView: MapView
+
     // detector for gestures
     private var detector: GestureDetector? = null
 
     // base dimension
     private val imgDimen = 512
+
     // handler for map loading
     private var loader: Thread? = null
+
     // total applied map offset in X dimension
     private var mapOffsetX = 0
+
     // total applied map offset in Y dimension
     private var mapOffsetY = 0
 
     override fun onAttach(ctx: Context) {
         super.onAttach(ctx)
         lv = LocusUtils.getActiveVersion(ctx)
-                ?: throw IllegalStateException("No active Locus-based application")
+            ?: throw IllegalStateException("No active Locus-based application")
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // prepare container for a map
-        val container = object : FrameLayout(activity!!) {
+        val container = object : FrameLayout(requireContext()) {
 
             @SuppressLint("ClickableViewAccessibility")
             override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -70,9 +74,9 @@ class MapFragment : DialogFragment() {
                 }
             }
         }
-        mapView = MapView(activity!!)
+        mapView = MapView(requireActivity())
         mapView.layoutParams = FrameLayout.LayoutParams(2 * imgDimen, 3 * imgDimen)
-                .apply { gravity = Gravity.CENTER }
+            .apply { gravity = Gravity.CENTER }
         mapView.post {
             loadMap()
         }
@@ -82,18 +86,23 @@ class MapFragment : DialogFragment() {
         initializeHandler()
 
         // create and display dialog
-        return AlertDialog.Builder(activity!!)
-                .setTitle("Map preview")
-                .setMessage("")
-                .setView(container)
-                .setPositiveButton("Close") { _, _ -> }
-                .create()
+        return AlertDialog.Builder(requireContext())
+            .setTitle("Map preview")
+            .setMessage("")
+            .setView(container)
+            .setPositiveButton("Close") { _, _ -> }
+            .create()
     }
 
     private fun initializeHandler() {
         detector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
 
-            override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+            override fun onScroll(
+                e1: MotionEvent,
+                e2: MotionEvent,
+                distanceX: Float,
+                distanceY: Float
+            ): Boolean {
                 loader = null
                 mapOffsetX += distanceX.toInt()
                 mapOffsetY += distanceY.toInt()
@@ -107,8 +116,10 @@ class MapFragment : DialogFragment() {
                 return true
             }
 
-            override fun onFling(event1: MotionEvent, event2: MotionEvent,
-                    velocityX: Float, velocityY: Float): Boolean {
+            override fun onFling(
+                event1: MotionEvent, event2: MotionEvent,
+                velocityX: Float, velocityY: Float
+            ): Boolean {
                 return true
             }
         })
@@ -125,8 +136,8 @@ class MapFragment : DialogFragment() {
      * Perform load of map preview.
      */
     private fun loadMap() {
-        loader = Thread(Runnable {
-            Logger.logD("MapFragment", "loadMap()")
+        loader = Thread {
+            logD(tag = "MapFragment") { "loadMap()" }
 
             // prepare parameters
             val params = MapPreviewParams().apply {
@@ -144,7 +155,7 @@ class MapFragment : DialogFragment() {
             }
 
             // get and display preview
-            val result = ActionMapTools.getMapPreview(activity!!, lv, params)
+            val result = ActionMapTools.getMapPreview(requireActivity(), lv, params)
             if (Thread.currentThread() == loader) {
                 activity?.runOnUiThread {
                     if (result != null && result.isValid()) {
@@ -164,18 +175,20 @@ class MapFragment : DialogFragment() {
                     }
                 }
             } else {
-                Logger.logD("MapFragment", "old request invalid")
+                logD(tag = "MapFragment") { "old request invalid" }
             }
-        })
+        }
         loader?.start()
     }
 
-    inner class MapView(ctx: Context) : ImageView(ctx) {
+    inner class MapView(ctx: Context) : androidx.appcompat.widget.AppCompatImageView(ctx) {
 
         // map image to draw
         var img: Bitmap? = null
+
         // temporary offset for draw in X axis
         var offsetX: Int = 0
+
         // temporary offset for draw in Y axis
         var offsetY: Int = 0
 
@@ -191,8 +204,10 @@ class MapFragment : DialogFragment() {
 
             // draw empty view
             if (img == null) {
-                c.drawText("Loading map ...",
-                        width / 2.0f, height / 2.0f, paintText)
+                c.drawText(
+                    "Loading map ...",
+                    width / 2.0f, height / 2.0f, paintText
+                )
                 return
             }
 

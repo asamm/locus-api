@@ -3,11 +3,10 @@ package locus.api.android.features.mapProvider
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import com.asamm.loggerV2.logW
 import locus.api.android.features.mapProvider.data.MapConfigLayer
 import locus.api.android.features.mapProvider.data.MapTileRequest
 import locus.api.android.features.mapProvider.data.MapTileResponse
-import locus.api.utils.Logger
-import java.util.*
 
 /**
  * IN PREPARATION - NOT YET FULLY WORKING!!
@@ -19,7 +18,7 @@ abstract class MapTileService : Service() {
         override fun getMapConfigs(): MapDataContainer {
             val configs = this@MapTileService.mapConfigs
             return if (configs == null || configs.isEmpty()) {
-                Logger.logW(TAG, "getMapConfigs(), invalid configs")
+                logW { "getMapConfigs(), invalid configs" }
                 MapDataContainer(ArrayList())
             } else {
                 MapDataContainer(configs)
@@ -29,8 +28,10 @@ abstract class MapTileService : Service() {
         override fun getMapTile(request: MapDataContainer?): MapDataContainer {
             // check request
             if (request == null || !request.isValid(
-                            MapDataContainer.DATA_TYPE_TILE_REQUEST)) {
-                Logger.logW(TAG, "getMapTile($request), invalid request")
+                    MapDataContainer.DATA_TYPE_TILE_REQUEST
+                )
+            ) {
+                logW { "getMapTile($request), invalid request" }
                 val resp = MapTileResponse()
                 resp.resultCode = MapTileResponse.CODE_INVALID_REQUEST
                 return MapDataContainer(resp)
@@ -39,7 +40,7 @@ abstract class MapTileService : Service() {
             // handle request
             val response = this@MapTileService.getMapTile(request.tileRequest!!)
             return if (response == null) {
-                Logger.logW(TAG, "getMapTile($request), invalid response")
+                logW { "getMapTile($request), invalid response" }
                 val resp = MapTileResponse()
                 resp.resultCode = MapTileResponse.CODE_INTERNAL_ERROR
                 MapDataContainer(resp)
@@ -58,9 +59,4 @@ abstract class MapTileService : Service() {
     }
 
     abstract fun getMapTile(request: MapTileRequest): MapTileResponse?
-
-    companion object {
-
-        private val TAG = "MapTileService"
-    }
 }

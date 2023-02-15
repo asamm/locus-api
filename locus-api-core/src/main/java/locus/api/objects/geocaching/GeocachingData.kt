@@ -20,10 +20,10 @@
 
 package locus.api.objects.geocaching
 
+import com.asamm.loggerV2.logE
 import locus.api.objects.Storable
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
-import locus.api.utils.Logger
 import locus.api.utils.Utils
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -62,7 +62,7 @@ class GeocachingData : Storable() {
                 return
             }
             field = value
-            val testCode = value.trim { it <= ' ' }.toUpperCase(Locale.ROOT)
+            val testCode = value.trim { it <= ' ' }.uppercase()
             this.source = when {
                 testCode.startsWith("GC") -> CACHE_SOURCE_GEOCACHING_COM
                 testCode.startsWith("OB") -> CACHE_SOURCE_OPENCACHING_NL
@@ -333,7 +333,8 @@ class GeocachingData : Storable() {
             var zis: GZIPInputStream? = null
             try {
                 zis = GZIPInputStream(
-                        ByteArrayInputStream(descBytes!!), 10240)
+                    ByteArrayInputStream(descBytes!!), 10240
+                )
 
                 // read short description
                 val result = Utils.doBytesToString(zis.readBytes())
@@ -344,7 +345,7 @@ class GeocachingData : Storable() {
                 // read long description
                 res[1] = result.substring(shortDescLength)
             } catch (e: IOException) {
-                Logger.logE(TAG, "", e)
+                logE(tag = TAG, ex = e) { "" }
                 res[0] = ""
                 res[1] = ""
             } finally {
@@ -355,8 +356,10 @@ class GeocachingData : Storable() {
             return res
         }
 
-    fun setDescriptions(shortDesc: String, shortInHtml: Boolean,
-            longDesc: String, longInHtml: Boolean): Boolean {
+    fun setDescriptions(
+        shortDesc: String, shortInHtml: Boolean,
+        longDesc: String, longInHtml: Boolean
+    ): Boolean {
         // store descriptions
         try {
             val baos = ByteArrayOutputStream()
@@ -371,9 +374,11 @@ class GeocachingData : Storable() {
             shortDescLength = shortDesc.length
             return true
         } catch (e: IOException) {
-            Logger.logE(TAG, "setDescription(" +
-                    shortDesc + ", " + shortInHtml + ", " +
-                    longDesc + ", " + longInHtml + ")", e)
+            logE(tag = TAG, ex = e) {
+                "setDescription(" +
+                        shortDesc + ", " + shortInHtml + ", " +
+                        longDesc + ", " + longInHtml + ")"
+            }
             descBytes = null
             shortDescLength = 0
             return false
@@ -391,9 +396,7 @@ class GeocachingData : Storable() {
             }
 
             // check defined URL
-            return if (cacheUrl.isNotEmpty()) {
-                cacheUrl
-            } else {
+            return cacheUrl.ifEmpty {
                 "https://www.geocaching.com/seek/cache_details.aspx?wp=$cacheID"
             }
         }
@@ -680,8 +683,10 @@ class GeocachingData : Storable() {
          */
         const val CACHE_TYPE_WAYMARK = 16
 
-        @Deprecated(message = "No longer user cache type/name",
-                replaceWith = ReplaceWith("CACHE_TYPE_GC_HQ"))
+        @Deprecated(
+            message = "No longer user cache type/name",
+            replaceWith = ReplaceWith("CACHE_TYPE_GC_HQ")
+        )
         const val CACHE_TYPE_GROUNDSPEAK = 17
 
         /**
@@ -690,8 +695,10 @@ class GeocachingData : Storable() {
          */
         const val CACHE_TYPE_GC_HQ = 17
 
-        @Deprecated(message = "No longer user cache type/name",
-                replaceWith = ReplaceWith("CACHE_TYPE_COMMUNITY_CELEBRATION"))
+        @Deprecated(
+            message = "No longer user cache type/name",
+            replaceWith = ReplaceWith("CACHE_TYPE_COMMUNITY_CELEBRATION")
+        )
         const val CACHE_TYPE_LF_EVENT = 18
 
         /**
@@ -700,8 +707,10 @@ class GeocachingData : Storable() {
          */
         const val CACHE_TYPE_COMMUNITY_CELEBRATION = 18
 
-        @Deprecated(message = "No longer user cache type/name",
-                replaceWith = ReplaceWith("CACHE_TYPE_GC_HQ_CELEBRATION"))
+        @Deprecated(
+            message = "No longer user cache type/name",
+            replaceWith = ReplaceWith("CACHE_TYPE_GC_HQ_CELEBRATION")
+        )
         const val CACHE_TYPE_LF_CELEBRATION = 19
 
         /**
@@ -806,17 +815,21 @@ class GeocachingData : Storable() {
             } else if (typeNew.equals("Multi-cache", ignoreCase = true)) {
                 CACHE_TYPE_MULTI
             } else if (typeNew.equals("Mystery Cache", ignoreCase = true) ||
-                    typeNew.equals("Unknown Cache", ignoreCase = true) ||
-                    typeNew.equals("Mystery/Puzzle Cache", ignoreCase = true)) {
+                typeNew.equals("Unknown Cache", ignoreCase = true) ||
+                typeNew.equals("Mystery/Puzzle Cache", ignoreCase = true)
+            ) {
                 CACHE_TYPE_MYSTERY
             } else if (typeNew.equals("Project APE Cache", ignoreCase = true)
-                    || typeNew.equals("Project A.P.E. Cache", ignoreCase = true)) {
+                || typeNew.equals("Project A.P.E. Cache", ignoreCase = true)
+            ) {
                 CACHE_TYPE_PROJECT_APE
             } else if (typeNew.equals("Letterbox Hybrid", ignoreCase = true)
-                    || typeNew.equals("Letterbox", ignoreCase = true)) {
+                || typeNew.equals("Letterbox", ignoreCase = true)
+            ) {
                 CACHE_TYPE_LETTERBOX
             } else if (typeNew.equals("Wherigo", ignoreCase = true)
-                    || typeNew.equals("Wherigo cache", ignoreCase = true)) {
+                || typeNew.equals("Wherigo cache", ignoreCase = true)
+            ) {
                 CACHE_TYPE_WHERIGO
             } else if (typeNew.equals("Event Cache", ignoreCase = true)) {
                 CACHE_TYPE_EVENT
@@ -826,7 +839,7 @@ class GeocachingData : Storable() {
                 CACHE_TYPE_CACHE_IN_TRASH_OUT
             } else if (typeNew.equals("EarthCache", ignoreCase = true)) {
                 CACHE_TYPE_EARTH
-            } else if (typeNew.toLowerCase(Locale.ROOT).startsWith("gps adventures")) {
+            } else if (typeNew.lowercase().startsWith("gps adventures")) {
                 CACHE_TYPE_GPS_ADVENTURE
             } else if (typeNew.equals("Virtual Cache", ignoreCase = true)) {
                 CACHE_TYPE_VIRTUAL

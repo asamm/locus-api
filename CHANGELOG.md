@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.50 - in progress]
+### Changed
+- removed custom implementation of the Logger and using public "Asamm logger" instead
+- refactoring in the `GeoDataExtra` class
+- separating extensions to Point & Track into separate helper class
+
 ## [0.9.49]
 ### Changed
 - split geocache notes to local and external

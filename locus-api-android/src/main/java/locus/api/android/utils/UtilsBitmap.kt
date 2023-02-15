@@ -6,11 +6,11 @@ package locus.api.android.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.asamm.loggerV2.logE
+import com.asamm.loggerV2.logW
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
-import locus.api.utils.Logger
 import java.io.ByteArrayOutputStream
-
 
 object UtilsBitmap {
 
@@ -26,14 +26,16 @@ object UtilsBitmap {
         }
     }
 
-    fun writeBitmap(dw: DataWriterBigEndian, bitmap: Bitmap?,
-            format: Bitmap.CompressFormat) {
+    fun writeBitmap(
+        dw: DataWriterBigEndian, bitmap: Bitmap?,
+        format: Bitmap.CompressFormat
+    ) {
         if (bitmap == null) {
             dw.writeInt(0)
         } else {
             val data = getBitmap(bitmap, format)
             if (data == null || data.isEmpty()) {
-                Logger.logW(TAG, "writeBitmap(), unknown problem")
+                logW(tag = TAG) { "writeBitmap(), unknown problem" }
                 dw.writeInt(0)
             } else {
                 dw.writeInt(data.size)
@@ -50,11 +52,11 @@ object UtilsBitmap {
             if (bitmap.compress(format, 80, baos)) {
                 baos.toByteArray()
             } else {
-                Logger.logW(TAG, "Problem with converting image to byte[]")
+                logW(tag = TAG) { "Problem with converting image to byte[]" }
                 null
             }
         } catch (e: Exception) {
-            Logger.logE(TAG, "getBitmap($bitmap)", e)
+            logE(tag = TAG, ex = e) { "getBitmap($bitmap)" }
             null
         } finally {
             locus.api.utils.Utils.closeStream(baos)
@@ -65,7 +67,7 @@ object UtilsBitmap {
         return try {
             BitmapFactory.decodeByteArray(data, 0, data.size)
         } catch (e: Exception) {
-            Logger.logE(TAG, "getBitmap($data)", e)
+            logE(tag = TAG, ex = e) { "getBitmap($data)" }
             null
         }
     }

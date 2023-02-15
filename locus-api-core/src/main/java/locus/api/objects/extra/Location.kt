@@ -20,6 +20,7 @@
 
 package locus.api.objects.extra
 
+import com.asamm.loggerV2.logE
 import locus.api.objects.Storable
 import locus.api.utils.*
 import java.io.IOException
@@ -80,11 +81,11 @@ open class Location() : Storable() {
         set(value) {
             field = when {
                 value < -90.0 -> {
-                    Logger.logE(TAG, "setLatitude($value), invalid latitude")
+                    logE(tag = TAG) { "setLatitude($value), invalid latitude" }
                     -90.0
                 }
                 value > 90.0 -> {
-                    Logger.logE(TAG, "setLatitude($value), invalid latitude")
+                    logE(tag = TAG) { "setLatitude($value), invalid latitude" }
                     90.0
                 }
                 else -> value
@@ -768,13 +769,13 @@ open class Location() : Storable() {
             }
         }
         extraSensor
-                .takeIf { it.hasData() }
-                ?.let {
-                    dw.writeBoolean(true)
-                    it.write(dw)
-                } ?: {
+            .takeIf { it.hasData() }
+            ?.let {
+                dw.writeBoolean(true)
+                it.write(dw)
+            } ?: run {
             dw.writeBoolean(false)
-        }()
+        }
 
         // V3
         dw.writeByte(extraDataShort.size().toByte())

@@ -2,13 +2,12 @@ package locus.api.android.features.mapProvider
 
 import android.os.Parcel
 import android.os.Parcelable
-
+import com.asamm.loggerV2.logE
+import com.asamm.loggerV2.logW
 import locus.api.android.features.mapProvider.data.MapConfigLayer
 import locus.api.android.features.mapProvider.data.MapTileRequest
 import locus.api.android.features.mapProvider.data.MapTileResponse
 import locus.api.objects.Storable
-import locus.api.utils.Logger
-
 import java.io.IOException
 
 class MapDataContainer : Parcelable {
@@ -21,9 +20,11 @@ class MapDataContainer : Parcelable {
     // container for map config
     var mapConfigurations: List<MapConfigLayer>? = null
         private set
+
     // container with request for map tile
     var tileRequest: MapTileRequest? = null
         private set
+
     // container with response
     var tileResponse: MapTileResponse? = null
         private set
@@ -52,8 +53,7 @@ class MapDataContainer : Parcelable {
     fun isValid(requestedType: Int): Boolean {
         // check types
         if (mDataType != requestedType) {
-            Logger.logW(TAG, "isValid(" + requestedType + "), " +
-                    "invalid type:" + mDataType)
+            logW(tag = TAG) { "isValid($requestedType), invalid type:$mDataType" }
             return false
         }
 
@@ -73,7 +73,7 @@ class MapDataContainer : Parcelable {
             readFromParcel(`in`)
         } catch (e: IOException) {
             mDataType = DATA_TYPE_UNDEFINED
-            Logger.logE(TAG, "DataTransporter($`in`)", e)
+            logE(tag = TAG, ex = e) { "DataTransporter($`in`)" }
         }
 
     }
@@ -134,28 +134,32 @@ class MapDataContainer : Parcelable {
 
         // unknown (undefined) data object
         private const val DATA_TYPE_UNDEFINED = 0
+
         /*
         * Map configuration
         */
         const val DATA_TYPE_CONFIGURATION = 1
+
         /*
         * Request with parameters that define tile
         */
         const val DATA_TYPE_TILE_REQUEST = 2
+
         /*
         * Response with tile data or information about state
         */
         const val DATA_TYPE_TILE_RESPONSE = 3
 
         @JvmField
-        val CREATOR: Parcelable.Creator<MapDataContainer> = object : Parcelable.Creator<MapDataContainer> {
-            override fun createFromParcel(parcel: Parcel): MapDataContainer {
-                return MapDataContainer(parcel)
-            }
+        val CREATOR: Parcelable.Creator<MapDataContainer> =
+            object : Parcelable.Creator<MapDataContainer> {
+                override fun createFromParcel(parcel: Parcel): MapDataContainer {
+                    return MapDataContainer(parcel)
+                }
 
-            override fun newArray(size: Int): Array<MapDataContainer?> {
-                return arrayOfNulls(size)
+                override fun newArray(size: Int): Array<MapDataContainer?> {
+                    return arrayOfNulls(size)
+                }
             }
-        }
     }
 }

@@ -29,6 +29,8 @@ import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentActivity
 import com.asamm.locus.api.sample.R
+import com.asamm.loggerV2.logD
+import com.asamm.loggerV2.logI
 import locus.api.android.ActionBasics
 import locus.api.android.ActionDisplayPoints
 import locus.api.android.ActionDisplayVarious
@@ -50,7 +52,6 @@ import locus.api.objects.geoData.Track
 import locus.api.objects.geocaching.GeocachingData
 import locus.api.objects.geocaching.GeocachingWaypoint
 import locus.api.objects.styles.GeoDataStyle
-import locus.api.utils.Logger
 import java.io.File
 import java.util.*
 
@@ -66,7 +67,10 @@ object SampleCalls {
     /**
      * Temporary file used for testing of import feature.
      */
-    private fun getTempGpxFile(ctx: Context, content: String): File {
+    private fun getTempGpxFile(
+        ctx: Context,
+        @Suppress("SameParameterValue") content: String
+    ): File {
         return File(ctx.externalCacheDir, "temporary_path.gpx").apply {
             writeText(content)
         }
@@ -83,14 +87,14 @@ object SampleCalls {
      */
     fun callDisplayLocusMapInfo(ctx: Context) {
         // iterate over versions
-        Logger.logI(TAG, "Locus versions:")
+        logI(tag = TAG) { "Locus versions:" }
         for (version in LocusUtils.getAvailableVersions(ctx)) {
-            Logger.logI(TAG, "  version: $version")
+            logI(tag = TAG) { "  version: $version" }
         }
 
         // active version
-        Logger.logI(TAG, "Active version:")
-        Logger.logI(TAG, "  version: " + LocusUtils.getActiveVersion(ctx))
+        logI(tag = TAG) { "Active version:" }
+        logI(tag = TAG) { "  version: " + LocusUtils.getActiveVersion(ctx) }
 
         // notify
         Toast.makeText(ctx, "Check log for result", Toast.LENGTH_SHORT).show()
@@ -155,8 +159,10 @@ object SampleCalls {
 
         // send data
         val send = ActionDisplayPoints.sendPack(ctx, pw, ActionDisplayVarious.ExtraAction.IMPORT)
-        Logger.logD(TAG, "callSendOnePoint(), " +
-                "send:" + send)
+        logD(tag = TAG) {
+            "callSendOnePoint(), " +
+                    "send:" + send
+        }
     }
 
     /**
@@ -176,8 +182,7 @@ object SampleCalls {
 
         // send data
         val send = ActionDisplayPoints.sendPack(ctx, pw, ActionDisplayVarious.ExtraAction.IMPORT)
-        Logger.logD(TAG, "callSendMorePoints(), " +
-                "send:" + send)
+        logD(tag = TAG) { "callSendMorePoints(), send:$send" }
     }
 
     /**
@@ -191,13 +196,13 @@ object SampleCalls {
         // prepare pack with point (with icon)
         val pw = PackPoints("callSendOnePointWithIcon")
         pw.bitmap = BitmapFactory.decodeResource(
-                ctx.resources, R.drawable.ic_launcher)
+            ctx.resources, R.drawable.ic_launcher
+        )
         pw.addPoint(generateWaypoint(0))
 
         // send data
         val send = ActionDisplayPoints.sendPack(ctx, pw, ActionDisplayVarious.ExtraAction.CENTER)
-        Logger.logD(TAG, "callSendOnePointWithIcon(), " +
-                "send:" + send)
+        logD(tag = TAG) { "callSendOnePointWithIcon(), send:$send" }
     }
 
     /**
@@ -234,8 +239,7 @@ object SampleCalls {
 
         // send data
         val send = ActionDisplayPoints.sendPacks(ctx, data, ActionDisplayVarious.ExtraAction.CENTER)
-        Logger.logD(TAG, "callSendMorePointsWithIcons(), " +
-                "send:" + send)
+        logD(tag = TAG) { "callSendMorePointsWithIcons(), send:$send" }
     }
 
     /**
@@ -252,8 +256,7 @@ object SampleCalls {
 
         // send data
         val send = ActionDisplayPoints.sendPack(ctx, pd, ActionDisplayVarious.ExtraAction.CENTER)
-        Logger.logD(TAG, "callSendOnePointGeocache(), " +
-                "send:" + send)
+        logD(tag = TAG) { "callSendOnePointGeocache(), send:$send" }
     }
 
     /**
@@ -273,8 +276,7 @@ object SampleCalls {
 
         // send data
         val send = ActionDisplayPoints.sendPack(ctx, pw, ActionDisplayVarious.ExtraAction.CENTER)
-        Logger.logD(TAG, "callSendMorePointsGeocacheIntentMethod(), " +
-                "send:" + send)
+        logD(tag = TAG) { "callSendMorePointsGeocacheIntentMethod(), send:$send" }
     }
 
     /**
@@ -302,13 +304,17 @@ object SampleCalls {
         // send data
         val send = if (version.isVersionValid(VersionCode.UPDATE_15)) {
             // send file via FileProvider, you don't need WRITE_EXTERNAL_STORAGE permission for this
-            val uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
+            val uri = FileProvider.getUriForFile(
+                ctx,
+                ctx.getString(R.string.file_provider_authority),
+                file
+            )
             ActionDisplayPoints.sendPacksFile(ctx, version, data, file, uri)
         } else {
             // send file old way, you need WRITE_EXTERNAL_STORAGE permission for this
             ActionDisplayPoints.sendPacksFile(ctx, version, data, file)
         }
-        Logger.logD(TAG, "callSendMorePointsGeocacheFileMethod(), send: $send")
+        logD(tag = TAG) { "callSendMorePointsGeocacheFileMethod(), send: $send" }
     }
 
     /**
@@ -324,16 +330,16 @@ object SampleCalls {
         val pd = PackPoints("test2")
         val p = generateWaypoint(0)
         p.setExtraOnDisplay(
-                "com.asamm.locus.api.sample",
-                "com.asamm.locus.api.sample.MainActivity",
-                EXTRA_ON_DISPLAY_ACTION_ID,
-                "id01")
+            "com.asamm.locus.api.sample",
+            "com.asamm.locus.api.sample.MainActivity",
+            EXTRA_ON_DISPLAY_ACTION_ID,
+            "id01"
+        )
         pd.addPoint(p)
 
         // send point
         val send = ActionDisplayPoints.sendPack(ctx, pd, ActionDisplayVarious.ExtraAction.CENTER)
-        Logger.logD(TAG, "callSendOnePointWithCallbackOnDisplay(), " +
-                "send:" + send)
+        logD(tag = TAG) { "callSendOnePointWithCallbackOnDisplay(), send:$send" }
     }
 
     /**
@@ -348,17 +354,18 @@ object SampleCalls {
         // prepare data
         val pd = PackPoints("test3")
         val p = generateWaypoint(0)
-        p.setExtraCallback("My button",
-                "com.asamm.locus.api.sample",
-                "com.asamm.locus.api.sample.MainActivity",
-                EXTRA_CALLBACK_ID,
-                "id01")
+        p.setExtraCallback(
+            "My button",
+            "com.asamm.locus.api.sample",
+            "com.asamm.locus.api.sample.MainActivity",
+            EXTRA_CALLBACK_ID,
+            "id01"
+        )
         pd.addPoint(p)
 
         // send point
         val send = ActionDisplayPoints.sendPack(ctx, pd, ActionDisplayVarious.ExtraAction.CENTER)
-        Logger.logD(TAG, "callSendOnePointWithExtraCallback(), " +
-                "send:" + send)
+        logD(tag = TAG) { "callSendOnePointWithExtraCallback(), send:$send" }
     }
 
     /**
@@ -373,30 +380,34 @@ object SampleCalls {
 
         // display dialog
         AlertDialog.Builder(ctx)
-                .setTitle("Search for waypoints")
-                .setView(etName)
-                .setMessage("Write name of waypoint you want to find. You may use '%' before or after " + "name as wildcards. \n\n" +
-                        "Read more at description of \'ActionTools.getLocusWaypointId\'")
-                .setPositiveButton("Search") { _, _ ->
-                    // get defined name of point
-                    val name = etName.text.toString()
-                    if (name.isEmpty()) {
-                        Toast.makeText(ctx, "Invalid text to search", Toast.LENGTH_LONG).show()
-                        return@setPositiveButton
-                    }
-
-                    // start search
-                    try {
-                        val pts = ActionBasics.getPointsId(ctx, activeLocus, name)
-                        Toast.makeText(ctx, "Found pts: \'" + pts.contentToString() + "\'",
-                                Toast.LENGTH_LONG)
-                                .show()
-                    } catch (e: RequiredVersionMissingException) {
-                        Toast.makeText(ctx, "Invalid Locus version", Toast.LENGTH_LONG).show()
-                        e.printStackTrace()
-                    }
+            .setTitle("Search for waypoints")
+            .setView(etName)
+            .setMessage(
+                "Write name of waypoint you want to find. You may use '%' before or after " + "name as wildcards. \n\n" +
+                        "Read more at description of \'ActionTools.getLocusWaypointId\'"
+            )
+            .setPositiveButton("Search") { _, _ ->
+                // get defined name of point
+                val name = etName.text.toString()
+                if (name.isEmpty()) {
+                    Toast.makeText(ctx, "Invalid text to search", Toast.LENGTH_LONG).show()
+                    return@setPositiveButton
                 }
-                .show()
+
+                // start search
+                try {
+                    val pts = ActionBasics.getPointsId(ctx, activeLocus, name)
+                    Toast.makeText(
+                        ctx, "Found pts: \'" + pts.contentToString() + "\'",
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+                } catch (e: RequiredVersionMissingException) {
+                    Toast.makeText(ctx, "Invalid Locus version", Toast.LENGTH_LONG).show()
+                    e.printStackTrace()
+                }
+            }
+            .show()
     }
 
     /**
@@ -407,14 +418,18 @@ object SampleCalls {
      * @param pointId     ID of point from Locus database
      */
     @Throws(RequiredVersionMissingException::class)
-    fun callRequestDisplayPointScreen(ctx: Context, activeLocus: LocusVersion,
-            pointId: Long) {
+    fun callRequestDisplayPointScreen(
+        ctx: Context, activeLocus: LocusVersion,
+        pointId: Long
+    ) {
         // call special intent with request to return back
-        ActionBasics.displayPointScreen(ctx, activeLocus, pointId,
-                "com.asamm.locus.api.sample",
-                "com.asamm.locus.api.sample.MainActivity",
-                "myKey",
-                "myValue")
+        ActionBasics.displayPointScreen(
+            ctx, activeLocus, pointId,
+            "com.asamm.locus.api.sample",
+            "com.asamm.locus.api.sample.MainActivity",
+            "myKey",
+            "myValue"
+        )
     }
 
     //*************************************************
@@ -436,13 +451,13 @@ object SampleCalls {
         // get file to share
         val file = SendToAppHelper.getCacheFile(ctx)
         // prepare file Uri: share via FileProvider. You don't need WRITE_EXTERNAL_STORAGE permission for this!
-        val uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
+        val uri =
+            FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
 
         // send data the app. 'SendMode' define core behavior how Locus app handle received data
         val sendResult = SendTrack(SendMode.Basic(), track)
-                .sendOverFile(ctx, cacheFile = file, cacheFileUri = uri)
-        Logger.logD(TAG, "callSendOneTrack(), " +
-                "send:" + sendResult)
+            .sendOverFile(ctx, cacheFile = file, cacheFileUri = uri)
+        logD(tag = TAG) { "callSendOneTrack(), send:$sendResult" }
     }
 
     /**
@@ -461,10 +476,9 @@ object SampleCalls {
 
         // send data
         val send = SendTracks(SendMode.Basic(centerOnData = true), tracks)
-                .send(ctx)
+            .send(ctx)
         //ActionDisplayTracks.sendTracks(ctx, tracks, ActionDisplayVarious.ExtraAction.CENTER)
-        Logger.logD(TAG, "callSendMultipleTracks(" + ctx + "), " +
-                "send:" + send)
+        logD(tag = TAG) { "callSendMultipleTracks($ctx), send:$send" }
     }
 
     //*************************************************
@@ -477,12 +491,13 @@ object SampleCalls {
      * was send into app with one of 'ActionDisplayPoints' method.
      */
     fun startGuidanceToNearestPoint(ctx: Context, lv: LocusVersion) {
-        val pointsId = ActionBasics.getPointsId(ctx, lv,
-                Location(14.5, 50.6),
-                1000)
+        val pointsId = ActionBasics.getPointsId(
+            ctx, lv,
+            Location(14.5, 50.6),
+            1000
+        )
         if (pointsId.isEmpty()) {
-            Logger.logD(TAG, "startGuidanceToNearestPoint(" + ctx + "), " +
-                    "no valid point in range")
+            logD(tag = TAG) { "startGuidanceToNearestPoint($ctx), no valid point in range" }
         } else {
             // search for specific point
             for (pointId in pointsId) {
@@ -492,8 +507,7 @@ object SampleCalls {
                     return
                 }
             }
-            Logger.logD(TAG, "startGuidanceToNearestPoint(" + ctx + "), " +
-                    "required points not found")
+            logD(tag = TAG) { "startGuidanceToNearestPoint($ctx), required points not found" }
         }
     }
 
@@ -505,12 +519,12 @@ object SampleCalls {
         val file = getTempGpxFile(ctx, "<xml></xml>")
 
         // generate Uri over FileProvider
-        val uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
+        val uri =
+            FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
 
         // send request for "display"
         val send = ActionFiles.importFileSystem(ctx, uri, ActionFiles.getMimeType(file))
-        Logger.logD(TAG, "callSendFileToSystem($ctx), " +
-                "send: $send, file: $file, uri: $uri")
+        logD(tag = TAG) { "callSendFileToSystem($ctx), send: $send, file: $file, uri: $uri" }
     }
 
     /**
@@ -520,12 +534,12 @@ object SampleCalls {
         val file = getTempGpxFile(ctx, "<xml></xml>")
 
         // generate Uri over FileProvider
-        val uri = FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
+        val uri =
+            FileProvider.getUriForFile(ctx, ctx.getString(R.string.file_provider_authority), file)
 
         // send request for "display"
         val send = ActionFiles.importFileLocus(ctx, uri, ActionFiles.getMimeType(file), lv, false)
-        Logger.logD(TAG, "callSendFileToLocus($ctx, $lv), " +
-                "send: $send, file: $file, uri: $uri")
+        logD(tag = TAG) { "callSendFileToLocus($ctx, $lv), send: $send, file: $file, uri: $uri" }
     }
 
     /**
@@ -547,8 +561,12 @@ object SampleCalls {
         val c0 = Circle(Location(50.15, 15.0), 10000000f, true)
         c0.styleNormal = GeoDataStyle()
 
-        c0.styleNormal!!.setPolyStyle(Color.argb(50, Color.red(Color.RED),
-                Color.green(Color.RED), Color.blue(Color.RED)))
+        c0.styleNormal!!.setPolyStyle(
+            Color.argb(
+                50, Color.red(Color.RED),
+                Color.green(Color.RED), Color.blue(Color.RED)
+            )
+        )
         circles.add(c0)
 
         val c1 = Circle(Location(50.0, 15.0), 1000f, false)
@@ -571,14 +589,16 @@ object SampleCalls {
         c4.styleNormal = GeoDataStyle()
         c4.styleNormal!!.setLineStyle(Color.MAGENTA, 0f)
         c4.styleNormal!!.setPolyStyle(
-                Color.argb(100, Color.red(Color.MAGENTA),
-                        Color.green(Color.MAGENTA), Color.blue(Color.MAGENTA)))
+            Color.argb(
+                100, Color.red(Color.MAGENTA),
+                Color.green(Color.MAGENTA), Color.blue(Color.MAGENTA)
+            )
+        )
         circles.add(c4)
 
         // send data
         val send = ActionDisplayVarious.sendCirclesSilent(activity, circles, true)
-        Logger.logD(TAG, "showCircles(), " +
-                "send:" + send)
+        logD(tag = TAG) { "showCircles(), send:$send" }
     }
 
     //*************************************************
@@ -628,8 +648,9 @@ object SampleCalls {
             longDesc += "Oh, what a looooooooooooooooooooooooong description, never imagine it could be sooo<i>oooo</i>long!<br /><br />Oh, what a looooooooooooooooooooooooong description, never imagine it could be sooo<i>oooo</i>long!"
         }
         gcData.setDescriptions(
-                "bla bla, this is some short description also with <b>HTML tags</b>", true,
-                longDesc, false)
+            "bla bla, this is some short description also with <b>HTML tags</b>", true,
+            longDesc, false
+        )
 
         // add one waypoint
         val gcWpt = GeocachingWaypoint()
