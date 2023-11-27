@@ -605,6 +605,11 @@ class GeoDataExtra : Storable() {
          */
         const val SOURCE_MAP_SELECTION: Byte = 61
 
+        /**
+         * Route warning.
+         */
+        const val SOURCE_ROUTE_WARNING: Byte = 62
+
         // TRACKS/ROUTES
 
         /**
@@ -629,24 +634,51 @@ class GeoDataExtra : Storable() {
         const val VALUE_RTE_TYPE_GENERATED = -1
 
         const val VALUE_RTE_TYPE_NO_TYPE = 100
-        const val VALUE_RTE_TYPE_CAR = 6
-        const val VALUE_RTE_TYPE_CAR_FAST = 0
-        const val VALUE_RTE_TYPE_CAR_SHORT = 1
-        const val VALUE_RTE_TYPE_MOTORCYCLE = 7
-        const val VALUE_RTE_TYPE_CYCLE = 2
-        const val VALUE_RTE_TYPE_CYCLE_FAST = 4
-        const val VALUE_RTE_TYPE_CYCLE_SHORT = 5
-        const val VALUE_RTE_TYPE_CYCLE_MTB = 8
-        const val VALUE_RTE_TYPE_CYCLE_RACING = 9
+
+        // WALK
 
         // basic routing profile, type "walk"
         const val VALUE_RTE_TYPE_FOOT_01 = 3
-
         // routing profile usually used for "hiking"
         const val VALUE_RTE_TYPE_FOOT_02 = 10
-
         // routing profile usually used for "climb" or "mountain hiking"
         const val VALUE_RTE_TYPE_FOOT_03 = 11
+
+        // CYCLE
+
+        // generic "cycle" profile
+        const val VALUE_RTE_TYPE_CYCLE = 2
+        @Deprecated (
+            message = "Use 'VALUE_RTE_TYPE_CYCLE_ROAD' instead. Validate usage because replacement has different ID!"
+        )
+        const val VALUE_RTE_TYPE_CYCLE_FAST = 4
+        @Deprecated (
+            message = "Use 'VALUE_RTE_TYPE_CYCLE_ROAD' instead",
+            replaceWith = ReplaceWith("VALUE_RTE_TYPE_CYCLE_ROAD")
+        )
+        const val VALUE_RTE_TYPE_CYCLE_RACING = 9
+        const val VALUE_RTE_TYPE_CYCLE_ROAD = 9
+        const val VALUE_RTE_TYPE_CYCLE_GRAVEL = 5
+        const val VALUE_RTE_TYPE_CYCLE_TOURING = 13
+        const val VALUE_RTE_TYPE_CYCLE_MTB = 8
+        @Deprecated (
+            message = "Use 'VALUE_RTE_TYPE_CYCLE_GRAVEL' instead",
+            replaceWith = ReplaceWith("VALUE_RTE_TYPE_CYCLE_GRAVEL")
+        )
+        const val VALUE_RTE_TYPE_CYCLE_SHORT = 5
+
+        // MOTORIZED VEHICLE
+
+        // generic "car" type
+        const val VALUE_RTE_TYPE_CAR = 6
+        // "fast car" type, where short time is primary
+        const val VALUE_RTE_TYPE_CAR_FAST = 0
+        // "eco car" type, where router tries to find good balance between speed & distance
+        const val VALUE_RTE_TYPE_CAR_SHORT = 1
+        // "motorcycle" type, optimized for two wheels
+        const val VALUE_RTE_TYPE_MOTORCYCLE = 7
+
+        // OTHERS
 
         // routing profile for "cross country skiing"
         const val VALUE_RTE_TYPE_SKI_CROSS_COUNTRY = 12
@@ -656,18 +688,22 @@ class GeoDataExtra : Storable() {
          */
         val RTE_TYPES_SORTED = intArrayOf(
             VALUE_RTE_TYPE_NO_TYPE,
+            VALUE_RTE_TYPE_FOOT_01,
+            VALUE_RTE_TYPE_FOOT_02,
+            VALUE_RTE_TYPE_FOOT_03,
+            VALUE_RTE_TYPE_CYCLE,
+            VALUE_RTE_TYPE_CYCLE_FAST,
+            VALUE_RTE_TYPE_CYCLE_RACING,
+            VALUE_RTE_TYPE_CYCLE_ROAD,
+            VALUE_RTE_TYPE_CYCLE_GRAVEL,
+            VALUE_RTE_TYPE_CYCLE_TOURING,
+            VALUE_RTE_TYPE_CYCLE_SHORT,
+            VALUE_RTE_TYPE_CYCLE_MTB,
+            VALUE_RTE_TYPE_SKI_CROSS_COUNTRY,
             VALUE_RTE_TYPE_CAR,
             VALUE_RTE_TYPE_CAR_FAST,
             VALUE_RTE_TYPE_CAR_SHORT,
             VALUE_RTE_TYPE_MOTORCYCLE,
-            VALUE_RTE_TYPE_CYCLE,
-            VALUE_RTE_TYPE_CYCLE_FAST,
-            VALUE_RTE_TYPE_CYCLE_SHORT,
-            VALUE_RTE_TYPE_CYCLE_MTB,
-            VALUE_RTE_TYPE_CYCLE_RACING,
-            VALUE_RTE_TYPE_FOOT_01,
-            VALUE_RTE_TYPE_FOOT_02,
-            VALUE_RTE_TYPE_FOOT_03
         )
 
         //*************************************************
@@ -955,6 +991,13 @@ class GeoDataExtra : Storable() {
          * "STRING" (JSON) in ByteArray
          */
         const val PAR_RTE_SURFACES = 125
+
+        /**
+         * Container for track warnings.
+         *
+         * "STRING" (JSON) in ByteArray
+         */
+        const val PAR_RTE_WARNINGS = 126
 
         //*********************************************
         // OSM BUGS (300 - 309)

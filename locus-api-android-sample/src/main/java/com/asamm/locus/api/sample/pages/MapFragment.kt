@@ -98,7 +98,7 @@ class MapFragment : DialogFragment() {
         detector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
 
             override fun onScroll(
-                e1: MotionEvent,
+                e1: MotionEvent?,
                 e2: MotionEvent,
                 distanceX: Float,
                 distanceY: Float
@@ -117,7 +117,7 @@ class MapFragment : DialogFragment() {
             }
 
             override fun onFling(
-                event1: MotionEvent, event2: MotionEvent,
+                event1: MotionEvent?, event2: MotionEvent,
                 velocityX: Float, velocityY: Float
             ): Boolean {
                 return true

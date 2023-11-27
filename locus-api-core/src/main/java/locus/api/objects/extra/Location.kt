@@ -25,6 +25,13 @@ import locus.api.objects.Storable
 import locus.api.utils.*
 import java.io.IOException
 
+enum class LocationProvider(val textId: String) {
+
+    UNDEFINED(""),
+    GPS("gps"),
+    NETWORK("network")
+}
+
 /**
  * Container for location related information.
  *

@@ -393,7 +393,7 @@ object LocusUtils {
      */
     fun convertToL(oldLoc: android.location.Location): Location {
         val loc = Location()
-        loc.provider = oldLoc.provider
+        loc.provider = oldLoc.provider ?: ""
         loc.longitude = oldLoc.longitude
         loc.latitude = oldLoc.latitude
         loc.time = oldLoc.time

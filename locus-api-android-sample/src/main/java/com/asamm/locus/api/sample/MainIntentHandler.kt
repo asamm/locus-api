@@ -15,6 +15,7 @@ import locus.api.android.utils.LocusUtils
 import locus.api.android.utils.exceptions.RequiredVersionMissingException
 import locus.api.objects.extra.GeoDataExtra
 import locus.api.objects.extra.Location
+import locus.api.objects.geoData.parameterDescription
 
 /**
  * Created by menion on 29/08/2016.
