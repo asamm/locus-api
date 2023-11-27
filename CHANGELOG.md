@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - updated `GeoDataExtra.RTE_TYPES` values
 - updated dependencies
 
-
 ## [0.9.50]
 ### Changed
 - removed custom implementation of the Logger and using public "Asamm logger" instead
