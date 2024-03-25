@@ -1056,6 +1056,13 @@ class GeoDataExtra : Storable() {
          */
         const val PAR_LOPOINTS_GEOMETRY = 314
 
+        /**
+         * Container for LoMedia objects.
+         *
+         * "STRING" in ByteArray (JSON)
+         */
+        const val PAR_LOMEDIA = 315
+
         //*************************************************
         // CALL BACK HELPERS
         //*************************************************

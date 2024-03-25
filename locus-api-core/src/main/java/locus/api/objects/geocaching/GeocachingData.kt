@@ -390,6 +390,11 @@ class GeocachingData : Storable() {
      */
     val cacheUrlFull: String
         get() {
+            // handle lab caches
+            if (type == CACHE_TYPE_LAB_CACHE && cacheUrl.contains("adventurelab.page.link")) {
+                return cacheUrl
+            }
+
             // if cache is from Groundspeak, return "coord.info" url
             if (source == CACHE_SOURCE_GEOCACHING_COM) {
                 return "https://coord.info/$cacheID"
