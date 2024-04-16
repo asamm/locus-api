@@ -2,6 +2,7 @@ package locus.api.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class DataWriterBigEndian {
     /**
      * The buffer where data is stored.
      */
-    private byte mBuf[];
+    private byte[] mBuf;
 
     /**
      * The number of valid bytes in the buffer.
@@ -57,7 +58,7 @@ public class DataWriterBigEndian {
      * output stream is discarded. The output stream can be used again,
      * reusing the already allocated buffer space.
      *
-     * @see java.io.ByteArrayInputStream#count
+     * @see java.io.ByteArrayInputStream
      */
     public synchronized void reset() {
         mCount = 0;
@@ -142,7 +143,7 @@ public class DataWriterBigEndian {
 
     // WRITE FUNCTIONS
 
-    private byte mWriteBuffer[] = new byte[8];
+    private final byte[] mWriteBuffer = new byte[8];
 
     /**
      * Writes the specified byte to this byte array output stream.
@@ -155,7 +156,7 @@ public class DataWriterBigEndian {
         setNewPositions(1);
     }
 
-    public synchronized void write(byte b[]) {
+    public synchronized void write(byte[] b) {
         write(b, 0, b.length);
     }
 
@@ -167,7 +168,7 @@ public class DataWriterBigEndian {
      * @param off the start offset in the data.
      * @param len the number of bytes to write.
      */
-    public synchronized void write(byte b[], int off, int len) {
+    public synchronized void write(byte[] b, int off, int len) {
         if ((off < 0) || (off > b.length) || (len < 0) ||
                 ((off + len) - b.length > 0)) {
             throw new IndexOutOfBoundsException();
@@ -193,7 +194,6 @@ public class DataWriterBigEndian {
      * <code>1</code>.
      *
      * @param v a <code>boolean</code> value to be written.
-     * @see java.io.FilterOutputStream#out
      */
     public final void writeBoolean(boolean v) {
         write(v ? 1 : 0);
@@ -205,7 +205,6 @@ public class DataWriterBigEndian {
      * <code>written</code> is incremented by <code>2</code>.
      *
      * @param v a <code>short</code> to be written.
-     * @see java.io.FilterOutputStream#out
      */
     public final void writeShort(int v) {
         write((v >>> 8) & 0xFF);
@@ -218,7 +217,6 @@ public class DataWriterBigEndian {
      * <code>written</code> is incremented by <code>4</code>.
      *
      * @param v an <code>int</code> to be written.
-     * @see java.io.FilterOutputStream#out
      */
     public final void writeInt(int v) {
         mWriteBuffer[0] = (byte) ((v >>> 24) & 0xFF);
@@ -234,7 +232,6 @@ public class DataWriterBigEndian {
      * <code>written</code> is incremented by <code>8</code>.
      *
      * @param v a <code>long</code> to be written.
-     * @see java.io.FilterOutputStream#out
      */
     public final void writeLong(long v) {
         mWriteBuffer[0] = (byte) (v >>> 56);
@@ -257,8 +254,6 @@ public class DataWriterBigEndian {
      * incremented by <code>4</code>.
      *
      * @param v a <code>float</code> value to be written.
-     * @see java.io.FilterOutputStream#out
-     * @see java.lang.Float#floatToIntBits(float)
      */
     public final void writeFloat(float v) {
         writeInt(Float.floatToIntBits(v));
@@ -273,29 +268,27 @@ public class DataWriterBigEndian {
      * incremented by <code>8</code>.
      *
      * @param v a <code>double</code> value to be written.
-     * @see java.io.FilterOutputStream#out
-     * @see java.lang.Double#doubleToLongBits(double)
      */
     public final void writeDouble(double v) {
         writeLong(Double.doubleToLongBits(v));
     }
 
     public final void writeString(String string) throws IOException {
-        if (string == null || string.length() == 0) {
+        if (string == null || string.isEmpty()) {
             writeInt(0);
         } else {
-            byte[] bytes = string.getBytes("UTF-8");
+            byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
             writeInt(bytes.length);
             write(bytes, 0, bytes.length);
         }
     }
 
     @Deprecated
-    public final void writeStringDos(String string) throws IOException {
-        if (string == null || string.length() == 0) {
+    public final void writeStringDos(String string) {
+        if (string == null || string.isEmpty()) {
             writeShort(0);
         } else {
-            byte[] bytes = string.getBytes("UTF-8");
+            byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
             writeShort(bytes.length);
             write(bytes, 0, bytes.length);
         }
@@ -309,7 +302,7 @@ public class DataWriterBigEndian {
 
     public void writeListString(List<String> objs) throws IOException {
         // write '0' if no data are available
-        if (objs == null || objs.size() == 0) {
+        if (objs == null || objs.isEmpty()) {
             writeInt(0);
             return;
         }
@@ -367,7 +360,7 @@ public class DataWriterBigEndian {
      * @return the current contents of this output stream, as a byte array.
      * @see java.io.ByteArrayOutputStream#size()
      */
-    public synchronized byte toByteArray()[] {
+    public synchronized byte[] toByteArray() {
         return Arrays.copyOf(mBuf, mCount);
     }
 
@@ -376,7 +369,7 @@ public class DataWriterBigEndian {
      *
      * @return the value of the <code>count</code> field, which is the number
      * of valid bytes in this output stream.
-     * @see java.io.ByteArrayOutputStream#count
+     * @see java.io.ByteArrayOutputStream
      */
     public synchronized int size() {
         return mCount;

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.53]
+### Added
+- `GeocachingData.CACHE_SIZE_VIRTUAL` new size value
+
+### Changed
+- `Location` object internal rework & breaking compatibility changes
+
 ## [0.9.52]
 ### Added
 - `GeocachingData.cacheUrlFull` support for Lab caches

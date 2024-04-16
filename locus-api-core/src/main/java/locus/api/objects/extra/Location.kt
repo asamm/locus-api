@@ -25,44 +25,214 @@ import locus.api.objects.Storable
 import locus.api.utils.*
 import java.io.IOException
 
-enum class LocationProvider(val textId: String) {
+enum class LocationProvider(val textId: String?) {
 
-    UNDEFINED(""),
+    UNDEFINED(null),
     GPS("gps"),
     NETWORK("network")
 }
 
 /**
- * Container for location related information.
- *
- * Class is made open because of WhereYouGo request:
- * https://github.com/asamm/locus-api/issues/30
+ * Container for the single location related information (simply pack of values at defined time moment).
  */
-open class Location() : Storable() {
+class Location() : Storable() {
 
+    //*************************************************
     // CONTAINERS
+    //*************************************************
+
+    // SHORT
+
+    private var extraDataShort: SparseArrayCompat<Short>? = null
+
+    private fun getDataShort(key: Int): Short? {
+        return extraDataShort?.get(key)
+    }
+
+    private fun setDataShort(key: Int, value: Short?) {
+        if (value == null) {
+            extraDataShort?.remove(key)
+        } else {
+            if (extraDataShort == null) {
+                extraDataShort = SparseArrayCompat(0)
+            }
+            extraDataShort?.put(key, value)
+        }
+    }
+
+    // INT
+
+    private var extraDataInt: SparseArrayCompat<Int>? = null
+
+    private fun getDataInt(key: Int): Int? {
+        return extraDataInt?.get(key)
+    }
+
+    private fun setDataInt(key: Int, value: Int?) {
+        if (value == null) {
+            extraDataInt?.remove(key)
+        } else {
+            if (extraDataInt == null) {
+                extraDataInt = SparseArrayCompat(0)
+            }
+            extraDataInt?.put(key, value)
+        }
+    }
+
+    // LONG
+
+    private var extraDataLong: SparseArrayCompat<Long>? = null
+
+    private fun getDataLong(key: Int): Long? {
+        return extraDataLong?.get(key)
+    }
+
+    private fun setDataLong(key: Int, value: Long?) {
+        if (value == null) {
+            extraDataLong?.remove(key)
+        } else {
+            if (extraDataLong == null) {
+                extraDataLong = SparseArrayCompat(0)
+            }
+            extraDataLong?.put(key, value)
+        }
+    }
+
+    // FLOAT
+
+    private var extraDataFloat: SparseArrayCompat<Float>? = null
+
+    private fun getDataFloat(key: Int): Float? {
+        return extraDataFloat?.get(key)
+    }
+
+    private fun setDataFloat(key: Int, value: Float?) {
+        if (value == null) {
+            extraDataFloat?.remove(key)
+        } else {
+            if (extraDataFloat == null) {
+                extraDataFloat = SparseArrayCompat(0)
+            }
+            extraDataFloat?.put(key, value)
+        }
+    }
+
+    // DOUBLE
+
+    private var extraDataDouble: SparseArrayCompat<Double>? = null
+
+    private fun getDataDouble(key: Int): Double? {
+        return extraDataDouble?.get(key)
+    }
+
+    private fun setDataDouble(key: Int, value: Double?) {
+        if (value == null) {
+            extraDataDouble?.remove(key)
+        } else {
+            if (extraDataDouble == null) {
+                extraDataDouble = SparseArrayCompat(0)
+            }
+            extraDataDouble?.put(key, value)
+        }
+    }
+
+    // STRING
+
+    private var extraDataString: SparseArrayCompat<String>? = null
+
+    private fun getDataString(key: Int): String? {
+        return extraDataString?.get(key)
+    }
+
+    private fun setDataString(key: Int, value: String?) {
+        if (value == null) {
+            extraDataString?.remove(key)
+        } else {
+            if (extraDataString == null) {
+                extraDataString = SparseArrayCompat(0)
+            }
+            extraDataString?.put(key, value)
+        }
+    }
+
+    //*************************************************
+    // CONSTRUCTION
+    //*************************************************
+
+    constructor(lat: Double, lon: Double) : this() {
+        latitude = lat
+        longitude = lon
+    }
+
+    constructor(loc: Location) : this() {
+        set(loc)
+    }
 
     /**
-     * Container for integer based extra data.
+     * Sets the contents of the location to the values from the given location.
      */
-    private var extraDataShort = SparseArrayCompat<Short>(0)
+    fun set(loc: Location) {
+        id = loc.id
+        provider = loc.provider
+        time = loc.time
+        latitude = loc.latitude
+        longitude = loc.longitude
 
-    /**
-     * Container for integer based extra data.
-     */
-    private var extraDataInt = SparseArrayCompat<Int>(0)
+        // set extra data
+        extraDataShort?.clear()
+        loc.extraDataShort
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                for (i in 0 .. it.size()) {
+                    setDataShort(it.keyAt(i), it.valueAt(i))
+                }
+            }
+        extraDataInt?.clear()
+        loc.extraDataInt
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                for (i in 0 .. it.size()) {
+                    setDataInt(it.keyAt(i), it.valueAt(i))
+                }
+            }
+        extraDataLong?.clear()
+        loc.extraDataLong
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                for (i in 0 .. it.size()) {
+                    setDataLong(it.keyAt(i), it.valueAt(i))
+                }
+            }
 
-    /**
-     * Container for float based extra data.
-     */
-    private var extraDataFloat = SparseArrayCompat<Float>(0)
+        extraDataFloat?.clear()
+        loc.extraDataFloat
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                for (i in 0 .. it.size()) {
+                    setDataFloat(it.keyAt(i), it.valueAt(i))
+                }
+            }
+        extraDataDouble?.clear()
+        loc.extraDataDouble
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                for (i in 0 .. it.size()) {
+                    setDataDouble(it.keyAt(i), it.valueAt(i))
+                }
+            }
+        extraDataString?.clear()
+        loc.extraDataString
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                for (i in 0 .. it.size()) {
+                    setDataString(it.keyAt(i), it.valueAt(i))
+                }
+            }
+    }
 
-    /**
-     * Container for double based extra data.
-     */
-    private var extraDataDouble = SparseArrayCompat<Double>(0)
-
+    //*************************************************
     // VARIABLES
+    //*************************************************
 
     /**
      * Location unique ID.
@@ -72,7 +242,7 @@ open class Location() : Storable() {
     /**
      * Provider for location source.
      */
-    var provider: String = ""
+    var provider: String? = null
 
     /**
      * UTC time of this location (in ms).
@@ -123,110 +293,85 @@ open class Location() : Storable() {
     // ALTITUDE
 
     /**
-     * Altitude value of the location (in m). If 'hasData' is false, 0.0f is returned.
+     * Altitude value of the location (in m).
      */
-    var altitude: Double
-        get() {
-            return extraDataDouble.get(EXTRA_KEY_ALTITUDE, 0.0)
-        }
-        set(value) {
-            extraDataDouble.put(EXTRA_KEY_ALTITUDE, value)
-        }
-
-    val hasAltitude: Boolean
-        get() = extraDataDouble.containsKey(EXTRA_KEY_ALTITUDE)
-
-    fun removeAltitude() {
-        extraDataDouble.remove(EXTRA_KEY_ALTITUDE)
-    }
+    var altitude: Double?
+        get() = getDataDouble(EXTRA_KEY_ALTITUDE)
+        set(value) = setDataDouble(EXTRA_KEY_ALTITUDE, value)
 
     // SPEED
 
     /**
      * Speed of the device in meters/second.
      */
-    var speed: Float
-        get() {
-            return extraDataFloat.get(EXTRA_KEY_SPEED, 0.0f)
-        }
-        set(value) {
-            extraDataFloat.put(EXTRA_KEY_SPEED, value)
-        }
-
-    val hasSpeed: Boolean
-        get() = extraDataFloat.containsKey(EXTRA_KEY_SPEED)
-
-    fun removeSpeed() {
-        extraDataFloat.remove(EXTRA_KEY_SPEED)
-    }
+    var speed: Float?
+        get() = getDataFloat(EXTRA_KEY_SPEED)
+        set(value) = setDataFloat(EXTRA_KEY_SPEED, value)
 
     // BEARING
 
     /**
-     * Direction of travel in degrees East of true North. If 'hasData' is false,
-     * 0.0 is returned (in degree).
+     * Direction of travel in degrees East of true North (in degree).
      */
-    var bearing: Float
-        get() {
-            return extraDataFloat.get(EXTRA_KEY_BEARING, 0.0f)
-        }
+    var bearing: Float?
+        get() = getDataFloat(EXTRA_KEY_BEARING)
         set(value) {
             var bearingNew = value
-            while (bearingNew < 0.0f) {
-                bearingNew += 360.0f
+            if (bearingNew != null) {
+                while (bearingNew < 0.0f) {
+                    bearingNew += 360.0f
+                }
+                while (bearingNew >= 360.0f) {
+                    bearingNew -= 360.0f
+                }
             }
-            while (bearingNew >= 360.0f) {
-                bearingNew -= 360.0f
-            }
-            extraDataFloat.put(EXTRA_KEY_BEARING, bearingNew)
+            setDataFloat(EXTRA_KEY_BEARING, bearingNew)
         }
-
-    val hasBearing: Boolean
-        get() = extraDataFloat.containsKey(EXTRA_KEY_BEARING)
-
-    fun removeBearing() {
-        extraDataFloat.remove(EXTRA_KEY_BEARING)
-    }
 
     // HORIZONTAL ACCURACY
 
     /**
-     * Horizontal accuracy of the fix. If 'hasData' is false, 0.0 is returned (in m).
+     * Horizontal accuracy of the fix (in m).
      */
-    var accuracyHor: Float
-        get() {
-            return extraDataFloat.get(EXTRA_KEY_ACCURACY_HOR, 0.0f)
-        }
-        set(value) {
-            extraDataFloat.put(EXTRA_KEY_ACCURACY_HOR, value)
-        }
-
-    val hasAccuracyHor: Boolean
-        get() = extraDataFloat.containsKey(EXTRA_KEY_ACCURACY_HOR)
-
-    fun removeAccuracyHor() {
-        extraDataFloat.remove(EXTRA_KEY_ACCURACY_HOR)
-    }
+    var accuracyHor: Float?
+        get() = getDataFloat(EXTRA_KEY_ACCURACY_HOR)
+        set(value) = setDataFloat(EXTRA_KEY_ACCURACY_HOR, value)
 
     // VERTICAL ACCURACY
 
     /**
-     * Vertical accuracy of the fix. If 'hasData' is false, 0.0 is returned (in m).
+     * Vertical accuracy of the fix (in m).
      */
-    var accuracyVer: Float
-        get() {
-            return extraDataFloat.get(EXTRA_KEY_ACCURACY_VER, 0.0f)
-        }
-        set(value) {
-            extraDataFloat.put(EXTRA_KEY_ACCURACY_VER, value)
-        }
+    var accuracyVer: Float?
+        get() = getDataFloat(EXTRA_KEY_ACCURACY_VER)
+        set(value) = setDataFloat(EXTRA_KEY_ACCURACY_VER, value)
 
-    val hasAccuracyVer: Boolean
-        get() = extraDataFloat.containsKey(EXTRA_KEY_ACCURACY_VER)
+    // ORIGINAL LATITUDE
 
-    fun removeAccuracyVer() {
-        extraDataFloat.remove(EXTRA_KEY_ACCURACY_VER)
-    }
+    /**
+     * Original, unmodified, longitude value.
+     */
+    var latitudeOriginal: Double?
+        get() = getDataDouble(EXTRA_KEY_ORIG_LATITUDE)
+        set(value) = setDataDouble(EXTRA_KEY_ORIG_LATITUDE, value)
+
+    // ORIGINAL LONGITUDE
+
+    /**
+     * Original, unmodified, longitude value.
+     */
+    var longitudeOriginal: Double?
+        get() = getDataDouble(EXTRA_KEY_ORIG_LONGITUDE)
+        set(value) = setDataDouble(EXTRA_KEY_ORIG_LONGITUDE, value)
+
+    // ORIGINAL ALTITUDE
+
+    /**
+     * Original, unmodified, altitude value.
+     */
+    var altitudeOriginal: Double?
+        get() = getDataDouble(EXTRA_KEY_ORIG_ALTITUDE)
+        set(value) = setDataDouble(EXTRA_KEY_ORIG_ALTITUDE, value)
 
     //*************************************************
     // SENSOR VALUES
@@ -237,123 +382,55 @@ open class Location() : Storable() {
     /**
      * Cadence value. If hasCadence() is false, 0 is returned.
      */
-    var sensorCadence: Short
-        get() {
-            return extraDataShort.get(EXTRA_KEY_SENSOR_CADENCE, 0)
-        }
-        set(value) {
-            extraDataShort.put(EXTRA_KEY_SENSOR_CADENCE, value)
-        }
-
-    val hasSensorCadence: Boolean
-        get() = extraDataShort.containsKey(EXTRA_KEY_SENSOR_CADENCE)
-
-    fun removeSensorCadence() {
-        extraDataShort.remove(EXTRA_KEY_SENSOR_CADENCE)
-    }
+    var sensorCadence: Short?
+        get() = getDataShort(EXTRA_KEY_SENSOR_CADENCE)
+        set(value) = setDataShort(EXTRA_KEY_SENSOR_CADENCE, value)
 
     // HEART RATE
 
     /**
      * Heart rate value in BMP. If hasSensorHeartRate() is false, 0 is returned.
      */
-    var sensorHeartRate: Short
-        get() {
-            return extraDataShort.get(EXTRA_KEY_SENSOR_HEART_RATE, 0)
-        }
-        set(value) {
-            extraDataShort.put(EXTRA_KEY_SENSOR_HEART_RATE, value)
-        }
-
-    val hasSensorHeartRate: Boolean
-        get() = extraDataShort.containsKey(EXTRA_KEY_SENSOR_HEART_RATE)
-
-    fun removeSensorHeartRate() {
-        extraDataShort.remove(EXTRA_KEY_SENSOR_HEART_RATE)
-    }
+    var sensorHeartRate: Short?
+        get() = getDataShort(EXTRA_KEY_SENSOR_HEART_RATE)
+        set(value) = setDataShort(EXTRA_KEY_SENSOR_HEART_RATE, value)
 
     // SPEED FROM SENSOR
 
     /**
      * Speed of the device over ground in meters/second. This speed is defined only when
      * 'speed sensor' is connected and supply valid values.
-     *
-     * If 'hasData' is 'false', 0.0f is returned (in m/s).
      */
-    var sensorSpeed: Float
-        get() {
-            return extraDataFloat.get(EXTRA_KEY_SENSOR_SPEED, 0.0f)
-        }
-        set(value) {
-            extraDataFloat.put(EXTRA_KEY_SENSOR_SPEED, value)
-        }
-
-    val hasSensorSpeed: Boolean
-        get() = extraDataFloat.containsKey(EXTRA_KEY_SENSOR_SPEED)
-
-    fun removeSensorSpeed() {
-        extraDataFloat.remove(EXTRA_KEY_SENSOR_SPEED)
-    }
+    var sensorSpeed: Float?
+        get() = getDataFloat(EXTRA_KEY_SENSOR_SPEED)
+        set(value) = setDataFloat(EXTRA_KEY_SENSOR_SPEED, value)
 
     // POWER
 
     /**
      * Power value of the fix in W. If hasSensorPower() is false, 0.0 is returned.
      */
-    var sensorPower: Float
-        get() {
-            return extraDataFloat.get(EXTRA_KEY_SENSOR_POWER, 0.0f)
-        }
-        set(value) {
-            extraDataFloat.put(EXTRA_KEY_SENSOR_POWER, value)
-        }
-
-    val hasSensorPower: Boolean
-        get() = extraDataFloat.containsKey(EXTRA_KEY_SENSOR_POWER)
-
-    fun removeSensorPower() {
-        extraDataFloat.remove(EXTRA_KEY_SENSOR_POWER)
-    }
+    var sensorPower: Float?
+        get() = getDataFloat(EXTRA_KEY_SENSOR_POWER)
+        set(value) = setDataFloat(EXTRA_KEY_SENSOR_POWER, value)
 
     // STRIDES
 
     /**
-     * The num of strides. If hasSensorStrides() is false, 0 is returned.
+     * The num of strides.
      */
-    var sensorStrides: Int
-        get() {
-            return extraDataInt.get(EXTRA_KEY_SENSOR_STRIDES, 0)
-        }
-        set(value) {
-            extraDataInt.put(EXTRA_KEY_SENSOR_STRIDES, value)
-        }
-
-    val hasSensorStrides: Boolean
-        get() = extraDataInt.containsKey(EXTRA_KEY_SENSOR_STRIDES)
-
-    fun removeSensorStrides() {
-        extraDataInt.remove(EXTRA_KEY_SENSOR_STRIDES)
-    }
+    var sensorStrides: Int?
+        get() = getDataInt(EXTRA_KEY_SENSOR_STRIDES)
+        set(value) = setDataInt(EXTRA_KEY_SENSOR_STRIDES, value)
 
     // TEMPERATURE
 
     /**
      * Temperature value. If hasSensorTemperature() is false, 0.0f is returned.
      */
-    var sensorTemperature: Float
-        get() {
-            return extraDataFloat.get(EXTRA_KEY_SENSOR_TEMPERATURE, 0.0f)
-        }
-        set(value) {
-            extraDataFloat.put(EXTRA_KEY_SENSOR_TEMPERATURE, value)
-        }
-
-    val hasSensorTemperature: Boolean
-        get() = extraDataFloat.containsKey(EXTRA_KEY_SENSOR_TEMPERATURE)
-
-    fun removeSensorTemperature() {
-        extraDataFloat.remove(EXTRA_KEY_SENSOR_TEMPERATURE)
-    }
+    var sensorTemperature: Float?
+        get() = getDataFloat(EXTRA_KEY_SENSOR_TEMPERATURE)
+        set(value) = setDataFloat(EXTRA_KEY_SENSOR_TEMPERATURE, value)
 
     //*************************************************
     // GNSS META-DATA
@@ -361,20 +438,9 @@ open class Location() : Storable() {
 
     // GNSS QUALITY
 
-    var gnssQuality: Short
-        get() {
-            return extraDataShort.get(EXTRA_KEY_GNSS_QUALITY, 0)
-        }
-        set(value) {
-            extraDataShort.put(EXTRA_KEY_GNSS_QUALITY, value)
-        }
-
-    val hasGnssQuality: Boolean
-        get() = extraDataShort.containsKey(EXTRA_KEY_GNSS_QUALITY)
-
-    fun removeGnssQuality() {
-        extraDataShort.remove(EXTRA_KEY_GNSS_QUALITY)
-    }
+    var gnssQuality: Short?
+        get() = getDataShort(EXTRA_KEY_GNSS_QUALITY)
+        set(value) = setDataShort(EXTRA_KEY_GNSS_QUALITY, value)
 
     // GNSS, HDOP
 
@@ -383,20 +449,9 @@ open class Location() : Storable() {
      *
      * More info: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation).
      */
-    var gnssHdop: Float
-        get() {
-            return extraDataFloat.get(EXTRA_KEY_GNSS_HDOP, 0.0f)
-        }
-        set(value) {
-            extraDataFloat.put(EXTRA_KEY_GNSS_HDOP, value)
-        }
-
-    val hasGnssHdop: Boolean
-        get() = extraDataFloat.containsKey(EXTRA_KEY_GNSS_HDOP)
-
-    fun removeGnssHdop() {
-        extraDataFloat.remove(EXTRA_KEY_GNSS_HDOP)
-    }
+    var gnssHdop: Float?
+        get() = getDataFloat(EXTRA_KEY_GNSS_HDOP)
+        set(value) = setDataFloat(EXTRA_KEY_GNSS_HDOP, value)
 
     // GNSS, VDOP
 
@@ -405,20 +460,9 @@ open class Location() : Storable() {
      *
      * More info: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation).
      */
-    var gnssVdop: Float
-        get() {
-            return extraDataFloat.get(EXTRA_KEY_GNSS_VDOP, 0.0f)
-        }
-        set(value) {
-            extraDataFloat.put(EXTRA_KEY_GNSS_VDOP, value)
-        }
-
-    val hasGnssVdop: Boolean
-        get() = extraDataFloat.containsKey(EXTRA_KEY_GNSS_VDOP)
-
-    fun removeGnssVdop() {
-        extraDataFloat.remove(EXTRA_KEY_GNSS_VDOP)
-    }
+    var gnssVdop: Float?
+        get() = getDataFloat(EXTRA_KEY_GNSS_VDOP)
+        set(value) = setDataFloat(EXTRA_KEY_GNSS_VDOP, value)
 
     // GNSS, PDOP
 
@@ -427,90 +471,73 @@ open class Location() : Storable() {
      *
      * More info: https://en.wikipedia.org/wiki/Dilution_of_precision_(navigation).
      */
-    var gnssPdop: Float
-        get() {
-            return extraDataFloat.get(EXTRA_KEY_GNSS_PDOP, 0.0f)
-        }
-        set(value) {
-            extraDataFloat.put(EXTRA_KEY_GNSS_PDOP, value)
-        }
-
-    val hasGnssPdop: Boolean
-        get() = extraDataFloat.containsKey(EXTRA_KEY_GNSS_PDOP)
-
-    fun removeGnssPdop() {
-        extraDataFloat.remove(EXTRA_KEY_GNSS_PDOP)
-    }
+    var gnssPdop: Float?
+        get() = getDataFloat(EXTRA_KEY_GNSS_PDOP)
+        set(value) = setDataFloat(EXTRA_KEY_GNSS_PDOP, value)
 
     // GNSS, NUMBER OF USED SATS
 
     /**
      * Number of used satellites used to obtain current location.
      */
-    var gnssSatsUsed: Short
-        get() {
-            return extraDataShort.get(EXTRA_KEY_GNSS_SATS_USED, 0)
-        }
-        set(value) {
-            extraDataShort.put(EXTRA_KEY_GNSS_SATS_USED, value)
-        }
-
-    val hasGnssSatsUsed: Boolean
-        get() = extraDataShort.containsKey(EXTRA_KEY_GNSS_SATS_USED)
-
-    fun removeGnssSatsUsed() {
-        extraDataShort.remove(EXTRA_KEY_GNSS_SATS_USED)
-    }
+    var gnssSatsUsed: Short?
+        get() = getDataShort(EXTRA_KEY_GNSS_SATS_USED)
+        set(value) = setDataShort(EXTRA_KEY_GNSS_SATS_USED, value)
 
     // GNSS, NUMBER OF VISIBLE SATS
 
     /**
      * Number of used satellites used to obtain current location.
      */
-    var gnssSatsVisible: Short
-        get() {
-            return extraDataShort.get(EXTRA_KEY_GNSS_SATS_VISIBLE, 0)
-        }
-        set(value) {
-            extraDataShort.put(EXTRA_KEY_GNSS_SATS_VISIBLE, value)
-        }
-
-    val hasGnssSatsVisible: Boolean
-        get() = extraDataShort.containsKey(EXTRA_KEY_GNSS_SATS_VISIBLE)
-
-    fun removeGnssSatsVisible() {
-        extraDataShort.remove(EXTRA_KEY_GNSS_SATS_VISIBLE)
-    }
-
-    //*************************************************
-    // CONSTRUCTION
-    //*************************************************
-
-    constructor(lat: Double, lon: Double) : this() {
-        latitude = lat
-        longitude = lon
-    }
-
-    constructor(loc: Location) : this() {
-        set(loc)
-    }
+    var gnssSatsVisible: Short?
+        get() = getDataShort(EXTRA_KEY_GNSS_SATS_VISIBLE)
+        set(value) = setDataShort(EXTRA_KEY_GNSS_SATS_VISIBLE, value)
 
     /**
-     * Sets the contents of the location to the values from the given location.
+     * NTRIP mount point.
      */
-    fun set(loc: Location) {
-        id = loc.id
-        provider = loc.provider
-        time = loc.time
-        latitude = loc.latitude
-        longitude = loc.longitude
+    var gnssNtripMountPoint: String?
+        get() = getDataString(EXTRA_KEY_GNSS_NTRIP_MOUNTPOINT)
+        set(value) = setDataString(EXTRA_KEY_GNSS_NTRIP_MOUNTPOINT, value)
 
-        // set extra data
-        extraDataShort.putAll(loc.extraDataShort)
-        extraDataInt.putAll(loc.extraDataInt)
-        extraDataFloat.putAll(loc.extraDataFloat)
-        extraDataDouble.putAll(loc.extraDataDouble)
-    }
+    /**
+     * UTC time of observation start that created current location object (in ms).
+     */
+    var gnssObservationTimeStart: Long?
+        get() = getDataLong(EXTRA_KEY_GNSS_OBSERVATION_TIME_START)
+        set(value) = setDataLong(EXTRA_KEY_GNSS_OBSERVATION_TIME_START, value)
+
+    /**
+     * UTC time of observation end that created current location object (in ms).
+     */
+    var gnssObservationTimeEnd: Long?
+        get() = getDataLong(EXTRA_KEY_GNSS_OBSERVATION_TIME_END)
+        set(value) = setDataLong(EXTRA_KEY_GNSS_OBSERVATION_TIME_END, value)
+
+    /**
+     * Offset of the hardware antenna phase center (in m).
+     * Variable [altitude] should already contain correct reduced value.
+     * Variable [altitudeOriginal] should contain original measured value.
+     */
+    var extraAntennaPhaseCenterOffset: Float?
+        get() = getDataFloat(EXTRA_KEY_EXTRA_ANTENNA_PHASE_CENTER_OFFSET)
+        set(value) = setDataFloat(EXTRA_KEY_EXTRA_ANTENNA_PHASE_CENTER_OFFSET, value)
+
+    /**
+     * Height of the pole during measurement (in m).
+     * Variable [altitude] should already contain correct reduced value.
+     * Variable [altitudeOriginal] should contain original measured value.
+     */
+    var extraPoleHeight: Float?
+        get() = getDataFloat(EXTRA_KEY_EXTRA_POLE_HEIGHT)
+        set(value) = setDataFloat(EXTRA_KEY_EXTRA_POLE_HEIGHT, value)
+
+    /**
+     * GSM signal strength at certain moment (in %).
+     */
+    var extraGsmSignalStrength: Int?
+        get() = getDataInt(EXTRA_KEY_EXTRA_GSM_SIGNAL_STRENGTH)
+        set(value) = setDataInt(EXTRA_KEY_EXTRA_GSM_SIGNAL_STRENGTH, value)
 
     //*************************************************
     // BASIC EXTRA DATA
@@ -525,19 +552,10 @@ open class Location() : Storable() {
      *
      * @return speed for display purpose
      */
+    @Suppress("DeprecatedCallableAddReplaceWith")
     @Deprecated(message = "Work with speed value directly")
-    val speedOptimal: Float
-        get() = if (hasSensorSpeed) {
-            sensorSpeed
-        } else speed
-
-    /**
-     * Check if any speed (GPS or from sensors) is stored.
-     */
-    @Deprecated(message = "Work with speed value directly")
-    fun hasSpeedOptimal(): Boolean {
-        return hasSpeed || hasSensorSpeed
-    }
+    val speedOptimal: Float?
+        get() = sensorSpeed ?: speed
 
     //*************************************************
     // TOOLS
@@ -547,24 +565,21 @@ open class Location() : Storable() {
      * Remove all attached sensors values.
      */
     fun removeSensorAll() {
-        removeSensorCadence()
-        removeSensorHeartRate()
-        removeSensorPower()
-        removeSensorSpeed()
-        removeSensorStrides()
-        removeSensorTemperature()
+        sensorCadence = null
+        sensorHeartRate = null
+        sensorPower = null
+        sensorSpeed != null
+        sensorStrides = null
+        sensorTemperature != null
     }
 
     /**
-     * Remove all values related to GNSS metadata.
+     * Save current latitude/longitude/altitude values to the 'original' fields.
      */
-    fun removeGnssAll() {
-        removeGnssQuality()
-        removeGnssHdop()
-        removeGnssVdop()
-        removeGnssPdop()
-        removeGnssSatsUsed()
-        removeGnssSatsVisible()
+    fun saveCurrentToOriginal() {
+        latitudeOriginal = latitude
+        longitudeOriginal = longitude
+        altitudeOriginal = altitude
     }
 
     override fun toString(): String {
@@ -623,13 +638,13 @@ open class Location() : Storable() {
     //*************************************************
 
     override fun getVersion(): Int {
-        return 3
+        return 4
     }
 
     @Throws(IOException::class)
     override fun readObject(version: Int, dr: DataReaderBigEndian) {
         id = dr.readLong()
-        provider = dr.readString()
+        provider = dr.readString().takeIf { it.isNotBlank() }
         time = dr.readLong()
         latitude = dr.readDouble()
         longitude = dr.readDouble()
@@ -701,26 +716,41 @@ open class Location() : Storable() {
         }
 
         // V3
+        var size: Byte
         if (version >= 3) {
-            extraDataShort.clear()
-            var size = dr.readByte()
-            for (i in 0 until size) {
-                extraDataShort.put(dr.readByte().toInt(), dr.readShort())
-            }
-            extraDataInt.clear()
+            extraDataShort?.clear()
             size = dr.readByte()
             for (i in 0 until size) {
-                extraDataInt.put(dr.readByte().toInt(), dr.readInt())
+                setDataShort(dr.readByte().toInt(), dr.readShort())
             }
-            extraDataFloat.clear()
+            extraDataInt?.clear()
             size = dr.readByte()
             for (i in 0 until size) {
-                extraDataFloat.put(dr.readByte().toInt(), dr.readFloat())
+                setDataInt(dr.readByte().toInt(), dr.readInt())
             }
-            extraDataDouble.clear()
+            extraDataFloat?.clear()
             size = dr.readByte()
             for (i in 0 until size) {
-                extraDataDouble.put(dr.readByte().toInt(), dr.readDouble())
+                setDataFloat(dr.readByte().toInt(), dr.readFloat())
+            }
+            extraDataDouble?.clear()
+            size = dr.readByte()
+            for (i in 0 until size) {
+                setDataDouble(dr.readByte().toInt(), dr.readDouble())
+            }
+        }
+
+        // V4
+        if (version >= 4) {
+            extraDataLong?.clear()
+            size = dr.readByte()
+            for (i in 0 until size) {
+                setDataLong(dr.readByte().toInt(), dr.readLong())
+            }
+            extraDataString?.clear()
+            size = dr.readByte()
+            for (i in 0 until size) {
+                setDataString(dr.readByte().toInt(), dr.readString())
             }
         }
     }
@@ -732,47 +762,47 @@ open class Location() : Storable() {
         dw.writeLong(time)
         dw.writeDouble(latitude)
         dw.writeDouble(longitude)
-        dw.writeBoolean(hasAltitude)
-        dw.writeDouble(altitude)
+        dw.writeBoolean(altitude != null)
+        dw.writeDouble(altitude ?: 0.0)
 
         // write (deprecated) basic data
-        if (hasAccuracyHor || hasBearing || hasSpeed) {
+        if (accuracyHor != null || bearing != null || speed != null) {
             dw.writeBoolean(true)
-            dw.writeBoolean(hasAccuracyHor)
-            dw.writeFloat(accuracyHor)
-            dw.writeBoolean(hasBearing)
-            dw.writeFloat(bearing)
-            dw.writeBoolean(hasSpeed)
-            dw.writeFloat(speed)
+            dw.writeBoolean(accuracyHor != null)
+            dw.writeFloat(accuracyHor ?: 0.0f)
+            dw.writeBoolean(bearing != null)
+            dw.writeFloat(bearing ?: 0.0f)
+            dw.writeBoolean(speed != null)
+            dw.writeFloat(speed ?: 0.0f)
         } else {
             dw.writeBoolean(false)
         }
 
         // write sensors data (version 1+)
         val extraSensor = ExtraSensor().apply {
-            if (hasSensorCadence) {
+            if (sensorCadence != null) {
                 hasCadence = true
-                cadence = sensorCadence.toInt()
+                cadence = sensorCadence?.toInt() ?: 0
             }
-            if (hasSensorHeartRate) {
+            if (sensorHeartRate != null) {
                 hasHr = true
-                hr = sensorHeartRate.toInt()
+                hr = sensorHeartRate?.toInt() ?: 0
             }
-            if (hasSensorPower) {
+            if (sensorPower != null) {
                 hasPower = true
-                power = sensorPower
+                power = sensorPower ?: 0.0f
             }
-            if (hasSensorSpeed) {
+            if (sensorSpeed != null) {
                 hasSpeed = true
-                speed = sensorSpeed
+                speed = sensorSpeed ?: 0.0f
             }
-            if (hasSensorStrides) {
+            sensorStrides?.let {
                 hasStrides = true
-                strides = sensorStrides
+                strides = it
             }
-            if (hasSensorTemperature) {
+            if (sensorTemperature != null) {
                 hasTemperature = true
-                temperature = sensorTemperature
+                temperature = sensorTemperature ?: 0.0f
             }
         }
         extraSensor
@@ -785,26 +815,81 @@ open class Location() : Storable() {
         }
 
         // V3
-        dw.writeByte(extraDataShort.size().toByte())
-        for (i in 0 until extraDataShort.size()) {
-            dw.writeByte(extraDataShort.keyAt(i).toByte())
-            dw.writeShort(extraDataShort.valueAt(i).toInt())
-        }
-        dw.writeByte(extraDataInt.size().toByte())
-        for (i in 0 until extraDataInt.size()) {
-            dw.writeByte(extraDataInt.keyAt(i).toByte())
-            dw.writeInt(extraDataInt.valueAt(i))
-        }
-        dw.writeByte(extraDataFloat.size().toByte())
-        for (i in 0 until extraDataFloat.size()) {
-            dw.writeByte(extraDataFloat.keyAt(i).toByte())
-            dw.writeFloat(extraDataFloat.valueAt(i))
-        }
-        dw.writeByte(extraDataDouble.size().toByte())
-        for (i in 0 until extraDataDouble.size()) {
-            dw.writeByte(extraDataDouble.keyAt(i).toByte())
-            dw.writeDouble(extraDataDouble.valueAt(i))
-        }
+        extraDataShort
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                dw.writeByte(it.size().toByte())
+                for (i in 0 until it.size()) {
+                    dw.writeByte(it.keyAt(i).toByte())
+                    dw.writeShort(it.valueAt(i).toInt())
+                }
+            }
+            ?: run {
+                dw.writeByte(0.toByte())
+            }
+        extraDataInt
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                dw.writeByte(it.size().toByte())
+                for (i in 0 until it.size()) {
+                    dw.writeByte(it.keyAt(i).toByte())
+                    dw.writeInt(it.valueAt(i))
+                }
+            }
+            ?: run {
+                dw.writeByte(0.toByte())
+            }
+        extraDataFloat
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                dw.writeByte(it.size().toByte())
+                for (i in 0 until it.size()) {
+                    dw.writeByte(it.keyAt(i).toByte())
+                    dw.writeFloat(it.valueAt(i))
+                }
+            }
+            ?: run {
+                dw.writeByte(0.toByte())
+            }
+        extraDataDouble
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                dw.writeByte(it.size().toByte())
+                for (i in 0 until it.size()) {
+                    dw.writeByte(it.keyAt(i).toByte())
+                    dw.writeDouble(it.valueAt(i))
+                }
+            }
+            ?: run {
+                dw.writeByte(0.toByte())
+            }
+
+        // V4
+        extraDataLong
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                dw.writeByte(it.size().toByte())
+                for (i in 0 until it.size()) {
+                    dw.writeByte(it.keyAt(i).toByte())
+                    dw.writeLong(it.valueAt(i))
+                }
+            }
+            ?: run {
+                dw.writeByte(0.toByte())
+            }
+        extraDataString
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                dw.writeByte(it.size().toByte())
+                for (i in 0 until it.size()) {
+                    dw.writeByte(it.keyAt(i).toByte())
+                    dw.writeString(it.valueAt(i))
+                }
+            }
+            ?: run {
+                dw.writeByte(0.toByte())
+            }
+
     }
 
     /**
@@ -890,6 +975,10 @@ open class Location() : Storable() {
         private const val EXTRA_KEY_ACCURACY_HOR = 13
         private const val EXTRA_KEY_ACCURACY_VER = 14
 
+        private const val EXTRA_KEY_ORIG_LATITUDE = 15
+        private const val EXTRA_KEY_ORIG_LONGITUDE = 16
+        private const val EXTRA_KEY_ORIG_ALTITUDE = 17
+
         private const val EXTRA_KEY_SENSOR_HEART_RATE = 20
         private const val EXTRA_KEY_SENSOR_CADENCE = 21
         private const val EXTRA_KEY_SENSOR_SPEED = 22
@@ -903,5 +992,44 @@ open class Location() : Storable() {
         private const val EXTRA_KEY_GNSS_PDOP = 54
         private const val EXTRA_KEY_GNSS_SATS_USED = 55
         private const val EXTRA_KEY_GNSS_SATS_VISIBLE = 56
+        private const val EXTRA_KEY_GNSS_NTRIP_MOUNTPOINT = 57
+        private const val EXTRA_KEY_GNSS_OBSERVATION_TIME_START = 58
+        private const val EXTRA_KEY_GNSS_OBSERVATION_TIME_END = 59
+
+        private const val EXTRA_KEY_EXTRA_ANTENNA_PHASE_CENTER_OFFSET = 70
+        private const val EXTRA_KEY_EXTRA_POLE_HEIGHT = 71
+        private const val EXTRA_KEY_EXTRA_GSM_SIGNAL_STRENGTH = 72
+
+        // internal method to visually verify IDs
+        private fun validateIds(id: Int) {
+            when (id) {
+                EXTRA_KEY_ALTITUDE,
+                EXTRA_KEY_SPEED,
+                EXTRA_KEY_BEARING,
+                EXTRA_KEY_ACCURACY_HOR,
+                EXTRA_KEY_ACCURACY_VER,
+                EXTRA_KEY_ORIG_LATITUDE,
+                EXTRA_KEY_ORIG_LONGITUDE,
+                EXTRA_KEY_ORIG_ALTITUDE,
+                EXTRA_KEY_SENSOR_HEART_RATE,
+                EXTRA_KEY_SENSOR_CADENCE,
+                EXTRA_KEY_SENSOR_SPEED,
+                EXTRA_KEY_SENSOR_TEMPERATURE,
+                EXTRA_KEY_SENSOR_POWER,
+                EXTRA_KEY_SENSOR_STRIDES,
+                EXTRA_KEY_GNSS_QUALITY,
+                EXTRA_KEY_GNSS_HDOP,
+                EXTRA_KEY_GNSS_VDOP,
+                EXTRA_KEY_GNSS_PDOP,
+                EXTRA_KEY_GNSS_SATS_USED,
+                EXTRA_KEY_GNSS_SATS_VISIBLE,
+                EXTRA_KEY_GNSS_NTRIP_MOUNTPOINT,
+                EXTRA_KEY_GNSS_OBSERVATION_TIME_START,
+                EXTRA_KEY_GNSS_OBSERVATION_TIME_END,
+                EXTRA_KEY_EXTRA_ANTENNA_PHASE_CENTER_OFFSET,
+                EXTRA_KEY_EXTRA_POLE_HEIGHT,
+                EXTRA_KEY_EXTRA_GSM_SIGNAL_STRENGTH -> {}
+            }
+        }
     }
 }

@@ -752,6 +752,7 @@ class GeocachingData : Storable() {
         const val CACHE_SIZE_LARGE = 4
         const val CACHE_SIZE_HUGE = 5
         const val CACHE_SIZE_OTHER = 6
+        const val CACHE_SIZE_VIRTUAL = 7
 
         const val CACHE_SOURCE_UNDEFINED = 0
         const val CACHE_SOURCE_GEOCACHING_COM = 1
