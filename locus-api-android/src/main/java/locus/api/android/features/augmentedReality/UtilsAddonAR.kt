@@ -12,6 +12,7 @@ import locus.api.objects.Storable
 import locus.api.objects.extra.Location
 import locus.api.objects.geoData.Track
 import java.security.NoSuchAlgorithmException
+import kotlin.math.abs
 
 object UtilsAddonAR {
 
@@ -116,7 +117,7 @@ object UtilsAddonAR {
         // do some tests if is really need to send new location
         val timeDiff = loc.time - mLastLocation!!.time
         val distDiff = loc.distanceTo(mLastLocation!!).toDouble()
-        val altDiff = Math.abs(loc.altitude - mLastLocation!!.altitude)
+        val altDiff = abs((loc.altitude ?: 0.0) - (mLastLocation?.altitude ?: 0.0))
         if (timeDiff < 5000 || distDiff < 5 && altDiff < 10) {
             return
         }

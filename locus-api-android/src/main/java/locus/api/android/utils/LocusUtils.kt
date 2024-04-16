@@ -156,8 +156,6 @@ object LocusUtils {
                     versions.add(lv)
                 }
             } catch (ignored: PackageManager.NameNotFoundException) {
-//                Logger.logD(TAG, "getAvailableVersions($ctx), " +
-//                        "e: $ignored")
             }
         }
 
@@ -423,17 +421,17 @@ object LocusUtils {
         loc.longitude = oldLoc.longitude
         loc.latitude = oldLoc.latitude
         loc.time = oldLoc.time
-        if (oldLoc.hasAccuracyHor) {
-            loc.accuracy = oldLoc.accuracyHor
+        oldLoc.accuracyHor?.let {
+            loc.accuracy = it
         }
-        if (oldLoc.hasAltitude) {
-            loc.altitude = oldLoc.altitude
+        oldLoc.altitude?.let {
+            loc.altitude = it
         }
-        if (oldLoc.hasBearing) {
-            loc.bearing = oldLoc.bearing
+        oldLoc.bearing?.let {
+            loc.bearing = it
         }
-        if (oldLoc.hasSpeed) {
-            loc.speed = oldLoc.speed
+        oldLoc.speed?.let {
+            loc.speed = it
         }
         return loc
     }
