@@ -183,7 +183,7 @@ class Location() : Storable() {
         loc.extraDataShort
             ?.takeIf { !it.isEmpty }
             ?.let {
-                for (i in 0 .. it.size()) {
+                for (i in 0 until it.size()) {
                     setDataShort(it.keyAt(i), it.valueAt(i))
                 }
             }
@@ -191,7 +191,7 @@ class Location() : Storable() {
         loc.extraDataInt
             ?.takeIf { !it.isEmpty }
             ?.let {
-                for (i in 0 .. it.size()) {
+                for (i in 0 until it.size()) {
                     setDataInt(it.keyAt(i), it.valueAt(i))
                 }
             }
@@ -199,7 +199,7 @@ class Location() : Storable() {
         loc.extraDataLong
             ?.takeIf { !it.isEmpty }
             ?.let {
-                for (i in 0 .. it.size()) {
+                for (i in 0 until it.size()) {
                     setDataLong(it.keyAt(i), it.valueAt(i))
                 }
             }
@@ -208,7 +208,7 @@ class Location() : Storable() {
         loc.extraDataFloat
             ?.takeIf { !it.isEmpty }
             ?.let {
-                for (i in 0 .. it.size()) {
+                for (i in 0 until it.size()) {
                     setDataFloat(it.keyAt(i), it.valueAt(i))
                 }
             }
@@ -216,7 +216,7 @@ class Location() : Storable() {
         loc.extraDataDouble
             ?.takeIf { !it.isEmpty }
             ?.let {
-                for (i in 0 .. it.size()) {
+                for (i in 0 until it.size()) {
                     setDataDouble(it.keyAt(i), it.valueAt(i))
                 }
             }
@@ -224,7 +224,7 @@ class Location() : Storable() {
         loc.extraDataString
             ?.takeIf { !it.isEmpty }
             ?.let {
-                for (i in 0 .. it.size()) {
+                for (i in 0 until it.size()) {
                     setDataString(it.keyAt(i), it.valueAt(i))
                 }
             }

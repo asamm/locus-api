@@ -16,7 +16,7 @@ Library for [Locus Map](https://www.locusmap.app) application for Android device
 
 ## Current version
 
-Latest stable LT version: **0.9.53**
+Latest stable LT version: **0.9.54**
 Available versions on the maven repository: [here](https://repo1.maven.org/maven2/com/asamm/).
 
 How to **update to new 0.9.x** version? More about it [here](https://github.com/asamm/locus-api/wiki/Update-to-version-0.9.0).
