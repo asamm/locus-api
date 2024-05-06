@@ -299,6 +299,7 @@ class GeocachingData : Storable() {
                 CACHE_SIZE_REGULAR -> return "Regular"
                 CACHE_SIZE_LARGE -> return "Large"
                 CACHE_SIZE_HUGE -> return "Huge"
+                CACHE_SIZE_VIRTUAL -> return "Virtual"
                 CACHE_SIZE_NOT_CHOSEN -> return "Not chosen"
                 CACHE_SIZE_OTHER -> return "Other"
             }
@@ -312,6 +313,7 @@ class GeocachingData : Storable() {
             value.equals("Regular", ignoreCase = true) -> CACHE_SIZE_REGULAR
             value.equals("Large", ignoreCase = true) -> CACHE_SIZE_LARGE
             value.equals("Huge", ignoreCase = true) -> CACHE_SIZE_HUGE
+            value.equals("Virtual", ignoreCase = true) -> CACHE_SIZE_VIRTUAL
             value.equals("Other", ignoreCase = true) -> CACHE_SIZE_OTHER
             else -> CACHE_SIZE_NOT_CHOSEN
         }
@@ -745,7 +747,7 @@ class GeocachingData : Storable() {
          */
         const val CACHE_TYPE_UNDEFINED = -1
 
-        const val CACHE_SIZE_NOT_CHOSEN = 0
+        const val CACHE_SIZE_NOT_CHOSEN = 0 // equal to "Unknown"
         const val CACHE_SIZE_MICRO = 1
         const val CACHE_SIZE_SMALL = 2
         const val CACHE_SIZE_REGULAR = 3
