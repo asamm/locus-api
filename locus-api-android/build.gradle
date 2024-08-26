@@ -4,6 +4,8 @@ apply plugin: "kotlin-android"
 
 // Android basics
 android {
+    namespace = "locus.api.android"
+
     compileSdkVersion Integer.valueOf(PARAM_COMPILE_SDK_VERSION)
     buildToolsVersion ANDROID_BUILD_TOOLS
 
@@ -16,16 +18,23 @@ android {
         versionName API_VERSION
     }
 
-    // enable support for Java 8
+    // set compile target
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     buildTypes {
         release {
             minifyEnabled false
         }
+    }
+
+    buildFeatures {
+        aidl = true
     }
 }
 

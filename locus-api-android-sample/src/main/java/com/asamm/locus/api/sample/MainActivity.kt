@@ -315,7 +315,7 @@ class MainActivity : AppCompatActivity() {
         const val ITEM_ID_UTILS = 3
 
         // ID of fragment container
-        private const val FRAGMENT_CONTAINER_ID = R.id.frame_layout_main_container
+        private val FRAGMENT_CONTAINER_ID = R.id.frame_layout_main_container
 
         // remember the position of the selected item.
         private const val KEY_I_SELECTED_ITEM_ID = "KEY_I_SELECTED_ITEM_ID"

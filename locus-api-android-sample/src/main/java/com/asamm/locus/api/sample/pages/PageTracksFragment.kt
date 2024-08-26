@@ -42,16 +42,16 @@ class PageTracksFragment : ABasePageFragment() {
     @Throws(Exception::class)
     override fun onItemClicked(itemId: Int, activeLocus: LocusVersion) {
         when (itemId) {
-            1 -> SampleCalls.callSendOneTrack(activity!!)
-            2 -> SampleCalls.callSendMultipleTracks(activity!!)
-            8 -> ActionBasics.actionStartNavigation(activity!!,
+            1 -> SampleCalls.callSendOneTrack(requireActivity())
+            2 -> SampleCalls.callSendMultipleTracks(requireActivity())
+            8 -> ActionBasics.actionStartNavigation(requireActivity(),
                     SampleCalls.generateWaypoint(1))
-            9 -> ActionBasics.actionStartNavigation(activity!!,
+            9 -> ActionBasics.actionStartNavigation(requireActivity(),
                     "Řipská 20, Praha 2, ČR")
             20 -> // start track recording. Recording profile "Cycle" is optional parameter. If
                 // this parameter is not used, last used profile is used for recording.
-                ActionBasics.actionTrackRecordStart(activity!!, activeLocus, "Car")
-            21 -> ActionBasics.actionTrackRecordStop(activity!!, activeLocus, true)
+                ActionBasics.actionTrackRecordStart(requireActivity(), activeLocus)
+            21 -> ActionBasics.actionTrackRecordStop(requireActivity(), activeLocus, true)
         }
     }
 }

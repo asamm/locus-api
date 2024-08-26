@@ -8,7 +8,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.widget.Toast
 import com.asamm.locus.api.sample.ActivityDashboard
-import com.asamm.locus.api.sample.BuildConfig
 import com.asamm.locus.api.sample.utils.BasicAdapterItem
 import com.asamm.locus.api.sample.utils.SampleCalls
 import locus.api.android.ActionBasics
@@ -74,12 +73,6 @@ class PageUtilsFragment : ABasePageFragment() {
             items.add(BasicAdapterItem(20,
                     "New 'Action tasks' API",
                     "Suggest to test in split screen mode with active Locus Map"))
-
-            // TEMPORARY TEST ITEMS
-
-            if (BuildConfig.DEBUG) {
-                // nothing to test
-            }
             return items
         }
 

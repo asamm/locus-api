@@ -1063,6 +1063,13 @@ class GeoDataExtra : Storable() {
          */
         const val PAR_LOMEDIA = 315
 
+        /**
+         * Container for the LoPoint reviews. This object should not be saved into database.
+         *
+         * "STRING" in ByteArray (JSON)
+         */
+        const val PAR_LOPOINT_REVIEWS = 316
+
         //*************************************************
         // CALL BACK HELPERS
         //*************************************************
