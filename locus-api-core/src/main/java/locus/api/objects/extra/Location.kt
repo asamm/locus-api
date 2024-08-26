@@ -515,11 +515,11 @@ class Location() : Storable() {
         set(value) = setDataLong(EXTRA_KEY_GNSS_OBSERVATION_TIME_END, value)
 
     /**
-     * UTC time of the last correction message used to create this location.
+     * Age of the RTK messages that created this location object (in ms).
      */
-    var gnssLastCorrectionTime: Long?
-        get() = getDataLong(EXTRA_KEY_GNSS_LAST_CORRECTION_TIME)
-        set(value) = setDataLong(EXTRA_KEY_GNSS_LAST_CORRECTION_TIME, value)
+    var gnssDiffMessageAge: Long?
+        get() = getDataLong(EXTRA_KEY_GNSS_DIFF_MESSAGE_AGE)
+        set(value) = setDataLong(EXTRA_KEY_GNSS_DIFF_MESSAGE_AGE, value)
 
     /**
      * Offset of the hardware antenna phase center (in m).
@@ -1002,7 +1002,7 @@ class Location() : Storable() {
         private const val EXTRA_KEY_GNSS_NTRIP_MOUNTPOINT = 57
         private const val EXTRA_KEY_GNSS_OBSERVATION_TIME_START = 58
         private const val EXTRA_KEY_GNSS_OBSERVATION_TIME_END = 59
-        private const val EXTRA_KEY_GNSS_LAST_CORRECTION_TIME = 60
+        private const val EXTRA_KEY_GNSS_DIFF_MESSAGE_AGE = 60
 
         private const val EXTRA_KEY_EXTRA_ANTENNA_PHASE_CENTER_OFFSET = 70
         private const val EXTRA_KEY_EXTRA_POLE_HEIGHT = 71
