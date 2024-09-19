@@ -17,7 +17,7 @@ data class HotSpot(
     /**
      * Compute reference coordinates of certain image based on the defined hotSpot parameters.
      */
-    fun HotSpot.getCoords(sourceWidth: Double, sourceHeight: Double, result: DoubleArray? = DoubleArray(2)): DoubleArray {
+    fun getCoords(sourceWidth: Double, sourceHeight: Double, result: DoubleArray? = DoubleArray(2)): DoubleArray {
         var resultNew = result
 
         // check container for results
