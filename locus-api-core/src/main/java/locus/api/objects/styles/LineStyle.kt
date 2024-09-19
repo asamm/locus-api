@@ -18,10 +18,17 @@ class LineStyle : Storable() {
      */
     enum class Symbol {
         DOTTED,
-        DASHED_1, DASHED_2, DASHED_3,
-        SPECIAL_1, SPECIAL_2, SPECIAL_3,
-        ARROW_1, ARROW_2, ARROW_3,
-        CROSS_1, CROSS_2
+        DASHED_1,
+        DASHED_2,
+        DASHED_3,
+        SPECIAL_1,
+        SPECIAL_2,
+        SPECIAL_3,
+        ARROW_1,
+        ARROW_2,
+        ARROW_3,
+        CROSS_1,
+        CROSS_2
     }
 
     /**
@@ -50,7 +57,8 @@ class LineStyle : Storable() {
      * Used units for line width.
      */
     enum class Units {
-        PIXELS, METRES
+        PIXELS,
+        METRES
     }
 
     // PARAMETERS
@@ -106,7 +114,9 @@ class LineStyle : Storable() {
         // check key
         return if (key.isEmpty()) {
             null
-        } else coloringParams[key]
+        } else {
+            coloringParams[key]
+        }
     }
 
     /**

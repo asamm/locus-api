@@ -13,14 +13,18 @@
 package locus.api.objects.styles
 
 import locus.api.objects.Storable
-import locus.api.objects.extra.KmlVec2
+import locus.api.objects.styles.HotSpot.Companion.write
 import locus.api.utils.DataReaderBigEndian
 import locus.api.utils.DataWriterBigEndian
 import java.io.IOException
 
 class IconStyle : Storable() {
 
+    /**
+     * Tint color for the icon.
+     */
     var color: Int = GeoDataStyle.COLOR_DEFAULT
+
     /**
      * Current defined scale.
      * 1.0f means base no-scale value.
@@ -32,10 +36,18 @@ class IconStyle : Storable() {
                 this.scaleCurrent = value
             }
         }
+
+    /**
+     * Orientation of the icon [in degrees] around hotSpot.
+     */
     var heading: Float = 0.0f
     @Deprecated("do not use directly")
     var iconHref: String? = null
-    var hotSpot: KmlVec2 = GeoDataStyle.generateDefaultHotSpot()
+
+    /**
+     * HotSpot for the icon.
+     */
+    var hotSpot: HotSpot = HotSpot.HOT_STOP_BOTTOM_CENTER
 
     // temporary variables for Locus usage that are not serialized
     // and are for private Locus usage only
@@ -58,7 +70,7 @@ class IconStyle : Storable() {
         scale = dr.readFloat()
         heading = dr.readFloat()
         iconHref = dr.readString()
-        hotSpot = KmlVec2.read(dr)
+        hotSpot = HotSpot.read(dr)
     }
 
     @Throws(IOException::class)

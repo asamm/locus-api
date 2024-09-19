@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.58] - 2024-09-19
+### Changed
+- rename of `HotSpot` object (from `KmlVec2`) & optimization in it's usage
+- minor refactoring
+
 ## [0.9.57]
 ### Added
 - `GeoDataExtra.PAR_LOPOINT_REVIEWS` as container for LoPoint reviews

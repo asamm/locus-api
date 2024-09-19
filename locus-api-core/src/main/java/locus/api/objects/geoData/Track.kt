@@ -78,7 +78,20 @@ class Track : GeoData() {
     /**
      * Flag that indicate whether to use parent folder style if exists.
      */
-    var isUseFolderStyle: Boolean = true
+    @Deprecated(
+        message = "Use renamed parameter",
+        replaceWith = ReplaceWith("useParentLineStyle")
+    )
+    var isUseFolderStyle: Boolean
+        get() = useParentLineStyle
+        set(value) {
+            useParentLineStyle = value
+        }
+
+    /**
+     * Flag that indicate whether to use parent style if exists.
+     */
+    var useParentLineStyle: Boolean = true
 
     /**
      * Type of activity
@@ -166,7 +179,7 @@ class Track : GeoData() {
 
         // V1
         if (version >= 1) {
-            isUseFolderStyle = dr.readBoolean()
+            useParentLineStyle = dr.readBoolean()
         }
 
         // V2
@@ -236,7 +249,7 @@ class Track : GeoData() {
         dw.write(ByteArray(88) { 0 })
 
         // V1
-        dw.writeBoolean(isUseFolderStyle)
+        dw.writeBoolean(useParentLineStyle)
 
         // V2
         dw.writeLong(timeCreated)

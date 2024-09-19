@@ -22,7 +22,6 @@ package locus.api.objects.styles
 
 import com.asamm.loggerV2.logW
 import locus.api.objects.Storable
-import locus.api.objects.extra.KmlVec2
 import locus.api.objects.styles.deprecated.LineStyleOld
 import locus.api.objects.styles.deprecated.OldStyleHelper
 import locus.api.objects.styles.deprecated.PolyStyleOld
@@ -107,34 +106,29 @@ class GeoDataStyle() : Storable() {
         setIconStyleHotSpot(HOTSPOT_BOTTOM_CENTER)
     }
 
+    @Deprecated (message = "Set hotSpot directly to the IconStyle")
     fun setIconStyleHotSpot(hotspot: Int) {
         setIconStyleHotSpot(
             when (hotspot) {
-                HOTSPOT_TOP_LEFT -> {
-                    KmlVec2(0.0, KmlVec2.Units.FRACTION, 1.0, KmlVec2.Units.FRACTION)
-                }
-                HOTSPOT_CENTER_CENTER -> {
-                    KmlVec2(0.5, KmlVec2.Units.FRACTION, 0.5, KmlVec2.Units.FRACTION)
-                }
-                else -> {
-                    // HOTSPOT_BOTTOM_CENTER
-                    generateDefaultHotSpot()
-                }
+                HOTSPOT_TOP_LEFT -> HotSpot.HOT_STOP_TOP_LEFT
+                HOTSPOT_CENTER_CENTER -> HotSpot.HOT_STOP_CENTER_CENTER
+                else -> HotSpot.HOT_STOP_BOTTOM_CENTER
             }
         )
     }
 
-    fun setIconStyleHotSpot(vec2: KmlVec2) {
+    @Deprecated (message = "Set hotSpot directly to the IconStyle")
+    fun setIconStyleHotSpot(hotSpot: HotSpot) {
         if (iconStyle == null) {
             logW(tag = TAG) {
-                "setIconStyleHotSpot($vec2), " +
+                "setIconStyleHotSpot($hotSpot), " +
                         "initialize IconStyle before settings hotSpot or hotSpot is null!"
             }
             return
         }
 
         // set hotSpot
-        iconStyle!!.hotSpot = vec2
+        iconStyle!!.hotSpot = hotSpot
     }
 
     /**
@@ -275,18 +269,12 @@ class GeoDataStyle() : Storable() {
         // tag for logger
         private const val TAG = "GeoDataStyle"
 
-        // definition of hotSpot of icon to bottom center
+        @Deprecated (message = "Set hotSpot directory to the IconStyle")
         const val HOTSPOT_BOTTOM_CENTER = 0
+        @Deprecated (message = "Set hotSpot directory to the IconStyle")
         const val HOTSPOT_TOP_LEFT = 1
+        @Deprecated (message = "Set hotSpot directory to the IconStyle")
         const val HOTSPOT_CENTER_CENTER = 2
-
-        fun generateDefaultHotSpot(): KmlVec2 {
-            // HOTSPOT_BOTTOM_CENTER
-            return KmlVec2(
-                0.5, KmlVec2.Units.FRACTION,
-                0.0, KmlVec2.Units.FRACTION
-            )
-        }
 
         // STYLES
 
