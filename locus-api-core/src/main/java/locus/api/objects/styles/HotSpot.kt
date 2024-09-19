@@ -14,6 +14,47 @@ data class HotSpot(
         FRACTION, PIXELS, INSET_PIXELS
     }
 
+    /**
+     * Compute reference coordinates of certain image based on the defined hotSpot parameters.
+     */
+    fun HotSpot.getCoords(sourceWidth: Double, sourceHeight: Double, result: DoubleArray? = DoubleArray(2)): DoubleArray {
+        var resultNew = result
+
+        // check container for results
+        if (resultNew == null || resultNew.size != 2) {
+            resultNew = DoubleArray(2)
+        }
+
+        // set X units
+        when (xUnits) {
+            Units.FRACTION -> {
+                resultNew[0] = sourceWidth * x
+            }
+            Units.PIXELS -> {
+                resultNew[0] = x
+            }
+            Units.INSET_PIXELS -> {
+                resultNew[0] = sourceWidth - x
+            }
+        }
+
+        // set Y units
+        when (yUnits) {
+            Units.FRACTION -> {
+                resultNew[1] = sourceHeight * (1.0 - y)
+            }
+            Units.PIXELS -> {
+                resultNew[1] = sourceHeight - y
+            }
+            Units.INSET_PIXELS -> {
+                resultNew[1] = y
+            }
+        }
+
+        // return result
+        return resultNew
+    }
+
     companion object {
 
         val HOT_STOP_BOTTOM_CENTER = HotSpot(
