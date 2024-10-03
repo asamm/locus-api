@@ -104,10 +104,10 @@ data class HotSpot(
 
             // return custom hotStop
             return HotSpot(
-                x = dr.readDouble(),
-                xUnits = Units.values()[dr.readInt()],
-                y = dr.readDouble(),
-                yUnits = Units.values()[dr.readInt()]
+                x = x,
+                xUnits = xUnits,
+                y = y,
+                yUnits = yUnits
             )
         }
 
