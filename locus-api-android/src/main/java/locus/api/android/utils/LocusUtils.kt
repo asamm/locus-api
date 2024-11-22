@@ -187,7 +187,7 @@ object LocusUtils {
             val info = pm.getPackageInfo(packageName, 0) ?: return null
 
             // finally add item to list
-            return LocusVersion(packageName, info.versionName, info.versionCode)
+            return LocusVersion(packageName, info.versionName ?: "", info.versionCode)
         } catch (e: Exception) {
             logE(tag = TAG, ex = e) { "getLocusVersion($ctx, $packageName)" }
             return null
