@@ -795,6 +795,7 @@ class GeocachingData : Storable() {
                 CACHE_TYPE_GC_HQ_CELEBRATION -> return "L&F Celebration"
                 CACHE_TYPE_GIGA_EVENT -> return "Giga-Event Cache"
                 CACHE_TYPE_LAB_CACHE -> return "Lab Cache"
+                CACHE_TYPE_GC_HQ_BLOCK_PARTY -> return "HQ Block Party"
                 else -> return "Geocache"
             }
         }
@@ -871,6 +872,8 @@ class GeocachingData : Storable() {
                 CACHE_TYPE_GIGA_EVENT
             } else if (typeNew.equals("Lab Cache", ignoreCase = true)) {
                 CACHE_TYPE_LAB_CACHE
+            } else if (typeNew.equals("Geocaching HQ Block Party", ignoreCase = true)) {
+                CACHE_TYPE_GC_HQ_BLOCK_PARTY
             } else {
                 CACHE_TYPE_UNDEFINED
             }
@@ -888,6 +891,7 @@ class GeocachingData : Storable() {
                     || type == CACHE_TYPE_GIGA_EVENT
                     || type == CACHE_TYPE_GPS_ADVENTURE
                     || type == CACHE_TYPE_CACHE_IN_TRASH_OUT
+                    || type == CACHE_TYPE_GC_HQ_BLOCK_PARTY
         }
     }
 }
