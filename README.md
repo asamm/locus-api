@@ -72,6 +72,17 @@ dependencies {
 
 Check for sample use-cases in Locus API - Android sample project.
 
+### Proguard
+
+When using Proguard/R8, test release build properly. 
+
+It may be necessary to keep API internal object untouched. To do this, add following proguard config into your module "proguard-rules.pro" file.
+
+```
+# Keep Locus API objects
+-keep class locus.api.objects.** { *; }
+```
+
 ## New version release steps
 
 1. Raise version in the `gradle.properties`
