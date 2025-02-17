@@ -41,7 +41,7 @@ android {
 dependencies {
     // Kotlin
     api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + KOTLIN_VERSION
-    api 'androidx.annotation:annotation:1.7.0'
+    api 'androidx.annotation:annotation:1.9.1'
 
     // use in case of direct handling over Locus Core project
     debugApi project(':locus-api-core')

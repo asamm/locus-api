@@ -287,13 +287,13 @@ class Location() : Storable() {
         }
 
     //*************************************************
-    // BASIC GNSS VALUES
+    // COMMON LOCATION VALUES
     //*************************************************
 
     // ALTITUDE
 
     /**
-     * Altitude value of the location (in m).
+     * Altitude value of the location (in metres).
      */
     var altitude: Double?
         get() = getDataDouble(EXTRA_KEY_ALTITUDE)
@@ -302,7 +302,7 @@ class Location() : Storable() {
     // SPEED
 
     /**
-     * Speed of the device in meters/second.
+     * Speed of the device (in metres/second).
      */
     var speed: Float?
         get() = getDataFloat(EXTRA_KEY_SPEED)
@@ -331,7 +331,7 @@ class Location() : Storable() {
     // HORIZONTAL ACCURACY
 
     /**
-     * Horizontal accuracy of the fix (in m).
+     * Horizontal accuracy of the fix (in metres).
      */
     var accuracyHor: Float?
         get() = getDataFloat(EXTRA_KEY_ACCURACY_HOR)
@@ -340,7 +340,7 @@ class Location() : Storable() {
     // VERTICAL ACCURACY
 
     /**
-     * Vertical accuracy of the fix (in m).
+     * Vertical accuracy of the fix (in metres).
      */
     var accuracyVer: Float?
         get() = getDataFloat(EXTRA_KEY_ACCURACY_VER)
@@ -380,7 +380,7 @@ class Location() : Storable() {
     // CADENCE
 
     /**
-     * Cadence value. If hasCadence() is false, 0 is returned.
+     * Cadence value.
      */
     var sensorCadence: Short?
         get() = getDataShort(EXTRA_KEY_SENSOR_CADENCE)
@@ -389,7 +389,7 @@ class Location() : Storable() {
     // HEART RATE
 
     /**
-     * Heart rate value in BMP. If hasSensorHeartRate() is false, 0 is returned.
+     * Heart rate value (in BMP).
      */
     var sensorHeartRate: Short?
         get() = getDataShort(EXTRA_KEY_SENSOR_HEART_RATE)
@@ -398,7 +398,7 @@ class Location() : Storable() {
     // SPEED FROM SENSOR
 
     /**
-     * Speed of the device over ground in meters/second. This speed is defined only when
+     * Speed of the device over ground (in meters/second). This speed is defined only when
      * 'speed sensor' is connected and supply valid values.
      */
     var sensorSpeed: Float?
@@ -408,7 +408,7 @@ class Location() : Storable() {
     // POWER
 
     /**
-     * Power value of the fix in W. If hasSensorPower() is false, 0.0 is returned.
+     * Power value of the fix (in W).
      */
     var sensorPower: Float?
         get() = getDataFloat(EXTRA_KEY_SENSOR_POWER)
@@ -426,7 +426,7 @@ class Location() : Storable() {
     // TEMPERATURE
 
     /**
-     * Temperature value. If hasSensorTemperature() is false, 0.0f is returned.
+     * Temperature value (in degrees).
      */
     var sensorTemperature: Float?
         get() = getDataFloat(EXTRA_KEY_SENSOR_TEMPERATURE)
@@ -436,8 +436,17 @@ class Location() : Storable() {
     // GNSS META-DATA
     //*************************************************
 
+    // GNSS based parameters are usually defined only for external GNSS devices and are mainly
+    // useful for GIS based applications where are heavily used.
+
     // GNSS QUALITY
 
+    /**
+     * Quality of received GNSS location.
+     *
+     * Value is defined based on the GGA message value
+     * https://gpsd.gitlab.io/gpsd/NMEA.html#_gga_global_positioning_system_fix_data
+     */
     var gnssQuality: Short?
         get() = getDataShort(EXTRA_KEY_GNSS_QUALITY)
         set(value) = setDataShort(EXTRA_KEY_GNSS_QUALITY, value)
@@ -487,14 +496,14 @@ class Location() : Storable() {
     // GNSS, NUMBER OF VISIBLE SATS
 
     /**
-     * Number of used satellites used to obtain current location.
+     * Number of visible satellites at the moment of observation.
      */
     var gnssSatsVisible: Short?
         get() = getDataShort(EXTRA_KEY_GNSS_SATS_VISIBLE)
         set(value) = setDataShort(EXTRA_KEY_GNSS_SATS_VISIBLE, value)
 
     /**
-     * NTRIP mount point.
+     * NTRIP mount point identificator.
      */
     var gnssNtripMountPoint: String?
         get() = getDataString(EXTRA_KEY_GNSS_NTRIP_MOUNTPOINT)
@@ -521,14 +530,25 @@ class Location() : Storable() {
         get() = getDataLong(EXTRA_KEY_GNSS_DIFF_MESSAGE_AGE)
         set(value) = setDataLong(EXTRA_KEY_GNSS_DIFF_MESSAGE_AGE, value)
 
+    //*************************************************
+    // EXTRA SPECIAL VARIABLES
+    //*************************************************
+
+    /**
+     * Number of measurements (observations) that created this location.
+     */
+    var extraNumOfObservations: Short?
+        get() = getDataShort(EXTRA_KEY_NUM_OF_OBSERVATIONS)
+        set(value) = setDataShort(EXTRA_KEY_NUM_OF_OBSERVATIONS, value)
+
     /**
      * Offset of the hardware antenna phase center (in m).
      * Variable [altitude] should already contain correct reduced value.
      * Variable [altitudeOriginal] should contain original measured value.
      */
     var extraAntennaPhaseCenterOffset: Float?
-        get() = getDataFloat(EXTRA_KEY_EXTRA_ANTENNA_PHASE_CENTER_OFFSET)
-        set(value) = setDataFloat(EXTRA_KEY_EXTRA_ANTENNA_PHASE_CENTER_OFFSET, value)
+        get() = getDataFloat(EXTRA_KEY_ANTENNA_PHASE_CENTER_OFFSET)
+        set(value) = setDataFloat(EXTRA_KEY_ANTENNA_PHASE_CENTER_OFFSET, value)
 
     /**
      * Height of the pole during measurement (in m).
@@ -536,15 +556,15 @@ class Location() : Storable() {
      * Variable [altitudeOriginal] should contain original measured value.
      */
     var extraPoleHeight: Float?
-        get() = getDataFloat(EXTRA_KEY_EXTRA_POLE_HEIGHT)
-        set(value) = setDataFloat(EXTRA_KEY_EXTRA_POLE_HEIGHT, value)
+        get() = getDataFloat(EXTRA_KEY_POLE_HEIGHT)
+        set(value) = setDataFloat(EXTRA_KEY_POLE_HEIGHT, value)
 
     /**
      * GSM signal strength at certain moment (in %).
      */
     var extraGsmSignalStrength: Int?
-        get() = getDataInt(EXTRA_KEY_EXTRA_GSM_SIGNAL_STRENGTH)
-        set(value) = setDataInt(EXTRA_KEY_EXTRA_GSM_SIGNAL_STRENGTH, value)
+        get() = getDataInt(EXTRA_KEY_GSM_SIGNAL_STRENGTH)
+        set(value) = setDataInt(EXTRA_KEY_GSM_SIGNAL_STRENGTH, value)
 
     //*************************************************
     // BASIC EXTRA DATA
@@ -575,9 +595,9 @@ class Location() : Storable() {
         sensorCadence = null
         sensorHeartRate = null
         sensorPower = null
-        sensorSpeed != null
+        sensorSpeed = null
         sensorStrides = null
-        sensorTemperature != null
+        sensorTemperature = null
     }
 
     /**
@@ -661,7 +681,7 @@ class Location() : Storable() {
             this.altitude = altitude
         }
 
-        // red basic data
+        // read basic data
         if (dr.readBoolean()) {
             val hasAccuracy = dr.readBoolean()
             val accuracy = dr.readFloat()
@@ -1004,9 +1024,10 @@ class Location() : Storable() {
         private const val EXTRA_KEY_GNSS_OBSERVATION_TIME_END = 59
         private const val EXTRA_KEY_GNSS_DIFF_MESSAGE_AGE = 60
 
-        private const val EXTRA_KEY_EXTRA_ANTENNA_PHASE_CENTER_OFFSET = 70
-        private const val EXTRA_KEY_EXTRA_POLE_HEIGHT = 71
-        private const val EXTRA_KEY_EXTRA_GSM_SIGNAL_STRENGTH = 72
+        private const val EXTRA_KEY_NUM_OF_OBSERVATIONS = 69
+        private const val EXTRA_KEY_ANTENNA_PHASE_CENTER_OFFSET = 70
+        private const val EXTRA_KEY_POLE_HEIGHT = 71
+        private const val EXTRA_KEY_GSM_SIGNAL_STRENGTH = 72
 
         // internal method to visually verify IDs
         private fun validateIds(id: Int) {
@@ -1034,9 +1055,10 @@ class Location() : Storable() {
                 EXTRA_KEY_GNSS_NTRIP_MOUNTPOINT,
                 EXTRA_KEY_GNSS_OBSERVATION_TIME_START,
                 EXTRA_KEY_GNSS_OBSERVATION_TIME_END,
-                EXTRA_KEY_EXTRA_ANTENNA_PHASE_CENTER_OFFSET,
-                EXTRA_KEY_EXTRA_POLE_HEIGHT,
-                EXTRA_KEY_EXTRA_GSM_SIGNAL_STRENGTH -> {}
+                EXTRA_KEY_NUM_OF_OBSERVATIONS,
+                EXTRA_KEY_ANTENNA_PHASE_CENTER_OFFSET,
+                EXTRA_KEY_POLE_HEIGHT,
+                EXTRA_KEY_GSM_SIGNAL_STRENGTH -> {}
             }
         }
     }
