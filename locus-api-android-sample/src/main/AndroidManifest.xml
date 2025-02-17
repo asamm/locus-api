@@ -2,12 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission android:name="com.asamm.locus.permission.READ_GEOCACHING_DATA" />
     <uses-permission android:name="com.asamm.locus.permission.WRITE_GEOCACHING_DATA" />
+
+<!--    &lt;!&ndash; Android 11, package visibility queries &ndash;&gt;-->
+<!--    &lt;!&ndash; https://medium.com/androiddevelopers/package-visibility-in-android-11-cc857f221cd9 &ndash;&gt;-->
+<!--    <queries>-->
+<!--        <package android:name="menion.android.locus" />-->
+<!--        <package android:name="menion.android.locus.pro" />-->
+<!--        <package android:name="menion.android.locus.gis" />-->
+<!--    </queries>-->
 
     <application
         android:name=".MainApplication"
@@ -17,7 +27,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
 
             <intent-filter>
@@ -72,8 +83,8 @@
 
         <activity
             android:name=".ActivityGeocacheTools"
-            android:label="GeocachingTools"
-            android:exported="false">
+            android:exported="false"
+            android:label="GeocachingTools">
 
             <!-- thanks to this, app appear in sub-menu of only geocache! -->
             <intent-filter>
@@ -90,7 +101,8 @@
         <activity android:name=".ActivityDashboard" />
 
         <!-- receiver for handling of exported tracks -->
-        <receiver android:name=".receivers.OnTrackExportedReceiver"
+        <receiver
+            android:name=".receivers.OnTrackExportedReceiver"
             android:exported="true">
 
             <intent-filter>
@@ -100,7 +112,8 @@
         </receiver>
 
         <!-- receiver for handling changes in points -->
-        <receiver android:name=".receivers.PointChangedReceiver"
+        <receiver
+            android:name=".receivers.PointChangedReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="locus.api.android.ACTION_POINT_CHANGED" />
@@ -108,7 +121,8 @@
         </receiver>
 
         <!-- service that serve map tiles -->
-        <service android:name=".mapServer.MapProvider"
+        <service
+            android:name=".mapServer.MapProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="locus.api.android.ACTION_MAP_PROVIDER" />
