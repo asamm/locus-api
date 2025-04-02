@@ -43,18 +43,18 @@ class Location() : Storable() {
 
     // SHORT
 
-    private var extraDataShort: SparseArrayCompat<Short>? = null
+    private var extraDataShort: ByteShortMap? = null
 
-    private fun getDataShort(key: Int): Short? {
+    private fun getDataShort(key: Byte): Short? {
         return extraDataShort?.get(key)
     }
 
-    private fun setDataShort(key: Int, value: Short?) {
+    private fun setDataShort(key: Byte, value: Short?) {
         if (value == null) {
             extraDataShort?.remove(key)
         } else {
             if (extraDataShort == null) {
-                extraDataShort = SparseArrayCompat(0)
+                extraDataShort = ByteShortMap()
             }
             extraDataShort?.put(key, value)
         }
@@ -62,18 +62,18 @@ class Location() : Storable() {
 
     // INT
 
-    private var extraDataInt: SparseArrayCompat<Int>? = null
+    private var extraDataInt: ByteIntMap? = null
 
-    private fun getDataInt(key: Int): Int? {
+    private fun getDataInt(key: Byte): Int? {
         return extraDataInt?.get(key)
     }
 
-    private fun setDataInt(key: Int, value: Int?) {
+    private fun setDataInt(key: Byte, value: Int?) {
         if (value == null) {
             extraDataInt?.remove(key)
         } else {
             if (extraDataInt == null) {
-                extraDataInt = SparseArrayCompat(0)
+                extraDataInt = ByteIntMap()
             }
             extraDataInt?.put(key, value)
         }
@@ -81,18 +81,18 @@ class Location() : Storable() {
 
     // LONG
 
-    private var extraDataLong: SparseArrayCompat<Long>? = null
+    private var extraDataLong: ByteLongMap? = null
 
-    private fun getDataLong(key: Int): Long? {
+    private fun getDataLong(key: Byte): Long? {
         return extraDataLong?.get(key)
     }
 
-    private fun setDataLong(key: Int, value: Long?) {
+    private fun setDataLong(key: Byte, value: Long?) {
         if (value == null) {
             extraDataLong?.remove(key)
         } else {
             if (extraDataLong == null) {
-                extraDataLong = SparseArrayCompat(0)
+                extraDataLong = ByteLongMap()
             }
             extraDataLong?.put(key, value)
         }
@@ -100,18 +100,18 @@ class Location() : Storable() {
 
     // FLOAT
 
-    private var extraDataFloat: SparseArrayCompat<Float>? = null
+    private var extraDataFloat: ByteFloatMap? = null
 
-    private fun getDataFloat(key: Int): Float? {
+    private fun getDataFloat(key: Byte): Float? {
         return extraDataFloat?.get(key)
     }
 
-    private fun setDataFloat(key: Int, value: Float?) {
+    private fun setDataFloat(key: Byte, value: Float?) {
         if (value == null) {
             extraDataFloat?.remove(key)
         } else {
             if (extraDataFloat == null) {
-                extraDataFloat = SparseArrayCompat(0)
+                extraDataFloat = ByteFloatMap()
             }
             extraDataFloat?.put(key, value)
         }
@@ -119,18 +119,18 @@ class Location() : Storable() {
 
     // DOUBLE
 
-    private var extraDataDouble: SparseArrayCompat<Double>? = null
+    private var extraDataDouble: ByteDoubleMap? = null
 
-    private fun getDataDouble(key: Int): Double? {
+    private fun getDataDouble(key: Byte): Double? {
         return extraDataDouble?.get(key)
     }
 
-    private fun setDataDouble(key: Int, value: Double?) {
+    private fun setDataDouble(key: Byte, value: Double?) {
         if (value == null) {
             extraDataDouble?.remove(key)
         } else {
             if (extraDataDouble == null) {
-                extraDataDouble = SparseArrayCompat(0)
+                extraDataDouble = ByteDoubleMap()
             }
             extraDataDouble?.put(key, value)
         }
@@ -138,18 +138,19 @@ class Location() : Storable() {
 
     // STRING
 
-    private var extraDataString: SparseArrayCompat<String>? = null
+    private var extraDataString: ByteStringMap? = null
 
-    private fun getDataString(key: Int): String? {
+    @Suppress("SameParameterValue")
+    private fun getDataString(key: Byte): String? {
         return extraDataString?.get(key)
     }
 
-    private fun setDataString(key: Int, value: String?) {
+    private fun setDataString(key: Byte, value: String?) {
         if (value == null) {
             extraDataString?.remove(key)
         } else {
             if (extraDataString == null) {
-                extraDataString = SparseArrayCompat(0)
+                extraDataString = ByteStringMap()
             }
             extraDataString?.put(key, value)
         }
@@ -179,52 +180,52 @@ class Location() : Storable() {
         longitude = loc.longitude
 
         // set extra data
-        extraDataShort?.clear()
+        extraDataShort = null
         loc.extraDataShort
             ?.takeIf { !it.isEmpty }
             ?.let {
-                for (i in 0 until it.size()) {
+                for (i in 0 until it.size) {
                     setDataShort(it.keyAt(i), it.valueAt(i))
                 }
             }
-        extraDataInt?.clear()
+        extraDataInt = null
         loc.extraDataInt
             ?.takeIf { !it.isEmpty }
             ?.let {
-                for (i in 0 until it.size()) {
+                for (i in 0 until it.size) {
                     setDataInt(it.keyAt(i), it.valueAt(i))
                 }
             }
-        extraDataLong?.clear()
+        extraDataLong = null
         loc.extraDataLong
             ?.takeIf { !it.isEmpty }
             ?.let {
-                for (i in 0 until it.size()) {
+                for (i in 0 until it.size) {
                     setDataLong(it.keyAt(i), it.valueAt(i))
                 }
             }
 
-        extraDataFloat?.clear()
+        extraDataFloat = null
         loc.extraDataFloat
             ?.takeIf { !it.isEmpty }
             ?.let {
-                for (i in 0 until it.size()) {
+                for (i in 0 until it.size) {
                     setDataFloat(it.keyAt(i), it.valueAt(i))
                 }
             }
-        extraDataDouble?.clear()
+        extraDataDouble = null
         loc.extraDataDouble
             ?.takeIf { !it.isEmpty }
             ?.let {
-                for (i in 0 until it.size()) {
+                for (i in 0 until it.size) {
                     setDataDouble(it.keyAt(i), it.valueAt(i))
                 }
             }
-        extraDataString?.clear()
+        extraDataString = null
         loc.extraDataString
             ?.takeIf { !it.isEmpty }
             ?.let {
-                for (i in 0 until it.size()) {
+                for (i in 0 until it.size) {
                     setDataString(it.keyAt(i), it.valueAt(i))
                 }
             }
@@ -745,39 +746,39 @@ class Location() : Storable() {
         // V3
         var size: Byte
         if (version >= 3) {
-            extraDataShort?.clear()
+            extraDataShort = null
             size = dr.readByte()
             for (i in 0 until size) {
-                setDataShort(dr.readByte().toInt(), dr.readShort())
+                setDataShort(dr.readByte(), dr.readShort())
             }
-            extraDataInt?.clear()
+            extraDataInt = null
             size = dr.readByte()
             for (i in 0 until size) {
-                setDataInt(dr.readByte().toInt(), dr.readInt())
+                setDataInt(dr.readByte(), dr.readInt())
             }
-            extraDataFloat?.clear()
+            extraDataFloat = null
             size = dr.readByte()
             for (i in 0 until size) {
-                setDataFloat(dr.readByte().toInt(), dr.readFloat())
+                setDataFloat(dr.readByte(), dr.readFloat())
             }
-            extraDataDouble?.clear()
+            extraDataDouble = null
             size = dr.readByte()
             for (i in 0 until size) {
-                setDataDouble(dr.readByte().toInt(), dr.readDouble())
+                setDataDouble(dr.readByte(), dr.readDouble())
             }
         }
 
         // V4
         if (version >= 4) {
-            extraDataLong?.clear()
+            extraDataLong = null
             size = dr.readByte()
             for (i in 0 until size) {
-                setDataLong(dr.readByte().toInt(), dr.readLong())
+                setDataLong(dr.readByte(), dr.readLong())
             }
-            extraDataString?.clear()
+            extraDataString = null
             size = dr.readByte()
             for (i in 0 until size) {
-                setDataString(dr.readByte().toInt(), dr.readString())
+                setDataString(dr.readByte(), dr.readString())
             }
         }
     }
@@ -845,8 +846,8 @@ class Location() : Storable() {
         extraDataShort
             ?.takeIf { !it.isEmpty }
             ?.let {
-                dw.writeByte(it.size().toByte())
-                for (i in 0 until it.size()) {
+                dw.writeByte(it.size.toByte())
+                for (i in 0 until it.size) {
                     dw.writeByte(it.keyAt(i).toByte())
                     dw.writeShort(it.valueAt(i).toInt())
                 }
@@ -857,8 +858,8 @@ class Location() : Storable() {
         extraDataInt
             ?.takeIf { !it.isEmpty }
             ?.let {
-                dw.writeByte(it.size().toByte())
-                for (i in 0 until it.size()) {
+                dw.writeByte(it.size.toByte())
+                for (i in 0 until it.size) {
                     dw.writeByte(it.keyAt(i).toByte())
                     dw.writeInt(it.valueAt(i))
                 }
@@ -869,8 +870,8 @@ class Location() : Storable() {
         extraDataFloat
             ?.takeIf { !it.isEmpty }
             ?.let {
-                dw.writeByte(it.size().toByte())
-                for (i in 0 until it.size()) {
+                dw.writeByte(it.size.toByte())
+                for (i in 0 until it.size) {
                     dw.writeByte(it.keyAt(i).toByte())
                     dw.writeFloat(it.valueAt(i))
                 }
@@ -881,8 +882,8 @@ class Location() : Storable() {
         extraDataDouble
             ?.takeIf { !it.isEmpty }
             ?.let {
-                dw.writeByte(it.size().toByte())
-                for (i in 0 until it.size()) {
+                dw.writeByte(it.size.toByte())
+                for (i in 0 until it.size) {
                     dw.writeByte(it.keyAt(i).toByte())
                     dw.writeDouble(it.valueAt(i))
                 }
@@ -895,8 +896,8 @@ class Location() : Storable() {
         extraDataLong
             ?.takeIf { !it.isEmpty }
             ?.let {
-                dw.writeByte(it.size().toByte())
-                for (i in 0 until it.size()) {
+                dw.writeByte(it.size.toByte())
+                for (i in 0 until it.size) {
                     dw.writeByte(it.keyAt(i).toByte())
                     dw.writeLong(it.valueAt(i))
                 }
@@ -907,8 +908,8 @@ class Location() : Storable() {
         extraDataString
             ?.takeIf { !it.isEmpty }
             ?.let {
-                dw.writeByte(it.size().toByte())
-                for (i in 0 until it.size()) {
+                dw.writeByte(it.size.toByte())
+                for (i in 0 until it.size) {
                     dw.writeByte(it.keyAt(i).toByte())
                     dw.writeString(it.valueAt(i))
                 }
@@ -996,41 +997,41 @@ class Location() : Storable() {
         // tag for logger
         private const val TAG = "Location"
 
-        private const val EXTRA_KEY_ALTITUDE = 10
-        private const val EXTRA_KEY_SPEED = 11
-        private const val EXTRA_KEY_BEARING = 12
-        private const val EXTRA_KEY_ACCURACY_HOR = 13
-        private const val EXTRA_KEY_ACCURACY_VER = 14
+        private const val EXTRA_KEY_ALTITUDE: Byte = 10
+        private const val EXTRA_KEY_SPEED: Byte = 11
+        private const val EXTRA_KEY_BEARING: Byte = 12
+        private const val EXTRA_KEY_ACCURACY_HOR: Byte = 13
+        private const val EXTRA_KEY_ACCURACY_VER: Byte = 14
 
-        private const val EXTRA_KEY_ORIG_LATITUDE = 15
-        private const val EXTRA_KEY_ORIG_LONGITUDE = 16
-        private const val EXTRA_KEY_ORIG_ALTITUDE = 17
+        private const val EXTRA_KEY_ORIG_LATITUDE: Byte = 15
+        private const val EXTRA_KEY_ORIG_LONGITUDE: Byte = 16
+        private const val EXTRA_KEY_ORIG_ALTITUDE: Byte = 17
 
-        private const val EXTRA_KEY_SENSOR_HEART_RATE = 20
-        private const val EXTRA_KEY_SENSOR_CADENCE = 21
-        private const val EXTRA_KEY_SENSOR_SPEED = 22
-        private const val EXTRA_KEY_SENSOR_TEMPERATURE = 23
-        private const val EXTRA_KEY_SENSOR_POWER = 24
-        private const val EXTRA_KEY_SENSOR_STRIDES = 25
+        private const val EXTRA_KEY_SENSOR_HEART_RATE: Byte = 20
+        private const val EXTRA_KEY_SENSOR_CADENCE: Byte = 21
+        private const val EXTRA_KEY_SENSOR_SPEED: Byte = 22
+        private const val EXTRA_KEY_SENSOR_TEMPERATURE: Byte = 23
+        private const val EXTRA_KEY_SENSOR_POWER: Byte = 24
+        private const val EXTRA_KEY_SENSOR_STRIDES: Byte = 25
 
-        private const val EXTRA_KEY_GNSS_QUALITY = 51
-        private const val EXTRA_KEY_GNSS_HDOP = 52
-        private const val EXTRA_KEY_GNSS_VDOP = 53
-        private const val EXTRA_KEY_GNSS_PDOP = 54
-        private const val EXTRA_KEY_GNSS_SATS_USED = 55
-        private const val EXTRA_KEY_GNSS_SATS_VISIBLE = 56
-        private const val EXTRA_KEY_GNSS_NTRIP_MOUNTPOINT = 57
-        private const val EXTRA_KEY_GNSS_OBSERVATION_TIME_START = 58
-        private const val EXTRA_KEY_GNSS_OBSERVATION_TIME_END = 59
-        private const val EXTRA_KEY_GNSS_DIFF_MESSAGE_AGE = 60
+        private const val EXTRA_KEY_GNSS_QUALITY: Byte = 51
+        private const val EXTRA_KEY_GNSS_HDOP: Byte = 52
+        private const val EXTRA_KEY_GNSS_VDOP: Byte = 53
+        private const val EXTRA_KEY_GNSS_PDOP: Byte = 54
+        private const val EXTRA_KEY_GNSS_SATS_USED: Byte = 55
+        private const val EXTRA_KEY_GNSS_SATS_VISIBLE: Byte = 56
+        private const val EXTRA_KEY_GNSS_NTRIP_MOUNTPOINT: Byte = 57
+        private const val EXTRA_KEY_GNSS_OBSERVATION_TIME_START: Byte = 58
+        private const val EXTRA_KEY_GNSS_OBSERVATION_TIME_END: Byte = 59
+        private const val EXTRA_KEY_GNSS_DIFF_MESSAGE_AGE: Byte = 60
 
-        private const val EXTRA_KEY_NUM_OF_OBSERVATIONS = 69
-        private const val EXTRA_KEY_ANTENNA_PHASE_CENTER_OFFSET = 70
-        private const val EXTRA_KEY_POLE_HEIGHT = 71
-        private const val EXTRA_KEY_GSM_SIGNAL_STRENGTH = 72
+        private const val EXTRA_KEY_NUM_OF_OBSERVATIONS: Byte = 69
+        private const val EXTRA_KEY_ANTENNA_PHASE_CENTER_OFFSET: Byte = 70
+        private const val EXTRA_KEY_POLE_HEIGHT: Byte = 71
+        private const val EXTRA_KEY_GSM_SIGNAL_STRENGTH: Byte = 72
 
         // internal method to visually verify IDs
-        private fun validateIds(id: Int) {
+        private fun validateIds(id: Byte) {
             when (id) {
                 EXTRA_KEY_ALTITUDE,
                 EXTRA_KEY_SPEED,
