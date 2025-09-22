@@ -101,16 +101,23 @@ configure([
         // signing of versions
         signingConfigs {
             debug {
-                storeFile file(System.getenv('ANDROID_SIGN_DEBUG').split("\\|")[0])
-                storePassword System.getenv('ANDROID_SIGN_DEBUG').split("\\|")[1]
-                keyAlias System.getenv('ANDROID_SIGN_DEBUG').split("\\|")[2]
-                keyPassword System.getenv('ANDROID_SIGN_DEBUG').split("\\|")[3]
+                // Use the environment variable if it exists, otherwise use an empty string
+                def androidSignDebug = System.getenv('ANDROID_SIGN_DEBUG') ?: ""
+                if (androidSignDebug.length() > 0) {
+                    storeFile file(androidSignDebug.split("\\|")[0])
+                    storePassword androidSignDebug.split("\\|")[1]
+                    keyAlias androidSignDebug.split("\\|")[2]
+                    keyPassword androidSignDebug.split("\\|")[3]
+                }
             }
             release {
-                storeFile file(System.getenv('ANDROID_SIGN_RELEASE').split("\\|")[0])
-                storePassword System.getenv('ANDROID_SIGN_RELEASE').split("\\|")[1]
-                keyAlias System.getenv('ANDROID_SIGN_RELEASE').split("\\|")[2]
-                keyPassword System.getenv('ANDROID_SIGN_RELEASE').split("\\|")[3]
+                def androidSignRelease = System.getenv('ANDROID_SIGN_RELEASE') ?: ""
+                if (androidSignRelease.length() > 0) {
+                    storeFile file(androidSignRelease.split("\\|")[0])
+                    storePassword androidSignRelease.split("\\|")[1]
+                    keyAlias androidSignRelease.split("\\|")[2]
+                    keyPassword androidSignRelease.split("\\|")[3]
+                }
             }
         }
 
