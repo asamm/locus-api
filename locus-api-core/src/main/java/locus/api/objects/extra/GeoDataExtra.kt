@@ -28,11 +28,12 @@ import locus.api.utils.DataWriterBigEndian
 import locus.api.utils.SparseArrayCompat
 import locus.api.utils.Utils
 import java.io.IOException
-import java.util.*
+import java.util.Arrays
 
 /**
  * Container with meta-data for GeoData objects.
  */
+@Suppress("unused")
 class GeoDataExtra : Storable() {
 
     /**
@@ -354,7 +355,7 @@ class GeoDataExtra : Storable() {
     /**
      * Type of attached object.
      */
-    enum class AttachType constructor(
+    enum class AttachType(
         // minimal value in storage
         internal val min: Int,
         // maximal allowed value in storage
@@ -504,7 +505,6 @@ class GeoDataExtra : Storable() {
 
         for (key in rangeFrom..rangeTo) {
             val value = getParameter(key)
-            @Suppress("ControlFlowWithEmptyBody")
             if (value == null) {
                 // no item
             } else if (value.endsWith(item)) {
@@ -639,8 +639,10 @@ class GeoDataExtra : Storable() {
 
         // basic routing profile, type "walk"
         const val VALUE_RTE_TYPE_FOOT_01 = 3
+
         // routing profile usually used for "hiking"
         const val VALUE_RTE_TYPE_FOOT_02 = 10
+
         // routing profile usually used for "climb" or "mountain hiking"
         const val VALUE_RTE_TYPE_FOOT_03 = 11
 
@@ -648,11 +650,13 @@ class GeoDataExtra : Storable() {
 
         // generic "cycle" profile
         const val VALUE_RTE_TYPE_CYCLE = 2
-        @Deprecated (
+
+        @Deprecated(
             message = "Use 'VALUE_RTE_TYPE_CYCLE_ROAD' instead. Validate usage because replacement has different ID!"
         )
         const val VALUE_RTE_TYPE_CYCLE_FAST = 4
-        @Deprecated (
+
+        @Deprecated(
             message = "Use 'VALUE_RTE_TYPE_CYCLE_ROAD' instead",
             replaceWith = ReplaceWith("VALUE_RTE_TYPE_CYCLE_ROAD")
         )
@@ -661,7 +665,8 @@ class GeoDataExtra : Storable() {
         const val VALUE_RTE_TYPE_CYCLE_GRAVEL = 5
         const val VALUE_RTE_TYPE_CYCLE_TOURING = 13
         const val VALUE_RTE_TYPE_CYCLE_MTB = 8
-        @Deprecated (
+
+        @Deprecated(
             message = "Use 'VALUE_RTE_TYPE_CYCLE_GRAVEL' instead",
             replaceWith = ReplaceWith("VALUE_RTE_TYPE_CYCLE_GRAVEL")
         )
@@ -671,10 +676,13 @@ class GeoDataExtra : Storable() {
 
         // generic "car" type
         const val VALUE_RTE_TYPE_CAR = 6
+
         // "fast car" type, where short time is primary
         const val VALUE_RTE_TYPE_CAR_FAST = 0
+
         // "eco car" type, where router tries to find good balance between speed & distance
         const val VALUE_RTE_TYPE_CAR_SHORT = 1
+
         // "motorcycle" type, optimized for two wheels
         const val VALUE_RTE_TYPE_MOTORCYCLE = 7
 
@@ -745,6 +753,7 @@ class GeoDataExtra : Storable() {
          * "STRING" in ByteArray
          */
         const val PAR_KML_TRIP_ID = 14
+
         /**
          * Reference to original Google Places item.
          */
