@@ -57,6 +57,10 @@ abstract class ByteValueMap<V>(initialCapacity: Int = 1) {
         }
     }
 
+    fun containsKey(key: Byte): Boolean {
+        return indexOfKey(key) >= 0
+    }
+
     fun keyAt(index: Int): Byte {
         if (index < 0 || index >= size) {
             throw IndexOutOfBoundsException("Index: $index, Size: $size")
@@ -71,8 +75,33 @@ abstract class ByteValueMap<V>(initialCapacity: Int = 1) {
         return getValue(index)
     }
 
-    fun containsKey(key: Byte): Boolean {
-        return indexOfKey(key) >= 0
+    /**
+     * Performs the given [action] on each key-value pair in the map.
+     *
+     * @param action The action to be performed on each key-value pair.
+     * The first parameter of the action is the key, and the second is the value.
+     */
+    fun forEach(action: (Byte, V) -> Unit) {
+        for (i in 0 until size) {
+            action(keys[i], getValue(i))
+        }
+    }
+
+    /**
+     * Returns a new list containing the results of applying the given [transform]
+     * function to each key-value pair in the map.
+     *
+     * @param R The type of elements in the resulting list.
+     * @param transform The function to apply to each key-value pair.
+     *   The first parameter of the transform is the key, and the second is the value.
+     * @return A new list containing the transformed elements.
+     */
+    fun <R> map(transform: (Byte, V) -> R): List<R> {
+        val result = ArrayList<R>(size.toInt())
+        for (i in 0 until size) {
+            result.add(transform(keys[i], getValue(i)))
+        }
+        return result
     }
 
     private fun ensureCapacity(minCapacity: Int) {
@@ -102,6 +131,20 @@ abstract class ByteValueMap<V>(initialCapacity: Int = 1) {
 //*****************************************************
 // IMPLEMENTATION
 //*****************************************************
+
+class ByteByteMap(initialCapacity: Int = 1) : ByteValueMap<ByteArray>(initialCapacity) {
+
+    private var byteValues: Array<ByteArray?> = arrayOfNulls(initialCapacity)
+
+    override fun getValue(index: Int): ByteArray = byteValues[index] ?: byteArrayOf()
+
+    override fun setValue(index: Int, value: ByteArray) { byteValues[index] = value }
+
+    override fun resizeValueCapacity(capacity: Int) {
+        byteValues = byteValues.copyOf(capacity)
+    }
+}
+
 
 class ByteDoubleMap(initialCapacity: Int = 1) : ByteValueMap<Double>(initialCapacity) {
 

@@ -43,10 +43,13 @@ dependencies {
     api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + KOTLIN_VERSION
     api 'androidx.annotation:annotation:1.9.1'
 
+    // API dependency
+    api project(':locus-api-core')
+
     // use in case of direct handling over Locus Core project
-    debugApi project(':locus-api-core')
+    //debugApi project(':locus-api-core')
     // use in case of publishing to Maven. 'api' needs to be set in artifact as well
-    releaseApi 'com.asamm:locus-api-core:' + API_VERSION
+    //releaseApi 'com.asamm:locus-api-core:' + API_VERSION
 }
 
 // Maven publisher
