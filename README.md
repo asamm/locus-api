@@ -1,6 +1,9 @@
+[![](https://jitpack.io/v/asamm/locus-api.svg)](https://jitpack.io/#asamm/locus-api)
+<!--
 [![API, core](https://maven-badges.herokuapp.com/maven-central/com.asamm/locus-api-core/badge.svg)](https://search.maven.org/artifact/com.asamm/locus-api-core)
 [![API, Android](https://maven-badges.herokuapp.com/maven-central/com.asamm/locus-api-android/badge.svg)](https://search.maven.org/artifact/com.asamm/locus-api-android)
 [![API, Android](https://github.com/asamm/locus-api/actions/workflows/release_locus_api_android.yml/badge.svg)](https://github.com/asamm/locus-api/actions/workflows/release_locus_api_android.yml)
+-->
 
 <p align="center">
     <a href="#current-version">Current version</a> | 
@@ -17,9 +20,6 @@ Library for [Locus Map](https://www.locusmap.app) application for Android device
 ## Current version
 
 Latest stable LT version: **0.9.65**
-Available versions on the maven repository: [here](https://repo1.maven.org/maven2/com/asamm/).
-
-How to **update to new 0.9.x** version? More about it [here](https://github.com/asamm/locus-api/wiki/Update-to-version-0.9.0).
 
 ## Structure
 
@@ -47,8 +47,7 @@ In most cases, Android version is the only interesting one here.
 
 ## Quick start
 
-Add [JitPack](https://jitpack.io) repository to your root `build.gradle` module config. This is currently necessary for the
-internal logger dependency.
+Add [JitPack](https://jitpack.io) repository to your root `build.gradle` module config.
 
 ```gradle.kts
 allprojects {
@@ -63,10 +62,10 @@ Add dependency to your `build.gradle` module config
 ```gradle.kts
 dependencies {
      // get Locus API (Java only)
-     implementation('com.asamm:locus-api-core:[latest]')
+     implementation('com.github.asamm.locus-api:locus-api-core:[latest]')
      
-     // or Locus Android API (for Android apps)
-     implementation('com.asamm:locus-api-android:[latest]')
+     // or Locus Android API (for Android apps, core included)
+     implementation('com.github.asamm.locus-api:locus-api-android:[latest]')
 }
 ```
 
