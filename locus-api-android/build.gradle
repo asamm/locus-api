@@ -58,4 +58,4 @@ ext {
     PUBLISH_ARTIFACT_ID = 'locus-api-android'
     PUBLISH_VERSION = API_VERSION
 }
-apply from: "${rootProject.projectDir}/gradle/publish-mavencentral.gradle"
+//apply from: "${rootProject.projectDir}/gradle/publish-mavencentral.gradle"
