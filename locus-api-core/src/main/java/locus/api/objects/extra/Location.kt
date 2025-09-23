@@ -265,9 +265,7 @@ class Location() : Storable() {
     /**
      * Altitude value of the location (in metres).
      */
-    var altitude: Double?
-        get() = getDataDouble(EXTRA_KEY_ALTITUDE)
-        set(value) = setDataDouble(EXTRA_KEY_ALTITUDE, value)
+    var altitude: Double? = null
 
     // SPEED
 
@@ -506,9 +504,9 @@ class Location() : Storable() {
      *
      * Used primarily for Locus GIS & it's flavors.
      */
-    var gnssMetadata: ByteArray?
-        get() = getDataBytes(EXTRA_KEY_GNSS_METADATA)
-        set(value) = setDataBytes(EXTRA_KEY_GNSS_METADATA, value)
+    var gisMetadata: ByteArray?
+        get() = getDataBytes(EXTRA_KEY_GIS_METADATA)
+        set(value) = setDataBytes(EXTRA_KEY_GIS_METADATA, value)
 
     //*************************************************
     // EXTRA SPECIAL VARIABLES
@@ -766,7 +764,7 @@ class Location() : Storable() {
                 // read all data
                 for (i in 0 until dataBytesCount) {
                     val key = dr.readByte()
-                    val valueSize = when(type) {
+                    val valueSize = when (type) {
                         DataType.BYTE -> dr.readByte().toUByte().toInt()
                         DataType.SHORT -> dr.readShort().toUShort().toInt()
                         DataType.INT -> dr.readInt()
@@ -778,6 +776,9 @@ class Location() : Storable() {
                 }
             }
         }
+
+        // remove un-used keys
+        setDataBytes(EXTRA_KEY_ALTITUDE, null)
     }
 
     @Throws(IOException::class)
@@ -790,72 +791,26 @@ class Location() : Storable() {
         dw.writeBoolean(altitude != null)
         dw.writeDouble(altitude ?: 0.0)
 
-        // write (deprecated) basic data
-        if (accuracyHor != null || bearing != null || speed != null) {
-            dw.writeBoolean(true)
-            dw.writeBoolean(accuracyHor != null)
-            dw.writeFloat(accuracyHor ?: 0.0f)
-            dw.writeBoolean(bearing != null)
-            dw.writeFloat(bearing ?: 0.0f)
-            dw.writeBoolean(speed != null)
-            dw.writeFloat(speed ?: 0.0f)
-        } else {
-            dw.writeBoolean(false)
-        }
+        // 'accuracyHor', 'bearing' and 'speed', removed
+        dw.writeBoolean(false)
 
-        // write sensors data (version 1+)
-        val extraSensor = ExtraSensor().apply {
-            if (sensorCadence != null) {
-                hasCadence = true
-                cadence = sensorCadence?.toInt() ?: 0
-            }
-            if (sensorHeartRate != null) {
-                hasHr = true
-                hr = sensorHeartRate?.toInt() ?: 0
-            }
-            if (sensorPower != null) {
-                hasPower = true
-                power = sensorPower ?: 0.0f
-            }
-            if (sensorSpeed != null) {
-                hasSpeed = true
-                speed = sensorSpeed ?: 0.0f
-            }
-            sensorStrides?.let {
-                hasStrides = true
-                strides = it
-            }
-            if (sensorTemperature != null) {
-                hasTemperature = true
-                temperature = sensorTemperature ?: 0.0f
-            }
-        }
-        extraSensor
-            .takeIf { it.hasData() }
-            ?.let {
-                dw.writeBoolean(true)
-                it.write(dw)
-            } ?: run {
-            dw.writeBoolean(false)
-        }
+        // V1
+        // sensors data, removed
+        dw.writeBoolean(false)
 
         // V3
         // extraDataShort, removed
         dw.writeByte(0.toByte())
-
         // extraDataInt, removed
         dw.writeByte(0.toByte())
-
         // extraDataFloat, removed
         dw.writeByte(0.toByte())
-
         // extraDataDouble, removed
         dw.writeByte(0.toByte())
 
         // V4
         // extraDataLong, removed
         dw.writeByte(0.toByte())
-
         // extraDataString, removed
         dw.writeByte(0.toByte())
 
@@ -890,7 +845,6 @@ class Location() : Storable() {
             ?: run {
                 dw.writeByte(0.toByte())
             }
-
     }
 
     /**
@@ -971,6 +925,7 @@ class Location() : Storable() {
         private const val TAG = "Location"
 
         private const val EXTRA_KEY_PROVIDER: Byte = 9
+        // not used anymore, altitude is handled directly
         private const val EXTRA_KEY_ALTITUDE: Byte = 10
         private const val EXTRA_KEY_SPEED: Byte = 11
         private const val EXTRA_KEY_BEARING: Byte = 12
@@ -998,7 +953,7 @@ class Location() : Storable() {
         private const val EXTRA_KEY_GNSS_OBSERVATION_TIME_START: Byte = 58
         private const val EXTRA_KEY_GNSS_OBSERVATION_TIME_END: Byte = 59
         private const val EXTRA_KEY_GNSS_DIFF_MESSAGE_AGE: Byte = 60
-        private const val EXTRA_KEY_GNSS_METADATA: Byte = 61
+        private const val EXTRA_KEY_GIS_METADATA: Byte = 61
 
         private const val EXTRA_KEY_NUM_OF_OBSERVATIONS: Byte = 69
         private const val EXTRA_KEY_ANTENNA_PHASE_CENTER_OFFSET: Byte = 70
@@ -1033,7 +988,7 @@ class Location() : Storable() {
                 EXTRA_KEY_GNSS_OBSERVATION_TIME_START,
                 EXTRA_KEY_GNSS_OBSERVATION_TIME_END,
                 EXTRA_KEY_GNSS_DIFF_MESSAGE_AGE,
-                EXTRA_KEY_GNSS_METADATA,
+                EXTRA_KEY_GIS_METADATA,
                 EXTRA_KEY_NUM_OF_OBSERVATIONS,
                 EXTRA_KEY_ANTENNA_PHASE_CENTER_OFFSET,
                 EXTRA_KEY_POLE_HEIGHT,
