@@ -1,6 +1,7 @@
 // apply plugins
 apply plugin: 'java'
 apply plugin: "kotlin"
+apply plugin: 'maven-publish'
 
 // set Java 8 compatibility
 sourceCompatibility = JavaVersion.VERSION_17
@@ -24,10 +25,19 @@ compileTestKotlin {
     }
 }
 
-// Maven publisher
-ext {
-    PUBLISH_GROUP_ID = 'com.asamm'
-    PUBLISH_ARTIFACT_ID = 'locus-api-core'
-    PUBLISH_VERSION = API_VERSION
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
-//apply from: "${rootProject.projectDir}/gradle/publish-mavencentral.gradle"
+
+// Maven publisher
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'com.asamm'
+            artifactId 'locus-api-core'
+            version API_VERSION
+            from components.java
+        }
+    }
+}

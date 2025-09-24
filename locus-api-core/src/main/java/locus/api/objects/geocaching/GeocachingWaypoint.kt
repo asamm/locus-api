@@ -49,10 +49,10 @@ class GeocachingWaypoint : Storable() {
      */
     var type: String = ""
         set(value) {
-            if (value.toLowerCase().startsWith("waypoint|")) {
-                field = value.substring("waypoint|".length)
+            field = if (value.lowercase().startsWith("waypoint|")) {
+                value.substring("waypoint|".length)
             } else {
-                field = value
+                value
             }
         }
     /**

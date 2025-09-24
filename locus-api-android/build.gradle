@@ -1,6 +1,7 @@
 // apply plugins
 apply plugin: 'com.android.library'
 apply plugin: "kotlin-android"
+apply plugin: 'maven-publish'
 
 // Android basics
 android {
@@ -53,9 +54,16 @@ dependencies {
 }
 
 // Maven publisher
-ext {
-    PUBLISH_GROUP_ID = 'com.asamm'
-    PUBLISH_ARTIFACT_ID = 'locus-api-android'
-    PUBLISH_VERSION = API_VERSION
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId 'com.asamm'
+            artifactId 'locus-api-android'
+            version API_VERSION
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }
-//apply from: "${rootProject.projectDir}/gradle/publish-mavencentral.gradle"

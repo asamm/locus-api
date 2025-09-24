@@ -211,7 +211,7 @@ enum class PointRteAction constructor(
             }
 
             // test on some special cases
-            return when (text.toLowerCase().trim { it <= ' ' }) {
+            return when (text.lowercase().trim { it <= ' ' }) {
                 "turn-left" -> LEFT
                 "turn-right" -> RIGHT
                 else -> UNDEFINED
