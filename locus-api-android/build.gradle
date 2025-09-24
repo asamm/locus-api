@@ -37,6 +37,10 @@ android {
     buildFeatures {
         aidl = true
     }
+
+    publishing {
+        singleVariant("release") {}
+    }
 }
 
 dependencies {

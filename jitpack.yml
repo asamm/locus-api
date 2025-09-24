@@ -1,2 +1,5 @@
 jdk:
  - openjdk17
+install:
+ - ./gradlew :locus-api-core:publishToMavenLocal
+ - ./gradlew :locus-api-android:publishToMavenLocal
