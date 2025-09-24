@@ -19,7 +19,7 @@ Library for [Locus Map](https://www.locusmap.app) application for Android device
 
 ## Current version
 
-Latest stable LT version: **0.9.65**
+Latest stable LT version: **0.9.66**
 
 ## Structure
 

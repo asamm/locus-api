@@ -22,13 +22,8 @@ package locus.api.objects.extra
 
 import com.asamm.loggerV2.logE
 import locus.api.objects.Storable
-import locus.api.utils.ByteByteMap
-import locus.api.utils.DataReaderBigEndian
-import locus.api.utils.DataWriterBigEndian
-import locus.api.utils.LocationCompute
+import locus.api.utils.*
 import java.io.IOException
-import java.nio.ByteBuffer
-import java.security.InvalidParameterException
 
 enum class LocationProvider(val textId: String?) {
 
@@ -47,121 +42,137 @@ class Location() : Storable() {
     // CONTAINERS
     //*************************************************
 
-    // BYTES
-
-    private var extraDataBytes: ByteByteMap? = null
-
-    fun getDataBytes(key: Byte): ByteArray? {
-        return extraDataBytes?.get(key)
-    }
-
-    fun setDataBytes(key: Byte, value: ByteArray?) {
-        if (value == null) {
-            extraDataBytes?.remove(key)
-            if (extraDataBytes?.isEmpty == true) {
-                extraDataBytes = null
-            }
-        } else {
-            if (extraDataBytes == null) {
-                extraDataBytes = ByteByteMap()
-            }
-            extraDataBytes?.put(key, value)
-        }
-    }
-
     // SHORT
 
-    fun getDataShort(key: Byte): Short? {
-        return getDataBytes(key)
-            ?.takeIf { it.size == 2 }
-            ?.let { ByteBuffer.wrap(it).short }
+    private var extraDataShort: ByteShortMap? = null
+
+    private fun getDataShort(key: Byte): Short? {
+        return extraDataShort?.get(key)
     }
 
-    fun setDataShort(key: Byte, value: Short?) {
-        setDataBytes(
-            key = key,
-            value = value?.let {
-                ByteBuffer.allocate(2).putShort(it).array()
+    private fun setDataShort(key: Byte, value: Short?) {
+        if (value == null) {
+            extraDataShort?.remove(key)
+            if (extraDataShort?.isEmpty == true) {
+                extraDataShort = null
             }
-        )
+        } else {
+            if (extraDataShort == null) {
+                extraDataShort = ByteShortMap()
+            }
+            extraDataShort?.put(key, value)
+        }
     }
 
     // INT
 
-    fun getDataInt(key: Byte): Int? {
-        return getDataBytes(key)
-            ?.takeIf { it.size == 4 }
-            ?.let { ByteBuffer.wrap(it).int }
+    private var extraDataInt: ByteIntMap? = null
+
+    private fun getDataInt(key: Byte): Int? {
+        return extraDataInt?.get(key)
     }
 
-    fun setDataInt(key: Byte, value: Int?) {
-        setDataBytes(
-            key = key,
-            value = value?.let {
-                ByteBuffer.allocate(4).putInt(it).array()
+    private fun setDataInt(key: Byte, value: Int?) {
+        if (value == null) {
+            extraDataInt?.remove(key)
+            if (extraDataInt?.isEmpty == true) {
+                extraDataInt = null
             }
-        )
+        } else {
+            if (extraDataInt == null) {
+                extraDataInt = ByteIntMap()
+            }
+            extraDataInt?.put(key, value)
+        }
     }
 
     // LONG
 
-    fun getDataLong(key: Byte): Long? {
-        return getDataBytes(key)
-            ?.takeIf { it.size == 8 }
-            ?.let { ByteBuffer.wrap(it).long }
+    private var extraDataLong: ByteLongMap? = null
+
+    private fun getDataLong(key: Byte): Long? {
+        return extraDataLong?.get(key)
     }
 
-    fun setDataLong(key: Byte, value: Long?) {
-        setDataBytes(
-            key = key,
-            value = value?.let {
-                ByteBuffer.allocate(8).putLong(it).array()
+    private fun setDataLong(key: Byte, value: Long?) {
+        if (value == null) {
+            extraDataLong?.remove(key)
+            if (extraDataLong?.isEmpty == true) {
+                extraDataLong = null
             }
-        )
+        } else {
+            if (extraDataLong == null) {
+                extraDataLong = ByteLongMap()
+            }
+            extraDataLong?.put(key, value)
+        }
     }
 
     // FLOAT
 
-    fun getDataFloat(key: Byte): Float? {
-        return getDataBytes(key)
-            ?.takeIf { it.size == 4 }
-            ?.let { ByteBuffer.wrap(it).float }
+    private var extraDataFloat: ByteFloatMap? = null
+
+    private fun getDataFloat(key: Byte): Float? {
+        return extraDataFloat?.get(key)
     }
 
-    fun setDataFloat(key: Byte, value: Float?) {
-        setDataBytes(
-            key = key,
-            value = value?.let {
-                ByteBuffer.allocate(4).putFloat(it).array()
+    private fun setDataFloat(key: Byte, value: Float?) {
+        if (value == null) {
+            extraDataFloat?.remove(key)
+            if (extraDataFloat?.isEmpty == true) {
+                extraDataFloat = null
             }
-        )
+        } else {
+            if (extraDataFloat == null) {
+                extraDataFloat = ByteFloatMap()
+            }
+            extraDataFloat?.put(key, value)
+        }
     }
 
     // DOUBLE
 
-    fun getDataDouble(key: Byte): Double? {
-        return getDataBytes(key)
-            ?.takeIf { it.size == 8 }
-            ?.let { ByteBuffer.wrap(it).double }
+    private var extraDataDouble: ByteDoubleMap? = null
+
+    private fun getDataDouble(key: Byte): Double? {
+        return extraDataDouble?.get(key)
     }
 
-    fun setDataDouble(key: Byte, value: Double?) {
-        setDataBytes(
-            key = key,
-            value = value?.let {
-                ByteBuffer.allocate(8).putDouble(it).array()
+    private fun setDataDouble(key: Byte, value: Double?) {
+        if (value == null) {
+            extraDataDouble?.remove(key)
+            if (extraDataDouble?.isEmpty == true) {
+                extraDataDouble = null
             }
-        )
+        } else {
+            if (extraDataDouble == null) {
+                extraDataDouble = ByteDoubleMap()
+            }
+            extraDataDouble?.put(key, value)
+        }
     }
 
     // STRING
 
-    fun getDataString(key: Byte): String? {
-        return getDataBytes(key)?.toString(Charsets.UTF_8)
+    private var extraDataString: ByteStringMap? = null
+
+    @Suppress("SameParameterValue")
+    private fun getDataString(key: Byte): String? {
+        return extraDataString?.get(key)
     }
 
-    fun setDataString(key: Byte, value: String?) {
-        setDataBytes(key, value?.toByteArray(Charsets.UTF_8))
+    private fun setDataString(key: Byte, value: String?) {
+        if (value == null) {
+            extraDataString?.remove(key)
+            if (extraDataString?.isEmpty == true) {
+                extraDataString = null
+            }
+        } else {
+            if (extraDataString == null) {
+                extraDataString = ByteStringMap()
+            }
+            extraDataString?.put(key, value)
+        }
     }
 
     //*************************************************
@@ -182,16 +193,59 @@ class Location() : Storable() {
      */
     fun set(loc: Location) {
         id = loc.id
+        provider = loc.provider
         time = loc.time
         latitude = loc.latitude
         longitude = loc.longitude
 
-        extraDataBytes = null
-        loc.extraDataBytes
+        // set extra data
+        extraDataShort = null
+        loc.extraDataShort
             ?.takeIf { !it.isEmpty }
             ?.let {
                 for (i in 0 until it.size) {
-                    setDataBytes(it.keyAt(i), it.valueAt(i))
+                    setDataShort(it.keyAt(i), it.valueAt(i))
+                }
+            }
+        extraDataInt = null
+        loc.extraDataInt
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                for (i in 0 until it.size) {
+                    setDataInt(it.keyAt(i), it.valueAt(i))
+                }
+            }
+        extraDataLong = null
+        loc.extraDataLong
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                for (i in 0 until it.size) {
+                    setDataLong(it.keyAt(i), it.valueAt(i))
+                }
+            }
+
+        extraDataFloat = null
+        loc.extraDataFloat
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                for (i in 0 until it.size) {
+                    setDataFloat(it.keyAt(i), it.valueAt(i))
+                }
+            }
+        extraDataDouble = null
+        loc.extraDataDouble
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                for (i in 0 until it.size) {
+                    setDataDouble(it.keyAt(i), it.valueAt(i))
+                }
+            }
+        extraDataString = null
+        loc.extraDataString
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                for (i in 0 until it.size) {
+                    setDataString(it.keyAt(i), it.valueAt(i))
                 }
             }
     }
@@ -229,12 +283,10 @@ class Location() : Storable() {
                     logE(tag = TAG) { "setLatitude($value), invalid latitude" }
                     -90.0
                 }
-
                 value > 90.0 -> {
                     logE(tag = TAG) { "setLatitude($value), invalid latitude" }
                     90.0
                 }
-
                 else -> value
             }
         }
@@ -256,16 +308,16 @@ class Location() : Storable() {
             field = newValue
         }
 
-    //*************************************************
-    // COMMON LOCATION VALUES
-    //*************************************************
-
     // ALTITUDE
 
     /**
      * Altitude value of the location (in metres).
      */
     var altitude: Double? = null
+
+    //*************************************************
+    // COMMON LOCATION VALUES
+    //*************************************************
 
     // SPEED
 
@@ -498,16 +550,6 @@ class Location() : Storable() {
         get() = getDataLong(EXTRA_KEY_GNSS_DIFF_MESSAGE_AGE)
         set(value) = setDataLong(EXTRA_KEY_GNSS_DIFF_MESSAGE_AGE, value)
 
-    /**
-     * Custom metadata about GNSS device that created this location object and also
-     * extra observation metadata.
-     *
-     * Used primarily for Locus GIS & it's flavors.
-     */
-    var gisMetadata: ByteArray?
-        get() = getDataBytes(EXTRA_KEY_GIS_METADATA)
-        set(value) = setDataBytes(EXTRA_KEY_GIS_METADATA, value)
-
     //*************************************************
     // EXTRA SPECIAL VARIABLES
     //*************************************************
@@ -543,6 +585,16 @@ class Location() : Storable() {
     var extraGsmSignalStrength: Int?
         get() = getDataInt(EXTRA_KEY_GSM_SIGNAL_STRENGTH)
         set(value) = setDataInt(EXTRA_KEY_GSM_SIGNAL_STRENGTH, value)
+
+    /**
+     * Custom metadata about GNSS device that created this location object and also
+     * extra observation metadata.
+     *
+     * Used primarily for Locus GIS & its flavors.
+     */
+    var gisMetadata: String?
+        get() = getDataString(EXTRA_KEY_GIS_METADATA)
+        set(value) = setDataString(EXTRA_KEY_GIS_METADATA, value)
 
     //*************************************************
     // BASIC EXTRA DATA
@@ -589,6 +641,7 @@ class Location() : Storable() {
 
     override fun toString(): String {
         return "Location [" +
+                "tag: $provider, " +
                 "time: $time, " +
                 "lon: $longitude, " +
                 "lat: $latitude, " +
@@ -642,7 +695,7 @@ class Location() : Storable() {
     //*************************************************
 
     override fun getVersion(): Int {
-        return 5
+        return 4
     }
 
     @Throws(IOException::class)
@@ -722,19 +775,22 @@ class Location() : Storable() {
         // V3
         var size: Byte
         if (version >= 3) {
-            extraDataBytes = null
+            extraDataShort = null
             size = dr.readByte()
             for (i in 0 until size) {
                 setDataShort(dr.readByte(), dr.readShort())
             }
+            extraDataInt = null
             size = dr.readByte()
             for (i in 0 until size) {
                 setDataInt(dr.readByte(), dr.readInt())
             }
+            extraDataFloat = null
             size = dr.readByte()
             for (i in 0 until size) {
                 setDataFloat(dr.readByte(), dr.readFloat())
             }
+            extraDataDouble = null
             size = dr.readByte()
             for (i in 0 until size) {
                 setDataDouble(dr.readByte(), dr.readDouble())
@@ -743,42 +799,20 @@ class Location() : Storable() {
 
         // V4
         if (version >= 4) {
+            extraDataLong = null
             size = dr.readByte()
             for (i in 0 until size) {
                 setDataLong(dr.readByte(), dr.readLong())
             }
+            extraDataString = null
             size = dr.readByte()
             for (i in 0 until size) {
                 setDataString(dr.readByte(), dr.readString())
             }
         }
 
-        // V5
-        if (version >= 5) {
-            val dataBytesCount = dr.readByte()
-            if (dataBytesCount > 0) {
-                val typeId = dr.readByte()
-                val type = DataType.entries.find { it.id == typeId }
-                    ?: throw InvalidParameterException("Unknown type id: $typeId")
-
-                // read all data
-                for (i in 0 until dataBytesCount) {
-                    val key = dr.readByte()
-                    val valueSize = when (type) {
-                        DataType.BYTE -> dr.readByte().toUByte().toInt()
-                        DataType.SHORT -> dr.readShort().toUShort().toInt()
-                        DataType.INT -> dr.readInt()
-                    }
-
-                    // read and set data
-                    val value = dr.readBytes(valueSize)
-                    setDataBytes(key, value)
-                }
-            }
-        }
-
-        // remove un-used keys
-        setDataBytes(EXTRA_KEY_ALTITUDE, null)
+        // remove un-used keys. It may still be stored in structure, so remove it
+        setDataDouble(EXTRA_KEY_ALTITUDE, null)
     }
 
     @Throws(IOException::class)
@@ -791,55 +825,128 @@ class Location() : Storable() {
         dw.writeBoolean(altitude != null)
         dw.writeDouble(altitude ?: 0.0)
 
-        // 'accuracyHor', 'bearing' and 'speed', removed
-        dw.writeBoolean(false)
+        // TODO remove up to V3+ section writes in the moment, we may be sure, all clients use new system
+        // 1. 1. 2027 is save enough.
 
-        // V1
-        // sensors data, removed
-        dw.writeBoolean(false)
+        // write (deprecated) basic data
+        if (accuracyHor != null || bearing != null || speed != null) {
+            dw.writeBoolean(true)
+            dw.writeBoolean(accuracyHor != null)
+            dw.writeFloat(accuracyHor ?: 0.0f)
+            dw.writeBoolean(bearing != null)
+            dw.writeFloat(bearing ?: 0.0f)
+            dw.writeBoolean(speed != null)
+            dw.writeFloat(speed ?: 0.0f)
+        } else {
+            dw.writeBoolean(false)
+        }
+
+        // write sensors data (version 1+)
+        val extraSensor = ExtraSensor().apply {
+            if (sensorCadence != null) {
+                hasCadence = true
+                cadence = sensorCadence?.toInt() ?: 0
+            }
+            if (sensorHeartRate != null) {
+                hasHr = true
+                hr = sensorHeartRate?.toInt() ?: 0
+            }
+            if (sensorPower != null) {
+                hasPower = true
+                power = sensorPower ?: 0.0f
+            }
+            if (sensorSpeed != null) {
+                hasSpeed = true
+                speed = sensorSpeed ?: 0.0f
+            }
+            sensorStrides?.let {
+                hasStrides = true
+                strides = it
+            }
+            if (sensorTemperature != null) {
+                hasTemperature = true
+                temperature = sensorTemperature ?: 0.0f
+            }
+        }
+        extraSensor
+            .takeIf { it.hasData() }
+            ?.let {
+                dw.writeBoolean(true)
+                it.write(dw)
+            } ?: run {
+            dw.writeBoolean(false)
+        }
 
         // V3
-        // extraDataShort, removed
-        dw.writeByte(0.toByte())
-        // extraDataInt, removed
-        dw.writeByte(0.toByte())
-        // extraDataFloat, removed
-        dw.writeByte(0.toByte())
-        // extraDataDouble, removed
-        dw.writeByte(0.toByte())
+        extraDataShort
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                dw.writeByte(it.size)
+                for (i in 0 until it.size) {
+                    dw.writeByte(it.keyAt(i))
+                    dw.writeShort(it.valueAt(i).toInt())
+                }
+            }
+            ?: run {
+                dw.writeByte(0.toByte())
+            }
+        extraDataInt
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                dw.writeByte(it.size)
+                for (i in 0 until it.size) {
+                    dw.writeByte(it.keyAt(i))
+                    dw.writeInt(it.valueAt(i))
+                }
+            }
+            ?: run {
+                dw.writeByte(0.toByte())
+            }
+        extraDataFloat
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                dw.writeByte(it.size)
+                for (i in 0 until it.size) {
+                    dw.writeByte(it.keyAt(i))
+                    dw.writeFloat(it.valueAt(i))
+                }
+            }
+            ?: run {
+                dw.writeByte(0.toByte())
+            }
+        extraDataDouble
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                dw.writeByte(it.size)
+                for (i in 0 until it.size) {
+                    dw.writeByte(it.keyAt(i))
+                    dw.writeDouble(it.valueAt(i))
+                }
+            }
+            ?: run {
+                dw.writeByte(0.toByte())
+            }
 
         // V4
-        // extraDataLong, removed
-        dw.writeByte(0.toByte())
-        // extraDataString, removed
-        dw.writeByte(0.toByte())
-
-        // V5
-        extraDataBytes
+        extraDataLong
             ?.takeIf { !it.isEmpty }
-            ?.let { data ->
-                // detect biggest size of the container
-                val maxSize = data.map { key, value -> value }.maxOf { it.size }
-                val requiredType = when {
-                    maxSize > Short.MAX_VALUE -> DataType.INT
-                    maxSize > Byte.MAX_VALUE -> DataType.SHORT
-                    else -> DataType.BYTE
+            ?.let {
+                dw.writeByte(it.size)
+                for (i in 0 until it.size) {
+                    dw.writeByte(it.keyAt(i))
+                    dw.writeLong(it.valueAt(i))
                 }
-
-                // write number of items & format
-                dw.writeByte(data.size)
-                dw.writeByte(requiredType.id)
-
-                // write all data
-                for (i in 0 until data.size) {
-                    dw.writeByte(data.keyAt(i))
-                    val value = data.valueAt(i)
-                    when (requiredType) {
-                        DataType.BYTE -> dw.writeByte(value.size.toByte())
-                        DataType.SHORT -> dw.writeShort(value.size)
-                        DataType.INT -> dw.writeInt(value.size)
-                    }
-                    dw.write(value)
+            }
+            ?: run {
+                dw.writeByte(0.toByte())
+            }
+        extraDataString
+            ?.takeIf { !it.isEmpty }
+            ?.let {
+                dw.writeByte(it.size)
+                for (i in 0 until it.size) {
+                    dw.writeByte(it.keyAt(i))
+                    dw.writeString(it.valueAt(i))
                 }
             }
             ?: run {
@@ -992,16 +1099,8 @@ class Location() : Storable() {
                 EXTRA_KEY_NUM_OF_OBSERVATIONS,
                 EXTRA_KEY_ANTENNA_PHASE_CENTER_OFFSET,
                 EXTRA_KEY_POLE_HEIGHT,
-                EXTRA_KEY_GSM_SIGNAL_STRENGTH -> {
-                }
+                EXTRA_KEY_GSM_SIGNAL_STRENGTH -> {}
             }
         }
     }
-}
-
-enum class DataType(val id: Byte) {
-
-    BYTE(1.toByte()),
-    SHORT(2.toByte()),
-    INT(3.toByte()),
 }

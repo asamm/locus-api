@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.66] - 2025-09-24
+### Changed
+- reverted `Location` object to V4, so close to old system due to too big incompatibility with older versions
+
 ## [0.9.65] - 2025-09-23
 ### Changed
 - new data structure inside `Location` object to handle inner data
