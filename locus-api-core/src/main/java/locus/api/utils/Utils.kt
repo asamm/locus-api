@@ -22,14 +22,14 @@ package locus.api.utils
 
 import com.asamm.loggerV2.logE
 import java.io.Closeable
-import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
 object Utils {
 
     // tag for logger
     private const val TAG = "Utils"
 
-    private val NEW_LINE = System.getProperty("line.separator")
+    private val NEW_LINE = System.lineSeparator()
 
     //*************************************************
     // PARSE SECTION
@@ -119,7 +119,7 @@ object Utils {
 
     fun doStringToBytes(text: String): ByteArray {
         return try {
-            text.toByteArray(charset("UTF-8"))
+            text.toByteArray(StandardCharsets.UTF_8)
         } catch (e: Exception) {
             logE(tag = TAG, ex = e) { "doStringToBytes($text)" }
             ByteArray(0)
@@ -128,7 +128,7 @@ object Utils {
 
     fun doBytesToString(data: ByteArray): String {
         return try {
-            String(data, Charset.forName("UTF-8"))
+            String(data, StandardCharsets.UTF_8)
         } catch (e: Exception) {
             logE(tag = TAG, ex = e) { "doBytesToString($data)" }
             ""

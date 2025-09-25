@@ -9,7 +9,8 @@ package locus.api.objects.extra
  *
  * @param id id of item
  */
-enum class PointRteAction constructor(
+@Suppress("unused")
+enum class PointRteAction(
         /**
          * Unique ID of action
          */
@@ -171,24 +172,15 @@ enum class PointRteAction constructor(
     // HELP TOOLS
     companion object {
 
-        // array of enums for optimized/faster access
-        private val VALUES = values()
-
         /**
          * Get action defined by it's ID.
          *
          * @param id ID of required action
-         * @return found action or 'null' if not found
+         * @return found action or 'UNDEFINED' if not found
          */
         fun getActionById(id: Int): PointRteAction {
-            for (action in VALUES) {
-                if (action.id == id) {
-                    return action
-                }
-            }
-
-            // return action not found
-            return UNDEFINED
+            return entries.find { it.id == id }
+                ?: UNDEFINED
         }
 
         /**
@@ -204,11 +196,9 @@ enum class PointRteAction constructor(
             }
 
             // test actions
-            for (action in VALUES) {
-                if (text.equals(action.textId, ignoreCase = true)) {
-                    return action
-                }
-            }
+            entries
+                .find { text.equals(it.textId, ignoreCase = true) }
+                ?.let { return it }
 
             // test on some special cases
             return when (text.lowercase().trim { it <= ' ' }) {
@@ -219,7 +209,7 @@ enum class PointRteAction constructor(
         }
 
         /**
-         * Get aciton for roundabouts, defined by number of exit.
+         * Get action for roundabouts, defined by number of exit.
          *
          * @param exitNo exit no. (supported values are 1 - 8)
          * @return action for roundabout

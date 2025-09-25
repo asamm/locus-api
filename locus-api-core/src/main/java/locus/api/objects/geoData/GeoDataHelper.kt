@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package locus.api.objects.geoData
 
 import locus.api.objects.extra.GeoDataExtra
@@ -154,11 +156,18 @@ var GeoData.parameterAddressCountry: String
  *
  * @return index in track or '-1' if no index is defined
  */
-val Point.parameterRteIndex: Int
+var Point.parameterRteIndex: Int
     get() {
         return getParameter(GeoDataExtra.PAR_RTE_INDEX)
-            ?.let { Utils.parseInt(it) }
+            ?.let { Utils.parseInt(it, -1) }
             ?: -1
+    }
+    set(value) {
+        if (value >= 0) {
+            addParameter(GeoDataExtra.PAR_RTE_INDEX, value.toString())
+        } else {
+            removeParameter(GeoDataExtra.PAR_RTE_INDEX)
+        }
     }
 
 // PAR_RTE_DISTANCE_F
@@ -232,8 +241,9 @@ var Point.parameterRteSpeed: Float
 var Point.parameterRteAction: PointRteAction
     get() {
         return getParameter(GeoDataExtra.PAR_RTE_POINT_ACTION)
-            ?.takeIf { it.isNotEmpty() }
-            ?.let { PointRteAction.getActionById(Utils.parseInt(it)) }
+            ?.let { Utils.parseInt(it, -1) }
+            ?.takeIf { it >= 0 }
+            ?.let { PointRteAction.getActionById(it) }
             ?: PointRteAction.UNDEFINED
     }
     set(value) {

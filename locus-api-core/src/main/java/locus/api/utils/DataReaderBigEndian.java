@@ -4,7 +4,7 @@ import com.asamm.loggerV2.LogCategory;
 import com.asamm.loggerV2.LogKt;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +14,11 @@ public class DataReaderBigEndian {
 
     // tag for logger
     private static final String TAG = "DataReaderBigEndian";
-    // UTF-8 charset
-    private static final Charset UTF8 = Charset.forName("UTF-8");
 
     // current position in buffer
     private int mPosition;
     // buffer with data
-    private byte[] mBuffer;
+    private final byte[] mBuffer;
 
     public DataReaderBigEndian(byte[] data) throws IOException {
         if (data == null) {
@@ -128,7 +126,7 @@ public class DataReaderBigEndian {
         } else {
             checkPosition(textLength);
             return new String(mBuffer,
-                    mPosition - textLength, textLength, UTF8);
+                    mPosition - textLength, textLength, StandardCharsets.UTF_8);
         }
     }
 
@@ -145,7 +143,7 @@ public class DataReaderBigEndian {
         } else {
             checkPosition(textLength);
             return new String(mBuffer,
-                    mPosition - textLength, textLength, UTF8);
+                    mPosition - textLength, textLength, StandardCharsets.UTF_8);
         }
     }
 
