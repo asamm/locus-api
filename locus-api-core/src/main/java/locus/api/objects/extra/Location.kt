@@ -197,6 +197,7 @@ class Location() : Storable() {
         time = loc.time
         latitude = loc.latitude
         longitude = loc.longitude
+        altitude = loc.altitude
 
         // set extra data
         extraDataShort = null
