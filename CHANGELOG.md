@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.71] - 2025-10-03
+### Fixed
+- missing 'altitude' when restoring altitude on older API versions
+
 ## [0.9.70] - 2025-09-26
 ### Fixed
 - missing 'altitude' when making copy of location

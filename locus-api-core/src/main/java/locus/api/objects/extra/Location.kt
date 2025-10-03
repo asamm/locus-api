@@ -197,7 +197,6 @@ class Location() : Storable() {
         time = loc.time
         latitude = loc.latitude
         longitude = loc.longitude
-        altitude = loc.altitude
 
         // set extra data
         extraDataShort = null
@@ -309,16 +308,18 @@ class Location() : Storable() {
             field = newValue
         }
 
+    //*************************************************
+    // COMMON LOCATION VALUES
+    //*************************************************
+
     // ALTITUDE
 
     /**
      * Altitude value of the location (in metres).
      */
-    var altitude: Double? = null
-
-    //*************************************************
-    // COMMON LOCATION VALUES
-    //*************************************************
+    var altitude: Double?
+        get() = getDataDouble(EXTRA_KEY_ALTITUDE)
+        set(value) = setDataDouble(EXTRA_KEY_ALTITUDE, value)
 
     // SPEED
 
@@ -811,9 +812,6 @@ class Location() : Storable() {
                 setDataString(dr.readByte(), dr.readString())
             }
         }
-
-        // remove un-used keys. It may still be stored in structure, so remove it
-        setDataDouble(EXTRA_KEY_ALTITUDE, null)
     }
 
     @Throws(IOException::class)
@@ -1033,7 +1031,6 @@ class Location() : Storable() {
         private const val TAG = "Location"
 
         private const val EXTRA_KEY_PROVIDER: Byte = 9
-        // not used anymore, altitude is handled directly
         private const val EXTRA_KEY_ALTITUDE: Byte = 10
         private const val EXTRA_KEY_SPEED: Byte = 11
         private const val EXTRA_KEY_BEARING: Byte = 12
