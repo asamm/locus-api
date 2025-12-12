@@ -1008,6 +1008,14 @@ class GeoDataExtra : Storable() {
          */
         const val PAR_RTE_WARNINGS = 126
 
+        /**
+         * Configuration of (route) plan as defined in route planner.
+         * V2 serialize data over KMP "Routing URL" library.
+         *
+         * "STRING" in ByteArray
+         */
+        const val PAR_RTE_PLAN_DEFINITION_V2 = 127
+
         //*********************************************
         // OSM BUGS (300 - 309)
         //*********************************************
