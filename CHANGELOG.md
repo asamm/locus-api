@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.9.73] - 2026-05-18
+### Fixed
+- `NullPointerException` in `FieldNotesHelper.createItems` when reading `TrackableLog` records with NULL string columns (Locus Map issue #734)
+
 ## [0.9.72] - 2025-12-12
 ### Added
 - `PAR_RTE_PLAN_DEFINITION_V2` constant into `GeoDataExtra`

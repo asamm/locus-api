@@ -685,28 +685,28 @@ class FieldNotesHelper private constructor() {
                     // set parameters (optional)
                     cursor.getColumnIndex(ColTrackableLogs.TB_CODE)
                             .takeIf { it >= 0 }
-                            ?.let { tbCode = cursor.getString(it) }
+                            ?.let { tbCode = cursor.getString(it) ?: "" }
                     cursor.getColumnIndex(ColTrackableLogs.NAME)
                             .takeIf { it >= 0 }
-                            ?.let { name = cursor.getString(it) }
+                            ?.let { name = cursor.getString(it) ?: "" }
                     cursor.getColumnIndex(ColTrackableLogs.ICON)
                             .takeIf { it >= 0 }
-                            ?.let { icon = cursor.getString(it) }
+                            ?.let { icon = cursor.getString(it) ?: "" }
                     cursor.getColumnIndex(ColTrackableLogs.CACHE_CODE)
                             .takeIf { it >= 0 }
-                            ?.let { cacheCode = cursor.getString(it) }
+                            ?.let { cacheCode = cursor.getString(it) ?: "" }
                     cursor.getColumnIndex(ColTrackableLogs.ACTION)
                             .takeIf { it >= 0 }
                             ?.let { action = cursor.getInt(it) }
                     cursor.getColumnIndex(ColTrackableLogs.TRACKING_CODE)
                             .takeIf { it >= 0 }
-                            ?.let { trackingCode = cursor.getString(it) }
+                            ?.let { trackingCode = cursor.getString(it) ?: "" }
                     cursor.getColumnIndex(ColTrackableLogs.TIME)
                             .takeIf { it >= 0 }
                             ?.let { time = cursor.getLong(it) }
                     cursor.getColumnIndex(ColTrackableLogs.NOTE)
                             .takeIf { it >= 0 }
-                            ?.let { note = cursor.getString(it) }
+                            ?.let { note = cursor.getString(it) ?: "" }
                     cursor.getColumnIndex(ColTrackableLogs.LOGGED)
                             .takeIf { it >= 0 }
                             ?.let { isLogged = cursor.getInt(it) == 1 }
