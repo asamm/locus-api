@@ -129,6 +129,29 @@
             </intent-filter>
         </service>
 
+        <!--
+            Locus parser-style sensor adapter: exposes a standard BLE Heart Rate
+            Service strap to Locus Map. Locus owns the BT4 scan + GATT lifecycle;
+            this service only decodes byte frames. See
+            adapter/HrmAdapterService.kt for the parser and res/xml/locus_adapter.xml
+            for the device-type catalogue Locus reads pre-bind.
+        -->
+        <service
+            android:name=".adapter.HrmAdapterService"
+            android:exported="true"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/adapter_hrm_display_name"
+            android:permission="com.asamm.locus.permission.SENSOR_ADAPTER">
+
+            <intent-filter>
+                <action android:name="locus.api.android.ACTION_SENSOR_ADAPTER_PARSER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="locus.api.android.SENSOR_ADAPTER"
+                android:resource="@xml/locus_adapter" />
+        </service>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="@string/file_provider_authority"
