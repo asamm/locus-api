@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Sample Locus adapter manifest. Place at:
+        res/xml/locus_adapter.xml
+    in your adapter app's resources, then reference it from your AndroidManifest:
+
+        <service
+            android:name=".MyAdapterService"
+            android:exported="true"
+            android:icon="@drawable/ic_my_adapter"
+            android:permission="com.asamm.locus.permission.SENSOR_ADAPTER">
+            <intent-filter>
+                <action android:name="locus.api.android.ACTION_SENSOR_ADAPTER_PARSER" />
+            </intent-filter>
+            <meta-data
+                android:name="locus.api.android.SENSOR_ADAPTER"
+                android:resource="@xml/locus_adapter" />
+        </service>
+
+    Locus reads <adapter> root attributes + <deviceType> children without
+    binding the service; the picker icon comes from the service's android:icon
+    via loadIcon(pm). Bind only happens once the user starts a sensor session.
+
+    Full schema reference: docs/android/guides/adapter-apps/manifest-schema.md
+-->
+<adapter
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    apiVersion="1"
+    schemaVersion="1"
+    id="com.example.bosch/EBikeAdapter"
+    displayName="@string/adapter_display_name">
+
+    <!--
+        One <deviceType> per kind of hardware this adapter knows how to handle.
+        Each type declares its own connector + refIds + characteristics. Multiple
+        physical units of the same hardware (e.g. two paired Bosch eBikes) share
+        the same <deviceType> — Locus persists them as separate pairings keyed
+        on (adapterId, BLE MAC), and your parseCharacteristic receives the
+        device's BLE MAC as the deviceId parameter on every call.
+
+        Multi-type adapters (e.g. one adapter handling Bosch + Shimano e-bikes)
+        list multiple <deviceType> entries; switch on the deviceTypeId
+        parameter in parseCharacteristic for protocol-specific parsing.
+    -->
+    <deviceType
+        id="bosch-ldi"
+        displayName="Bosch LDI"
+        connectionType="BT4"
+        scanFilter="BoschEBike-">
+
+        <!--
+            refIds devices of this type can produce. Symbolic names resolve to
+            integer refIds via LocusVariables; adapter-side writes for refIds
+            not listed here are dropped on the Locus side.
+        -->
+        <refId variable="SENSOR_HEART_RATE" />
+        <refId variable="SENSOR_CADENCE" />
+        <refId variable="SENSOR_POWER" />
+        <refId variable="SENSOR_BICYCLE_BATTERY" />
+        <refId variable="SENSOR_RANGE" />
+
+        <!--
+            BT4 GATT characteristics Locus drives for instances of this type.
+            NOTIFY = subscribe. READ_POLLED = poll on pollIntervalMs (omit for
+            NOTIFY). WRITE = held for SensorValueBatch.writeBacks dispatch.
+        -->
+        <characteristic
+            uuid="0000eb21-eaa2-11e9-81b4-2a2ae2dbcce4"
+            mode="NOTIFY" />
+
+        <characteristic
+            uuid="0000eb22-eaa2-11e9-81b4-2a2ae2dbcce4"
+            mode="WRITE" />
+    </deviceType>
+</adapter>
