@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 
 /**
  * Payload passed by Locus to the adapter's `init(...)` AIDL call. Carries the running
- * Locus's identification plus the set of [LocusVariables] refIds Locus understands —
+ * Locus's identification plus the set of [LocusVariable] refIds Locus understands —
  * the adapter uses the refId list to decide which of the refIds declared in its
  * manifest XML to actually emit at runtime.
  *

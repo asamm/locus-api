@@ -6,19 +6,14 @@ import locus.api.android.features.sensorAdapter.LocusBindContext;
 import locus.api.android.features.sensorAdapter.parser.SensorValueBatch;
 
 /**
- * Bound service interface for **parser-style** adapter apps — the simpler of the two
- * adapter models: Locus owns the BT/USB/ANT/... transport, scanning, pairing, and
- * GATT lifecycle. The adapter only declares its device types in
+ * Bound service interface for adapter apps: Locus owns the BT/USB/ANT/... transport,
+ * scanning, pairing, and GATT lifecycle. The adapter only declares its device types in
  * `res/xml/locus_adapter.xml` and implements byte-frame parsing here.
  *
- * All static metadata (apiVersion, schemaVersion, id, displayName, supported refIds,
+ * All static metadata (apiVersion, id, displayName, supported refIds,
  * device-type catalogue) lives in the adapter's manifest XML so Locus can populate
  * its picker without binding. Bind happens only when the user starts a sensor
  * session with one of the adapter's device types.
- *
- * The companion "push-style" adapter API (adapter owns its own connection
- * lifecycle, Locus only signals start/stop) is a separate AIDL shape, deferred
- * until a real push-style adapter use case drives its design.
  */
 interface ILocusSensorAdapterParser {
 

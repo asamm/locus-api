@@ -140,7 +140,7 @@
             android:name=".adapter.HrmAdapterService"
             android:exported="true"
             android:icon="@drawable/ic_launcher"
-            android:label="@string/adapter_hrm_display_name"
+            android:label="@string/service_hrm_name"
             android:permission="com.asamm.locus.permission.SENSOR_ADAPTER">
 
             <intent-filter>

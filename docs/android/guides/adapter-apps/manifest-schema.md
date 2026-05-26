@@ -36,7 +36,7 @@ Required attributes:
 |---|---|
 | `android:exported="true"` | Locus is a separate package — the service must be reachable across process boundaries. |
 | `android:permission="com.asamm.locus.permission.SENSOR_ADAPTER"` | Only Locus (which holds this permission) can bind. Locus declares the permission with `protectionLevel="normal"` so third-party adapters can require it without code-signing constraints. |
-| `<action android:name="locus.api.android.ACTION_SENSOR_ADAPTER_PARSER" />` | Discovery key — Locus queries `PackageManager.queryIntentServices` on this action to find parser-style adapters. (Push-style adapters use a different action when they ship.) |
+| `<action android:name="locus.api.android.ACTION_SENSOR_ADAPTER_PARSER" />` | Discovery key — Locus queries `PackageManager.queryIntentServices` on this action to find adapters. |
 | `<meta-data android:name="locus.api.android.SENSOR_ADAPTER" … />` | Points Locus at the device-type catalog XML below. |
 | `android:icon` (optional) | Adapter icon shown in the picker. Locus loads it via `PackageManager.getServiceInfo(...).loadIcon(pm)` — standard Android drawable resource, no bytes over IPC. Falls back to the application icon when omitted. |
 
@@ -51,7 +51,6 @@ code rather than typing the strings.
 <adapter
     xmlns:android="http://schemas.android.com/apk/res/android"
     apiVersion="1"
-    schemaVersion="1"
     id="com.example.bosch/EBikeAdapter"
     displayName="@string/adapter_display_name">
 
@@ -62,6 +61,7 @@ code rather than typing the strings.
     <deviceType
         id="bosch-ldi"
         displayName="Bosch LDI"
+        icon="@drawable/ic_bosch_ldi"
         connectionType="BT4"
         scanFilter="BoschEBike-">
 
@@ -85,8 +85,7 @@ when the user starts a sensor session.
 
 | Attribute | Required | Notes |
 |---|---|---|
-| `apiVersion` | yes | The `AdapterApi.VERSION` value the adapter is built against. Locus rejects adapters whose `apiVersion` it can't speak — entirely pre-bind, so incompatible adapters never appear in the picker. |
-| `schemaVersion` | yes | XML schema version, currently `1`. Bumped independently of `apiVersion` when the manifest format adds breaking changes. |
+| `apiVersion` | yes | The `AdapterApi.VERSION` value the adapter is built against. Locus rejects adapters whose `apiVersion` it can't speak — entirely pre-bind, so incompatible adapters never appear in the picker. Bumped on any breaking change to either the AIDL surface or the manifest XML format; the two evolve together. |
 | `id` | yes | Stable adapter identifier. Convention: `{packageName}/{ServiceClassName}`. |
 | `displayName` | yes | User-visible adapter name. Use `@string/...` for localization. |
 
@@ -103,12 +102,13 @@ parameter on each `parseCharacteristic(...)` call.
 |---|---|---|
 | `id` | yes | Stable type identifier. Locus passes this back to the adapter as the `deviceTypeId` parameter on every `parseCharacteristic` call. |
 | `displayName` | yes | User-visible type name shown in the picker pre-bind. |
-| `connectionType` | yes | Currently only `BT4` in v1. Other parser-side transports (BT3, USB, ANT, GNSS) land in later PRs. Push-style adapters (adapter owns its own transport) are a separate API surface, deferred. |
+| `icon` | no | Per-type picker icon — an `@drawable/...` resource in your adapter package. Locus loads it from your resources (no bytes over IPC). Falls back to the service/app icon (`android:icon`) when omitted, so multi-type adapters can give each hardware kind its own glyph. |
+| `connectionType` | yes | The transport Locus drives for this device type. Currently `BT4`. |
 | `scanFilter` | no | BLE name prefix Locus uses during pairing scans. Omit for scan-by-service-UUID only. |
 
 ### `<refId>` element (child of `<deviceType>`)
 
-Lists the [`LocusVariables`](../../reference/locus-variables.md) refIds devices
+Lists the [`LocusVariable`](../../reference/locus-variables.md) refIds devices
 of this type can produce. Use the symbolic name; Locus resolves it to the
 integer refId. Adapter-side writes for refIds outside this declared set are
 dropped on Locus's side.
@@ -131,9 +131,11 @@ Locus's flow:
    `locus.api.android.ACTION_SENSOR_ADAPTER_PARSER` action.
 2. Parse each adapter's `res/xml/locus_adapter.xml` (id / displayName /
    apiVersion / device-type list) and pull the service icon via
-   `loadIcon(pm)` — no service bind.
+   `loadIcon(pm)` — no service bind. Each `<deviceType icon>` drawable is
+   loaded from the adapter's resources at the same time.
 3. Show the device-type list in the picker (one row per `<deviceType>` across
-   all discovered adapters).
+   all discovered adapters), each row using its `<deviceType icon>` when set,
+   else the adapter's service/app icon.
 4. User taps a device type → Locus runs a BLE scan using that type's
    `scanFilter` (BT4 device types) → user picks a BLE peer.
 5. Locus persists pairing keyed on `(adapterId, deviceId)`, binds the adapter,
@@ -150,7 +152,7 @@ Add new optional attributes / elements freely — Locus's parser ignores unknown
 nodes by design, so an adapter manifest written against a newer locus-api still
 binds against an older Locus (the new fields just have no effect there).
 
-Breaking changes bump `schemaVersion` and ship under a new `AdapterApi.VERSION`.
+Breaking changes ship under a new `AdapterApi.VERSION`.
 
 ## See also
 

@@ -53,10 +53,6 @@ import locus.api.android.features.sensorAdapter.LocusBindContext
  *     ): SensorValueBatch? = …
  * }
  * ```
- *
- * The companion push-style API for adapters that own their own connection
- * lifecycle (Locus only signals start/stop) is a separate base class, deferred
- * until a real push-style use case drives its design.
  */
 abstract class LocusParserAdapterService : Service() {
 
@@ -128,9 +124,8 @@ abstract class LocusParserAdapterService : Service() {
     companion object {
 
         /**
-         * Intent-filter action parser adapter apps declare on their service so Locus can
-         * discover them via `PackageManager.queryIntentServices`. The companion
-         * push-style adapter API uses a different action when it lands.
+         * Intent-filter action adapter apps declare on their service so Locus can
+         * discover them via `PackageManager.queryIntentServices`.
          */
         const val ACTION_BIND = "locus.api.android.ACTION_SENSOR_ADAPTER_PARSER"
 

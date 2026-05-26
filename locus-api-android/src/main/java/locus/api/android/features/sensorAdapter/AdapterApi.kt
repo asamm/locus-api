@@ -6,12 +6,17 @@ package locus.api.android.features.sensorAdapter
 
 /**
  * Versioning + result-code constants for the Locus sensor-adapter contract. The
- * AIDL surface returns plain `int`s because AIDL has no enums; these names give
- * them meaning on both sides.
+ * AIDL surface returns plain `int` result codes because AIDL has no enums; the
+ * named constants here give them meaning on both sides.
  *
- * A new `VERSION` value ships only with backward-incompatible AIDL changes —
- * additive XML attributes or new result codes do not bump it because old adapters
- * keep working.
+ * `ConnectionType` and `CharacteristicMode` are full Kotlin `enum class`es — they
+ * are XML-only (adapter declares them as string literals in `res/xml/locus_adapter.xml`,
+ * Locus parses to the enum via `valueOf`), not part of the AIDL surface, so the
+ * `enum class` doesn't cross the binder boundary.
+ *
+ * A new `VERSION` value ships only with backward-incompatible AIDL or XML-format
+ * changes — additive XML attributes or new result codes do not bump it because old
+ * adapters keep working.
  */
 object AdapterApi {
 
@@ -62,23 +67,20 @@ object AdapterApi {
 
     /**
      * Which transport Locus uses to talk to the adapter's underlying device.
-     * Declared on `<deviceType connectionType="…">` in the adapter manifest XML.
-     * Only meaningful for the parser adapter style — the push adapter style
-     * (deferred) doesn't use this because the adapter owns its own transport.
+     * Declared on `<deviceType connectionType="…">` in the adapter manifest XML —
+     * the XML string matches the enum case name exactly.
      *
-     * New types added in later PRs (BT3 / USB / ANT / GNSS) get higher integer
-     * values; existing values are stable.
+     * Locus maps this to its internal sensor-pipeline `ConnectionType` during
+     * manifest parsing. Adding a new transport here is co-versioned with the
+     * Locus-side mapping — both ship together under a `VERSION` bump.
      */
-    object ConnectionType {
-
-        // Value 0 reserved as "unspecified / future sentinel" — see issue tracker before
-        // assigning. Concrete connection types start at 1.
+    enum class ConnectionType {
 
         /** Bluetooth Low Energy GATT — Locus owns the BLE stack; the adapter parses bytes. */
-        const val BT4 = 1
+        BT4,
 
-        // Reserved values 2..10 for later parser-side transport expansions
-        // (BT3, USB, ANT, GNSS_NMEA, ...).
+        // Reserved for later parser-side transport expansions: BT3, USB, ANT, GNSS_NMEA.
+        // Add cases below as each lands; XML uses the case `name` directly.
     }
 
     //*************************************************
@@ -87,25 +89,26 @@ object AdapterApi {
 
     /**
      * How Locus should drive each BT4 GATT characteristic declared on
-     * `<characteristic mode="…">` in the adapter manifest XML. Locus subscribes
-     * / polls / writes per the declared mode; the adapter receives parsed bytes
-     * via [ILocusSensorAdapterParser.parseCharacteristic].
+     * `<characteristic mode="…">` in the adapter manifest XML — the XML string
+     * matches the enum case name. Locus subscribes / polls / writes per the declared
+     * mode; the adapter receives parsed bytes via
+     * [ILocusSensorAdapterParser.parseCharacteristic].
      */
-    object CharacteristicMode {
+    enum class CharacteristicMode {
 
         /** Subscribe to GATT NOTIFY and feed each received frame to the parser. */
-        const val NOTIFY = 0
+        NOTIFY,
 
         /**
          * Issue a GATT READ on a fixed interval (`<characteristic pollIntervalMs="…">`)
          * and feed each response to the parser.
          */
-        const val READ_POLLED = 1
+        READ_POLLED,
 
         /**
          * Locus performs WRITE on demand via [SensorValueBatch.writeBacks].
          * No subscription; the characteristic is only used as an ACK / control channel.
          */
-        const val WRITE = 2
+        WRITE,
     }
 }

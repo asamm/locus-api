@@ -6,7 +6,6 @@ package locus.api.android.features.sensorAdapter.parser
 
 import locus.api.android.features.sensorAdapter.AdapterApi
 import locus.api.android.features.sensorAdapter.LocusVariable
-import locus.api.android.features.sensorAdapter.LocusVariables
 
 /**
  * Type-safe builder for [SensorValueBatch]. Adapter authors call [put] with a
@@ -21,9 +20,9 @@ import locus.api.android.features.sensorAdapter.LocusVariables
  * Typical usage:
  * ```
  * val batch = SensorValueBatchBuilder(System.currentTimeMillis())
- *     .put(LocusVariables.SENSOR_HEART_RATE, 120)
- *     .put(LocusVariables.SENSOR_HUMIDITY, 55.0f)
- *     .put(LocusVariables.SENSOR_ASSIST_MODE, "TRAIL")
+ *     .put(LocusVariable.HeartRate, 120)
+ *     .put(LocusVariable.Humidity, 55.0f)
+ *     .put(LocusVariable.AssistMode, "TRAIL")
  *     .build()
  * ```
  */
@@ -35,7 +34,7 @@ class SensorValueBatchBuilder(private val timestamp: Long) {
     /**
      * Set the value for [variable]. The `T` constraint on the receiver means the
      * compiler rejects type mismatches at the call site — e.g.
-     * `put(LocusVariables.SENSOR_HEART_RATE, "abc")` fails because the Variable's
+     * `put(LocusVariable.HeartRate, "abc")` fails because the Variable's
      * `T` is `Int`, not `String`.
      *
      * Re-calling [put] with the same Variable overrides the previous value (the

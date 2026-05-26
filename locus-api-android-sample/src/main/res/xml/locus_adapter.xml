@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
     Sample Locus parser-style adapter manifest. Declares one device type:
     a standard BLE Heart Rate Service strap (Polar / Wahoo / Garmin / Suunto).
 
@@ -10,16 +9,15 @@
         docs/android/guides/adapter-apps/manifest-schema.md (in the locus-api repo)
 -->
 <adapter
-    xmlns:android="http://schemas.android.com/apk/res/android"
     apiVersion="1"
-    schemaVersion="1"
     id="com.asamm.locus.api.sample/HrmAdapter"
-    displayName="@string/adapter_hrm_display_name">
+    displayName="@string/service_hrm_name">
 
     <deviceType
         id="ble-hrm"
+        connectionType="BT4"
         displayName="@string/adapter_hrm_device_type"
-        connectionType="BT4">
+        icon="@drawable/ic_hrm">
 
         <refId variable="SENSOR_HEART_RATE" />
 

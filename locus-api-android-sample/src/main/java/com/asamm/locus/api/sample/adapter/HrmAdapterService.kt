@@ -6,7 +6,7 @@ package com.asamm.locus.api.sample.adapter
 
 import locus.api.android.features.sensorAdapter.AdapterApi
 import locus.api.android.features.sensorAdapter.LocusBindContext
-import locus.api.android.features.sensorAdapter.LocusVariables
+import locus.api.android.features.sensorAdapter.LocusVariable
 import locus.api.android.features.sensorAdapter.parser.LocusParserAdapterService
 import locus.api.android.features.sensorAdapter.parser.SensorValueBatch
 import locus.api.android.features.sensorAdapter.parser.SensorValueBatchBuilder
@@ -59,7 +59,7 @@ class HrmAdapterService : LocusParserAdapterService() {
         }
         val heartRate = decodeHeartRate(bytes) ?: return null
         return SensorValueBatchBuilder(System.currentTimeMillis())
-            .put(LocusVariables.SENSOR_HEART_RATE, heartRate)
+            .put(LocusVariable.HeartRate, heartRate)
             .build()
     }
 

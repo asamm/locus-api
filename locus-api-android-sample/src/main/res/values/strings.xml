@@ -4,7 +4,7 @@
     <string name="menu_settings">Settings</string>
 
     <!-- Sensor-adapter sample -->
-    <string name="adapter_hrm_display_name">Locus API sample — HRM adapter</string>
-    <string name="adapter_hrm_device_type">Heart rate strap (BLE standard)</string>
+    <string name="service_hrm_name">HRM adapter service</string>
+    <string name="adapter_hrm_device_type">Heart rate monitor</string>
 
 </resources>

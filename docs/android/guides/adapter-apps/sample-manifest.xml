@@ -18,15 +18,15 @@
         </service>
 
     Locus reads <adapter> root attributes + <deviceType> children without
-    binding the service; the picker icon comes from the service's android:icon
-    via loadIcon(pm). Bind only happens once the user starts a sensor session.
+    binding the service. The picker icon for a device type comes from its own
+    <deviceType icon> drawable when set, else the service's android:icon via
+    loadIcon(pm). Bind only happens once the user starts a sensor session.
 
     Full schema reference: docs/android/guides/adapter-apps/manifest-schema.md
 -->
 <adapter
     xmlns:android="http://schemas.android.com/apk/res/android"
     apiVersion="1"
-    schemaVersion="1"
     id="com.example.bosch/EBikeAdapter"
     displayName="@string/adapter_display_name">
 
@@ -45,12 +45,13 @@
     <deviceType
         id="bosch-ldi"
         displayName="Bosch LDI"
+        icon="@drawable/ic_bosch_ldi"
         connectionType="BT4"
         scanFilter="BoschEBike-">
 
         <!--
             refIds devices of this type can produce. Symbolic names resolve to
-            integer refIds via LocusVariables; adapter-side writes for refIds
+            integer refIds via LocusVariable.findByName; adapter-side writes for refIds
             not listed here are dropped on the Locus side.
         -->
         <refId variable="SENSOR_HEART_RATE" />

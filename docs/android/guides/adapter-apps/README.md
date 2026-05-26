@@ -5,14 +5,9 @@ Locus owns the BT4 / USB / ANT transport; your adapter writes only the byte pars
 and declares which Locus Variables it produces. The data lands in Locus's
 dashboards / track recording / audio coach exactly like a built-in sensor.
 
-This guide covers the **parser-style** adapter API — the simpler of the two
-adapter models, the only one shipping in v1. The companion **push-style** API
-(for adapters that own their own connection lifecycle and notify Locus when
-they produce values) is a separate AIDL surface, deferred until a real
-push-style adapter use case drives its design.
-
-The Phase B v1 surface is a curated set of built-in refIds, BT4 transport, one
-or more device types per adapter.
+Your adapter declares one or more device types, each producing values for a curated set
+of built-in Locus Variables over BT4 transport. Locus handles discovery, scanning, the
+GATT lifecycle, and routing parsed values into its dashboards.
 
 ## TL;DR
 
@@ -25,8 +20,8 @@ or more device types per adapter.
    it; your adapter requires it). Set `android:icon` on the service for the
    picker icon.
 4. Add a `<meta-data>` pointing to a `res/xml/locus_adapter.xml` device-type
-   catalog with adapter-level metadata (apiVersion, schemaVersion, id,
-   displayName) on the root and one `<deviceType>` per kind of hardware (see
+   catalog with adapter-level metadata (apiVersion, id, displayName) on the
+   root and one `<deviceType>` per kind of hardware (see
    [`manifest-schema.md`](manifest-schema.md)). Locus reads it all without
    binding the service.
 5. Install both Locus Map and your adapter on the same device. Open Locus's
@@ -65,39 +60,21 @@ class BoschEBikeAdapterService : LocusParserAdapterService() {
         if (deviceTypeId != "bosch-ldi") return null
         val decoded = BoschLiveDataDecoder.decode(bytes) ?: return null
         return SensorValueBatchBuilder(System.currentTimeMillis())
-            .put(LocusVariables.SENSOR_HEART_RATE, decoded.heartRate)
-            .put(LocusVariables.SENSOR_CADENCE, decoded.cadence)
-            .put(LocusVariables.SENSOR_POWER, decoded.power)
-            .put(LocusVariables.SENSOR_BICYCLE_BATTERY, decoded.batteryPercent)
+            .put(LocusVariable.HeartRate, decoded.heartRate)
+            .put(LocusVariable.Cadence, decoded.cadence)
+            .put(LocusVariable.Power, decoded.power)
+            .put(LocusVariable.BicycleBattery, decoded.batteryPercent)
             .build()
     }
 }
 ```
 
-The `LocusVariables.SENSOR_X` constants are typed: writing a `Float` to a
+The `LocusVariable.X` constants are typed: writing a `Float` to a
 `LocusVariable<Int>` slot is a compile error, not a runtime surprise.
 
 The `deviceTypeId` parameter matches an `<deviceType id="...">` from your
 manifest XML — adapters that handle multiple device types (e.g. Bosch +
 Shimano under one adapter) switch on it for protocol-specific parsing.
-
-## What's not in v1
-
-The Phase B v1 surface is intentionally narrow. The following are deferred:
-
-- **Push-style adapter API** — for adapters that own their own connection
-  lifecycle (cloud-backed, Android-sensor-backed, web-socket-backed) and notify
-  Locus when they produce values. Separate AIDL + base class; lands when a real
-  push-style adapter is driving the design.
-- **Inline custom Variables** — your adapter can only write to the curated
-  [`LocusVariables`](../../reference/locus-variables.md) refIds.
-- **Connection types other than BT4** — BT3, USB, ANT, GNSS-NMEA expand the
-  parser-style surface in later PRs.
-- **Multi-device pairing UX polish** — multi-device adapters work (two paired
-  Bosch eBikes = two separate Locus-side pairings sharing the same
-  `<deviceType id="bosch-ldi">`), but the picker shows them flat for now.
-- **Adapter Variables in FIT / GPX exports** — track recording captures
-  adapter data into the dashboard but doesn't yet write it to exported tracks.
 
 ## Versioning
 

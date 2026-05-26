@@ -14,7 +14,7 @@ This page walks the surface call-by-call.
 1. Locus discovers your adapter via `PackageManager.queryIntentServices` filtered
    by the `locus.api.android.ACTION_SENSOR_ADAPTER_PARSER` action.
 2. Locus reads your service's `<meta-data>` XML and parses the device-type
-   catalog **without binding** — id, displayName, apiVersion, schemaVersion,
+   catalog **without binding** — id, displayName, apiVersion,
    and the `<deviceType>` list all come from XML; the icon comes from the
    service's `android:icon` via `loadIcon(pm)`. Adapters whose `apiVersion`
    Locus can't speak are dropped here, before any bind. See
@@ -94,15 +94,15 @@ Build the batch via
 
 ```kotlin
 SensorValueBatchBuilder(timestamp = System.currentTimeMillis())
-    .put(LocusVariables.SENSOR_HEART_RATE, 120)        // Int — matches T
-    .put(LocusVariables.SENSOR_HUMIDITY, 55.0f)        // Float — matches T
-    .put(LocusVariables.SENSOR_ASSIST_MODE, "TRAIL")   // String — matches T
+    .put(LocusVariable.HeartRate, 120)        // Int — matches T
+    .put(LocusVariable.Humidity, 55.0f)        // Float — matches T
+    .put(LocusVariable.AssistMode, "TRAIL")   // String — matches T
     .build()
 ```
 
 The Builder's typed `put` rejects type mismatches at compile time. The
 Variables you're allowed to write to are the curated set in
-[`LocusVariables`](../../reference/locus-variables.md).
+[`LocusVariable`](../../reference/locus-variables.md).
 
 #### Write-backs
 
@@ -153,10 +153,3 @@ parser buffers, in-flight callbacks, background coroutines.
 
 The base class's default is a no-op. Override only for adapters that hold
 resources beyond the bind lifecycle.
-
-## Push-style adapter API
-
-A separate AIDL shape for adapters that own their own connection lifecycle
-(cloud-backed, Android-sensor-backed, web-socket-backed, …) is **deferred**
-until a real push-style adapter use case drives its design. Until then, all
-adapter apps are parser-style: Locus owns the wire, the adapter parses bytes.
