@@ -4,6 +4,7 @@
  */
 package com.asamm.locus.api.sample.sensoradapter
 
+import com.asamm.loggerV2.logD
 import locus.api.android.features.sensorAdapter.AdapterApi
 import locus.api.android.features.sensorAdapter.LocusBindContext
 import locus.api.android.features.sensorAdapter.LocusVariable
@@ -12,12 +13,14 @@ import locus.api.android.features.sensorAdapter.parser.SensorValueBatch
 import locus.api.android.features.sensorAdapter.parser.SensorValueBatchBuilder
 
 /**
- * Sample Locus parser-style adapter for a Bluetooth Classic (SPP) NMEA GNSS receiver — the
- * stream-transport counterpart to [HrmAdapterService]'s BT4 example. Shows two things: a single
- * app can register more than one adapter service (Locus discovers each independently), and a
- * stream transport hands the parser raw bytes, not framed messages.
+ * Sample Locus parser-style adapter for an NMEA GNSS receiver over a serial byte stream — the
+ * stream-transport counterpart to [HrmAdapterService]'s BT4 example. One service serves two
+ * transports: a Bluetooth Classic (SPP) device type and a USB-serial one. The parser is identical
+ * for both — only the manifest `<deviceType connectionType>` differs — which is the point: a stream
+ * adapter is transport-independent. It also shows a single app registering more than one adapter
+ * service (Locus discovers each independently).
  *
- * BT3 / SPP is an undifferentiated byte stream — `source` is empty and one [parseData] call carries
+ * A serial stream is undifferentiated bytes — `source` is empty and one [parseData] call carries
  * whatever bytes have arrived since the last: a partial NMEA line, exactly one, or several. The
  * contract puts frame reassembly on the adapter, so this one buffers per device and parses only
  * complete `\n`-terminated lines, carrying any trailing partial into the next call. Don't assume a
@@ -46,7 +49,7 @@ class NmeaSpeedAdapterService : LocusParserAdapterService() {
         source: String,
         bytes: ByteArray,
     ): SensorValueBatch? {
-        if (deviceTypeId != DEVICE_TYPE_NMEA_SPEED) {
+        if (deviceTypeId !in DEVICE_TYPES_NMEA_SPEED) {
             return null
         }
         // Append this chunk to the device's buffer and pull out every complete line; the
@@ -100,6 +103,7 @@ class NmeaSpeedAdapterService : LocusParserAdapterService() {
      * non-RMC line, a void fix (status != 'A'), or a missing / unparseable speed field.
      */
     private fun decodeNmeaSpeedMps(line: String): Float? {
+        logD { "decodeNmeaSpeedMps($line)" }
         val body = line.trim()
             .removePrefix("$")
             .substringBefore('*')
@@ -116,7 +120,9 @@ class NmeaSpeedAdapterService : LocusParserAdapterService() {
 
     companion object {
 
-        private const val DEVICE_TYPE_NMEA_SPEED = "bt3-nmea-speed"
+        // Same NMEA parser serves both the BT3 and the USB-serial device type; the ids must match
+        // the `<deviceType id>` values in res/xml/locus_adapter_nmea.xml.
+        private val DEVICE_TYPES_NMEA_SPEED = setOf("bt3-nmea-speed", "usb-nmea-speed")
         private const val KNOTS_TO_MPS = 0.514444f
 
         // A valid NMEA sentence is <= 82 chars; well past that with no newline means garbage.
