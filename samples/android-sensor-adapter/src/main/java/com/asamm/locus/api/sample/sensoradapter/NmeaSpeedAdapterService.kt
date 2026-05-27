@@ -4,7 +4,6 @@
  */
 package com.asamm.locus.api.sample.sensoradapter
 
-import com.asamm.loggerV2.logD
 import locus.api.android.features.sensorAdapter.AdapterApi
 import locus.api.android.features.sensorAdapter.LocusBindContext
 import locus.api.android.features.sensorAdapter.LocusVariable
@@ -103,7 +102,6 @@ class NmeaSpeedAdapterService : LocusParserAdapterService() {
      * non-RMC line, a void fix (status != 'A'), or a missing / unparseable speed field.
      */
     private fun decodeNmeaSpeedMps(line: String): Float? {
-        logD { "decodeNmeaSpeedMps($line)" }
         val body = line.trim()
             .removePrefix("$")
             .substringBefore('*')
