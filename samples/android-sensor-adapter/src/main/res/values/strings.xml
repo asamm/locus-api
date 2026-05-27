@@ -1,0 +1,13 @@
+<resources>
+
+    <string name="app_name">Locus sample — HRM adapter</string>
+
+    <!-- Adapter / device-type labels shown in Locus's sensor picker -->
+    <string name="service_hrm_name">HRM adapter service</string>
+    <string name="adapter_hrm_device_type">Heart rate monitor</string>
+
+    <!-- Info screen -->
+    <string name="info_title">Heart-rate adapter for Locus Map</string>
+    <string name="info_body">This app has no UI of its own. It registers a Locus sensor adapter that exposes any standard BLE Heart Rate strap (Polar, Wahoo, Garmin, Suunto, …) to Locus Map.\n\nTo try it:\n1. Install Locus Map on this device.\n2. In Locus, open the sensor picker and add a sensor.\n3. Under \"External adapters\", pick \"Heart rate monitor\".\n4. Locus scans for your strap and drives the connection; this app only decodes the byte frames.\n\nThe parser lives in HrmAdapterService.kt — about 90 lines. Copy this module as the starting point for your own adapter.\n\nLocus shows a \"Settings\" action on the adapter\'s picker row, wired here to this screen via getIntentForSettings(). Overriding it is optional — adapters with no settings UI can skip it.</string>
+
+</resources>

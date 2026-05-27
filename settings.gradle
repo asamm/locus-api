@@ -7,4 +7,7 @@ pluginManagement {
 
 include ':locus-api-core'
 include ':locus-api-android'
+
+// sample apps — one self-contained, runnable app per integration type (see samples/)
 include ':locus-api-android-sample'
+include ':samples:android-sensor-adapter'
