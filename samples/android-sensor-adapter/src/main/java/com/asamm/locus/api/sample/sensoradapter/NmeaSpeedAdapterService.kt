@@ -38,19 +38,21 @@ class NmeaSpeedAdapterService : LocusParserAdapterService() {
      */
     private val lineBuffers = HashMap<String, StringBuilder>()
 
-    override fun init(bindContext: LocusBindContext): Int {
-        return AdapterApi.INIT_OK
+    override fun init(deviceId: String, deviceTypeId: String, bindContext: LocusBindContext): Int {
+        // both device types (BT3 + USB) use the same NMEA parsing; deviceTypeId is validated here
+        // once, so parseData (which gets only deviceId) doesn't re-check it
+        return if (deviceTypeId in DEVICE_TYPES_NMEA_SPEED) {
+            AdapterApi.INIT_OK
+        } else {
+            AdapterApi.INIT_ERROR
+        }
     }
 
     override fun parseData(
         deviceId: String,
-        deviceTypeId: String,
         source: String,
         bytes: ByteArray,
     ): SensorValueBatch? {
-        if (deviceTypeId !in DEVICE_TYPES_NMEA_SPEED) {
-            return null
-        }
         // Append this chunk to the device's buffer and pull out every complete line; the
         // unterminated remainder (if any) stays buffered for the next call.
         val lines = synchronized(lineBuffers) {
@@ -70,9 +72,10 @@ class NmeaSpeedAdapterService : LocusParserAdapterService() {
             .build()
     }
 
-    override fun shutdown() {
+    override fun shutdown(deviceId: String) {
+        // drop only this device's reassembly buffer (the base class already released its write channel)
         synchronized(lineBuffers) {
-            lineBuffers.clear()
+            lineBuffers.remove(deviceId)
         }
     }
 

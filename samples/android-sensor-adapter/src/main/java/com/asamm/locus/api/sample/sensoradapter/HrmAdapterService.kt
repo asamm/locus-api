@@ -36,25 +36,25 @@ import locus.api.android.features.sensorAdapter.parser.SensorValueBatchBuilder
  */
 class HrmAdapterService : LocusParserAdapterService() {
 
-    override fun init(bindContext: LocusBindContext): Int {
-        // No init-time work — this adapter is stateless across binds. Adapters that
-        // need credentials / runtime permissions / in-app pairing return
-        // AdapterApi.INIT_NEED_USER_ACTION and host the flow in getIntentForSettings().
-        return AdapterApi.INIT_OK
+    override fun init(deviceId: String, deviceTypeId: String, bindContext: LocusBindContext): Int {
+        // No init-time work — this adapter is stateless across binds. The deviceTypeId is validated
+        // once here so parseData (which gets only deviceId) doesn't re-check it. Adapters that need
+        // credentials / runtime permissions / in-app pairing return AdapterApi.INIT_NEED_USER_ACTION
+        // and host the flow in getIntentForSettings().
+        return if (deviceTypeId == DEVICE_TYPE_HRM) {
+            AdapterApi.INIT_OK
+        } else {
+            AdapterApi.INIT_ERROR
+        }
     }
 
     override fun parseData(
         deviceId: String,
-        deviceTypeId: String,
         source: String,
         bytes: ByteArray,
     ): SensorValueBatch? {
-        // Locus only ever calls us with our own declared device type / characteristic, but the
-        // defensive checks document the contract for adapter authors copying this sample. For BT4
-        // `source` is the characteristic UUID.
-        if (deviceTypeId != DEVICE_TYPE_HRM) {
-            return null
-        }
+        // Locus only ever calls us for our declared characteristic, but the check documents the
+        // contract for adapter authors copying this sample. For BT4 `source` is the characteristic UUID.
         if (!source.equals(CHAR_HRM_MEASUREMENT, ignoreCase = true)) {
             return null
         }
@@ -65,12 +65,12 @@ class HrmAdapterService : LocusParserAdapterService() {
     }
 
     /**
-     * Optional. Locus launches this when the user taps "Settings" on the adapter's picker
+     * Optional. Locus launches this when the user taps "Settings" on [deviceId]'s picker
      * row (and in the [AdapterApi.INIT_NEED_USER_ACTION] flow). This sample has no real
      * settings, so it just opens the info screen. Adapters with no settings UI can drop this
      * override entirely — the base class returns `null`.
      */
-    override fun getIntentForSettings(): Intent {
+    override fun getIntentForSettings(deviceId: String): Intent {
         return Intent(this, InfoActivity::class.java)
     }
 
