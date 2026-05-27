@@ -39,12 +39,9 @@ object AdapterApi {
     const val INIT_OK = 0
 
     /**
-     * Adapter needs the user to complete one-time setup before it can bind — e.g. enter
-     * API credentials, grant a runtime permission the adapter needs (BLE, BODY_SENSORS),
-     * or finish device pairing in the adapter's own UI. Locus launches the adapter's
-     * [ILocusSensorAdapterParser.getIntentForSettings] activity and re-attempts bind
-     * once it returns. Adapters that need a permission grant should host the request
-     * flow in that settings activity.
+     * Adapter needs one-time user setup before it can bind (credentials, a runtime permission,
+     * or in-app device pairing). Locus launches the adapter's
+     * [ILocusSensorAdapterParser.getIntentForSettings] activity and re-attempts bind after it returns.
      */
     const val INIT_NEED_USER_ACTION = 1
 
@@ -66,13 +63,8 @@ object AdapterApi {
     //*************************************************
 
     /**
-     * Which transport Locus uses to talk to the adapter's underlying device.
-     * Declared on `<deviceType connectionType="…">` in the adapter manifest XML —
-     * the XML string matches the enum case name exactly.
-     *
-     * Locus maps this to its internal sensor-pipeline `ConnectionType` during
-     * manifest parsing. Adding a new transport here is co-versioned with the
-     * Locus-side mapping — both ship together under a `VERSION` bump.
+     * Transport Locus uses to reach the adapter's device. Declared on
+     * `<deviceType connectionType="…">` in the manifest XML; the string matches the case name.
      */
     enum class ConnectionType {
 

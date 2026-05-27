@@ -9,17 +9,12 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 /**
- * One write-back instruction returned alongside parsed values in
- * [SensorValueBatch.writeBacks]. Used by BLE protocols that require an ACK /
- * control write after each NOTIFY (e.g. some heart-rate trainers, e-bike control
- * buses). Locus dispatches each write to the matching characteristic on the device
- * after the batch is applied; the target characteristic must declare
- * [AdapterApi.CharacteristicMode.WRITE].
+ * One write-back returned in [SensorValueBatch.writeBacks], for BLE protocols that need an
+ * ACK / control write after a NOTIFY. Locus writes it to the characteristic after applying the
+ * batch; that characteristic must declare [AdapterApi.CharacteristicMode.WRITE].
  *
- * Not a `data class` — Kotlin's generated `equals` / `hashCode` would use reference
- * equality for the `bytes` array; the explicit overrides below use
- * `ByteArray.contentEquals` instead so two writes with the same UUID + payload
- * compare equal.
+ * Not a `data class`: the explicit `equals`/`hashCode` use `ByteArray.contentEquals` so writes
+ * compare by payload, not array identity.
  *
  * @property uuid characteristic UUID to write to
  * @property bytes raw bytes to write — must be non-empty

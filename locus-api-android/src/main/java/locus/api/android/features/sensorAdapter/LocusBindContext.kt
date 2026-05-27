@@ -8,25 +8,14 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 /**
- * Payload passed by Locus to the adapter's `init(...)` AIDL call. Carries the running
- * Locus's identification plus the set of [LocusVariable] refIds Locus understands —
- * the adapter uses the refId list to decide which of the refIds declared in its
- * manifest XML to actually emit at runtime.
+ * Payload passed to the adapter's `init(...)`. Carries the running Locus's identification plus
+ * the [LocusVariable] refIds it understands; the adapter emits only refIds in [supportedRefIds].
  *
- * @property locusApiVersion the [AdapterApi.VERSION] Locus speaks. Compared by the
- *   adapter against [AdapterApi.VERSION] in its own locus-api dependency. A finer-
- *   grained mismatch the XML `apiVersion` filter let through surfaces as
- *   [AdapterApi.INIT_INCOMPATIBLE_API].
+ * @property locusApiVersion the [AdapterApi.VERSION] Locus speaks; a mismatch the XML filter let
+ *   through is reported via [AdapterApi.INIT_INCOMPATIBLE_API]
  * @property locusPackageName package name of the Locus app issuing the bind
- *   (e.g. `menion.android.locus.pro`). Useful for adapters that whitelist Locus flavors.
- * @property locusVersionName user-facing version of the Locus app (e.g. `4.34.1.1`).
- * @property supportedRefIds refIds Locus understands. Adapters should only emit values
- *   for refIds present here; values for unknown refIds are dropped on Locus's side.
- *
- * Payload-shape evolution: this class is frozen for a given [AdapterApi.VERSION].
- * Adding fields is a breaking AIDL change and requires a [AdapterApi.VERSION] bump
- * so that incompatible adapters are filtered out before they marshal a mismatched
- * payload.
+ * @property locusVersionName user-facing Locus version (e.g. `4.34.1.1`)
+ * @property supportedRefIds refIds Locus understands; values for others are dropped
  */
 @Parcelize
 data class LocusBindContext(

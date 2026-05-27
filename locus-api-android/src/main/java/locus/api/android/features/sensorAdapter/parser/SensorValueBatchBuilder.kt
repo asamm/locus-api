@@ -41,8 +41,9 @@ class SensorValueBatchBuilder(private val timestamp: Long) {
      * last write wins). Useful when an adapter accumulates partial frames over
      * multiple calls and rebuilds the final batch.
      */
-    fun <T : Any> put(variable: LocusVariable<T>, value: T): SensorValueBatchBuilder = apply {
+    fun <T : Any> put(variable: LocusVariable<T>, value: T): SensorValueBatchBuilder {
         values[variable.refId] = value.toString()
+        return this
     }
 
     /**
@@ -55,8 +56,9 @@ class SensorValueBatchBuilder(private val timestamp: Long) {
      * does not affect the scheduled write — guards against the common pattern of
      * adapters that re-use a per-frame scratch buffer.
      */
-    fun writeBack(uuid: String, bytes: ByteArray): SensorValueBatchBuilder = apply {
+    fun writeBack(uuid: String, bytes: ByteArray): SensorValueBatchBuilder {
         writeBacks += CharacteristicWrite(uuid, bytes.copyOf())
+        return this
     }
 
     /**
