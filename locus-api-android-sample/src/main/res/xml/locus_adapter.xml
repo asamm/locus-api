@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+    Sample Locus parser-style adapter manifest. Declares one device type:
+    a standard BLE Heart Rate Service strap (Polar / Wahoo / Garmin / Suunto).
+
+    Locus reads this XML without binding the service — every static attribute
+    here is part of the picker's bind-free discovery surface.
+
+    Schema reference:
+        docs/android/guides/adapter-apps/manifest-schema.md (in the locus-api repo)
+-->
+<adapter
+    apiVersion="1"
+    id="com.asamm.locus.api.sample/HrmAdapter"
+    displayName="@string/service_hrm_name">
+
+    <deviceType
+        id="ble-hrm"
+        connectionType="BT4"
+        displayName="@string/adapter_hrm_device_type"
+        icon="@drawable/ic_hrm">
+
+        <refId variable="SENSOR_HEART_RATE" />
+
+        <!--
+            Heart Rate Measurement characteristic (0x2A37) on the standard
+            Heart Rate Service (0x180D). Compliant straps advertise the
+            service UUID, so Locus's BT4 scan will surface them without
+            needing a name filter.
+        -->
+        <characteristic
+            uuid="00002a37-0000-1000-8000-00805f9b34fb"
+            mode="NOTIFY" />
+    </deviceType>
+</adapter>
