@@ -1,0 +1,21 @@
+# Version catalog for the sample apps under samples/. Centralises the third-party UI
+# dependency versions the samples share.
+#
+# Scope note: the published modules (locus-api-core, locus-api-android) and the root
+# buildscript still source their versions from gradle.properties (KOTLIN_VERSION,
+# ANDROID_PLUGIN_GRADLE, PARAM_*_SDK_VERSION, API_VERSION). SDK levels + the Kotlin version
+# stay there as the single repo-wide source; this catalog only owns the samples' UI deps.
+
+[versions]
+material = "1.14.0"
+appcompat = "1.7.1"
+activityCompose = "1.13.0"
+composeBom = "2026.05.01"
+
+[libraries]
+material = { module = "com.google.android.material:material", version.ref = "material" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+# BOM-aligned: compose-bom pins the version, so the material3 entry carries none.
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+compose-material3 = { module = "androidx.compose.material3:material3" }

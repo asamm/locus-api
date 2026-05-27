@@ -1,13 +1,13 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        jcenter()
+        mavenCentral()
     }
 }
 
 include ':locus-api-core'
 include ':locus-api-android'
 
-// sample apps — one self-contained, runnable app per integration type (see samples/)
-include ':locus-api-android-sample'
+// sample apps
+include ':samples:android-api-explorer'
 include ':samples:android-sensor-adapter'
