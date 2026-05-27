@@ -59,13 +59,13 @@ interface ILocusSensorAdapterParser {
 
     /**
      * Optional intent the adapter wants Locus to launch when the user taps "Settings"
-     * on [deviceId]'s row in the picker.
+     * on {@code deviceId}'s row in the picker.
      */
     @nullable Intent getIntentForSettings(String deviceId);
 
     /**
-     * Tear down per-pairing state for [deviceId]. Called by Locus on unpair / disconnect / app
-     * shutdown, once per bound device (mirrors the [deviceId] of `init` / `parseData`).
+     * Tear down per-pairing state for {@code deviceId}. Called by Locus on unpair / disconnect / app
+     * shutdown, once per bound device (mirrors the {@code deviceId} of {@code init} / {@code parseData}).
      */
     void shutdown(String deviceId);
 }

@@ -128,7 +128,7 @@ shouldn't wait for inbound data. No-op if the transport is read-only or the sess
 ### `getIntentForSettings`
 
 Returns an `Intent` Locus launches when the user taps "Settings" on
-[deviceId]'s picker row, or `null` for adapters with no settings UI.
+`deviceId`'s picker row, or `null` for adapters with no settings UI.
 
 Used in the `INIT_NEED_USER_ACTION` flow: if your adapter needs credentials /
 permissions / in-app pairing before it can work, return that flow's Activity

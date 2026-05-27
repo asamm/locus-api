@@ -15,9 +15,9 @@ import locus.api.android.features.sensorAdapter.parser.AdapterWrite;
 oneway interface ILocusSensorWriteChannel {
 
     /**
-     * Write to the device the adapter is bound for. {@code deviceId} matches the bound
-     * {@code LocusBindContext.deviceId} (and {@code parseData}'s {@code deviceId}); Locus drops the
-     * call when it doesn't match the session.
+     * Write to the device the adapter is bound for. {@code deviceId} matches the {@code deviceId}
+     * the session was opened with at {@code init(...)} (and {@code parseData}'s {@code deviceId});
+     * Locus drops the call when it doesn't match the session.
      */
     void writeData(String deviceId, in List<AdapterWrite> writes);
 }
