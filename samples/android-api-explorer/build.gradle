@@ -1,0 +1,118 @@
+// Standalone, runnable sample: the Locus broadcast / Intent / ContentProvider API explorer —
+// the broad tour of the public API (points, tracks, dashboard, geocache, map-tile provider,
+// receivers). Published on Google Play, so the full release-build logic (env-var signing,
+// lint gating, APK naming) lives here rather than in the root build.gradle.
+//
+// Self-contained: shared SDK levels + the Kotlin version come from gradle.properties; the
+// third-party UI deps come from the gradle/libs.versions.toml catalog.
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    namespace = "com.asamm.locus.api.sample"
+    compileSdkVersion Integer.valueOf(PARAM_COMPILE_SDK_VERSION)
+    buildToolsVersion ANDROID_BUILD_TOOLS
+
+    defaultConfig {
+        minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
+        targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
+        versionCode 2
+        versionName '0.2'
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
+    // Lint gates the release builds shipped to Play. No custom lintConfig — the historical
+    // ../lint-global.xml was never present in the repo, so AGP's default ruleset applies.
+    lintOptions {
+        checkReleaseBuilds true
+        abortOnError true
+        absolutePaths false
+    }
+
+    // Release signing from the ANDROID_SIGN_DEBUG / ANDROID_SIGN_RELEASE env vars, pipe-
+    // separated as storeFile|storePassword|keyAlias|keyPassword. Unset → empty → local debug
+    // builds fall back to the default debug keystore.
+    signingConfigs {
+        debug {
+            def androidSignDebug = System.getenv('ANDROID_SIGN_DEBUG') ?: ""
+            if (androidSignDebug.length() > 0) {
+                storeFile file(androidSignDebug.split("\\|")[0])
+                storePassword androidSignDebug.split("\\|")[1]
+                keyAlias androidSignDebug.split("\\|")[2]
+                keyPassword androidSignDebug.split("\\|")[3]
+            }
+        }
+        release {
+            def androidSignRelease = System.getenv('ANDROID_SIGN_RELEASE') ?: ""
+            if (androidSignRelease.length() > 0) {
+                storeFile file(androidSignRelease.split("\\|")[0])
+                storePassword androidSignRelease.split("\\|")[1]
+                keyAlias androidSignRelease.split("\\|")[2]
+                keyPassword androidSignRelease.split("\\|")[3]
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+
+    // specifies flavor dimension
+    flavorDimensions "base"
+    productFlavors {
+        locusApiSample {
+            applicationId "com.asamm.locus.api.sample"
+            dimension "base"
+        }
+    }
+}
+
+// Rename APK outputs to "<Flavor>_<versionCode>_<versionName>_<buildType>.apk" and expose a
+// per-flavor release task under the Publish group.
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        def baseName = variant.name.capitalize()
+        baseName = baseName.substring(0, baseName.length() - variant.buildType.name.length())
+        outputFileName = "${baseName}_${variant.versionCode}_${variant.versionName}_${variant.buildType.name}.apk"
+    }
+    if (variant.buildType.name == 'release') {
+        variant.productFlavors.each { flavor ->
+            tasks.create(name: variant.buildType.name + flavor.name.capitalize(),
+                    dependsOn: variant.assemble) {
+                group 'Publish'
+                description "Assembles and archives ${flavor.name.capitalize()} for the release build"
+            }
+        }
+    }
+}
+
+dependencies {
+    // Kotlin
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + KOTLIN_VERSION
+
+    // Locus API — local project dependency for in-repo builds. To build against the published
+    // artifact instead, use JitPack (https://jitpack.io/#asamm/locus-api):
+    implementation project(':locus-api-android')
+//    implementation 'com.github.asamm.locus-api:locus-api-android:' + API_VERSION
+
+    // UI — versions from gradle/libs.versions.toml
+    implementation libs.material
+    implementation libs.androidx.appcompat
+}

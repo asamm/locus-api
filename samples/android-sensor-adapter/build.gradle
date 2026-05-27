@@ -45,9 +45,9 @@ dependencies {
     implementation project(':locus-api-android')
 //    implementation 'com.github.asamm.locus-api:locus-api-android:' + API_VERSION
 
-    // Jetpack Compose
-    def composeBom = platform('androidx.compose:compose-bom:2026.05.01')
-    implementation composeBom
-    implementation 'androidx.activity:activity-compose:1.13.0'
-    implementation 'androidx.compose.material3:material3'
+    // Jetpack Compose — versions from gradle/libs.versions.toml. The BOM aligns the Compose
+    // artifacts; material3 transitively pulls compose-ui / foundation / runtime.
+    implementation platform(libs.compose.bom)
+    implementation libs.androidx.activity.compose
+    implementation libs.compose.material3
 }
