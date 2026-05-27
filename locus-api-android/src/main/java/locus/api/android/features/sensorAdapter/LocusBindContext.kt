@@ -10,6 +10,7 @@ import kotlinx.parcelize.Parcelize
 /**
  * Payload passed to the adapter's `init(...)`. Carries the running Locus's identification plus
  * the [LocusVariable] refIds it understands; the adapter emits only refIds in [supportedRefIds].
+ * The device the bind is for arrives as the separate `deviceId` / `deviceTypeId` `init` arguments.
  *
  * @property locusApiVersion the [AdapterApi.VERSION] Locus speaks; a mismatch the XML filter let
  *   through is reported via [AdapterApi.INIT_INCOMPATIBLE_API]

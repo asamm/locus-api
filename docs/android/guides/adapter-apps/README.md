@@ -46,16 +46,15 @@ lifecycle, and routing parsed values into its dashboards.
 ```kotlin
 class BoschEBikeAdapterService : LocusParserAdapterService() {
 
-    override fun init(bindContext: LocusBindContext): Int {
-        // Bind context tells us which refIds Locus understands and the running
-        // Locus's version. Bail with INIT_INCOMPATIBLE_API if you detect a
-        // finer-grained mismatch the XML apiVersion filter didn't catch.
+    override fun init(deviceId: String, deviceTypeId: String, bindContext: LocusBindContext): Int {
+        // deviceTypeId picks the protocol for this device; keep a deviceId -> deviceTypeId map if you
+        // need it in parseData. bindContext tells you which refIds Locus understands + its version —
+        // bail with INIT_INCOMPATIBLE_API on a finer-grained mismatch the XML apiVersion filter missed.
         return AdapterApi.INIT_OK
     }
 
     override fun parseData(
         deviceId: String,
-        deviceTypeId: String,
         source: String,
         bytes: ByteArray,
     ): SensorValueBatch? {
@@ -63,7 +62,6 @@ class BoschEBikeAdapterService : LocusParserAdapterService() {
         // `source` is the characteristic UUID for BT4, empty for stream transports.
         // Owns frame-reassembly state. Return null when bytes were consumed
         // without producing values (partial frame).
-        if (deviceTypeId != "bosch-ldi") return null
         val decoded = BoschLiveDataDecoder.decode(bytes) ?: return null
         return SensorValueBatchBuilder(System.currentTimeMillis())
             .put(LocusVariable.HeartRate, decoded.heartRate)
@@ -78,9 +76,9 @@ class BoschEBikeAdapterService : LocusParserAdapterService() {
 The `LocusVariable.X` constants are typed: writing a `Float` to a
 `LocusVariable<Int>` slot is a compile error, not a runtime surprise.
 
-The `deviceTypeId` parameter matches an `<deviceType id="...">` from your
-manifest XML — adapters that handle multiple device types (e.g. Bosch +
-Shimano under one adapter) switch on it for protocol-specific parsing.
+The session's `deviceTypeId` (from `init`) matches an `<deviceType id="...">` from your manifest
+XML — adapters that handle multiple device types (e.g. Bosch + Shimano under one adapter) keep a
+`deviceId → deviceTypeId` map and switch on it for protocol-specific parsing.
 
 ## Versioning
 

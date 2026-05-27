@@ -7,8 +7,10 @@ package locus.api.android.features.sensorAdapter.parser
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.os.RemoteException
 import locus.api.android.features.sensorAdapter.AdapterApi
 import locus.api.android.features.sensorAdapter.LocusBindContext
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Base class for **parser-style** adapter apps — the simpler of the two adapter
@@ -44,41 +46,49 @@ import locus.api.android.features.sensorAdapter.LocusBindContext
  *
  * ```kotlin
  * class MyAdapterService : LocusParserAdapterService() {
- *     override fun init(bindContext: LocusBindContext): Int = AdapterApi.INIT_OK
- *     override fun parseData(
- *         deviceId: String,
- *         deviceTypeId: String,
- *         source: String,
- *         bytes: ByteArray,
- *     ): SensorValueBatch? = …
+ *     override fun init(deviceId: String, deviceTypeId: String, bindContext: LocusBindContext): Int =
+ *         AdapterApi.INIT_OK
+ *     override fun parseData(deviceId: String, source: String, bytes: ByteArray): SensorValueBatch? = …
  * }
  * ```
  */
 abstract class LocusParserAdapterService : Service() {
 
+    /**
+     * Per-device write channels Locus handed us at `init`, keyed by `deviceId`. Used by
+     * [writeData]; a dead channel (Locus session gone) evicts itself on the next failed call.
+     */
+    private val writeChannels = ConcurrentHashMap<String, ILocusSensorWriteChannel>()
+
     private val binder = object : ILocusSensorAdapterParser.Stub() {
 
-        override fun init(bindContext: LocusBindContext): Int {
-            return this@LocusParserAdapterService.init(bindContext)
+        override fun init(
+            deviceId: String,
+            deviceTypeId: String,
+            bindContext: LocusBindContext,
+            writeChannel: ILocusSensorWriteChannel?,
+        ): Int {
+            // null for read-only transports; store per device so multi-device adapters address
+            // the right session in writeData
+            writeChannel?.let { writeChannels[deviceId] = it }
+            return this@LocusParserAdapterService.init(deviceId, deviceTypeId, bindContext)
         }
 
         override fun parseData(
             deviceId: String,
-            deviceTypeId: String,
             source: String,
             bytes: ByteArray,
         ): SensorValueBatch? {
-            return this@LocusParserAdapterService.parseData(
-                deviceId, deviceTypeId, source, bytes,
-            )
+            return this@LocusParserAdapterService.parseData(deviceId, source, bytes)
         }
 
-        override fun getIntentForSettings(): Intent? {
-            return this@LocusParserAdapterService.getIntentForSettings()
+        override fun getIntentForSettings(deviceId: String): Intent? {
+            return this@LocusParserAdapterService.getIntentForSettings(deviceId)
         }
 
-        override fun shutdown() {
-            this@LocusParserAdapterService.shutdown()
+        override fun shutdown(deviceId: String) {
+            writeChannels.remove(deviceId)
+            this@LocusParserAdapterService.shutdown(deviceId)
         }
     }
 
@@ -87,10 +97,18 @@ abstract class LocusParserAdapterService : Service() {
     }
 
     /**
-     * Negotiate startup. See [ILocusSensorAdapterParser.init]. Return one of the
-     * [AdapterApi] `INIT_*` constants.
+     * Negotiate startup for one bound device. See [ILocusSensorAdapterParser.init]. Return one of
+     * the [AdapterApi] `INIT_*` constants. Keep a `deviceId → deviceTypeId` mapping here if you
+     * need the type in later [parseData] calls (they carry only `deviceId`).
+     *
+     * The write channel (if the transport is writable) is already stored by the time this runs, so
+     * an adapter may call [writeData] from here for a connect-time handshake.
      */
-    protected abstract fun init(bindContext: LocusBindContext): Int
+    protected abstract fun init(
+        deviceId: String,
+        deviceTypeId: String,
+        bindContext: LocusBindContext,
+    ): Int
 
     /**
      * Parse one inbound data unit — a GATT frame (BT4) or a byte-stream chunk (BT3 / USB / NET).
@@ -99,26 +117,44 @@ abstract class LocusParserAdapterService : Service() {
      */
     protected abstract fun parseData(
         deviceId: String,
-        deviceTypeId: String,
         source: String,
         bytes: ByteArray,
     ): SensorValueBatch?
 
     /**
-     * Optional settings activity intent. See
+     * Initiate a write to [deviceId], independent of [parseData] — for a connect-time handshake, a
+     * periodic poll, or an event-driven command. Complements returning `writeBacks` from a
+     * [parseData] batch (the reactive path). No-op when the device's transport is read-only or its
+     * session has ended.
+     */
+    protected fun writeData(deviceId: String, writes: List<AdapterWrite>) {
+        if (writes.isEmpty()) {
+            return
+        }
+        val channel = writeChannels[deviceId] ?: return
+        try {
+            channel.writeData(deviceId, writes)
+        } catch (_: RemoteException) {
+            // Locus side gone — drop the dead channel
+            writeChannels.remove(deviceId)
+        }
+    }
+
+    /**
+     * Optional settings activity intent for [deviceId]. See
      * [ILocusSensorAdapterParser.getIntentForSettings]. Default implementation returns
      * `null` (no settings UI).
      */
-    protected open fun getIntentForSettings(): Intent? {
+    protected open fun getIntentForSettings(deviceId: String): Intent? {
         return null
     }
 
     /**
-     * Tear down per-pairing state. See [ILocusSensorAdapterParser.shutdown]. Default
-     * implementation is a no-op; override for adapters that hold device handles or
-     * background work.
+     * Tear down per-pairing state for [deviceId]. See [ILocusSensorAdapterParser.shutdown]. The base
+     * class already drops [deviceId]'s write channel before this runs; override to release your own
+     * per-device state (parsers, buffers, handles). Default is a no-op.
      */
-    protected open fun shutdown() {
+    protected open fun shutdown(deviceId: String) {
     }
 
     companion object {
