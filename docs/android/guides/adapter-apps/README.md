@@ -1,17 +1,21 @@
 # Building a Locus parser adapter app
 
 Adapter apps let your Android app expose a sensor (real or virtual) to Locus Map.
-Locus owns the BT4 / USB / ANT transport; your adapter writes only the byte parser
-and declares which Locus Variables it produces. The data lands in Locus's
-dashboards / track recording / audio coach exactly like a built-in sensor.
+Locus owns the transport — Bluetooth Classic (BT3 / SPP), Bluetooth LE (BT4 / GATT),
+or USB-serial — and your adapter writes only the byte parser and declares which Locus
+Variables it produces. The data lands in Locus's dashboards / track recording / audio
+coach exactly like a built-in sensor.
 
 Your adapter declares one or more device types, each producing values for a curated set
-of built-in Locus Variables over BT4 transport. Locus handles discovery, scanning, the
-GATT lifecycle, and routing parsed values into its dashboards.
+of built-in Locus Variables over its transport. For BT4, Locus drives the GATT lifecycle
+and hands you each characteristic's bytes; for stream transports (BT3 / USB) it hands you
+raw stream bytes. Locus handles discovery, scanning / device selection, the connection
+lifecycle, and routing parsed values into its dashboards.
 
 ## TL;DR
 
-1. Add the `locus-api-android` dependency.
+1. Add the `locus-api-android` dependency (JitPack):
+   `implementation("com.github.asamm.locus-api:locus-api-android:<version>")`.
 2. Subclass [`LocusParserAdapterService`](../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/LocusParserAdapterService.kt)
    and implement two methods: `init` and `parseData`.
 3. Declare the service in your `AndroidManifest.xml` with the
@@ -31,6 +35,7 @@ GATT lifecycle, and routing parsed values into its dashboards.
 
 | Topic | Doc |
 |---|---|
+| **Working sample app (start here)** | [`samples/android-sensor-adapter`](../../../samples/android-sensor-adapter) — two complete services: a BT4 HRM and a BT3 + USB NMEA-speed GNSS, with manifests, parsers, and build/pair steps in its own README |
 | Manifest XML schema + sample | [`manifest-schema.md`](manifest-schema.md) |
 | AIDL service contract | [`aidl-contract.md`](aidl-contract.md) |
 | Curated refIds your adapter can write to | [`../../reference/locus-variables.md`](../../reference/locus-variables.md) |

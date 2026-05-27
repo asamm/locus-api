@@ -31,6 +31,11 @@ This page walks the surface call-by-call.
    is handed to your [`parseData(...)`](#parsedata).
 8. On unpair / app shutdown: Locus calls [`shutdown()`](#shutdown), then unbinds.
 
+> **NET is reserved.** `AdapterApi.ConnectionType.NET` (read-only TCP stream) exists in the enum
+> and the contract is transport-neutral, but Locus does not drive NET yet — a `NET` device type is
+> parsed and skipped. v1 ships BT3 / BT4 / USB; NET (and write-back dispatch) land later with no
+> contract change. Build against BT3 / BT4 / USB for now.
+
 Note: there's no `getAvailableDevices()` AIDL call. Locus owns the device list
 — it scans BLE for new pairings and tracks paired peers in its own
 pairing-persistence layer.

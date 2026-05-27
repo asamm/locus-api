@@ -103,7 +103,7 @@ parameter on each `parseData(...)` call.
 | `id` | yes | Stable type identifier. Locus passes this back to the adapter as the `deviceTypeId` parameter on every `parseData` call. |
 | `displayName` | yes | User-visible type name shown in the picker pre-bind. |
 | `icon` | no | Per-type picker icon — an `@drawable/...` resource in your adapter package. Locus loads it from your resources (no bytes over IPC). Falls back to the service/app icon (`android:icon`) when omitted, so multi-type adapters can give each hardware kind its own glyph. |
-| `connectionType` | yes | The transport Locus drives for this device type: `BT3` (Bluetooth Classic SPP stream), `BT4` (GATT — uses `<characteristic>` children), `USB` (USB-serial stream — see USB attributes below), `NET` (read-only TCP stream). Stream transports declare no `<characteristic>`. |
+| `connectionType` | yes | The transport Locus drives for this device type: `BT3` (Bluetooth Classic SPP stream), `BT4` (GATT — uses `<characteristic>` children), `USB` (USB-serial stream — see USB attributes below). `NET` (read-only TCP stream) is **reserved — declared in the API enum but not yet handled by Locus**, so a `NET` device type is currently parsed and skipped; don't ship one yet. Stream transports declare no `<characteristic>`. |
 | `scanFilter` | no | BLE name prefix Locus uses during pairing scans. Omit for scan-by-service-UUID only. |
 
 ### `<refId>` element (child of `<deviceType>`)
