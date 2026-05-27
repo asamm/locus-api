@@ -13,6 +13,9 @@ buildscript {
         // Kotlin
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:' + KOTLIN_VERSION
 
+        // Compose compiler (Kotlin 2.x) — used by samples/android-sensor-adapter
+        classpath 'org.jetbrains.kotlin:compose-compiler-gradle-plugin:' + KOTLIN_VERSION
+
         // Dokka
         classpath 'org.jetbrains.dokka:dokka-gradle-plugin:' + KOTLIN_DOKKA
 

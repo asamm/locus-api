@@ -3,8 +3,4 @@
     <string name="app_name">Locus API - sample</string>
     <string name="menu_settings">Settings</string>
 
-    <!-- Sensor-adapter sample -->
-    <string name="service_hrm_name">HRM adapter service</string>
-    <string name="adapter_hrm_device_type">Heart rate monitor</string>
-
 </resources>

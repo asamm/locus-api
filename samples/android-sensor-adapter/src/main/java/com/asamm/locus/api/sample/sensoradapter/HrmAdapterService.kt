@@ -2,8 +2,9 @@
  * Created by menion on 25.05.2026.
  * This code is part of Locus project from Asamm Software, s. r. o.
  */
-package com.asamm.locus.api.sample.adapter
+package com.asamm.locus.api.sample.sensoradapter
 
+import android.content.Intent
 import locus.api.android.features.sensorAdapter.AdapterApi
 import locus.api.android.features.sensorAdapter.LocusBindContext
 import locus.api.android.features.sensorAdapter.LocusVariable
@@ -61,6 +62,16 @@ class HrmAdapterService : LocusParserAdapterService() {
         return SensorValueBatchBuilder(System.currentTimeMillis())
             .put(LocusVariable.HeartRate, heartRate)
             .build()
+    }
+
+    /**
+     * Optional. Locus launches this when the user taps "Settings" on the adapter's picker
+     * row (and in the [AdapterApi.INIT_NEED_USER_ACTION] flow). This sample has no real
+     * settings, so it just opens the info screen. Adapters with no settings UI can drop this
+     * override entirely — the base class returns `null`.
+     */
+    override fun getIntentForSettings(): Intent {
+        return Intent(this, InfoActivity::class.java)
     }
 
     /**

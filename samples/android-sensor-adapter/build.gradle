@@ -1,0 +1,53 @@
+// Standalone, runnable sample: a Locus parser-style sensor adapter exposing a standard
+// BLE Heart Rate strap to Locus Map. UI is Jetpack Compose only — no View system.
+//
+// Self-contained on purpose — everything this module needs lives here, not in the root
+// build.gradle. Only the shared version numbers are read from the repo's gradle.properties
+// (PARAM_*_SDK_VERSION, KOTLIN_VERSION, API_VERSION). To lift this module out of the repo as
+// a template, replace those property references with literals and swap the locus-api
+// dependency below for the published artifact.
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
+
+android {
+    namespace = "com.asamm.locus.api.sample.sensoradapter"
+    compileSdkVersion Integer.valueOf(PARAM_COMPILE_SDK_VERSION)
+
+    defaultConfig {
+        applicationId "com.asamm.locus.api.sample.sensoradapter"
+        minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
+        targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
+        versionCode 1
+        versionName '0.1'
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+
+    buildFeatures {
+        compose true
+    }
+}
+
+dependencies {
+    // Kotlin
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:' + KOTLIN_VERSION
+
+    // Locus API — local project dependency for in-repo builds. When you copy this module
+    // out as a template, drop the line below and use the published artifact from JitPack
+    // instead (https://jitpack.io/#asamm/locus-api):
+    implementation project(':locus-api-android')
+//    implementation 'com.github.asamm.locus-api:locus-api-android:' + API_VERSION
+
+    // Jetpack Compose
+    def composeBom = platform('androidx.compose:compose-bom:2026.05.01')
+    implementation composeBom
+    implementation 'androidx.activity:activity-compose:1.13.0'
+    implementation 'androidx.compose.material3:material3'
+}

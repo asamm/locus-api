@@ -10,7 +10,7 @@
 -->
 <adapter
     apiVersion="1"
-    id="com.asamm.locus.api.sample/HrmAdapter"
+    id="com.asamm.locus.api.sample.sensoradapter/HrmAdapter"
     displayName="@string/service_hrm_name">
 
     <deviceType
