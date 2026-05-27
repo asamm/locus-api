@@ -103,7 +103,7 @@ parameter on each `parseData(...)` call.
 | `id` | yes | Stable type identifier. Locus passes this back to the adapter as the `deviceTypeId` parameter on every `parseData` call. |
 | `displayName` | yes | User-visible type name shown in the picker pre-bind. |
 | `icon` | no | Per-type picker icon — an `@drawable/...` resource in your adapter package. Locus loads it from your resources (no bytes over IPC). Falls back to the service/app icon (`android:icon`) when omitted, so multi-type adapters can give each hardware kind its own glyph. |
-| `connectionType` | yes | The transport Locus drives for this device type: `BT3` (Bluetooth Classic SPP stream), `BT4` (GATT — uses `<characteristic>` children), `USB` (USB-serial stream), `NET` (read-only TCP stream). Stream transports declare no `<characteristic>`; their per-transport attributes are documented as each ships. |
+| `connectionType` | yes | The transport Locus drives for this device type: `BT3` (Bluetooth Classic SPP stream), `BT4` (GATT — uses `<characteristic>` children), `USB` (USB-serial stream — see USB attributes below). `NET` (read-only TCP stream) is **reserved — declared in the API enum but not yet handled by Locus**, so a `NET` device type is currently parsed and skipped; don't ship one yet. Stream transports declare no `<characteristic>`. |
 | `scanFilter` | no | BLE name prefix Locus uses during pairing scans. Omit for scan-by-service-UUID only. |
 
 ### `<refId>` element (child of `<deviceType>`)
@@ -122,6 +122,24 @@ dropped on Locus's side.
 | `pollIntervalMs` | only for `READ_POLLED` | How often Locus issues the GATT READ. |
 
 Omit `<characteristic>` for non-BT4 device types.
+
+### USB attributes (on `<deviceType connectionType="USB">`)
+
+USB-serial device types carry their identification and serial parameters as attributes on the
+`<deviceType>` element itself (no child element):
+
+| Attribute | Required | Notes |
+|---|---|---|
+| `vendorId` | yes | USB vendor id (16-bit, `0..65535`). Locus feeds it to its serial prober as a CDC-ACM device so an arbitrary receiver is recognised. Decimal or `0x`-hex. |
+| `productId` | yes | USB product id (16-bit). Decimal or `0x`-hex. |
+| `baudRate` | no | Serial baud rate. Defaults to the GNSS-typical `4800` when omitted. |
+| `dataBits` | no | Data bits (5–8). Defaults to `8`. |
+| `stopBits` | no | Stop bits (`1`, `2`, or `3` for 1.5). Defaults to `1`. |
+| `parity` | no | Parity (`0` none, `1` odd, `2` even, `3` mark, `4` space). Defaults to `0` (none). |
+
+A `connectionType="USB"` device type missing `vendorId` / `productId` (or with an out-of-range
+value) is dropped with a warning. Locus owns the USB connection and permission prompt; the adapter
+only decodes the bytes — the adapter app needs no USB host permissions of its own.
 
 ## Runtime: from device types to paired peers
 

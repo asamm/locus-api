@@ -12,7 +12,7 @@ import locus.api.android.features.sensorAdapter.LocusBindContext
 
 /**
  * Base class for **parser-style** adapter apps — the simpler of the two adapter
- * models. Locus owns the BT/USB/ANT/... transport and lifecycle; your adapter
+ * models. Locus owns the BT3 / BT4 / USB transport and lifecycle; your adapter
  * declares its device types in `res/xml/locus_adapter.xml` and implements byte-frame
  * parsing here. Locus drives the wire and hands you data via [parseData]; you turn it into
  * typed values via [SensorValueBatchBuilder].
