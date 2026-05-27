@@ -50,16 +50,14 @@ without binding any adapter.
 
 ```kotlin
 override fun init(deviceId: String, deviceTypeId: String, bindContext: LocusBindContext): Int {
-    // deviceId / deviceTypeId — the device this bind is for; keep a deviceId -> deviceTypeId map
-    //   if you need the type in later parseData calls (they carry only deviceId)
-    // bindContext.supportedRefIds — which Locus Variables this Locus build understands
-    // bindContext.locusApiVersion — the adapter API version Locus speaks
-    // bindContext.locusPackageName / locusVersionName — running Locus identification
-    // Optional connect-time handshake (writable transports only):
-    // writeData(deviceId, listOf(AdapterWrite(CMD_UUID, ENABLE_CMD)))
     return AdapterApi.INIT_OK
 }
 ```
+
+`deviceId` / `deviceTypeId` identify the device this bind is for — keep a `deviceId → deviceTypeId`
+map if you need the type in later `parseData` calls (they carry only `deviceId`). `bindContext`
+carries Locus's `supportedRefIds`, `locusApiVersion`, and package / version. On a writable transport
+you may send a connect-time handshake here: `writeData(deviceId, listOf(AdapterWrite(cmdUuid, enableCmd)))`.
 
 Return one of:
 
@@ -78,15 +76,13 @@ override fun parseData(
     source: String,
     bytes: ByteArray,
 ): SensorValueBatch? {
-    // deviceId — the BLE MAC / USB id / adapter-internal token of the connected peer; the
-    //            deviceTypeId was established at init(), so look it up in your own
-    //            deviceId -> deviceTypeId map if you need to branch on protocol
-    // source   — characteristic UUID for BT4; empty string for stream transports (BT3/USB/NET)
-    // bytes    — raw payload, as Locus received it from the transport
+    …
 }
 ```
 
-Return either:
+`source` is the characteristic UUID for BT4, the empty string for stream transports (BT3 / USB).
+`deviceTypeId` was established at `init` — keep a `deviceId → deviceTypeId` map if you branch on
+protocol. Return either:
 
 - A
   [`SensorValueBatch`](../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/SensorValueBatch.kt)
