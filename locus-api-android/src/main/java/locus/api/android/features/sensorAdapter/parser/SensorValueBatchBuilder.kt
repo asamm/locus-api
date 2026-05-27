@@ -29,7 +29,7 @@ import locus.api.android.features.sensorAdapter.LocusVariable
 class SensorValueBatchBuilder(private val timestamp: Long) {
 
     private val values = mutableMapOf<Int, String>()
-    private val writeBacks = mutableListOf<CharacteristicWrite>()
+    private val writeBacks = mutableListOf<AdapterWrite>()
 
     /**
      * Set the value for [variable]. The `T` constraint on the receiver means the
@@ -47,17 +47,17 @@ class SensorValueBatchBuilder(private val timestamp: Long) {
     }
 
     /**
-     * Schedule a write-back to a characteristic that declares
-     * [AdapterApi.CharacteristicMode.WRITE]. Locus dispatches the write after
-     * applying this batch's values. Used by BLE protocols that require an ACK frame
-     * after each NOTIFY.
+     * Schedule a write-back to the device. Locus dispatches it after applying this batch's
+     * values, on writable transports only (BT4 / BT3 / USB — not read-only NET). [target] is the
+     * characteristic UUID for BT4 (must declare [AdapterApi.CharacteristicMode.WRITE]); pass an
+     * empty string for stream transports (the single open stream).
      *
      * Copies [bytes] defensively so that mutating the caller's array after this call
      * does not affect the scheduled write — guards against the common pattern of
      * adapters that re-use a per-frame scratch buffer.
      */
-    fun writeBack(uuid: String, bytes: ByteArray): SensorValueBatchBuilder {
-        writeBacks += CharacteristicWrite(uuid, bytes.copyOf())
+    fun writeBack(target: String, bytes: ByteArray): SensorValueBatchBuilder {
+        writeBacks += AdapterWrite(target, bytes.copyOf())
         return this
     }
 

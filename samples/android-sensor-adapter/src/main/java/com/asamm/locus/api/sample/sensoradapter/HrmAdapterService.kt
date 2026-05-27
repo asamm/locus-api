@@ -26,7 +26,7 @@ import locus.api.android.features.sensorAdapter.parser.SensorValueBatchBuilder
  *
  * Adapter-author responsibilities:
  *
- * - Manifest XML in `res/xml/locus_adapter.xml` declares the adapter's
+ * - Manifest XML in `res/xml/locus_adapter_hrm.xml` declares the adapter's
  *   `apiVersion` + device-type catalogue. Locus reads this without binding.
  * - `<service>` entry in `AndroidManifest.xml` declares the intent-filter
  *   action, custom permission, meta-data pointer to the manifest XML, and
@@ -43,19 +43,19 @@ class HrmAdapterService : LocusParserAdapterService() {
         return AdapterApi.INIT_OK
     }
 
-    override fun parseCharacteristic(
+    override fun parseData(
         deviceId: String,
         deviceTypeId: String,
-        charUuid: String,
+        source: String,
         bytes: ByteArray,
     ): SensorValueBatch? {
-        // Locus only ever calls us with our own declared device type / characteristic,
-        // but defensive checks document the contract for adapter authors copying this
-        // sample as a template.
+        // Locus only ever calls us with our own declared device type / characteristic, but the
+        // defensive checks document the contract for adapter authors copying this sample. For BT4
+        // `source` is the characteristic UUID.
         if (deviceTypeId != DEVICE_TYPE_HRM) {
             return null
         }
-        if (!charUuid.equals(CHAR_HRM_MEASUREMENT, ignoreCase = true)) {
+        if (!source.equals(CHAR_HRM_MEASUREMENT, ignoreCase = true)) {
             return null
         }
         val heartRate = decodeHeartRate(bytes) ?: return null

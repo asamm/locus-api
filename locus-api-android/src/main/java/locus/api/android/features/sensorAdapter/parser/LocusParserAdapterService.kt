@@ -14,8 +14,8 @@ import locus.api.android.features.sensorAdapter.LocusBindContext
  * Base class for **parser-style** adapter apps — the simpler of the two adapter
  * models. Locus owns the BT/USB/ANT/... transport and lifecycle; your adapter
  * declares its device types in `res/xml/locus_adapter.xml` and implements byte-frame
- * parsing here. Locus drives the wire and hands you frames via
- * [parseCharacteristic]; you turn them into typed values via [SensorValueBatchBuilder].
+ * parsing here. Locus drives the wire and hands you data via [parseData]; you turn it into
+ * typed values via [SensorValueBatchBuilder].
  *
  * Wires the [ILocusSensorAdapterParser] AIDL stub to abstract Kotlin methods so
  * adapter authors don't write any binder bookkeeping. Static metadata
@@ -45,10 +45,10 @@ import locus.api.android.features.sensorAdapter.LocusBindContext
  * ```kotlin
  * class MyAdapterService : LocusParserAdapterService() {
  *     override fun init(bindContext: LocusBindContext): Int = AdapterApi.INIT_OK
- *     override fun parseCharacteristic(
+ *     override fun parseData(
  *         deviceId: String,
  *         deviceTypeId: String,
- *         charUuid: String,
+ *         source: String,
  *         bytes: ByteArray,
  *     ): SensorValueBatch? = …
  * }
@@ -62,14 +62,14 @@ abstract class LocusParserAdapterService : Service() {
             return this@LocusParserAdapterService.init(bindContext)
         }
 
-        override fun parseCharacteristic(
+        override fun parseData(
             deviceId: String,
             deviceTypeId: String,
-            charUuid: String,
+            source: String,
             bytes: ByteArray,
         ): SensorValueBatch? {
-            return this@LocusParserAdapterService.parseCharacteristic(
-                deviceId, deviceTypeId, charUuid, bytes,
+            return this@LocusParserAdapterService.parseData(
+                deviceId, deviceTypeId, source, bytes,
             )
         }
 
@@ -93,14 +93,14 @@ abstract class LocusParserAdapterService : Service() {
     protected abstract fun init(bindContext: LocusBindContext): Int
 
     /**
-     * Parse one BT4 GATT frame. Return `null` if the frame was consumed without
-     * producing values (e.g. partial frame buffered for reassembly).
-     * See [ILocusSensorAdapterParser.parseCharacteristic].
+     * Parse one inbound data unit — a GATT frame (BT4) or a byte-stream chunk (BT3 / USB / NET).
+     * Return `null` if consumed without producing values (e.g. partial frame buffered for
+     * reassembly). See [ILocusSensorAdapterParser.parseData].
      */
-    protected abstract fun parseCharacteristic(
+    protected abstract fun parseData(
         deviceId: String,
         deviceTypeId: String,
-        charUuid: String,
+        source: String,
         bytes: ByteArray,
     ): SensorValueBatch?
 

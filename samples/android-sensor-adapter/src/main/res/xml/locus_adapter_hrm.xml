@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-    Sample Locus parser-style adapter manifest. Declares one device type:
-    a standard BLE Heart Rate Service strap (Polar / Wahoo / Garmin / Suunto).
+    Manifest for HrmAdapterService — a BT4 / GATT example: a standard BLE Heart Rate strap
+    (Polar / Wahoo / Garmin / Suunto) → SENSOR_HEART_RATE.
 
-    Locus reads this XML without binding the service — every static attribute
-    here is part of the picker's bind-free discovery surface.
+    This app ships a second, independent adapter service (NmeaSpeedAdapterService, see
+    res/xml/locus_adapter_nmea.xml) for a BT3 example — one service per device type keeps each
+    example focused, and Locus discovers each service separately.
+
+    Locus reads this XML without binding the service — every static attribute here is part of
+    the picker's bind-free discovery surface.
 
     Schema reference:
         docs/android/guides/adapter-apps/manifest-schema.md (in the locus-api repo)

@@ -56,7 +56,7 @@ code rather than typing the strings.
 
     <!-- One <deviceType> per kind of hardware this adapter knows.
          Multiple physical units share one <deviceType>; Locus persists each
-         paired peer separately and identifies it on parseCharacteristic via
+         paired peer separately and identifies it on parseData via
          the deviceId parameter. -->
     <deviceType
         id="bosch-ldi"
@@ -96,14 +96,14 @@ adapter share one `<deviceType id="bosch-ldi">` entry and surface at runtime
 as two separately-paired peers in Locus (each with its own BLE MAC, both
 parsed via the same protocol declared here). Locus tracks per-peer pairing
 on its own side; the adapter only learns about a peer via the `deviceId`
-parameter on each `parseCharacteristic(...)` call.
+parameter on each `parseData(...)` call.
 
 | Attribute | Required | Notes |
 |---|---|---|
-| `id` | yes | Stable type identifier. Locus passes this back to the adapter as the `deviceTypeId` parameter on every `parseCharacteristic` call. |
+| `id` | yes | Stable type identifier. Locus passes this back to the adapter as the `deviceTypeId` parameter on every `parseData` call. |
 | `displayName` | yes | User-visible type name shown in the picker pre-bind. |
 | `icon` | no | Per-type picker icon — an `@drawable/...` resource in your adapter package. Locus loads it from your resources (no bytes over IPC). Falls back to the service/app icon (`android:icon`) when omitted, so multi-type adapters can give each hardware kind its own glyph. |
-| `connectionType` | yes | The transport Locus drives for this device type. Currently `BT4`. |
+| `connectionType` | yes | The transport Locus drives for this device type: `BT3` (Bluetooth Classic SPP stream), `BT4` (GATT — uses `<characteristic>` children), `USB` (USB-serial stream), `NET` (read-only TCP stream). Stream transports declare no `<characteristic>`; their per-transport attributes are documented as each ships. |
 | `scanFilter` | no | BLE name prefix Locus uses during pairing scans. Omit for scan-by-service-UUID only. |
 
 ### `<refId>` element (child of `<deviceType>`)
@@ -140,7 +140,8 @@ Locus's flow:
    `scanFilter` (BT4 device types) → user picks a BLE peer.
 5. Locus persists pairing keyed on `(adapterId, deviceId)`, binds the adapter,
    subscribes to the type's `<characteristic>` declarations, and routes every
-   GATT frame to `parseCharacteristic(deviceId, deviceTypeId, charUuid, bytes)`.
+   inbound unit to `parseData(deviceId, deviceTypeId, source, bytes)` (`source` = characteristic
+   UUID for BT4, empty for stream transports).
 
 So XML covers the **type catalog** (static, pre-bind, no IPC). AIDL covers
 **byte-frame parsing** at runtime. Locus owns peer discovery and pairing

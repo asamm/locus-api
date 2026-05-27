@@ -24,10 +24,11 @@ This page walks the surface call-by-call.
 4. Locus calls `bindService` on your adapter.
 5. Locus calls [`init(bindContext)`](#init) — adapter returns `INIT_OK` or a
    non-OK result code with semantics described below.
-6. On `INIT_OK`: Locus persists pairing and starts driving the BLE GATT stack
-   per the `<deviceType>`'s `<characteristic>` declarations.
-7. While paired: every GATT NOTIFY / READ response is handed to your
-   [`parseCharacteristic(...)`](#parsecharacteristic).
+6. On `INIT_OK`: Locus persists pairing and starts driving the transport — for BT4, the GATT
+   stack per the `<deviceType>`'s `<characteristic>` declarations; for stream transports, the
+   open SPP / USB-serial / TCP stream.
+7. While paired: every inbound unit (GATT notification for BT4, byte-stream chunk for BT3/USB/NET)
+   is handed to your [`parseData(...)`](#parsedata).
 8. On unpair / app shutdown: Locus calls [`shutdown()`](#shutdown), then unbinds.
 
 Note: there's no `getAvailableDevices()` AIDL call. Locus owns the device list
@@ -60,20 +61,20 @@ Return one of:
 | `INIT_INCOMPATIBLE_API` | Adapter can't operate against this Locus's API version. Locus surfaces an error and skips. (XML pre-filtering catches most cases; this is the runtime fallback when the adapter detects a finer-grained mismatch.) |
 | `INIT_ERROR` | Generic failure. Prefer the specific codes above when applicable. |
 
-### `parseCharacteristic`
+### `parseData`
 
 ```kotlin
-override fun parseCharacteristic(
+override fun parseData(
     deviceId: String,
     deviceTypeId: String,
-    charUuid: String,
+    source: String,
     bytes: ByteArray,
 ): SensorValueBatch? {
-    // deviceId       — the BLE MAC (or adapter-internal token) of the connected peer
+    // deviceId       — the BLE MAC / USB id / adapter-internal token of the connected peer
     // deviceTypeId   — matches a <deviceType id="..."> from your manifest XML;
     //                  branch on this if your adapter supports multiple device types
-    // charUuid       — which characteristic the frame came from
-    // bytes          — raw payload, as Locus received it from the GATT stack
+    // source         — characteristic UUID for BT4; empty string for stream transports (BT3/USB/NET)
+    // bytes          — raw payload, as Locus received it from the transport
 }
 ```
 
@@ -82,7 +83,7 @@ Return either:
 - A
   [`SensorValueBatch`](../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/SensorValueBatch.kt)
   containing parsed `(refId → value)` pairs, optionally with write-backs.
-- `null` to indicate the frame was consumed without producing values
+- `null` to indicate the data was consumed without producing values
   (e.g. partial frame buffered for reassembly).
 
 Adapters own frame-reassembly state. Locus calls this on a background thread;
@@ -106,10 +107,12 @@ Variables you're allowed to write to are the curated set in
 
 #### Write-backs
 
-Some BLE protocols require an ACK frame after each NOTIFY. Schedule the write
-via `Builder.writeBack(uuid, bytes)`; Locus dispatches it after applying the
-batch. The target characteristic must declare
-`AdapterApi.CharacteristicMode.WRITE` in the manifest.
+Some protocols require a control / ACK write to the device. Schedule it via
+`Builder.writeBack(target, bytes)`; Locus dispatches it after applying the batch, but **only on
+writable transports** (BT4 / BT3 / USB — never read-only NET; a write for a non-writable transport
+is dropped). `target` is the characteristic UUID for BT4 (which must declare
+`AdapterApi.CharacteristicMode.WRITE` in the manifest); for stream transports pass an empty string —
+the bytes go to the single open stream.
 
 ### `getIntentForSettings`
 

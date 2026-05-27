@@ -41,7 +41,7 @@ object AdapterApi {
     /**
      * Adapter needs one-time user setup before it can bind (credentials, a runtime permission,
      * or in-app device pairing). Locus launches the adapter's
-     * [ILocusSensorAdapterParser.getIntentForSettings] activity and re-attempts bind after it returns.
+     * 'ILocusSensorAdapterParser.getIntentForSettings' activity and re-attempts bind after it returns.
      */
     const val INIT_NEED_USER_ACTION = 1
 
@@ -68,11 +68,25 @@ object AdapterApi {
      */
     enum class ConnectionType {
 
-        /** Bluetooth Low Energy GATT — Locus owns the BLE stack; the adapter parses bytes. */
+        /**
+         * Bluetooth Classic (SPP / RFCOMM) — Locus owns the serial stream; the adapter parses bytes.
+         */
+        BT3,
+
+        /**
+         * Bluetooth Low Energy GATT — Locus owns the BLE stack; the adapter parses bytes.
+         */
         BT4,
 
-        // Reserved for later parser-side transport expansions: BT3, USB, ANT, GNSS_NMEA.
-        // Add cases below as each lands; XML uses the case `name` directly.
+        /**
+         * USB serial (CDC-ACM etc.) — Locus owns the port; the adapter parses the byte stream.
+         */
+        USB,
+
+        /**
+         * TCP byte stream — Locus owns the socket. Read-only: write-backs are not honoured.
+         */
+        NET,
     }
 
     //*************************************************
@@ -83,12 +97,13 @@ object AdapterApi {
      * How Locus should drive each BT4 GATT characteristic declared on
      * `<characteristic mode="…">` in the adapter manifest XML — the XML string
      * matches the enum case name. Locus subscribes / polls / writes per the declared
-     * mode; the adapter receives parsed bytes via
-     * [ILocusSensorAdapterParser.parseCharacteristic].
+     * mode; the adapter receives the bytes via 'ILocusSensorAdapterParser.parseData'.
      */
     enum class CharacteristicMode {
 
-        /** Subscribe to GATT NOTIFY and feed each received frame to the parser. */
+        /**
+         * Subscribe to GATT NOTIFY and feed each received frame to the parser.
+         */
         NOTIFY,
 
         /**
@@ -98,7 +113,7 @@ object AdapterApi {
         READ_POLLED,
 
         /**
-         * Locus performs WRITE on demand via [SensorValueBatch.writeBacks].
+         * Locus performs WRITE on demand via 'SensorValueBatch.writeBacks'.
          * No subscription; the characteristic is only used as an ACK / control channel.
          */
         WRITE,

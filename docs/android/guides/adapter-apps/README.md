@@ -13,7 +13,7 @@ GATT lifecycle, and routing parsed values into its dashboards.
 
 1. Add the `locus-api-android` dependency.
 2. Subclass [`LocusParserAdapterService`](../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/LocusParserAdapterService.kt)
-   and implement two methods: `init` and `parseCharacteristic`.
+   and implement two methods: `init` and `parseData`.
 3. Declare the service in your `AndroidManifest.xml` with the
    `locus.api.android.ACTION_SENSOR_ADAPTER_PARSER` intent-filter action and
    the `com.asamm.locus.permission.SENSOR_ADAPTER` permission (Locus declares
@@ -48,13 +48,14 @@ class BoschEBikeAdapterService : LocusParserAdapterService() {
         return AdapterApi.INIT_OK
     }
 
-    override fun parseCharacteristic(
+    override fun parseData(
         deviceId: String,
         deviceTypeId: String,
-        charUuid: String,
+        source: String,
         bytes: ByteArray,
     ): SensorValueBatch? {
-        // Locus owns scanning + GATT lifecycle; your parser only handles bytes.
+        // Locus owns scanning + transport lifecycle; your parser only handles bytes.
+        // `source` is the characteristic UUID for BT4, empty for stream transports.
         // Owns frame-reassembly state. Return null when bytes were consumed
         // without producing values (partial frame).
         if (deviceTypeId != "bosch-ldi") return null
@@ -85,7 +86,7 @@ their manifest XML; Locus filters incompatible adapters out of the picker
 before any bind.
 
 Parcelable payloads (`LocusBindContext`, `SensorValueBatch`,
-`CharacteristicWrite`) are frozen for a given `AdapterApi.VERSION` — `@Parcelize`
+`AdapterWrite`) are frozen for a given `AdapterApi.VERSION` — `@Parcelize`
 reads fields positionally and has no length prefix, so adding fields in place
 would break adapters built against the old shape. New payload fields ship with
 a `VERSION` bump.
