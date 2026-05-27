@@ -5,9 +5,9 @@
     A separate adapter service from the BT4 HRM one (res/xml/locus_adapter_hrm.xml) — one service per
     device type, so each example stays focused and multi-service discovery is exercised.
 
-    No <characteristic>: Bluetooth Classic is an undifferentiated byte stream, so Locus hands each
-    line to parseData with an empty `source`. The user pairs the receiver in Android Bluetooth
-    settings, then picks it from the bonded list.
+    No <characteristic>: Bluetooth Classic is an undifferentiated byte stream, so Locus hands raw
+    stream bytes to parseData with an empty `source` and the adapter reassembles NMEA lines itself.
+    The user pairs the receiver in Android Bluetooth settings, then picks it from the bonded list.
 
     Schema reference:
         docs/android/guides/adapter-apps/manifest-schema.md (in the locus-api repo)
