@@ -25,23 +25,24 @@ interface ILocusSensorAdapterParser {
     int init(in LocusBindContext bindContext);
 
     /**
-     * Parse one BT4 GATT notification / read response. Adapter owns frame-reassembly
-     * state — if a logical message spans multiple physical packets, the adapter buffers
-     * across calls and returns null for the early fragments.
+     * Parse one inbound data unit from the device. For BT4 that's a single GATT notification /
+     * read response keyed by a characteristic; for stream transports (BT3 / USB / NET) it's a
+     * chunk of the byte stream. The adapter owns frame-reassembly state — if a logical message
+     * spans multiple physical packets, it buffers across calls and returns null for the early
+     * fragments.
      *
-     * @param deviceId      stable instance id Locus assigned at pairing (BLE MAC etc.)
+     * @param deviceId      stable instance id Locus assigned at pairing (BLE MAC, USB id, …)
      * @param deviceTypeId  matches an `<deviceType id="...">` from the manifest XML;
      *                      lets adapters that support multiple device types switch on
      *                      it for protocol-specific parsing
-     * @param charUuid      characteristic UUID the frame was received on
-     * @param bytes         raw notification payload
-     * @return parsed batch, or null if the frame was consumed without producing values
-     *         (e.g. partial frame buffered for later)
+     * @param source        characteristic UUID for BT4; empty string for stream transports
+     * @param bytes         raw payload
+     * @return parsed batch, or null if consumed without producing values (e.g. partial frame)
      */
-    @nullable SensorValueBatch parseCharacteristic(
+    @nullable SensorValueBatch parseData(
         String deviceId,
         String deviceTypeId,
-        String charUuid,
+        String source,
         in byte[] bytes);
 
     /**

@@ -1,13 +1,16 @@
 <resources>
 
-    <string name="app_name">Locus sample — HRM adapter</string>
+    <string name="app_name">Locus sample — sensor adapters</string>
 
-    <!-- Adapter / device-type labels shown in Locus's sensor picker -->
+    <!-- Adapter display names (one per registered service) -->
     <string name="service_hrm_name">HRM adapter service</string>
+    <string name="service_nmea_speed_name">NMEA GNSS speed adapter</string>
+    <!-- Device-type labels shown in Locus's sensor picker -->
     <string name="adapter_hrm_device_type">Heart rate monitor</string>
+    <string name="adapter_nmea_speed_device_type">NMEA GNSS speed (BT3)</string>
 
     <!-- Info screen -->
-    <string name="info_title">Heart-rate adapter for Locus Map</string>
-    <string name="info_body">This app has no UI of its own. It registers a Locus sensor adapter that exposes any standard BLE Heart Rate strap (Polar, Wahoo, Garmin, Suunto, …) to Locus Map.\n\nTo try it:\n1. Install Locus Map on this device.\n2. In Locus, open the sensor picker and add a sensor.\n3. Under \"External adapters\", pick \"Heart rate monitor\".\n4. Locus scans for your strap and drives the connection; this app only decodes the byte frames.\n\nThe parser lives in HrmAdapterService.kt — about 90 lines. Copy this module as the starting point for your own adapter.\n\nLocus shows a \"Settings\" action on the adapter\'s picker row, wired here to this screen via getIntentForSettings(). Overriding it is optional — adapters with no settings UI can skip it.</string>
+    <string name="info_title">Sensor adapters for Locus Map</string>
+    <string name="info_body">This app has no UI of its own. It registers two independent Locus sensor adapters, one per device type, so each example stays focused:\n\n• \"Heart rate monitor\" (BT4 / GATT) — any standard BLE Heart Rate strap (Polar, Wahoo, Garmin, Suunto, …) → heart rate.\n• \"NMEA GNSS speed\" (BT3 / SPP) — a Bluetooth-Classic NMEA GNSS receiver → speed, parsed from RMC sentences.\n\nTo try one:\n1. Install Locus Map on this device.\n2. For the BT3 adapter, first pair the receiver in Android Bluetooth settings.\n3. In Locus, open the sensor picker and add a sensor.\n4. Under \"External adapters\", pick the device type. Locus drives the connection; these services only decode the bytes.\n\nThe parsers live in HrmAdapterService.kt and NmeaSpeedAdapterService.kt — each tiny. Copy either module as the starting point for your own adapter.\n\nLocus shows a \"Settings\" action on the HRM adapter\'s picker row, wired here to this screen via getIntentForSettings(); the NMEA service omits that override, since it\'s optional.</string>
 
 </resources>

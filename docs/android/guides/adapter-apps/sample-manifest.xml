@@ -35,12 +35,12 @@
         Each type declares its own connector + refIds + characteristics. Multiple
         physical units of the same hardware (e.g. two paired Bosch eBikes) share
         the same <deviceType> — Locus persists them as separate pairings keyed
-        on (adapterId, BLE MAC), and your parseCharacteristic receives the
+        on (adapterId, BLE MAC), and your parseData receives the
         device's BLE MAC as the deviceId parameter on every call.
 
         Multi-type adapters (e.g. one adapter handling Bosch + Shimano e-bikes)
         list multiple <deviceType> entries; switch on the deviceTypeId
-        parameter in parseCharacteristic for protocol-specific parsing.
+        parameter in parseData for protocol-specific parsing.
     -->
     <deviceType
         id="bosch-ldi"

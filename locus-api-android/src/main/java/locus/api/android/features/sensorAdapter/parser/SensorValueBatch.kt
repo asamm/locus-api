@@ -11,7 +11,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 /**
- * Output of [ILocusSensorAdapterParser.parseCharacteristic]: a timestamped bundle of
+ * Output of [ILocusSensorAdapterParser.parseData]: a timestamped bundle of
  * (refId → value) pairs plus optional write-backs. Return `null`, not an empty batch, when a
  * frame is consumed without producing values (e.g. a partial frame buffered for reassembly).
  *
@@ -27,5 +27,5 @@ import kotlinx.parcelize.Parcelize
 data class SensorValueBatch(
     val timestamp: Long,
     val values: Map<Int, String> = emptyMap(),
-    val writeBacks: List<CharacteristicWrite> = emptyList(),
+    val writeBacks: List<AdapterWrite> = emptyList(),
 ) : Parcelable

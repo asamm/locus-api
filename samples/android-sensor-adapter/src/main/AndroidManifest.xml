@@ -18,10 +18,28 @@
         </activity>
 
         <!--
-            The adapter itself. Locus owns the BT4 scan + GATT lifecycle; this service only
-            decodes byte frames. See InfoActivity / HrmAdapterService.kt for the parser and
-            res/xml/locus_adapter.xml for the device-type catalogue Locus reads pre-bind.
+            Two independent adapter services, one per device type. Each declares the
+            ACTION_SENSOR_ADAPTER_PARSER intent-filter + SENSOR_ADAPTER permission and points its
+            <meta-data> at its own device-type catalogue XML; Locus discovers each separately.
         -->
+
+        <!-- BT3 / SPP: NMEA GNSS receiver → speed. -->
+        <service
+            android:name=".NmeaSpeedAdapterService"
+            android:exported="true"
+            android:label="@string/service_nmea_speed_name"
+            android:permission="com.asamm.locus.permission.SENSOR_ADAPTER">
+
+            <intent-filter>
+                <action android:name="locus.api.android.ACTION_SENSOR_ADAPTER_PARSER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="locus.api.android.SENSOR_ADAPTER"
+                android:resource="@xml/locus_adapter_nmea" />
+        </service>
+
+        <!-- BT4 / GATT: standard BLE Heart Rate strap. -->
         <service
             android:name=".HrmAdapterService"
             android:exported="true"
@@ -35,7 +53,7 @@
 
             <meta-data
                 android:name="locus.api.android.SENSOR_ADAPTER"
-                android:resource="@xml/locus_adapter" />
+                android:resource="@xml/locus_adapter_hrm" />
         </service>
 
     </application>

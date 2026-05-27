@@ -61,34 +61,54 @@ sealed class LocusVariable<T : Any>(
      */
     object AssistMode : LocusVariable<String>(1508, "SENSOR_ASSIST_MODE", { it })
 
-    /** Bicycle battery state of charge in percent (0–100). */
+    /**
+     * Bicycle battery state of charge in percent (0–100).
+     */
     object BicycleBattery : LocusVariable<Int>(1509, "SENSOR_BICYCLE_BATTERY", String::toIntOrNull)
 
-    /** Selected gear number on bikes that expose it (e.g. Shimano STEPS, 1-based). */
+    /**
+     * Selected gear number on bikes that expose it (e.g. Shimano STEPS, 1-based).
+     */
     object BicycleGear : LocusVariable<Int>(1511, "SENSOR_BICYCLE_GEAR", String::toIntOrNull)
 
-    /** Cadence in revolutions per minute. */
+    /**
+     * Cadence in revolutions per minute.
+     */
     object Cadence : LocusVariable<Int>(1501, "SENSOR_CADENCE", String::toIntOrNull)
 
-    /** Heart rate in beats per minute. */
+    /**
+     * Heart rate in beats per minute.
+     */
     object HeartRate : LocusVariable<Int>(1500, "SENSOR_HEART_RATE", String::toIntOrNull)
 
-    /** Relative humidity in percent (0–100). */
+    /**
+     * Relative humidity in percent (0–100).
+     */
     object Humidity : LocusVariable<Float>(1507, "SENSOR_HUMIDITY", String::toFloatOrNull)
 
-    /** Instantaneous power in watts. */
+    /**
+     * Instantaneous power in watts.
+     */
     object Power : LocusVariable<Int>(1510, "SENSOR_POWER", String::toIntOrNull)
 
-    /** Estimated remaining range in metres (e-bike, electric vehicle). */
+    /**
+     * Estimated remaining range in metres (e-bike, electric vehicle).
+     */
     object Range : LocusVariable<Float>(1512, "SENSOR_RANGE", String::toFloatOrNull)
 
-    /** Speed in metres per second. */
+    /**
+     * Speed in metres per second.
+     */
     object Speed : LocusVariable<Float>(1502, "SENSOR_SPEED", String::toFloatOrNull)
 
-    /** Stride count, monotonically increasing per pairing session. */
+    /**
+     * Stride count, monotonically increasing per pairing session.
+     */
     object Strides : LocusVariable<Long>(1504, "SENSOR_STRIDES", String::toLongOrNull)
 
-    /** Temperature in degrees Celsius. */
+    /**
+     * Temperature in degrees Celsius.
+     */
     object Temperature : LocusVariable<Float>(1505, "SENSOR_TEMPERATURE", String::toFloatOrNull)
 
     //*************************************************
