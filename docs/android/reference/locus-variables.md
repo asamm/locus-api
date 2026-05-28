@@ -1,17 +1,13 @@
 # LocusVariable — curated refIds
 
-The Variables an adapter app can write to. Each maps to a built-in `Variable<T>` on the
-Locus-core side (same refId, same `T`).
-
-Defined in
-[`LocusVariable.kt`](../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/LocusVariable.kt).
-Reference them in code via the typed `LocusVariable` constants, and in your manifest XML
-via the matching `variable` name (`<refId variable="SENSOR_HEART_RATE" />`). The
-`LocusVariable` constructor is private — you use the listed constants, you can't invent
-refIds:
+The Variables an adapter app can write to. Defined in
+[`LocusVariable.kt`](../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/LocusVariable.kt);
+referenced in code via the typed `LocusVariable` constants and in the manifest XML by the matching
+`variable` name (`<refId variable="SENSOR_HEART_RATE" />`). The constructor is private — you use
+the listed constants, you can't invent refIds.
 
 ```kotlin
-batch.put(LocusVariable.HeartRate, 120)   // ✓ typed: an Int slot rejects a Float at compile time
+batch.put(LocusVariable.HeartRate, 120)   // typed: an Int slot rejects a Float at compile time
 ```
 
 | Kotlin constant | Manifest `variable` | refId | Type | Unit / Range | Notes |

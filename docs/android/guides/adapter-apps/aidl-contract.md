@@ -1,13 +1,10 @@
 # Parser-adapter AIDL contract
 
-The contract between Locus and a parser-style adapter app is the
-[`ILocusSensorAdapterParser`](../../../locus-api-android/src/main/aidl/locus/api/android/features/sensorAdapter/parser/ILocusSensorAdapterParser.aidl)
-bound service interface plus the Parcelable payload classes in the same
-package. The [`LocusParserAdapterService`](../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/LocusParserAdapterService.kt)
-base class wires the AIDL stub to abstract Kotlin methods so you don't write
-any binder code.
-
-This page walks the surface call-by-call.
+The bound-service interface
+[`ILocusSensorAdapterParser`](../../../../locus-api-android/src/main/aidl/locus/api/android/features/sensorAdapter/parser/ILocusSensorAdapterParser.aidl)
+plus the Parcelable payloads in the same package. Subclass
+[`LocusParserAdapterService`](../../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/LocusParserAdapterService.kt)
+and you don't write any binder code — it wires the AIDL stub to abstract Kotlin methods.
 
 ## Bind lifecycle
 
@@ -36,13 +33,9 @@ This page walks the surface call-by-call.
 > parsed and skipped. v1 ships BT3 / BT4 / USB (read **and** write); NET lands later with no
 > contract change. Build against BT3 / BT4 / USB for now.
 
-Note: there's no `getAvailableDevices()` AIDL call. Locus owns the device list
-— it scans BLE for new pairings and tracks paired peers in its own
-pairing-persistence layer.
-
-There's also no `getDescriptor()` or `getApiVersion()` AIDL call — all static
-metadata is declared in the manifest XML so the picker can be populated
-without binding any adapter.
+There are no `getAvailableDevices()` / `getDescriptor()` / `getApiVersion()` AIDL calls. Locus
+owns the device list and persistence; all static metadata is in the manifest XML so the picker is
+populated pre-bind.
 
 ## Methods
 
@@ -85,7 +78,7 @@ override fun parseData(
 protocol. Return either:
 
 - A
-  [`SensorValueBatch`](../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/SensorValueBatch.kt)
+  [`SensorValueBatch`](../../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/SensorValueBatch.kt)
   containing parsed `(refId → value)` pairs, optionally with write-backs.
 - `null` to indicate the data was consumed without producing values
   (e.g. partial frame buffered for reassembly).
@@ -95,7 +88,7 @@ your parser should be re-entrant per `deviceId` or hold a `synchronized`
 section.
 
 Build the batch via
-[`SensorValueBatchBuilder`](../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/SensorValueBatchBuilder.kt):
+[`SensorValueBatchBuilder`](../../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/SensorValueBatchBuilder.kt):
 
 ```kotlin
 SensorValueBatchBuilder(timestamp = System.currentTimeMillis())
@@ -127,38 +120,10 @@ shouldn't wait for inbound data. No-op if the transport is read-only or the sess
 
 ### `getIntentForSettings`
 
-Returns an `Intent` Locus launches when the user taps "Settings" on
-`deviceId`'s picker row, or `null` for adapters with no settings UI.
-
-Used in the `INIT_NEED_USER_ACTION` flow: if your adapter needs credentials /
-permissions / in-app pairing before it can work, return that flow's Activity
-intent here. Locus relaunches `init` after the Activity returns.
-
-**Locus-side hardening** (notes for the locus-core implementer, not the
-adapter author): the returned `Intent` crosses the binder fully serialized —
-component, action, data URI, extras, flags. Before launching, Locus must
-re-anchor it to the adapter's package and strip cross-package grants:
-
-```kotlin
-val intent = adapter.getIntentForSettings(deviceId) ?: return
-intent.setPackage(adapterPackageName)        // pin to the adapter's package
-intent.component?.let {
-    require(it.packageName == adapterPackageName)
-}
-intent.flags = intent.flags and
-    Intent.FLAG_GRANT_READ_URI_PERMISSION.inv() and
-    Intent.FLAG_GRANT_WRITE_URI_PERMISSION.inv() and
-    Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION.inv() and
-    Intent.FLAG_GRANT_PREFIX_URI_PERMISSION.inv()
-startActivity(intent)
-```
-
-Without this, a malicious or buggy adapter could return an Intent targeting a
-different package's exported activity, or grant itself URI permissions on
-`content://` data it doesn't own.
-
-The base class's default returns `null`. Override only when you have a UI to
-host.
+Return an `Intent` Locus launches when the user taps "Settings" on `deviceId`'s picker row, or
+`null` if your adapter has no settings UI. Also used in the `INIT_NEED_USER_ACTION` flow — if the
+adapter needs credentials / permissions / in-app pairing first, return that Activity's intent;
+Locus relaunches `init` after it returns. Base class default: `null`.
 
 ### `shutdown`
 
@@ -168,8 +133,6 @@ override fun shutdown(deviceId: String) {
 }
 ```
 
-Called once per bound device when the user unpairs, the device disconnects, or Locus shuts down —
-`deviceId` matches `init` / `parseData`, so a multi-device adapter releases just that device's
-state. The base class drops that device's write channel before this runs.
-
-The base class's default is a no-op. Override only for adapters that hold per-device resources.
+Called once per bound device on unpair / disconnect / app shutdown. The base class drops that
+device's write channel before this runs; default is otherwise a no-op. Override to release your
+own per-device state (buffers, timers, handles).
