@@ -3,7 +3,8 @@
     <a href="#structure">Structure</a> | 
     <a href="#what-does-it-do">What does it do?</a> | 
     <a href="#what-it-isnt">What it isn't</a> | 
-    <a href="#quick-start">Quick start</a>
+    <a href="#quick-start">Quick start</a> | 
+    <a href="#sensor-adapter-apps">Sensor adapter apps</a>
 </p>
 
 # Locus API
@@ -63,6 +64,16 @@ dependencies {
 ```
 
 Check for sample use-cases in Locus API - Android sample project.
+
+## Sensor adapter apps
+
+Expose a sensor (real or virtual) to Locus Map over an AIDL contract. Locus owns the BT3 / BT4 /
+USB transport; your adapter declares its device types and parses bytes — values land in Locus's
+dashboards, track recording, and audio coach like any built-in sensor.
+
+- **Start here:** [`docs/android/guides/adapter-apps/how-to.md`](docs/android/guides/adapter-apps/how-to.md) — six-step build from empty project to paired sensor.
+- **Working sample:** [`samples/android-sensor-adapter`](samples/android-sensor-adapter) — BT4 HRM + BT3/USB NMEA GNSS.
+- **Reference:** [`docs/android/guides/adapter-apps/`](docs/android/guides/adapter-apps/) (manifest schema, AIDL contract, curated refIds).
 
 ### Proguard
 
