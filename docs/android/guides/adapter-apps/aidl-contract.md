@@ -1,9 +1,9 @@
 # Parser-adapter AIDL contract
 
 The bound-service interface
-[`ILocusSensorAdapterParser`](../../../locus-api-android/src/main/aidl/locus/api/android/features/sensorAdapter/parser/ILocusSensorAdapterParser.aidl)
+[`ILocusSensorAdapterParser`](../../../../locus-api-android/src/main/aidl/locus/api/android/features/sensorAdapter/parser/ILocusSensorAdapterParser.aidl)
 plus the Parcelable payloads in the same package. Subclass
-[`LocusParserAdapterService`](../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/LocusParserAdapterService.kt)
+[`LocusParserAdapterService`](../../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/LocusParserAdapterService.kt)
 and you don't write any binder code — it wires the AIDL stub to abstract Kotlin methods.
 
 ## Bind lifecycle
@@ -78,7 +78,7 @@ override fun parseData(
 protocol. Return either:
 
 - A
-  [`SensorValueBatch`](../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/SensorValueBatch.kt)
+  [`SensorValueBatch`](../../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/SensorValueBatch.kt)
   containing parsed `(refId → value)` pairs, optionally with write-backs.
 - `null` to indicate the data was consumed without producing values
   (e.g. partial frame buffered for reassembly).
@@ -88,7 +88,7 @@ your parser should be re-entrant per `deviceId` or hold a `synchronized`
 section.
 
 Build the batch via
-[`SensorValueBatchBuilder`](../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/SensorValueBatchBuilder.kt):
+[`SensorValueBatchBuilder`](../../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/SensorValueBatchBuilder.kt):
 
 ```kotlin
 SensorValueBatchBuilder(timestamp = System.currentTimeMillis())

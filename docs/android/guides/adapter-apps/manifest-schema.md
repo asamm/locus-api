@@ -35,8 +35,8 @@ Two pieces of XML:
 | `<meta-data android:name="locus.api.android.SENSOR_ADAPTER" … />` | Points at the device-type catalog XML. |
 | `android:icon` (optional) | Picker icon; falls back to the application icon. |
 
-The action, meta-data key, and permission are also constants on `LocusParserAdapterService`
-(`ACTION_BIND`, `META_DATA_KEY`, `PERMISSION`).
+The action, permission, and meta-data key are also constants on `LocusParserAdapterService`
+(`ACTION_BIND`, `PERMISSION`, `META_DATA_KEY`).
 
 ## `res/xml/locus_adapter.xml`
 

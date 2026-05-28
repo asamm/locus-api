@@ -60,7 +60,8 @@ The action / permission / meta-data key are also constants on `LocusParserAdapte
 
 - **BT3** — `connectionType="BT3"`, no `<characteristic>`. Stream of bytes.
 - **USB** — `connectionType="USB"` + `vendorId="…"` `productId="…"` (decimal or `0x`-hex).
-- Full attribute list: [`manifest-schema.md`](manifest-schema.md). Curated refIds: [`locus-variables.md`](../../reference/locus-variables.md).
+- Full attribute list: [`manifest-schema.md`](manifest-schema.md).
+- Curated refIds: [`locus-variables.md`](../../reference/locus-variables.md).
 
 ## 4. Implement the service
 
@@ -105,6 +106,6 @@ Values land in Locus's dashboards, track recording, and audio coach like any bui
 ## What next
 
 - Multiple device types under one app, multi-transport, write-backs, settings UI:
-  [the sample app](../../../samples/android-sensor-adapter).
+  [the sample app](../../../../samples/android-sensor-adapter).
 - Adapter-initiated writes (handshake / poll / event) via `writeData(deviceId, …)`:
   [`aidl-contract.md`](aidl-contract.md#write-backs).
