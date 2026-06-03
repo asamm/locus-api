@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2026-05-28
+### Added
+- Third-party sensor adapter framework — `LocusParserAdapterService` base class + `ILocusSensorAdapterParser` AIDL; adapters declare device types in `res/xml/locus_adapter.xml` (BT3 / BT4 / USB transports), Locus owns transport and hands raw frames back via `parseData(deviceId, source, bytes)`
+- Adapter-initiated write channel — `ILocusSensorWriteChannel` passed at `init` for connect-time handshakes / periodic polls / event-driven commands; complements the reactive `SensorValueBatch.writeBacks` return path
+- Per-device session model — `init(deviceId, deviceTypeId, bindContext, writeChannel)`; `parseData` / `getIntentForSettings` / `shutdown` are all per-device
+- Curated `LocusVariable` catalog — typed refIds (`HeartRate`, `Cadence`, `Power`, `BicycleBattery`, …) with compile-time-checked `SensorValueBatchBuilder.put<T>`
+- Manifest XML schema — `<adapter apiVersion id displayName>` root, `<deviceType id displayName connectionType scanFilter scanServiceUuid>` per kind of hardware, `<characteristic uuid mode pollIntervalMs>` children for BT4, USB-serial attributes (`vendorId`, `productId`, baud / data / stop / parity) for USB types
+- `samples/android-sensor-adapter` — working sample app covering BT4 HRM + BT3/USB NMEA GNSS
+- Full developer docs at `docs/android/guides/adapter-apps/` (how-to, manifest schema, AIDL contract, sample manifest, refId reference)
+
 ## [0.9.73] - 2026-05-18
 ### Fixed
 - `NullPointerException` in `FieldNotesHelper.createItems` when reading `TrackableLog` records with NULL string columns (Locus Map issue #734)
