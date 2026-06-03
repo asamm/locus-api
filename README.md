@@ -1,96 +1,90 @@
 <p align="center">
-    <a href="#current-version">Current version</a> | 
-    <a href="#structure">Structure</a> | 
-    <a href="#what-does-it-do">What does it do?</a> | 
-    <a href="#what-it-isnt">What it isn't</a> | 
+    <a href="#what-this-is">What this is</a> | 
     <a href="#quick-start">Quick start</a> | 
-    <a href="#sensor-adapter-apps">Sensor adapter apps</a>
+    <a href="#scope">Scope</a> | 
+    <a href="#sensor-adapter-apps">Sensor adapter apps</a> | 
+    <a href="#documentation">Documentation</a> | 
+    <a href="#release-maintainers">Release</a>
 </p>
 
 # Locus API
 
-Library for [Locus Map](https://www.locusmap.app) application for Android devices.
+The integration surface for [Locus Map](https://www.locusmap.app) on Android — the contract third-party apps depend on to read state from Locus, push data into it, or expose a sensor.
 
-## Current version
+[![Latest version](https://jitpack.io/v/asamm/locus-api.svg)](https://jitpack.io/#asamm/locus-api)
 
-Latest stable LT version: [![](https://jitpack.io/v/asamm/locus-api.svg)](https://jitpack.io/#asamm/locus-api)
+## What this is
 
-## Structure
+A bound-service IPC + Parcelable data model. Three things you'd use it for:
 
-Whole API is divided into two separate parts:
-
-- library written in pure Java - **Locus API - Core**
-- its extension for Android devices - **Locus API - Android**
-
-In most cases, Android version is the only interesting one here.
-
-## What does it do?
-
-- main purpose is a transport tool for various objects (points/tracks)
-- allows to check state of certain functions like periodic updates, units defined by user and more 
-- allows to control track recording and partially also navigation features
-- allows to handle field notes completely
-- allows to generate map preview of a certain area & zoom level
-
-## What it isn't
-
-- a replacement for Google Maps API or other map library that substitutes map core to your own application
-- a standalone library that may work without Locus Map application
-
-**For creating Locus Map add-ons it is needed to handle only Locus API - Android library. Locus API is automatically added as dependency.**
+- **Read / control Locus Map** — query active recording, points, tracks, user units; trigger actions like "start recording" or "open this point".
+- **Push data in** — send points / tracks for import; post field notes.
+- **Expose a sensor** — implement the [sensor adapter contract](#sensor-adapter-apps) so your app's sensor data feeds Locus's dashboards, recording and audio coach the same way a built-in BLE strap does.
 
 ## Quick start
 
-Add [JitPack](https://jitpack.io) repository to your root `build.gradle` module config.
+Add JitPack to `settings.gradle.kts`:
 
-```gradle.kts
-allprojects {
-  repositories {
-    maven(url = "https://jitpack.io")
-  }
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        maven("https://jitpack.io")
+    }
 }
 ```
 
-Add dependency to your `build.gradle` module config
+Add the dependency:
 
-```gradle.kts
+```kotlin
 dependencies {
-     // get Locus API (Java only)
-     implementation('com.github.asamm.locus-api:locus-api-core:[latest]')
-     
-     // or Locus Android API (for Android apps, core included)
-     implementation('com.github.asamm.locus-api:locus-api-android:[latest]')
+    // Android apps — pulls Locus API Core transitively
+    implementation("com.github.asamm.locus-api:locus-api-android:0.10.1")
+
+    // Pure Java / JVM, no Android (rare)
+    // implementation("com.github.asamm.locus-api:locus-api-core:0.10.1")
 }
 ```
 
-Check for sample use-cases in Locus API - Android sample project.
+Groovy DSL works the same: `maven { url 'https://jitpack.io' }` + `implementation 'com.github.asamm.locus-api:locus-api-android:0.10.1'`.
+
+## Scope
+
+| | |
+|---|---|
+| **Module split** | `locus-api-core` (pure Kotlin, KMP-friendly) + `locus-api-android` (Android-specific bindings, AIDL, Parcelables) |
+| **What's IN** | Object transport (points / tracks / field notes), recording / navigation control, periodic updates, units, map previews, sensor adapter contract |
+| **What's OUT** | Map rendering (this is not a Google Maps API substitute); standalone use (Locus Map must be installed) |
 
 ## Sensor adapter apps
 
-Expose a sensor (real or virtual) to Locus Map over an AIDL contract. Locus owns the BT3 / BT4 /
-USB transport; your adapter declares its device types and parses bytes — values land in Locus's
-dashboards, track recording, and audio coach like any built-in sensor.
+Third-party Android apps can expose a sensor (real or virtual) to Locus Map. Locus owns the BT3 / BT4 / USB transport; your adapter declares its device types in `res/xml/locus_adapter.xml` and parses incoming bytes. Values land in dashboards, track recording and audio coach exactly like a built-in sensor.
 
-- **Start here:** [`docs/android/guides/adapter-apps/how-to.md`](docs/android/guides/adapter-apps/how-to.md) — six-step build from empty project to paired sensor.
-- **Working sample:** [`samples/android-sensor-adapter`](samples/android-sensor-adapter) — BT4 HRM + BT3/USB NMEA GNSS.
-- **Reference:** [`docs/android/guides/adapter-apps/`](docs/android/guides/adapter-apps/) (manifest schema, AIDL contract, curated refIds).
+- **Build from empty project →** [`docs/android/guides/adapter-apps/how-to.md`](docs/android/guides/adapter-apps/how-to.md) (six steps).
+- **Working sample →** [`samples/android-sensor-adapter`](samples/android-sensor-adapter) (BT4 HRM + BT3 / USB NMEA GNSS).
+- **Reference →** [`docs/android/guides/adapter-apps/`](docs/android/guides/adapter-apps/) — manifest schema, AIDL contract, curated refIds.
 
-### Proguard
+## Documentation
 
-When using Proguard/R8, test release build properly. 
+Documentation lives in this repo under [`docs/`](docs/) (versioned with the library, kept in sync via PR review). Some older notes still live on the [GitHub wiki](https://github.com/asamm/locus-api/wiki) and migrate into `docs/` as the relevant features are next touched — when both exist, prefer `docs/`.
 
-It may be necessary to keep API internal object untouched. To do this, add following proguard config into your module "proguard-rules.pro" file.
+| Path | Contents |
+|---|---|
+| [`docs/android/`](docs/android/) | Android-specific surface — AIDL contracts, manifest conventions, sensor adapter framework |
+| [`docs/android/reference/`](docs/android/reference/) | Stable references — curated `LocusVariable` refIds |
+| [`CHANGELOG.md`](CHANGELOG.md) | Per-release surface changes |
+| `docs/kmp/` *(planned)* | KMP-shared types when the migration lands |
+
+## ProGuard
+
+When using R8 / ProGuard, keep API objects from being renamed:
 
 ```
-# Keep Locus API objects
 -keep class locus.api.objects.** { *; }
 ```
 
-## New version release steps
+## Release (maintainers)
 
-1. Raise version in the `gradle.properties`
-   * `API_CODE`
-   * `API_VERSION`
-2. update "CHANGELOG" news file
-3. commit changes to GitHub
-4. tag commit with "X.X.X" pattern
+1. Bump `API_CODE` (monotonic int) + `API_VERSION` (semver string) in `gradle.properties`.
+2. Add a `CHANGELOG.md` entry above the previous version's block.
+3. Commit on `master`.
+4. Tag with bare semver (`git tag 0.10.2 && git push origin 0.10.2`). JitPack picks it up automatically on the next dependent build — no GitHub Actions workflow needed.
