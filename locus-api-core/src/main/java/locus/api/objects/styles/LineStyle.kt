@@ -196,7 +196,7 @@ class LineStyle : Storable() {
         // black color
         private const val COLOR_BLACK = -0x1000000
         // Locus Map default line color — slightly transparent blue (#b30000ff)
-        private val COLOR_DEFAULT_BLUE = 0xb30000ff.toInt()
+        private const val COLOR_DEFAULT_BLUE = 0xb30000ff.toInt()
 
         // parameters for storing extra meta information for line coloring
         var KEY_CP_ALTITUDE_MANUAL = "alt_man"
