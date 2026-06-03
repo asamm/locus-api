@@ -66,7 +66,7 @@ class LineStyle : Storable() {
     // flag to draw background
     var drawBase: Boolean = true
     // base background color
-    var colorBase: Int = COLOR_BLACK
+    var colorBase: Int = COLOR_DEFAULT_BLUE
     // flag to draw symbol
     var drawSymbol: Boolean = false
     // symbol coloring
@@ -78,7 +78,7 @@ class LineStyle : Storable() {
     // coloring parameters
     private val coloringParams: Hashtable<String, String> = Hashtable()
     // width of line [px | m]
-    var width: Float = 1.0f
+    var width: Float = 6.0f
     // width units
     var units: Units = Units.PIXELS
     // flag to draw outline
@@ -195,6 +195,8 @@ class LineStyle : Storable() {
         private const val COLOR_WHITE = -0x1
         // black color
         private const val COLOR_BLACK = -0x1000000
+        // Locus Map default line color — slightly transparent blue (#b30000ff)
+        private const val COLOR_DEFAULT_BLUE = 0xb30000ff.toInt()
 
         // parameters for storing extra meta information for line coloring
         var KEY_CP_ALTITUDE_MANUAL = "alt_man"
