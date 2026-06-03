@@ -8,34 +8,27 @@ and you don't write any binder code — it wires the AIDL stub to abstract Kotli
 
 ## Bind lifecycle
 
-1. Locus discovers your adapter via `PackageManager.queryIntentServices` filtered
-   by the `locus.api.android.ACTION_SENSOR_ADAPTER_PARSER` action.
-2. Locus reads your service's `<meta-data>` XML and parses the device-type
-   catalog **without binding** — id, displayName, apiVersion,
-   and the `<deviceType>` list all come from XML; the icon comes from the
-   service's `android:icon` via `loadIcon(pm)`. Adapters whose `apiVersion`
-   Locus can't speak are dropped here, before any bind. See
+1. Locus discovers adapters via `queryIntentServices` on the
+   `locus.api.android.ACTION_SENSOR_ADAPTER_PARSER` action.
+2. Locus parses each adapter's `<meta-data>` XML pre-bind — id, displayName, apiVersion, the
+   `<deviceType>` list, plus the service icon via `loadIcon(pm)`. Adapters with an
+   unsupported `apiVersion` are dropped here, before bind. See
    [`manifest-schema.md`](manifest-schema.md).
-3. User taps a device type in the picker → Locus runs the BLE scan with the
-   `<deviceType>`'s `scanFilter` → user picks an instance (BLE peer).
-4. Locus calls `bindService` on your adapter.
-5. Locus calls [`init(bindContext)`](#init) — adapter returns `INIT_OK` or a
-   non-OK result code with semantics described below.
-6. On `INIT_OK`: Locus persists pairing and starts driving the transport — for BT4, the GATT
-   stack per the `<deviceType>`'s `<characteristic>` declarations; for stream transports, the
-   open SPP / USB-serial / TCP stream.
-7. While paired: every inbound unit (GATT notification for BT4, byte-stream chunk for BT3/USB/NET)
-   is handed to your [`parseData(...)`](#parsedata).
-8. On unpair / app shutdown: Locus calls [`shutdown()`](#shutdown), then unbinds.
+3. User picks a device type → Locus scans → user picks a peer.
+4. Locus binds the service and calls [`init`](#init) — adapter returns `INIT_OK` or a non-OK
+   result code (see below).
+5. On `INIT_OK`: Locus starts driving the transport (GATT for BT4 per the `<characteristic>`
+   declarations; the open SPP / USB-serial stream for BT3 / USB).
+6. While paired: every inbound unit (GATT notification or stream chunk) goes to
+   [`parseData`](#parsedata).
+7. On unpair / disconnect / app shutdown: Locus calls [`shutdown`](#shutdown), then unbinds.
 
 > **NET is reserved.** `AdapterApi.ConnectionType.NET` (read-only TCP stream) exists in the enum
-> and the contract is transport-neutral, but Locus does not drive NET yet — a `NET` device type is
-> parsed and skipped. v1 ships BT3 / BT4 / USB (read **and** write); NET lands later with no
-> contract change. Build against BT3 / BT4 / USB for now.
+> but Locus does not drive it yet; a `NET` device type is parsed and skipped. v1 ships BT3 /
+> BT4 / USB (read+write); NET lands later with no contract change.
 
-There are no `getAvailableDevices()` / `getDescriptor()` / `getApiVersion()` AIDL calls. Locus
-owns the device list and persistence; all static metadata is in the manifest XML so the picker is
-populated pre-bind.
+There are no `getAvailableDevices` / `getDescriptor` / `getApiVersion` AIDL calls — Locus owns
+the device list and all static metadata lives in the manifest XML.
 
 ## Methods
 
@@ -47,18 +40,16 @@ override fun init(deviceId: String, deviceTypeId: String, bindContext: LocusBind
 }
 ```
 
-`deviceId` / `deviceTypeId` identify the device this bind is for — keep a `deviceId → deviceTypeId`
-map if you need the type in later `parseData` calls (they carry only `deviceId`). `bindContext`
-carries Locus's `supportedRefIds`, `locusApiVersion`, and package / version. On a writable transport
-you may send a connect-time handshake here: `writeData(deviceId, listOf(AdapterWrite(cmdUuid, enableCmd)))`.
-
-Return one of:
+Called once per bound device. `deviceTypeId` is only passed here — keep your own
+`deviceId → deviceTypeId` map if later `parseData` calls need it. `bindContext` carries Locus's
+`supportedRefIds`, `locusApiVersion`, and package info. On a writable transport you may send a
+connect-time handshake from here via `writeData(deviceId, …)`.
 
 | Code | When |
 |---|---|
-| `INIT_OK` | Adapter is ready. Locus starts driving the transport. |
-| `INIT_NEED_USER_ACTION` | Adapter needs one-time setup (credentials, runtime permission, in-app device pairing). Locus launches `getIntentForSettings(deviceId)` and re-tries `init` afterwards. |
-| `INIT_INCOMPATIBLE_API` | Adapter can't operate against this Locus's API version. Locus surfaces an error and skips. (XML pre-filtering catches most cases; this is the runtime fallback when the adapter detects a finer-grained mismatch.) |
+| `INIT_OK` | Ready; Locus starts driving the transport. |
+| `INIT_NEED_USER_ACTION` | One-time setup needed (credentials, runtime permission, in-app pairing). Locus launches `getIntentForSettings(deviceId)` and re-tries. |
+| `INIT_INCOMPATIBLE_API` | Runtime API mismatch the XML filter didn't catch. |
 | `INIT_ERROR` | Generic failure. Prefer the specific codes above when applicable. |
 
 ### `parseData`
@@ -73,50 +64,37 @@ override fun parseData(
 }
 ```
 
-`source` is the characteristic UUID for BT4, the empty string for stream transports (BT3 / USB).
-`deviceTypeId` was established at `init` — keep a `deviceId → deviceTypeId` map if you branch on
-protocol. Return either:
+`source` is the characteristic UUID for BT4, an empty string for stream transports. The adapter
+owns frame-reassembly state; Locus calls this on a background thread, so be re-entrant per
+`deviceId` or hold a `synchronized` section.
 
-- A
-  [`SensorValueBatch`](../../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/SensorValueBatch.kt)
-  containing parsed `(refId → value)` pairs, optionally with write-backs.
-- `null` to indicate the data was consumed without producing values
-  (e.g. partial frame buffered for reassembly).
-
-Adapters own frame-reassembly state. Locus calls this on a background thread;
-your parser should be re-entrant per `deviceId` or hold a `synchronized`
-section.
-
-Build the batch via
+Return a [`SensorValueBatch`](../../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/SensorValueBatch.kt)
+of parsed `(refId → value)` pairs (optionally with write-backs), or `null` when the data was
+consumed without producing values (partial frame buffered). Build via
 [`SensorValueBatchBuilder`](../../../../locus-api-android/src/main/java/locus/api/android/features/sensorAdapter/parser/SensorValueBatchBuilder.kt):
 
 ```kotlin
 SensorValueBatchBuilder(timestamp = System.currentTimeMillis())
-    .put(LocusVariable.HeartRate, 120)        // Int — matches T
-    .put(LocusVariable.Humidity, 55.0f)        // Float — matches T
-    .put(LocusVariable.AssistMode, "TRAIL")   // String — matches T
+    .put(LocusVariable.HeartRate, 120)
+    .put(LocusVariable.AssistMode, "TRAIL")
     .build()
 ```
 
-The Builder's typed `put` rejects type mismatches at compile time. The
-Variables you're allowed to write to are the curated set in
-[`LocusVariable`](../../reference/locus-variables.md).
+`put` is typed against the curated [`LocusVariable`](../../reference/locus-variables.md) set —
+mismatched value types are a compile error.
 
 #### Write-backs
 
-Some protocols require a control / ACK write to the device. There are two ways to write, both gated
-to **writable transports** (BT4 / BT3 / USB — never read-only NET; a write for a non-writable
-transport is dropped). `target` is the characteristic UUID for BT4 (which must declare
-`AdapterApi.CharacteristicMode.WRITE` in the manifest); for stream transports pass an empty string —
-the bytes go to the single open stream. Writes from both paths run on one ordered lane.
+For control / ACK writes back to the device on a **writable transport** (BT4 / BT3 / USB; dropped
+for NET). `target` is the characteristic UUID for BT4 (which must declare
+`CharacteristicMode.WRITE` in the manifest); for stream transports pass an empty string. All
+writes run on one ordered lane regardless of path.
 
-**Reactive** — return writes alongside parsed values: `Builder.writeBack(target, bytes)`; Locus
-dispatches them right after applying the batch. Use this for ACKs / responses to received data.
-
-**Adapter-initiated** — call `writeData(deviceId, writes)` (provided by `LocusParserAdapterService`)
-any time the session is open, independent of `parseData`. Use this for a connect-time handshake
-(from `init`), a periodic poll on your own timer, or an event-driven command — anything that
-shouldn't wait for inbound data. No-op if the transport is read-only or the session has ended.
+- **Reactive** — `Builder.writeBack(target, bytes)`; Locus dispatches right after applying the
+  batch. Use for responses to received data.
+- **Adapter-initiated** — `writeData(deviceId, writes)` on the base class; call any time the
+  session is open. Use for connect-time handshakes (from `init`), periodic polls, or event-driven
+  commands. No-op when the transport is read-only or the session has ended.
 
 ### `getIntentForSettings`
 

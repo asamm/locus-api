@@ -41,13 +41,21 @@
         Multi-type adapters (e.g. one adapter handling Bosch + Shimano e-bikes)
         list multiple <deviceType> entries; switch on the deviceTypeId
         parameter in parseData for protocol-specific parsing.
+
+        scanFilter / scanServiceUuid: both optional. Use scanServiceUuid (radio-
+        level filter on the advertised BLE service UUID) whenever the vendor
+        publishes one — it's more reliable and battery-efficient than name-prefix
+        matching. Combine both for AND semantics if you need to disambiguate a
+        shared service UUID across product families. Omitting both lets Locus
+        show every nearby BLE peripheral and the user picks — fine for generic
+        devices, noisy for niche ones.
     -->
     <deviceType
         id="bosch-ldi"
         displayName="Bosch LDI"
         icon="@drawable/ic_bosch_ldi"
         connectionType="BT4"
-        scanFilter="BoschEBike-">
+        scanServiceUuid="0000eb20-eaa2-11e9-81b4-2a2ae2dbcce4">
 
         <!--
             refIds devices of this type can produce. Symbolic names resolve to

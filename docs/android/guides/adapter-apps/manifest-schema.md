@@ -90,7 +90,10 @@ separately-paired peers; the adapter learns each peer's id only via the `deviceI
 | `displayName` | yes | User-visible name shown in the picker pre-bind. |
 | `icon` | no | Per-type picker icon (`@drawable/...`). Falls back to the service/app icon when omitted. |
 | `connectionType` | yes | `BT3` (SPP stream), `BT4` (GATT — uses `<characteristic>` children), or `USB` (serial — see USB attributes below). `NET` is reserved in the enum but not driven yet; a `NET` device type is parsed and skipped. |
-| `scanFilter` | no | BLE name prefix for pairing scans. Omit for scan-by-service-UUID only. |
+| `scanFilter` | no | BLE advertisement **name prefix** for pairing scans (BT3 / BT4 only). |
+| `scanServiceUuid` | no | BLE **advertised service UUID** for pairing scans (BT4 only). Uses Android's native `ScanFilter.setServiceUuid(...)` — radio-level filtering, more reliable and battery-efficient than name-prefix matching. Use this for vendors that advertise a proprietary service UUID (Brose, Bosch LDI, …). |
+
+Both optional. Both present → AND. Neither → scan-all (same as the built-in HRM picker). Set at least one whenever the vendor publishes a distinctive name or service UUID — faster pairing, less picker noise.
 
 ### `<refId>` element (child of `<deviceType>`)
 
