@@ -68,9 +68,9 @@ override val numOfTransitPoints: Int
 How many via-points (between start and end) the provider accepts. Defaults to `0` — start/end
 only. **Override to advertise via-point support.**
 
-> Before 0.10.x this member was a final `val` and could not be overridden — a provider that
+> In earlier releases this member was a final `val` and could not be overridden — a provider that
 > supported via-points had no way to say so. It is now `open`. If you target an older
-> `locus-api-android`, you cannot raise it above `0`.
+> `locus-api-android` that still has it `final`, you cannot raise it above `0`.
 
 ### `getIntentForSettings`
 

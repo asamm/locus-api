@@ -61,8 +61,8 @@ class WavyRouteService : ComputeTrackService() {
 
     /**
      * Advertises that this provider accepts via-points between start and end. Overridable only
-     * because the base member is `open` (it was a final `val` before 0.10.x) — a provider that
-     * supports transit points could not declare it otherwise.
+     * because the base member is `open` (it was a final `val` in earlier releases) — a provider
+     * that supports transit points could not declare it otherwise.
      */
     override val numOfTransitPoints: Int
         get() = MAX_TRANSIT_POINTS
