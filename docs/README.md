@@ -10,6 +10,7 @@ docs land) will live under `kmp/`; iOS later under `ios/`.
 | Subdirectory | What's in it |
 |---|---|
 | [`android/`](android/) | Android-specific surface — AIDL services (sensor adapter, compute-track, map-tile), parcelables, manifest conventions |
+| [`plans/`](plans/)     | Forward-looking design proposals for evolving the API surface |
 | `kmp/`                 | _placeholder_ — KMP-shared types (Storable / `Location` / `Track` / `GeoDataExtra`) when the migration lands |
 | `ios/`                 | _placeholder_ — iOS bindings when they arrive |
 
