@@ -11,3 +11,4 @@ include ':locus-api-android'
 // sample apps
 include ':samples:android-api-explorer'
 include ':samples:android-sensor-adapter'
+include ':samples:android-compute-track'

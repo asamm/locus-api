@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="app_name">Locus sample — routing provider</string>
+
+    <!-- Name shown in Locus's routing-source picker -->
+    <string name="service_name">Wavy sample router</string>
+
+    <!-- Info screen -->
+    <string name="info_title">Routing provider for Locus Map</string>
+    <string name="info_body">This app has no UI of its own. It registers one Locus compute-track (routing) provider — a bound service Locus calls to turn your via-points into a route.\n\nIt is a deliberately \"dumb\" router: between points it draws a wavy, wiggly line instead of following roads — on purpose, so you can see at a glance the route was computed by a provider and isn\'t just a straight line. Don\'t navigate by it.\n\nWhat it demonstrates:\n• reporting capabilities (attribution, supported profiles, via-point count) over AIDL;\n• building the route geometry as a list of locations;\n• emitting turn-by-turn instructions as waypoints (turn action + index into the geometry).\n\nTo try it:\n1. Install Locus Map on this device.\n2. In Locus, open the route planner / navigation and choose the routing source.\n3. Pick \"Wavy sample router\" and plan a route between two or more points.\n\nThe whole provider lives in WavyRouteService.kt — small on purpose. Copy this module as the starting point for a real router (GraphHopper, BRouter, an online service, …): keep the service shell and replace the geometry-and-maneuver computation in computeTrack().</string>
+
+</resources>

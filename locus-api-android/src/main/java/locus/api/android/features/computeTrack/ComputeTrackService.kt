@@ -92,11 +92,12 @@ abstract class ComputeTrackService : Service() {
     abstract val intentForSettings: Intent
 
     /**
-     * Number of additional transit points that may be passed to navigation
+     * Number of additional transit (via) points the provider accepts between start and end.
+     * Defaults to `0` (start/end only); override to advertise transit-point support to Locus.
      *
      * @return max number of transit points
      */
-    val numOfTransitPoints: Int
+    open val numOfTransitPoints: Int
         get() = 0
 
     override fun onBind(intent: Intent): IBinder? {

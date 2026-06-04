@@ -1,0 +1,13 @@
+<!--
+    App launcher icon — a "directions / route" glyph, marking this add-on as a routing provider
+    (distinct from the add-on/extension glyph used by the sensor-adapter sample).
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#1976D2"
+        android:pathData="M21.71,11.29l-9,-9c-0.39,-0.39 -1.02,-0.39 -1.41,0l-9,9c-0.39,0.39 -0.39,1.02 0,1.41l9,9c0.39,0.39 1.02,0.39 1.41,0l9,-9c0.39,-0.38 0.39,-1.01 0,-1.41zM14,14.5L14,12h-4v3L8,15v-4c0,-0.55 0.45,-1 1,-1h5L14,7.5l3.5,3.5 -3.5,3.5z" />
+</vector>
