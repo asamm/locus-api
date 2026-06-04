@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- `samples/android-compute-track` — working sample routing provider: a `ComputeTrackService` subclass that connects via-points with a deliberately wavy line (visibly computed, not a straight segment) and emits turn-by-turn navigation waypoints (`PointRteAction` + `parameterRteIndex`), deliberately leaving statistics / distances / times for Locus to recompute on receipt
+- Developer docs at `docs/android/guides/routing-apps/` (how-to, AIDL contract, route-type reference)
+
+### Fixed
+- `ComputeTrackService.numOfTransitPoints` is now `open` — it was a final `val` so providers physically could not override it to advertise transit-point support, despite the AIDL exposing `getNumOfTransitPoints()` for exactly that (the sibling members `attribution` / `trackTypes` / `intentForSettings` were already overridable)
+
 ## [0.10.1] - 2026-06-03
 ### Changed
 - `LineStyle` defaults — `colorBase` is now a slightly transparent blue (`#b30000ff`) and `width` is `6.0f` (was opaque black / `1.0f`)
