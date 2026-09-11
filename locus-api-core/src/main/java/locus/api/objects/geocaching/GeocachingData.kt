@@ -231,8 +231,8 @@ class GeocachingData : Storable() {
     var isFound: Boolean = false
 
     /**
-     * Flag if user logged a "did not find" on the cache. Mutually exclusive with [isFound] when
-     * the source knows both dates, as the newer log defines the current state.
+     * Flag if the user's newest log on the cache is a "did not find". Independent of `isFound`,
+     * which stays set once the cache has ever been found.
      */
     var isNotFound: Boolean = false
 
