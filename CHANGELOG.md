@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.10.2] - 2026-09-11
 ### Added
+- `GeocachingData.isNotFound` — flag for a "did not find" logged by the user, the counterpart of the existing `isFound`; `Storable` version 5, appended, so older clients parse new payloads unchanged
 - `samples/android-compute-track` — working sample routing provider: a `ComputeTrackService` subclass that connects via-points with a deliberately wavy line (visibly computed, not a straight segment) and emits turn-by-turn navigation waypoints (`PointRteAction` + `parameterRteIndex`), deliberately leaving statistics / distances / times for Locus to recompute on receipt
 - Developer docs at `docs/android/guides/routing-apps/` (how-to, AIDL contract, route-type reference)
 
