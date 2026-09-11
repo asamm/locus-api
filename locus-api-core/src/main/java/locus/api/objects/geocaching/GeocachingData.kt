@@ -231,6 +231,12 @@ class GeocachingData : Storable() {
     var isFound: Boolean = false
 
     /**
+     * Flag if user logged a "did not find" on the cache. Mutually exclusive with [isFound] when
+     * the source knows both dates, as the newer log defines the current state.
+     */
+    var isNotFound: Boolean = false
+
+    /**
      * Stored URL to cache itself. Keep in mind that this value may not be defined or
      * may include various formats. Suggested is to use [.getCacheUrlFull] method,
      * that should return valid URL.
@@ -460,7 +466,7 @@ class GeocachingData : Storable() {
     //*************************************************
 
     override fun getVersion(): Int {
-        return 4
+        return 5
     }
 
     @Throws(IOException::class)
@@ -530,6 +536,11 @@ class GeocachingData : Storable() {
             notesExternal = dr.readString()
             notesExternalUpdatedAt = dr.readLong()
         }
+
+        // V5
+        if (version >= 5) {
+            isNotFound = dr.readBoolean()
+        }
     }
 
     @Throws(IOException::class)
@@ -595,6 +606,9 @@ class GeocachingData : Storable() {
         dw.writeLong(notesLocalUpdatedAt)
         dw.writeString(notesExternal)
         dw.writeLong(notesExternalUpdatedAt)
+
+        // V5
+        dw.writeBoolean(isNotFound)
     }
 
     companion object {
