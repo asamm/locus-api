@@ -338,17 +338,32 @@ class Location() : Storable() {
     var bearing: Float?
         get() = getDataFloat(EXTRA_KEY_BEARING)
         set(value) {
-            var bearingNew = value
-            if (bearingNew != null) {
-                while (bearingNew < 0.0f) {
-                    bearingNew += 360.0f
-                }
-                while (bearingNew >= 360.0f) {
-                    bearingNew -= 360.0f
-                }
-            }
-            setDataFloat(EXTRA_KEY_BEARING, bearingNew)
+            setDataFloat(EXTRA_KEY_BEARING, normalizeBearing(value))
         }
+
+    /**
+     * Reduces [value] to `[0, 360)` in one step. A non-finite value carries no direction and is
+     * dropped, and a float at or above 2^33 does not move when a turn is added to it, so stepping
+     * towards the range would never arrive.
+     */
+    private fun normalizeBearing(value: Float?): Float? {
+        if (value == null
+            || !value.isFinite()
+        ) {
+            return null
+        }
+        var normalized = value % 360.0f
+        if (normalized < 0.0f) {
+            normalized += 360.0f
+        }
+        // a hair below zero rounds up to a whole turn, and a whole turn below leaves a signed zero
+        if (normalized >= 360.0f
+            || normalized == 0.0f
+        ) {
+            return 0.0f
+        }
+        return normalized
+    }
 
     // HORIZONTAL ACCURACY
 
