@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [0.10.3] - 2026-09-13
+### Fixed
+- `Location.bearing` setter no longer hangs on a non-finite or very large value — it normalised by repeatedly adding or subtracting 360, and a float at or above 2^33 does not move when a turn is added to it, so the loop never terminated; the value is now reduced in one step, and a non-finite bearing is dropped rather than stored
+
 ## [0.10.2] - 2026-09-11
 ### Added
 - `GeocachingData.isNotFound` — flag for a "did not find" logged by the user, the counterpart of the existing `isFound`; `Storable` version 5, appended, so older clients parse new payloads unchanged
