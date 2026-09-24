@@ -7,6 +7,7 @@ import com.asamm.loggerV2.logW
 import locus.api.android.features.mapProvider.data.MapConfigLayer
 import locus.api.android.features.mapProvider.data.MapTileRequest
 import locus.api.android.features.mapProvider.data.MapTileResponse
+import locus.api.android.objects.readSizedByteArray
 import locus.api.objects.Storable
 import java.io.IOException
 
@@ -86,19 +87,16 @@ class MapDataContainer : Parcelable {
         // read map config
         when (mDataType) {
             DATA_TYPE_CONFIGURATION -> {
-                val data = ByteArray(`in`.readInt())
-                `in`.readByteArray(data)
+                val data = `in`.readSizedByteArray()
                 mapConfigurations = Storable.readList(MapConfigLayer::class.java, data)
             }
             DATA_TYPE_TILE_REQUEST -> {
-                val data = ByteArray(`in`.readInt())
-                `in`.readByteArray(data)
+                val data = `in`.readSizedByteArray()
                 tileRequest = MapTileRequest()
                 tileRequest!!.read(data)
             }
             DATA_TYPE_TILE_RESPONSE -> {
-                val data = ByteArray(`in`.readInt())
-                `in`.readByteArray(data)
+                val data = `in`.readSizedByteArray()
                 tileResponse = MapTileResponse()
                 tileResponse!!.read(data)
             }

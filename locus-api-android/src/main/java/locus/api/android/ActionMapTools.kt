@@ -173,9 +173,7 @@ class MapPreviewResult() : Storable() {
     override fun readObject(version: Int, dr: DataReaderBigEndian) {
         val size = dr.readInt()
         if (size > 0) {
-            imgData = ByteArray(size).apply {
-                dr.readBytes(this)
-            }
+            imgData = dr.readBytes(size)
         }
         numOfNotYetLoadedTiles = dr.readInt()
     }

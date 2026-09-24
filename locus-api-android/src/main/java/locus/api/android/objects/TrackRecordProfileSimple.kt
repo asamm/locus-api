@@ -72,8 +72,7 @@ class TrackRecordProfileSimple() : Storable() {
         desc = dr.readString()
         val imgSize = dr.readInt()
         if (imgSize > 0) {
-            icon = ByteArray(imgSize)
-            dr.readBytes(icon!!)
+            icon = dr.readBytes(imgSize)
         }
     }
 

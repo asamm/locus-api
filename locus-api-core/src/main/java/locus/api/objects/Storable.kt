@@ -224,13 +224,13 @@ abstract class Storable {
 
             // check size to prevent OOE
             if (size < 0 || size > MAX_SIZE) {
-                throw IOException("item size too big, size:$size, max: 10MB")
+                throw IOException("item size too big, size:$size, max: 50MB")
             }
 
             // read object data
             bc.data = ByteArray(size)
 
-            dis.read(bc.data!!)
+            dis.readFully(bc.data!!)
 
             // return filled container
             return bc
