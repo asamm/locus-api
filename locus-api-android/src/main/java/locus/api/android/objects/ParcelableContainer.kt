@@ -37,8 +37,7 @@ class ParcelableContainer : Parcelable {
     }
 
     private fun readFromParcel(`in`: Parcel) {
-        data = ByteArray(`in`.readInt())
-        `in`.readByteArray(data!!)
+        data = `in`.readSizedByteArray()
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
@@ -56,4 +55,17 @@ class ParcelableContainer : Parcelable {
             return arrayOfNulls(size)
         }
     }
+}
+
+/**
+ * Read a byte array written as its size followed by `Parcel.writeByteArray()`.
+ * The array is bounded by the parcel content, never allocated from the size alone.
+ */
+internal fun Parcel.readSizedByteArray(): ByteArray {
+    val size = readInt()
+    val data = createByteArray()
+    if (data == null || data.size != size) {
+        throw RuntimeException("bad array lengths")
+    }
+    return data
 }

@@ -210,10 +210,14 @@ public class DataReaderBigEndian {
     private void checkPosition(int increment) {
         // compared against the remaining bytes, "mPosition + increment" overflows for a huge value
         if (increment < 0 || increment > mBuffer.length - mPosition) {
-            throw new ArrayIndexOutOfBoundsException("Invalid position for data load. " +
+            String msg = "Invalid position for data load. " +
                     "Current:" + mPosition + ", " +
                     "length:" + mBuffer.length + ", " +
-                    "increment:" + increment);
+                    "increment:" + increment;
+
+            // moved to the end, so any further read on this reader fails too
+            mPosition = mBuffer.length;
+            throw new ArrayIndexOutOfBoundsException(msg);
         }
         mPosition += increment;
     }

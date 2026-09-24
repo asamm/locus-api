@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.10.4] - 2026-09-24
 ### Fixed
-- `DataReaderBigEndian` no longer lets a huge length field slip past its bounds check — the position plus a length close to `Int.MAX_VALUE` overflowed to a negative number, so a crafted or damaged `Storable` payload requested a multi-gigabyte array and crashed with `OutOfMemoryError`; a negative length or one beyond the remaining bytes now throws `ArrayIndexOutOfBoundsException` before the position moves, as any other truncated payload already did; the image data of `FieldNoteImage`, `TrackRecordProfileSimple` and the map-preview result of `ActionMapTools`, which allocated their array before this check, now go through it too
+- `DataReaderBigEndian` no longer lets a huge length field slip past its bounds check — the position plus a length close to `Int.MAX_VALUE` overflowed to a negative number, so a crafted or damaged `Storable` payload requested a multi-gigabyte array and crashed with `OutOfMemoryError`; a negative length or one beyond the remaining bytes now throws `ArrayIndexOutOfBoundsException` and leaves the reader at its end, so every further read fails as before; the image data of `FieldNoteImage`, `TrackRecordProfileSimple` and the map-preview result of `ActionMapTools`, which allocated their array before this check, now go through it too
+- `ParcelableContainer` and `MapDataContainer` no longer allocate their byte array from the size int of a received `Parcel` — a value close to `Int.MAX_VALUE` in a compute-track or map-tile reply crashed the receiving app with `OutOfMemoryError`; the array is now read with `Parcel.createByteArray()`, which is bounded by the parcel content, and the wire format is unchanged
+- `Storable` read from a `DataInputStream` fails on a truncated stream instead of parsing the missing bytes as zeros, and its size-limit message states the real 50 MB limit
 
 ## [0.10.3] - 2026-09-13
 ### Fixed
