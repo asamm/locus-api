@@ -208,12 +208,13 @@ public class DataReaderBigEndian {
     // PRIVATE TOOLS
 
     private void checkPosition(int increment) {
-        mPosition += increment;
-        if (mPosition > mBuffer.length) {
+        // compared against the remaining bytes, "mPosition + increment" overflows for a huge value
+        if (increment < 0 || increment > mBuffer.length - mPosition) {
             throw new ArrayIndexOutOfBoundsException("Invalid position for data load. " +
                     "Current:" + mPosition + ", " +
                     "length:" + mBuffer.length + ", " +
                     "increment:" + increment);
         }
+        mPosition += increment;
     }
 }

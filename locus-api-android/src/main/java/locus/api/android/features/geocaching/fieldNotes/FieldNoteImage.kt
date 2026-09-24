@@ -52,8 +52,7 @@ class FieldNoteImage : Storable() {
         description = dr.readString()
         val imgSize = dr.readInt()
         if (imgSize > 0) {
-            image = ByteArray(imgSize)
-            dr.readBytes(image!!)
+            image = dr.readBytes(imgSize)
         }
     }
 
