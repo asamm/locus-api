@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Removed
+- `GeocachingData.gcVoteNumOfVotes`, `gcVoteAverage` and `gcVoteUserVote` — the GCVote rating service has shut down and Locus Map no longer shows its ratings; the three values stay in the `Storable` byte layout, skipped on read and written as the empty `-1` / `0.0` / `0.0`, so older and newer clients keep parsing each other's payloads, but code that reads or sets these properties has to drop them
+
 ## [0.10.4] - 2026-09-24
 ### Fixed
 - `DataReaderBigEndian` no longer lets a huge length field slip past its bounds check — the position plus a length close to `Int.MAX_VALUE` overflowed to a negative number, so a crafted or damaged `Storable` payload requested a multi-gigabyte array and crashed with `OutOfMemoryError`; a negative length or one beyond the remaining bytes now throws `ArrayIndexOutOfBoundsException` and leaves the reader at its end, so every further read fails as before; the image data of `FieldNoteImage`, `TrackRecordProfileSimple` and the map-preview result of `ActionMapTools`, which allocated their array before this check, now go through it too

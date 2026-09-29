@@ -248,23 +248,6 @@ class GeocachingData : Storable() {
      */
     var favoritePoints: Int = -1
 
-    // V1
-
-    /**
-     * GcVote - number of votes.
-     */
-    var gcVoteNumOfVotes: Int = -1
-
-    /**
-     * Average (not median) value.
-     */
-    var gcVoteAverage: Float = 0.0f
-
-    /**
-     * User value for GCVote.
-     */
-    var gcVoteUserVote: Float = 0.0f
-
     // V2
 
     /**
@@ -513,9 +496,10 @@ class GeocachingData : Storable() {
 
         // V1
         if (version >= 1) {
-            gcVoteNumOfVotes = dr.readInt()
-            gcVoteAverage = dr.readFloat()
-            gcVoteUserVote = dr.readFloat()
+            // retired GcVote rating (number of votes, average, user vote)
+            dr.readInt()
+            dr.readFloat()
+            dr.readFloat()
         }
 
         // V2
@@ -590,9 +574,10 @@ class GeocachingData : Storable() {
         dw.writeInt(favoritePoints)
 
         // V1
-        dw.writeInt(gcVoteNumOfVotes)
-        dw.writeFloat(gcVoteAverage)
-        dw.writeFloat(gcVoteUserVote)
+        // retired GcVote rating (number of votes, average, user vote), kept empty for the V1 layout
+        dw.writeInt(-1)
+        dw.writeFloat(0.0f)
+        dw.writeFloat(0.0f)
 
         // V2
         dw.writeDouble(lonOriginal)
