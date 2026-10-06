@@ -273,6 +273,13 @@ class GeocachingData : Storable() {
      */
     var source: Int = CACHE_SOURCE_UNDEFINED
 
+    // V6
+
+    /**
+     * URL of the image the owner set as the listing's background on geocaching.com, `null` when none.
+     */
+    var backgroundImageUrl: String? = null
+
     //*************************************************
     // HELPERS
     //*************************************************
@@ -449,7 +456,7 @@ class GeocachingData : Storable() {
     //*************************************************
 
     override fun getVersion(): Int {
-        return 5
+        return 6
     }
 
     @Throws(IOException::class)
@@ -525,6 +532,11 @@ class GeocachingData : Storable() {
         if (version >= 5) {
             isNotFound = dr.readBoolean()
         }
+
+        // V6
+        if (version >= 6) {
+            backgroundImageUrl = dr.readString().ifEmpty { null }
+        }
     }
 
     @Throws(IOException::class)
@@ -594,6 +606,9 @@ class GeocachingData : Storable() {
 
         // V5
         dw.writeBoolean(isNotFound)
+
+        // V6
+        dw.writeString(backgroundImageUrl)
     }
 
     companion object {

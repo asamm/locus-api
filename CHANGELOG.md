@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.11.0] - 2026-10-06
+### Added
+- `GeocachingData.backgroundImageUrl` — URL of the image the owner set as the listing's background on geocaching.com, `null` when none; `Storable` version 6, appended, so older clients parse new payloads unchanged
+
 ### Removed
 - `GeocachingData.gcVoteNumOfVotes`, `gcVoteAverage` and `gcVoteUserVote` — the GCVote rating service has shut down and Locus Map no longer shows its ratings; the three values stay in the `Storable` byte layout, skipped on read and written as the empty `-1` / `0.0` / `0.0`, so older and newer clients keep parsing each other's payloads, but code that reads or sets these properties has to drop them
 
