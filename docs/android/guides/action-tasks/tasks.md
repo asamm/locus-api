@@ -298,7 +298,7 @@ Sample: `{ "screen_on_off": { "action": "off" } }`
 | `auto_save` | `true`/`false` | `action`:`stop`, optional | Save the track; without it the profile's setting applies |
 | | | `action`:`add_wpt`, optional | Save the waypoint at once; `action_after` is then ignored |
 | `confirm` | `true`/`false`; default `true` | `action`:`discard`, optional | Ask the user first; never asked when the app is not visible |
-| `allow_start` | `true`/`false`; default `false` | `action`:`toggle`, optional | Meant to start recording when it is not running; currently has no effect |
+| `allow_start` | `true`/`false`; default `false` | `action`:`toggle`, optional | Start recording when it is not running (Locus Map 4.36.1.6+; ignored before) |
 | `description` | text | `action`:`add_wpt`, optional | Description of the waypoint |
 | `action_after` | `audio`, `photo`, `video` | `action`:`add_wpt`, optional | Take that kind of waypoint |
 
