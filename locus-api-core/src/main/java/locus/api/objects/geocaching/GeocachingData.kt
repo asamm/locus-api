@@ -761,8 +761,9 @@ class GeocachingData : Storable() {
         const val CACHE_TYPE_GC_HQ_BLOCK_PARTY = 22
 
         /**
-         * Adventure Lab listing (the header of a multi-stage adventure), not published over API
-         * as a geocache type. Stages of the adventure are [CACHE_TYPE_LAB_CACHE].
+         * Adventure Lab header, a separate object in the Groundspeak API and not a geocache type
+         * there, with the adventure id as `cacheID` and its link as `cacheUrl`; its stages are
+         * [CACHE_TYPE_LAB_CACHE].
          */
         const val CACHE_TYPE_ADVENTURE_LAB = 23
 

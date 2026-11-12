@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.11.1] - 2026-11-12
 ### Added
-- `GeocachingData.CACHE_TYPE_ADVENTURE_LAB` (23) — header of an Adventure Lab, which is a separate object in the Groundspeak API and not a geocache type; the stages of an adventure stay `CACHE_TYPE_LAB_CACHE`; the type has the text form "Adventure Lab", and `cacheUrlFull` returns the stored URL for it because an adventure has no GC code
+- `GeocachingData.CACHE_TYPE_ADVENTURE_LAB` (23) — header of an Adventure Lab, which is a separate object in the Groundspeak API and not a geocache type; the stages of an adventure stay `CACHE_TYPE_LAB_CACHE`; the type has the text form "Adventure Lab", and `cacheUrlFull` returns the stored URL for it because an adventure has no GC code; clients before 0.11.1 show it as a generic "Geocache" and, for a point with the Geocaching.com source, link to `coord.info/<cacheID>`, which does not open an adventure
 
 ## [0.11.0] - 2026-10-06
 ### Added
