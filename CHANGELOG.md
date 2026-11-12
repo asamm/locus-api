@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.11.1] - 2026-11-12
+### Added
+- `GeocachingData.CACHE_TYPE_ADVENTURE_LAB` (23) — header of an Adventure Lab, which is a separate object in the Groundspeak API and not a geocache type; the stages of an adventure stay `CACHE_TYPE_LAB_CACHE`; the type has the text form "Adventure Lab", and `cacheUrlFull` returns the stored URL for it because an adventure has no GC code
+
 ## [0.11.0] - 2026-10-06
 ### Added
 - `GeocachingData.backgroundImageUrl` — URL of the image the owner set as the listing's background on geocaching.com, `null` when none; `Storable` version 6, appended, so older clients parse new payloads unchanged

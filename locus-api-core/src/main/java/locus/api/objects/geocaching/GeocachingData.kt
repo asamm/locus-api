@@ -393,6 +393,11 @@ class GeocachingData : Storable() {
                 return cacheUrl
             }
 
+            // adventure has no GC code, so the "coord.info" url below would not open it
+            if (type == CACHE_TYPE_ADVENTURE_LAB && cacheUrl.isNotEmpty()) {
+                return cacheUrl
+            }
+
             // if cache is from Groundspeak, return "coord.info" url
             if (source == CACHE_SOURCE_GEOCACHING_COM) {
                 return "https://coord.info/$cacheID"
@@ -756,6 +761,12 @@ class GeocachingData : Storable() {
         const val CACHE_TYPE_GC_HQ_BLOCK_PARTY = 22
 
         /**
+         * Adventure Lab listing (the header of a multi-stage adventure), not published over API
+         * as a geocache type. Stages of the adventure are [CACHE_TYPE_LAB_CACHE].
+         */
+        const val CACHE_TYPE_ADVENTURE_LAB = 23
+
+        /**
          * Incorrect/undefined type of geocache. Such point should not be considered as geocache
          * at all.
          */
@@ -810,6 +821,7 @@ class GeocachingData : Storable() {
                 CACHE_TYPE_GIGA_EVENT -> return "Giga-Event Cache"
                 CACHE_TYPE_LAB_CACHE -> return "Lab Cache"
                 CACHE_TYPE_GC_HQ_BLOCK_PARTY -> return "HQ Block Party"
+                CACHE_TYPE_ADVENTURE_LAB -> return "Adventure Lab"
                 else -> return "Geocache"
             }
         }
@@ -888,6 +900,8 @@ class GeocachingData : Storable() {
                 CACHE_TYPE_LAB_CACHE
             } else if (typeNew.equals("Geocaching HQ Block Party", ignoreCase = true)) {
                 CACHE_TYPE_GC_HQ_BLOCK_PARTY
+            } else if (typeNew.equals("Adventure Lab", ignoreCase = true)) {
+                CACHE_TYPE_ADVENTURE_LAB
             } else {
                 CACHE_TYPE_UNDEFINED
             }
